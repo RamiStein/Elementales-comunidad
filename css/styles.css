@@ -1,0 +1,335 @@
+/* Estilos - Versión Clara (Fondo Blanco & Tonos Orgánicos) - Elementales Comunidad */
+
+:root {
+  --bg-main: #fcfaf8;
+  --bg-surface: #f4efe9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fdfaf8;
+  --color-terracotta: #c0826d;
+  --color-terracotta-light: #d99a86;
+  --color-terracotta-dark: #a6634f;
+  --color-terracotta-tint: #fcf4f0;
+  --color-terracotta-glow: rgba(192, 130, 109, 0.2);
+  --color-spotify: #1db954;
+  --color-spotify-hover: #16a34a;
+  --text-main: #1c1917;
+  --text-muted: #57534e;
+  --text-subtle: #78716c;
+  --border-color: #e7e5e4;
+  --border-subtle: #f0eeeb;
+  --radius-pill: 9999px;
+  --radius-card: 20px;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+input, textarea, select {
+  user-select: text;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f5f2eb;
+}
+::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-terracotta);
+}
+
+/* Spotify-inspired Card styling en versión Clara */
+.spotify-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.spotify-card:hover {
+  background-color: var(--bg-card-hover);
+  border-color: rgba(192, 130, 109, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -4px rgba(192, 130, 109, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+}
+
+.spotify-card:active {
+  transform: scale(0.985);
+}
+
+/* Spotify style Pill Buttons */
+.btn-spotify {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+
+.btn-spotify:hover {
+  transform: scale(1.03);
+}
+
+.btn-spotify:active {
+  transform: scale(0.96);
+}
+
+.btn-spotify-primary {
+  background: linear-gradient(135deg, #c0826d 0%, #a6634f 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(192, 130, 109, 0.35);
+}
+
+.btn-spotify-primary:hover {
+  background: linear-gradient(135deg, #d99a86 0%, #b8715c 100%);
+  box-shadow: 0 6px 20px rgba(192, 130, 109, 0.45);
+}
+
+.btn-spotify-green {
+  background-color: #1db954;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(29, 185, 84, 0.3);
+}
+
+.btn-spotify-green:hover {
+  background-color: #16a34a;
+  box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
+}
+
+.btn-spotify-secondary {
+  background-color: #ffffff;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.btn-spotify-secondary:hover {
+  background-color: #f5f2eb;
+  border-color: #d6d3d1;
+}
+
+/* Category Filter Pills */
+.pill-filter {
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: #ffffff;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.pill-filter:hover {
+  background-color: #fdfaf8;
+  color: var(--text-main);
+  border-color: #d6d3d1;
+}
+
+.pill-filter.active {
+  background-color: var(--color-terracotta);
+  color: #ffffff;
+  border-color: var(--color-terracotta-dark);
+  box-shadow: 0 3px 10px rgba(192, 130, 109, 0.35);
+}
+
+/* Stepper buttons */
+.stepper-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: all 0.15s ease;
+}
+
+.stepper-btn:hover {
+  background-color: var(--color-terracotta);
+  border-color: var(--color-terracotta);
+  color: #fff;
+  transform: scale(1.08);
+}
+
+.stepper-btn:active {
+  transform: scale(0.92);
+}
+
+/* Big Hero Entry Button */
+.btn-enter-node {
+  background: linear-gradient(135deg, #c0826d 0%, #df9985 50%, #a6634f 100%);
+  background-size: 200% auto;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 1.25rem 2.75rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 25px rgba(192, 130, 109, 0.35), 0 2px 4px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: pulse-glow-light 3s infinite;
+}
+
+.btn-enter-node:hover {
+  background-position: right center;
+  transform: scale(1.04) translateY(-2px);
+  box-shadow: 0 14px 32px rgba(192, 130, 109, 0.45);
+}
+
+.btn-enter-node:active {
+  transform: scale(0.96);
+}
+
+@keyframes pulse-glow-light {
+  0%, 100% {
+    box-shadow: 0 8px 25px rgba(192, 130, 109, 0.28);
+  }
+  50% {
+    box-shadow: 0 12px 35px rgba(192, 130, 109, 0.48);
+  }
+}
+
+/* Floating bottom bar */
+.bottom-floating-bar {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(231, 229, 228, 0.9);
+  border-radius: var(--radius-pill);
+  padding: 0.75rem 1.25rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(192, 130, 109, 0.08);
+  z-index: 50;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 40px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Modal Backdrops & Content */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(28, 25, 23, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 100;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  max-width: 540px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Logo animation */
+.mandala-spin-subtle {
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mandala-spin-subtle:hover {
+  transform: rotate(72deg) scale(1.05);
+}
+
+/* Badges */
+.badge-status {
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-paid {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-pending {
+  background-color: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
