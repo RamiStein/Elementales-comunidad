@@ -93,6 +93,9 @@ const AppState = {
   members: [],
   activeCategory: 'Todos',
   searchQuery: '',
+  memberSearchQuery: '',
+  memberRoleFilter: 'Todos',
+  selectedMemberForContact: null,
   currentView: 'welcome',
   lastCompletedOrder: null,
   lastCompletedMember: null,
@@ -598,6 +601,63 @@ function sendWhatsAppTicket(order) {
   window.open(url, '_blank');
 }
 
+// --- MODALES DE FILOSOFÍA & PROPÓSITO ---
+function openManifestoModal() {
+  sounds.playPop();
+  const modal = document.getElementById('modal-community-manifesto');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeManifestoModal() {
+  sounds.playPop();
+  const modal = document.getElementById('modal-community-manifesto');
+  if (modal) modal.classList.add('hidden');
+}
+
+// --- MODAL DE OPCIONES DE CONTACTO WHATSAPP ---
+function openMemberContactModal(memberId) {
+  const member = AppState.members.find(m => m.id === memberId);
+  if (!member) return;
+  sounds.playPop();
+  AppState.selectedMemberForContact = member;
+
+  const nameEl = document.getElementById('contact-member-modal-name');
+  if (nameEl) nameEl.textContent = member.name;
+
+  const btnWelcome = document.getElementById('btn-contact-opt-welcome');
+  if (btnWelcome) {
+    btnWelcome.onclick = () => {
+      sendWhatsAppWelcome(member);
+      closeMemberContactModal();
+    };
+  }
+
+  const btnOrders = document.getElementById('btn-contact-opt-orders-open');
+  if (btnOrders) {
+    btnOrders.onclick = () => {
+      sendWhatsAppOrderAlert(member);
+      closeMemberContactModal();
+    };
+  }
+
+  const btnWorkshop = document.getElementById('btn-contact-opt-workshop');
+  if (btnWorkshop) {
+    btnWorkshop.onclick = () => {
+      sendWhatsAppWorkshopInvite(member);
+      closeMemberContactModal();
+    };
+  }
+
+  const modal = document.getElementById('modal-member-contact');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeMemberContactModal() {
+  sounds.playPop();
+  const modal = document.getElementById('modal-member-contact');
+  if (modal) modal.classList.add('hidden');
+}
+
 // --- REGISTRO DE NUEVO INTEGRANTE ---
 function submitNewMember(e) {
   e.preventDefault();
@@ -605,6 +665,7 @@ function submitNewMember(e) {
   const name = document.getElementById('member-name').value.trim();
   const phone = document.getElementById('member-phone').value.trim();
   const email = document.getElementById('member-email').value.trim();
+  const communityRole = document.getElementById('member-community-role') ? document.getElementById('member-community-role').value : 'Consumo Familiar Consciente';
   const neighborhood = document.getElementById('member-neighborhood').value.trim();
   const pickupPoint = document.getElementById('member-pickup-point').value;
   const frequency = document.getElementById('member-frequency').value;
@@ -623,6 +684,7 @@ function submitNewMember(e) {
     name,
     phone,
     email,
+    communityRole,
     neighborhood,
     pickupPoint,
     frequency,
@@ -644,7 +706,12 @@ function submitNewMember(e) {
 function openMemberSuccessModal(member) {
   const modal = document.getElementById('modal-member-success');
   document.getElementById('success-member-name').textContent = member.name;
-  document.getElementById('success-member-phone').textContent = member.phone || 'Sin WhatsApp registrado';
+  document.getElementById('success-member-phone').textContent = member.phone ? `📱 ${member.phone}` : 'Sin WhatsApp registrado';
+  
+  const roleBadge = document.getElementById('success-member-role-badge');
+  if (roleBadge) {
+    roleBadge.textContent = member.communityRole || 'Consumo Familiar Consciente';
+  }
 
   const waBtn = document.getElementById('btn-send-whatsapp-welcome');
   waBtn.onclick = () => sendWhatsAppWelcome(member);
@@ -657,17 +724,26 @@ function closeMemberSuccessModal() {
   document.getElementById('modal-member-success').classList.add('hidden');
 }
 
+// --- PLANTILLAS DE MENSAJES WHATSAPP ---
 function sendWhatsAppWelcome(member) {
   sounds.playPop();
-  let message = `¡Hola ${member.name}! 👋 Bienvenido/a a *Elementales Comunidad* 🌱✨\n\n`;
-  message += `Te registramos con éxito para las compras comunitarias del nodo.\n`;
+  let message = `¡Hola ${member.name}! 👋 Te damos una cálida bienvenida a *Elementales Comunidad* 🌱✨\n\n`;
+  message += `_“Cada ser humano es un elemento fundamental para la vida sana en la tierra y para ser feliz.”_\n\n`;
+  message += `Te registramos con éxito en nuestro nodo barrial:\n`;
+  if (member.communityRole) {
+    message += `✨ *Participación:* ${member.communityRole}\n`;
+  }
   if (member.neighborhood) {
     message += `📍 *Zona:* ${member.neighborhood}\n`;
+  }
+  if (member.pickupPoint) {
+    message += `📦 *Punto de Retiro:* ${member.pickupPoint}\n`;
   }
   if (member.interests && member.interests.length > 0) {
     message += `🧺 *Intereses:* ${member.interests.join(', ')}\n`;
   }
-  message += `\nTe estaremos avisando por este medio cada vez que abramos pedidos de bolsones y productos agroecológicos directamente de productores locales. 🥬🍎🍯\n\n¡Un placer sumarte a nuestra red!`;
+  message += `\nA través de la red *vrde* te avisaremos cada vez que abramos pedidos de bolsones agroecológicos y alimentos sanos de productores locales. Y junto a *En Conjunto*, compartiremos saberes, charlas y encuentros de comunidad.\n\n`;
+  message += `¡Un placer enorme sumar tu elemento a nuestra red! 🥬🍎✨`;
 
   const phone = cleanPhoneForWhatsApp(member.phone);
   let url = '';
@@ -678,6 +754,97 @@ function sendWhatsAppWelcome(member) {
   }
 
   window.open(url, '_blank');
+}
+
+function sendWhatsAppOrderAlert(member) {
+  sounds.playPop();
+  let message = `¡Hola ${member.name}! 🌱 Te avisamos que están *abiertos los pedidos comunitarios* en *Elementales* (red vrde) 🥬🍎\n\n`;
+  message += `Ya podés encargar bolsones agroecológicos de huerta fresca y productos de elaboración artesanal.\n\n`;
+  if (member.pickupPoint) {
+    message += `📦 *Punto de retiro:* ${member.pickupPoint}\n`;
+  }
+  message += `🔗 Accedé al catálogo y hacé tu pedido en: https://elementales.store\n\n`;
+  message += `¡Gracias por apoyar la soberanía alimentaria y la producción local! ✨`;
+
+  const phone = cleanPhoneForWhatsApp(member.phone);
+  let url = '';
+  if (phone) {
+    url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  } else {
+    url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+  }
+
+  window.open(url, '_blank');
+}
+
+function sendWhatsAppWorkshopInvite(member) {
+  sounds.playPop();
+  let message = `¡Hola ${member.name}! ✨ Desde *Elementales* y la comunidad de saberes *En Conjunto*, queremos invitarte a nuestro próximo encuentro y taller de vivencia práctica. 🌱\n\n`;
+  message += `Un espacio para aprender técnicas, compartir herramientas y seguir tejiendo una comunidad viva y consciente.\n\n`;
+  message += `¿Te gustaría sumarte o conocer el temario? ¡Respondé a este mensaje y te pasamos los datos! 🌿`;
+
+  const phone = cleanPhoneForWhatsApp(member.phone);
+  let url = '';
+  if (phone) {
+    url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  } else {
+    url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+  }
+
+  window.open(url, '_blank');
+}
+
+// --- BÚSQUEDA Y FILTRADO DE INTEGRANTES ---
+function handleSearchMembers(query) {
+  AppState.memberSearchQuery = (query || '').toLowerCase().trim();
+  renderMembersDirectory();
+}
+
+function handleFilterMemberRole(role) {
+  sounds.playPop();
+  AppState.memberRoleFilter = role;
+
+  // Actualizar botones de filtro activos
+  document.querySelectorAll('#view-members-directory .pill-filter').forEach(btn => {
+    btn.classList.remove('pill-filter-active');
+  });
+
+  if (role === 'Todos') {
+    const el = document.getElementById('filter-role-all');
+    if (el) el.classList.add('pill-filter-active');
+  } else if (role.includes('Consumo')) {
+    const el = document.getElementById('filter-role-consumer');
+    if (el) el.classList.add('pill-filter-active');
+  } else if (role.includes('Saberes')) {
+    const el = document.getElementById('filter-role-learning');
+    if (el) el.classList.add('pill-filter-active');
+  } else if (role.includes('Voluntariado')) {
+    const el = document.getElementById('filter-role-volunteer');
+    if (el) el.classList.add('pill-filter-active');
+  } else if (role.includes('Productor')) {
+    const el = document.getElementById('filter-role-producer');
+    if (el) el.classList.add('pill-filter-active');
+  }
+
+  renderMembersDirectory();
+}
+
+function getRoleBadgeClass(role) {
+  if (!role) return 'bg-stone-100 text-stone-700 border-stone-200';
+  if (role.includes('Consumo')) return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+  if (role.includes('Saberes')) return 'bg-amber-100 text-amber-800 border-amber-300';
+  if (role.includes('Voluntariado')) return 'bg-[#fcf4f0] text-[#a6634f] border-[#c0826d]/40';
+  if (role.includes('Productor')) return 'bg-purple-100 text-purple-800 border-purple-300';
+  return 'bg-stone-100 text-stone-700 border-stone-200';
+}
+
+function getRoleShortLabel(role) {
+  if (!role) return '🛒 Consumo';
+  if (role.includes('Consumo')) return '🛒 Consumo Consciente';
+  if (role.includes('Saberes')) return '💡 Saberes & Talleres';
+  if (role.includes('Voluntariado')) return '🤝 Nodo Activo';
+  if (role.includes('Productor')) return '🌾 Productor/a';
+  return role;
 }
 
 // --- PANEL DE CONTROL Y PEDIDOS ---
@@ -787,50 +954,104 @@ function deleteOrder(orderId) {
 
 // --- DIRECTORIO DE INTEGRANTES ---
 function renderMembersDirectory() {
-  const members = AppState.members;
-  document.getElementById('dir-total-members').textContent = `${members.length} personas registradas`;
+  const allMembers = AppState.members;
+  const countRoleAll = document.getElementById('count-role-all');
+  if (countRoleAll) countRoleAll.textContent = allMembers.length;
+
+  let filtered = [...allMembers];
+
+  // Filtro por Rol
+  if (AppState.memberRoleFilter && AppState.memberRoleFilter !== 'Todos') {
+    filtered = filtered.filter(m => m.communityRole === AppState.memberRoleFilter);
+  }
+
+  // Filtro por Búsqueda
+  if (AppState.memberSearchQuery) {
+    const q = AppState.memberSearchQuery;
+    filtered = filtered.filter(m => 
+      (m.name && m.name.toLowerCase().includes(q)) ||
+      (m.neighborhood && m.neighborhood.toLowerCase().includes(q)) ||
+      (m.phone && m.phone.includes(q)) ||
+      (m.communityRole && m.communityRole.toLowerCase().includes(q)) ||
+      (m.notes && m.notes.toLowerCase().includes(q))
+    );
+  }
+
+  const dirCountEl = document.getElementById('dir-total-members');
+  if (dirCountEl) {
+    dirCountEl.textContent = `${filtered.length} de ${allMembers.length} personas`;
+  }
 
   const container = document.getElementById('members-cards-container');
   if (!container) return;
 
-  if (members.length === 0) {
+  if (filtered.length === 0) {
     container.innerHTML = `
-      <div class="col-span-full text-center py-12 text-stone-500">
+      <div class="col-span-full text-center py-12 text-stone-500 bg-white rounded-2xl border border-stone-200 p-6">
         <p class="text-4xl mb-3">👥</p>
-        <p class="font-bold text-stone-700 text-lg">Aún no hay integrantes registrados en este nodo.</p>
-        <button onclick="navigateTo('new-member')" class="btn-spotify btn-spotify-primary text-xs mt-3">
-          + Sumar Primer Integrante
+        <p class="font-bold text-stone-700 text-lg">No se encontraron integrantes con los filtros actuales.</p>
+        <p class="text-xs text-stone-400 mt-1">Prueba cambiando la búsqueda o sumando a una nueva persona al nodo.</p>
+        <button onclick="navigateTo('new-member')" class="btn-spotify btn-spotify-green text-xs mt-4">
+          + Sumar Nuevo Integrante
         </button>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = members.map(m => `
-    <div class="spotify-card p-4 flex flex-col justify-between">
+  container.innerHTML = filtered.map(m => `
+    <div class="spotify-card p-5 flex flex-col justify-between border-stone-200 hover:border-emerald-400 transition-all">
       <div>
-        <div class="flex items-start justify-between gap-2 mb-2">
-          <div class="w-10 h-10 rounded-full bg-[#fbf2ee] text-[#a6634f] font-bold text-lg flex items-center justify-center border border-[#c0826d]/30">
-            ${m.name.charAt(0).toUpperCase()}
+        <div class="flex items-start justify-between gap-2 mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-[#fbf2ee] text-[#a6634f] font-black text-lg flex items-center justify-center border border-[#c0826d]/30 shadow-sm">
+              ${m.name.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <h4 class="font-black text-base text-stone-900 leading-tight">${escapeHtml(m.name)}</h4>
+              <span class="text-[11px] text-stone-400 font-medium">Registrado el ${m.dateStr}</span>
+            </div>
           </div>
-          <span class="text-xs text-stone-400 font-medium">${m.dateStr}</span>
+
+          <button 
+            onclick="deleteMember('${m.id}')" 
+            class="text-stone-300 hover:text-red-500 text-xs p-1 transition-colors"
+            title="Eliminar del directorio">
+            ✕
+          </button>
         </div>
 
-        <h4 class="font-bold text-base text-stone-900 mb-0.5">${escapeHtml(m.name)}</h4>
-        <p class="text-xs text-stone-500 mb-2">📍 ${escapeHtml(m.neighborhood || 'Zona sin especificar')}</p>
+        <!-- Rol Comunitario Badge -->
+        <div class="mb-2.5">
+          <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full border ${getRoleBadgeClass(m.communityRole)}">
+            ${escapeHtml(getRoleShortLabel(m.communityRole))}
+          </span>
+        </div>
 
+        <!-- Ubicación & Retiro -->
+        <div class="text-xs text-stone-600 space-y-1 mb-3 bg-stone-50/80 p-2.5 rounded-xl border border-stone-100">
+          <p class="flex items-center gap-1.5 font-medium">
+            <span>📍</span> <span class="text-stone-800 font-semibold">${escapeHtml(m.neighborhood || 'Zona a convenir')}</span>
+          </p>
+          <p class="flex items-center gap-1.5 text-stone-500 text-[11px]">
+            <span>📦</span> <span>Retiro: <strong>${escapeHtml(m.pickupPoint || 'Nodo Principal')}</strong></span>
+          </p>
+        </div>
+
+        <!-- Intereses -->
         ${m.interests && m.interests.length > 0 ? `
           <div class="flex flex-wrap gap-1 mb-3">
             ${m.interests.map(int => `
-              <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200">
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white text-stone-700 border border-stone-200 shadow-2xs">
                 ${escapeHtml(int)}
               </span>
             `).join('')}
           </div>
         ` : ''}
 
+        <!-- Notas / Saberes -->
         ${m.notes ? `
-          <p class="text-xs text-stone-600 italic bg-stone-50 p-2.5 rounded-xl border border-stone-100 mb-3">
+          <p class="text-xs text-stone-600 italic bg-amber-50/40 p-2.5 rounded-xl border border-amber-100/60 mb-3">
             "${escapeHtml(m.notes)}"
           </p>
         ` : ''}
@@ -842,17 +1063,11 @@ function renderMembersDirectory() {
         <div class="flex items-center gap-2">
           ${m.phone ? `
             <button 
-              onclick="sendWhatsAppWelcome(${JSON.stringify(m).replace(/"/g, '&quot;')})" 
-              class="btn-spotify btn-spotify-green text-xs !py-1.5 !px-3 font-bold">
-              WhatsApp 💬
+              onclick="openMemberContactModal('${m.id}')" 
+              class="btn-spotify btn-spotify-green text-xs !py-1.5 !px-3.5 font-bold shadow-sm flex items-center gap-1">
+              <span>WhatsApp</span> 💬
             </button>
-          ` : ''}
-          <button 
-            onclick="deleteMember('${m.id}')" 
-            class="text-stone-400 hover:text-red-500 text-xs p-1"
-            title="Eliminar">
-            ✕
-          </button>
+          ` : '<span class="text-xs text-stone-400">Sin teléfono</span>'}
         </div>
       </div>
     </div>
@@ -1014,7 +1229,7 @@ function exportMembersToExcel() {
   }
 
   const rows = [
-    ['Nombre y Apellido', 'Teléfono / WhatsApp', 'Email', 'Barrio / Zona', 'Punto de Entrega', 'Frecuencia', 'Intereses', 'Notas', 'Fecha Registro']
+    ['Nombre y Apellido', 'Teléfono / WhatsApp', 'Email', 'Rol Comunitario (En Conjunto)', 'Barrio / Zona', 'Punto de Retiro', 'Frecuencia', 'Intereses (vrde)', 'Notas / Saberes', 'Fecha Registro']
   ];
 
   AppState.members.forEach(m => {
@@ -1022,6 +1237,7 @@ function exportMembersToExcel() {
       m.name,
       m.phone || '',
       m.email || '',
+      m.communityRole || 'Consumo Familiar Consciente',
       m.neighborhood || '',
       m.pickupPoint || '',
       m.frequency || '',

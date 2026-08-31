@@ -156,11 +156,12 @@ body {
   border-color: #d6d3d1;
 }
 
-.pill-filter.active {
-  background-color: var(--color-terracotta);
-  color: #ffffff;
-  border-color: var(--color-terracotta-dark);
-  box-shadow: 0 3px 10px rgba(192, 130, 109, 0.35);
+.pill-filter.active,
+.pill-filter-active {
+  background-color: #1db954 !important;
+  color: #ffffff !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 3px 10px rgba(29, 185, 84, 0.3) !important;
 }
 
 /* Stepper buttons */
