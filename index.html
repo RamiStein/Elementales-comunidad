@@ -52,46 +52,310 @@
 <body class="bg-[#fcfaf8] text-stone-800 min-h-screen selection:bg-[#c0826d] selection:text-white pb-16">
 
   <!-- ========================================================================= -->
-  <!-- 1. VISTA: BIENVENIDA (SPLASH / INGRESAR AL NODO) -->
+  <!-- 1. VISTA: BIENVENIDA (TABLERO ELEMENTAL & BOTÁNICA TROPICAL) -->
   <!-- ========================================================================= -->
-  <div id="view-welcome" class="app-view flex flex-col items-center justify-center min-h-screen px-6 py-10 text-center relative overflow-hidden bg-gradient-to-b from-[#faf6f0] via-[#fcfaf8] to-[#f4efe9]">
-    <!-- Glow de fondo orgánico cálido -->
-    <div class="absolute w-[500px] h-[500px] bg-[#c0826d]/15 rounded-full blur-[100px] pointer-events-none -top-20 -left-20 animate-pulse"></div>
-    <div class="absolute w-[450px] h-[450px] bg-[#1db954]/10 rounded-full blur-[90px] pointer-events-none -bottom-20 -right-20"></div>
-
-    <div class="relative z-10 max-w-lg w-full flex flex-col items-center">
+  <div id="view-welcome" class="app-view relative min-h-screen overflow-hidden tropical-sky-bg flex flex-col justify-between items-center px-4 py-6 sm:py-10 text-center selection:bg-[#c0826d] selection:text-white">
+    
+    <!-- ILUSTRACIÓN BOTÁNICA Y AVES DE FONDO (REFERENCIA 1) -->
+    <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      <!-- Resplandor solar suave -->
+      <div class="absolute w-[600px] h-[600px] bg-[#f9e2b2]/35 rounded-full blur-[110px] -top-24 left-1/2 -translate-x-1/2"></div>
       
-      <!-- Tag superior de ecosistema -->
-      <div class="mb-4 inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/80 border border-[#c0826d]/30 text-[#a6634f] text-xs font-bold shadow-sm backdrop-blur-sm">
-        <span>🌱 Ecosistema Comunitario</span>
+      <!-- Tucán Superior Volando con el Globo Terráqueo (Referencia 1) -->
+      <div class="absolute right-4 sm:right-16 top-6 sm:top-10 w-32 sm:w-44 h-auto toucan-float opacity-90 drop-shadow-md">
+        <svg viewBox="0 0 160 180" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+          <!-- Hilo que sostiene el mundo -->
+          <path d="M125 45 Q 120 75, 122 95" stroke="#2d6a4f" stroke-width="1.8" stroke-linecap="round"/>
+          
+          <!-- Globo Terráqueo -->
+          <g transform="translate(100, 95)">
+            <!-- Soporte de madera -->
+            <path d="M22 45 L22 55 M10 55 L34 55" stroke="#b06c49" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M5 25 A 18 18 0 0 0 39 25" stroke="#c0826d" stroke-width="2" fill="none"/>
+            <!-- Esfera de la Tierra -->
+            <circle cx="22" cy="22" r="15" fill="#38bdf8"/>
+            <!-- Continentes -->
+            <path d="M15 14 Q 22 12, 25 18 Q 20 25, 14 22 Z" fill="#22c55e"/>
+            <path d="M25 24 Q 32 22, 30 32 Q 22 34, 25 24 Z" fill="#16a34a"/>
+          </g>
+
+          <!-- Tucán en Vuelo -->
+          <g transform="translate(10, 10)">
+            <!-- Pico colorido -->
+            <path d="M95 32 C 120 30, 135 42, 110 50 C 95 53, 90 44, 95 32 Z" fill="#f59e0b"/>
+            <path d="M115 36 C 132 38, 125 46, 112 47 Z" fill="#ef4444"/>
+            <!-- Cabeza & Cuerpo verde botánico -->
+            <path d="M60 48 C 70 30, 95 34, 92 48 C 90 60, 65 72, 45 65 Z" fill="#15803d"/>
+            <!-- Ojo vivaz -->
+            <circle cx="85" cy="40" r="3.5" fill="#ffffff"/>
+            <circle cx="85.5" cy="40" r="1.8" fill="#1c1917"/>
+            <!-- Alas extendidas (teal / azul petróleo) -->
+            <path d="M72 45 C 80 18, 55 10, 40 22 C 48 30, 58 40, 62 48 Z" fill="#0284c7"/>
+            <path d="M50 48 C 55 25, 30 20, 20 32 C 28 40, 42 46, 45 52 Z" fill="#0d9488"/>
+            <!-- Cola -->
+            <path d="M35 62 L15 72 L22 60 Z" fill="#b45309"/>
+            <!-- Patitas que sujetan la cuerda -->
+            <path d="M78 58 L77 64 M82 58 L82 64" stroke="#d97706" stroke-width="2"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Tucán Secundario Glidando (Referencia 1) -->
+      <div class="hidden sm:block absolute right-28 top-56 w-24 h-auto toucan-subtle opacity-80">
+        <svg viewBox="0 0 100 80" fill="none" class="w-full h-auto">
+          <!-- Pico -->
+          <path d="M60 20 C 78 18, 85 26, 70 32 C 60 34, 58 28, 60 20 Z" fill="#f59e0b"/>
+          <!-- Cuerpo & Alas -->
+          <path d="M40 32 C 50 20, 65 22, 60 32 C 58 42, 40 50, 25 45 Z" fill="#16a34a"/>
+          <path d="M48 28 C 55 10, 38 5, 28 14 C 34 20, 42 26, 45 30 Z" fill="#0284c7"/>
+          <!-- Ojo -->
+          <circle cx="56" cy="25" r="2.5" fill="#ffffff"/>
+          <circle cx="56.5" cy="25" r="1.2" fill="#1c1917"/>
+        </svg>
+      </div>
+
+      <!-- Follaje de Palmeras Izquierda (Referencia 1) -->
+      <div class="absolute -left-10 -bottom-10 sm:-bottom-6 w-56 sm:w-80 h-auto palm-sway-left opacity-35 sm:opacity-45 pointer-events-none">
+        <svg viewBox="0 0 260 280" fill="none" class="w-full h-auto">
+          <!-- Tronco con textura cálida -->
+          <path d="M40 280 Q 70 190, 85 110" stroke="#a06045" stroke-width="12" stroke-linecap="round"/>
+          <path d="M38 275 Q 68 185, 83 115" stroke="#783d25" stroke-width="3" stroke-dasharray="4 8"/>
+          <!-- Frondas de palmera en abanico verde exuberante -->
+          <path d="M85 110 Q 30 80, 5 115" stroke="#15803d" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M85 110 Q 50 50, 20 60" stroke="#16a34a" stroke-width="4" stroke-linecap="round"/>
+          <path d="M85 110 Q 80 30, 65 15" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>
+          <path d="M85 110 Q 120 40, 140 35" stroke="#16a34a" stroke-width="4" stroke-linecap="round"/>
+          <path d="M85 110 Q 150 75, 175 90" stroke="#15803d" stroke-width="4" stroke-linecap="round"/>
+          <path d="M85 110 Q 130 115, 160 145" stroke="#14532d" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Follaje de Palmeras Derecha -->
+      <div class="absolute -right-8 -bottom-12 w-48 sm:w-72 h-auto palm-sway-right opacity-30 sm:opacity-40 pointer-events-none">
+        <svg viewBox="0 0 240 260" fill="none" class="w-full h-auto">
+          <path d="M210 260 Q 180 170, 160 100" stroke="#a06045" stroke-width="10" stroke-linecap="round"/>
+          <path d="M160 100 Q 210 70, 235 105" stroke="#15803d" stroke-width="4" stroke-linecap="round"/>
+          <path d="M160 100 Q 190 40, 210 45" stroke="#16a34a" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M160 100 Q 150 20, 130 10" stroke="#22c55e" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M160 100 Q 110 50, 80 60" stroke="#15803d" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- CONTENIDO SUPERIOR: TAG DE ECOSISTEMA & BIENVENIDA -->
+    <div class="relative z-10 max-w-2xl mx-auto mb-2 flex flex-col items-center">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/85 border border-[#c0826d]/40 text-[#a6634f] text-xs font-bold shadow-sm backdrop-blur-md">
+        <span>🌱 Ecosistema Vivo</span>
         <span class="w-1.5 h-1.5 rounded-full bg-[#1db954]"></span>
-        <span class="text-stone-500 font-semibold">Elementales · vrde · En Conjunto</span>
+        <span class="text-stone-600 font-semibold">Elementales · vrde · En Conjunto</span>
+      </div>
+      <p class="text-xs sm:text-sm text-[#8c5240] font-medium tracking-wide mt-1.5">
+        Toca cualquier elemento del tablero para revelar su sabiduría
+      </p>
+    </div>
+
+    <!-- TABLERO ELEMENTAL SAGRADO (REPRODUCCIÓN VECTORIAL DE REFERENCIA 2) -->
+    <div class="relative z-10 w-full max-w-4xl mx-auto my-auto flex flex-col items-center">
+      <div class="w-full overflow-visible py-2">
+        <svg viewBox="0 0 1000 520" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto elemental-board-svg select-none">
+          
+          <!-- FILAMENTOS / LIANAS ORGÁNICAS CONECTORAS (Líneas terracota de Referencia 2) -->
+          <g id="elemental-mycelium-network">
+            <!-- Conexión Centro -> Agua (Icosaedro arriba-izq) -->
+            <path d="M 445 235 C 360 210, 260 110, 195 85" class="elemental-mycelium-path"/>
+            <!-- Conexión Centro -> Tierra (Hoja centro-izq) -->
+            <path d="M 435 260 C 370 265, 335 220, 280 200" class="elemental-mycelium-path"/>
+            <!-- Conexión Centro -> Fuego (Tetraedro abajo-izq) -->
+            <path d="M 445 285 C 380 325, 270 380, 210 440" class="elemental-mycelium-path"/>
+            <!-- Conexión Centro -> Aire (Octaedro arriba-der) -->
+            <path d="M 555 235 C 640 215, 740 120, 815 88" class="elemental-mycelium-path"/>
+            <!-- Conexión Centro -> Éter (Flor abajo-der) -->
+            <path d="M 555 285 C 640 330, 740 410, 810 435" class="elemental-mycelium-path"/>
+          </g>
+
+          <!-- 1. NODO PLATÓNICO: AGUA 💧 (Icosaedro - Arriba Izquierda) -->
+          <g id="node-elemental-agua" class="elemental-node-group" onclick="selectElement('agua')" transform="translate(150, 45)">
+            <circle cx="45" cy="45" r="42" fill="#f0f9ff" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8"/>
+            <!-- Icosaedro Sagrado -->
+            <polygon points="45,10 78,28 78,65 45,82 12,65 12,28" class="elemental-node-shape" fill="#ffffff" stroke="#0284c7"/>
+            <!-- Facetas interiores -->
+            <polygon points="45,30 68,48 58,70 32,70 22,48" stroke="#0284c7" stroke-width="1.5" fill="#e0f2fe"/>
+            <line x1="45" y1="10" x2="45" y2="30" stroke="#0284c7" stroke-width="1.5"/>
+            <line x1="78" y1="28" x2="68" y2="48" stroke="#0284c7" stroke-width="1.5"/>
+            <line x1="78" y1="65" x2="58" y2="70" stroke="#0284c7" stroke-width="1.5"/>
+            <line x1="45" y1="82" x2="32" y2="70" stroke="#0284c7" stroke-width="1.5"/>
+            <line x1="12" y1="65" x2="22" y2="48" stroke="#0284c7" stroke-width="1.5"/>
+            <line x1="12" y1="28" x2="45" y2="30" stroke="#0284c7" stroke-width="1.5"/>
+            <!-- Gotas de Agua en su interior (Referencia 2) -->
+            <path d="M45 42 C 43 45, 41 48, 41 51 A 4 4 0 0 0 49 51 C 49 48, 47 45, 45 42 Z" fill="#0284c7"/>
+            <path d="M28 35 C 27 37, 26 39, 26 41 A 2.5 2.5 0 0 0 31 41 C 31 39, 29 37, 28 35 Z" fill="#38bdf8"/>
+            <path d="M62 35 C 61 37, 60 39, 60 41 A 2.5 2.5 0 0 0 65 41 C 65 39, 63 37, 62 35 Z" fill="#38bdf8"/>
+            <text x="45" y="102" text-anchor="middle" font-size="11" font-weight="800" fill="#0369a1" letter-spacing="1">AGUA · ICOSAEDRO</text>
+          </g>
+
+          <!-- 2. NODO PLATÓNICO: TIERRA 🍃 (Rombo / Hexaedro con Hoja - Centro Izquierda) -->
+          <g id="node-elemental-tierra" class="elemental-node-group" onclick="selectElement('tierra')" transform="translate(235, 155)">
+            <circle cx="45" cy="45" r="42" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8"/>
+            <!-- Rombo Geométrico -->
+            <polygon points="45,12 78,45 45,78 12,45" class="elemental-node-shape" fill="#ffffff" stroke="#15803d"/>
+            <polygon points="45,20 70,45 45,70 20,45" stroke="#16a34a" stroke-width="1.2" fill="#dcfce7"/>
+            <!-- Hoja con Nervaduras (Referencia 2) -->
+            <path d="M45 26 C 36 34, 34 50, 45 64 C 56 50, 54 34, 45 26 Z" fill="#15803d"/>
+            <line x1="45" y1="28" x2="45" y2="62" stroke="#ffffff" stroke-width="1.5"/>
+            <line x1="45" y1="38" x2="39" y2="44" stroke="#ffffff" stroke-width="1"/>
+            <line x1="45" y1="46" x2="40" y2="52" stroke="#ffffff" stroke-width="1"/>
+            <line x1="45" y1="38" x2="51" y2="44" stroke="#ffffff" stroke-width="1"/>
+            <line x1="45" y1="46" x2="50" y2="52" stroke="#ffffff" stroke-width="1"/>
+            <text x="45" y="98" text-anchor="middle" font-size="11" font-weight="800" fill="#166534" letter-spacing="1">TIERRA · SOSTÉN</text>
+          </g>
+
+          <!-- 3. NODO PLATÓNICO: FUEGO 🔥 (Tetraedro con Llama - Abajo Izquierda) -->
+          <g id="node-elemental-fuego" class="elemental-node-group" onclick="selectElement('fuego')" transform="translate(160, 390)">
+            <circle cx="45" cy="45" r="42" fill="#fff7ed" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8"/>
+            <!-- Tetraedro Sagrado -->
+            <polygon points="45,12 80,75 10,75" class="elemental-node-shape" fill="#ffffff" stroke="#ea580c"/>
+            <line x1="45" y1="12" x2="45" y2="52" stroke="#ea580c" stroke-width="1.8"/>
+            <line x1="80" y1="75" x2="45" y2="52" stroke="#ea580c" stroke-width="1.8"/>
+            <line x1="10" y1="75" x2="45" y2="52" stroke="#ea580c" stroke-width="1.8"/>
+            <!-- Llama Sagrada en su Núcleo (Referencia 2) -->
+            <path d="M45 32 C 41 40, 38 48, 40 56 C 42 62, 48 62, 50 56 C 52 50, 48 42, 45 32 Z" fill="#ea580c"/>
+            <path d="M45 42 C 43 46, 42 50, 43 54 C 44 57, 47 57, 48 54 C 49 51, 47 47, 45 42 Z" fill="#facc15"/>
+            <text x="45" y="98" text-anchor="middle" font-size="11" font-weight="800" fill="#c2410c" letter-spacing="1">FUEGO · TETRAEDRO</text>
+          </g>
+
+          <!-- 4. NODO PLATÓNICO: AIRE 💨 (Octaedro con Semillas - Arriba Derecha) -->
+          <g id="node-elemental-aire" class="elemental-node-group" onclick="selectElement('aire')" transform="translate(775, 45)">
+            <circle cx="45" cy="45" r="42" fill="#f0fdfa" stroke="#2dd4bf" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8"/>
+            <!-- Octaedro Sagrado -->
+            <polygon points="45,10 80,45 45,80 10,45" class="elemental-node-shape" fill="#ffffff" stroke="#0d9488"/>
+            <!-- Ecuador de perspectiva -->
+            <polygon points="10,45 45,56 80,45 45,34" stroke="#0d9488" stroke-width="1.5" fill="#ccfbf1"/>
+            <line x1="45" y1="10" x2="45" y2="80" stroke="#0d9488" stroke-width="1.8"/>
+            <!-- Puntos / Semillas de Viento (Referencia 2) -->
+            <circle cx="34" cy="30" r="2.5" fill="#0d9488"/>
+            <circle cx="56" cy="30" r="2.5" fill="#0d9488"/>
+            <circle cx="34" cy="62" r="2.5" fill="#0d9488"/>
+            <circle cx="56" cy="62" r="2.5" fill="#0d9488"/>
+            <circle cx="45" cy="45" r="3" fill="#14b8a6"/>
+            <text x="45" y="102" text-anchor="middle" font-size="11" font-weight="800" fill="#0f766e" letter-spacing="1">AIRE · OCTAEDRO</text>
+          </g>
+
+          <!-- 5. NODO PLATÓNICO: ÉTER ✨ (Flor Pentagonal / Dodecaedro - Abajo Derecha) -->
+          <g id="node-elemental-eter" class="elemental-node-group" onclick="selectElement('eter')" transform="translate(780, 385)">
+            <circle cx="45" cy="45" r="42" fill="#fcf4f0" stroke="#c0826d" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.8"/>
+            <!-- Flor Pentagonal de 5 Pétalos Sagrados (Referencia 2) -->
+            <g transform="translate(45, 45)">
+              <!-- Centro -->
+              <circle cx="0" cy="0" r="8" fill="#c0826d"/>
+              <circle cx="0" cy="0" r="4" fill="#ffffff"/>
+              <!-- 5 Pétalos exteriores -->
+              <path d="M0 -8 C -12 -18, -8 -32, 0 -32 C 8 -32, 12 -18, 0 -8 Z" fill="#ffffff" stroke="#a6634f" stroke-width="1.8"/>
+              <circle cx="0" cy="-22" r="2" fill="#c0826d"/>
+
+              <g transform="rotate(72)">
+                <path d="M0 -8 C -12 -18, -8 -32, 0 -32 C 8 -32, 12 -18, 0 -8 Z" fill="#ffffff" stroke="#a6634f" stroke-width="1.8"/>
+                <circle cx="0" cy="-22" r="2" fill="#c0826d"/>
+              </g>
+
+              <g transform="rotate(144)">
+                <path d="M0 -8 C -12 -18, -8 -32, 0 -32 C 8 -32, 12 -18, 0 -8 Z" fill="#ffffff" stroke="#a6634f" stroke-width="1.8"/>
+                <circle cx="0" cy="-22" r="2" fill="#c0826d"/>
+              </g>
+
+              <g transform="rotate(216)">
+                <path d="M0 -8 C -12 -18, -8 -32, 0 -32 C 8 -32, 12 -18, 0 -8 Z" fill="#ffffff" stroke="#a6634f" stroke-width="1.8"/>
+                <circle cx="0" cy="-22" r="2" fill="#c0826d"/>
+              </g>
+
+              <g transform="rotate(288)">
+                <path d="M0 -8 C -12 -18, -8 -32, 0 -32 C 8 -32, 12 -18, 0 -8 Z" fill="#ffffff" stroke="#a6634f" stroke-width="1.8"/>
+                <circle cx="0" cy="-22" r="2" fill="#c0826d"/>
+              </g>
+            </g>
+            <text x="45" y="98" text-anchor="middle" font-size="11" font-weight="800" fill="#a6634f" letter-spacing="1">ÉTER · COSMOS</text>
+          </g>
+
+          <!-- 6. CENTRO DEL TABLERO: PENTÁGONO SAGRADO ELEMENTALES COMUNIDAD -->
+          <g id="center-elementales-hub" class="elemental-center-node" onclick="openManifestoModal()">
+            <!-- Resplandor central -->
+            <circle cx="500" cy="260" r="72" fill="#ffffff" opacity="0.9" filter="drop-shadow(0 6px 16px rgba(192,130,109,0.25))"/>
+            
+            <!-- Pentágono Sagrado de Líneas Terracota (Referencia 2) -->
+            <g transform="translate(500, 235)">
+              <polygon points="0,-48 46,-15 28,38 -28,38 -46,-15" stroke="#a6634f" stroke-width="3" fill="#fffaf5"/>
+              <!-- Geometría Floral Interna -->
+              <circle cx="0" cy="2" r="10" stroke="#a6634f" stroke-width="2" fill="#fcf4f0"/>
+              <!-- Líneas hacia los vértices -->
+              <line x1="0" y1="-48" x2="0" y2="-8" stroke="#c0826d" stroke-width="2"/>
+              <line x1="46" y1="-15" x2="9" y2="-1" stroke="#c0826d" stroke-width="2"/>
+              <line x1="28" y1="38" x2="6" y2="10" stroke="#c0826d" stroke-width="2"/>
+              <line x1="-28" y1="38" x2="-6" y2="10" stroke="#c0826d" stroke-width="2"/>
+              <line x1="-46" y1="-15" x2="-9" y2="-1" stroke="#c0826d" stroke-width="2"/>
+              <!-- Arcos florales -->
+              <path d="M-18 20 Q 0 10, 18 20" stroke="#a6634f" stroke-width="1.8" fill="none"/>
+              <path d="M-28 -5 Q -10 -15, 0 -24 Q 10 -15, 28 -5" stroke="#a6634f" stroke-width="1.8" fill="none"/>
+            </g>
+
+            <!-- Tipografía Orgánica / Handwritten (Referencia 2) -->
+            <text x="500" y="300" text-anchor="middle" font-family="'Outfit', sans-serif" font-weight="900" font-size="16" fill="#a6634f" letter-spacing="2">ELEMENTALES</text>
+            <text x="500" y="318" text-anchor="middle" font-family="'Outfit', sans-serif" font-weight="800" font-size="12" fill="#b06c49" letter-spacing="3">COMUNIDAD</text>
+          </g>
+
+        </svg>
       </div>
 
-      <!-- Ícono Mandala -->
-      <div class="mb-5 transform hover:scale-105 transition-transform duration-500 cursor-pointer" onclick="openManifestoModal()">
-        <img 
-          src="public/assets/logo_icon.png" 
-          alt="Elementales Ícono" 
-          class="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-[0_10px_25px_rgba(192,130,109,0.28)] mandala-spin-subtle"
-        />
+      <!-- BOTONERA TÁCTIL RÁPIDA DE ELEMENTOS (Para pantallas táctiles & celulares) -->
+      <div class="flex flex-wrap items-center justify-center gap-2 mt-1 mb-4 z-20">
+        <button onclick="selectElement('agua')" id="pill-elemental-agua" class="elemental-pill-btn px-3 py-1 rounded-full bg-white/90 border border-sky-200 text-sky-800 text-xs font-bold shadow-sm hover:scale-105 transition-all">
+          💧 Agua
+        </button>
+        <button onclick="selectElement('tierra')" id="pill-elemental-tierra" class="elemental-pill-btn px-3 py-1 rounded-full bg-white/90 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-sm hover:scale-105 transition-all">
+          🍃 Tierra
+        </button>
+        <button onclick="selectElement('fuego')" id="pill-elemental-fuego" class="elemental-pill-btn px-3 py-1 rounded-full bg-white/90 border border-orange-200 text-orange-800 text-xs font-bold shadow-sm hover:scale-105 transition-all">
+          🔥 Fuego
+        </button>
+        <button onclick="selectElement('aire')" id="pill-elemental-aire" class="elemental-pill-btn px-3 py-1 rounded-full bg-white/90 border border-teal-200 text-teal-800 text-xs font-bold shadow-sm hover:scale-105 transition-all">
+          💨 Aire
+        </button>
+        <button onclick="selectElement('eter')" id="pill-elemental-eter" class="elemental-pill-btn px-3 py-1 rounded-full bg-white/90 border border-[#c0826d]/40 text-[#a6634f] text-xs font-bold shadow-sm hover:scale-105 transition-all">
+          ✨ Éter
+        </button>
       </div>
 
-      <!-- Texto del Logo -->
-      <div class="mb-3">
-        <img 
-          src="public/assets/logo_text.png" 
-          alt="Elementales Comunidad" 
-          class="max-w-[280px] sm:max-w-[320px] object-contain drop-shadow-sm mx-auto"
-        />
-      </div>
+      <!-- TARJETA DESPLEGABLE DE SABIDURÍA ELEMENTAL -->
+      <div id="elemental-wisdom-card" class="hidden w-full max-w-lg bg-white/95 backdrop-blur-md rounded-3xl p-5 border-2 shadow-xl text-left transition-all duration-300 relative my-2 z-20">
+        <button onclick="closeElementalCard()" class="absolute top-3.5 right-4 text-stone-400 hover:text-stone-700 font-bold text-sm p-1">✕</button>
+        
+        <div class="flex items-center gap-2 mb-2">
+          <span id="wisdom-element-badge" class="text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full border shadow-2xs">
+            Sólido Platónico
+          </span>
+        </div>
 
-      <!-- Lema y Propósito Humano -->
-      <div class="bg-white/70 backdrop-blur-sm border border-[#c0826d]/20 rounded-2xl p-4 mb-6 shadow-sm max-w-sm">
-        <p class="text-stone-800 font-bold text-sm sm:text-base leading-snug tracking-tight">
-          “Cada ser humano es un elemento fundamental para la vida sana y la felicidad.”
+        <h3 id="wisdom-element-title" class="font-black text-lg sm:text-xl text-stone-900 mb-1">
+          Elemento
+        </h3>
+        
+        <p id="wisdom-element-motto" class="text-xs sm:text-sm font-semibold italic text-stone-700 mb-2">
+          “Frase de sabiduría elemental.”
         </p>
-        <div class="mt-2 pt-2 border-t border-stone-200/60 flex items-center justify-center gap-2 text-xs text-stone-500 font-medium">
+
+        <p id="wisdom-element-connection" class="text-xs text-stone-600 leading-relaxed bg-white/80 p-3 rounded-xl border border-stone-200/60">
+          Conexión comunitaria y práctica.
+        </p>
+      </div>
+    </div>
+
+    <!-- CONTENIDO INFERIOR: LEMA, ACCESO AL NODO & MANIFIESTO -->
+    <div class="relative z-10 max-w-md w-full flex flex-col items-center mt-2">
+      
+      <!-- Frase Central / Lema -->
+      <div class="bg-white/85 backdrop-blur-md border border-[#c0826d]/30 rounded-2xl px-5 py-3.5 mb-5 shadow-sm">
+        <p class="text-stone-800 font-bold text-xs sm:text-sm leading-snug tracking-tight">
+          “Cada ser humano es un elemento fundamental para la vida sana en la tierra y para ser feliz.”
+        </p>
+        <div class="mt-2 pt-2 border-t border-stone-200/60 flex items-center justify-center gap-3 text-[11px] text-[#8c5240] font-semibold">
           <span>🌿 Feria Barrial</span>
           <span>•</span>
           <span>🧺 Compras Conscientes</span>
@@ -101,7 +365,7 @@
       </div>
 
       <!-- Botones de Acción -->
-      <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto min-w-[280px]">
+      <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
         <button 
           onclick="navigateTo('hub')" 
           class="btn-enter-node flex items-center justify-center gap-3 w-full sm:w-auto !min-w-[220px]">
@@ -113,13 +377,13 @@
 
         <button 
           onclick="openManifestoModal()" 
-          class="btn-spotify btn-spotify-secondary text-xs sm:text-sm !py-3 !px-5 font-bold w-full sm:w-auto flex items-center justify-center gap-1.5 border-[#c0826d]/30 hover:border-[#c0826d] hover:bg-[#fcf4f0]">
+          class="btn-spotify btn-spotify-secondary text-xs sm:text-sm !py-3 !px-5 font-bold w-full sm:w-auto flex items-center justify-center gap-1.5 border-[#c0826d]/40 hover:border-[#c0826d] hover:bg-[#fcf4f0] bg-white/90 shadow-sm">
           <span>📖 Nuestro Propósito</span>
         </button>
       </div>
 
       <!-- Estado activo -->
-      <div class="mt-7 flex items-center gap-2 text-xs text-stone-500 font-bold uppercase tracking-wider">
+      <div class="mt-4 flex items-center gap-2 text-xs text-stone-600 font-bold uppercase tracking-wider">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
         <span>Nodo Barrial Activo</span>
       </div>

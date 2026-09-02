@@ -80,9 +80,158 @@ class SoundManager {
       });
     } catch (e) {}
   }
+
+  playElementTone(elementKey) {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const frequencies = {
+        agua: [392.00, 523.25, 659.25],       // Sol4, Do5, Mi5 (Fluidez)
+        tierra: [220.00, 261.63, 329.63],     // La3, Do4, Mi4 (Profundidad y raíz)
+        fuego: [523.25, 659.25, 783.99],      // Do5, Mi5, Sol5 (Vitalidad brillante)
+        aire: [659.25, 880.00, 1046.50],      // Mi5, La5, Do6 (Levedad etérea)
+        eter: [440.00, 554.37, 659.25, 880.0] // La4, Do#5, Mi5, La5 (Armonía sagrada)
+      }[elementKey] || [440, 554, 659];
+
+      frequencies.forEach((freq, idx) => {
+        const now = this.ctx.currentTime + idx * 0.07;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = elementKey === 'tierra' ? 'triangle' : 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      });
+    } catch (e) {}
+  }
 }
 
 const sounds = new SoundManager();
+
+// --- SABIDURÍA DE LOS SÓLIDOS PLATÓNICOS Y ELEMENTOS (REFERENCIA 2) ---
+const ELEMENTAL_WISDOM = {
+  agua: {
+    name: 'Agua',
+    solid: 'Icosaedro',
+    emoji: '💧',
+    badge: 'Icosaedro · 20 Caras Sagradas',
+    color: '#0284c7',
+    bg: '#f0f9ff',
+    border: '#bae6fd',
+    title: 'Fluidez, Nutrición & Adaptabilidad',
+    motto: '“El agua que riega la huerta y hace circular la vida en cada ser.”',
+    connection: 'En el nodo, representa el fluir transparente de los recursos y el cuidado del agua limpia en la producción de alimentos.'
+  },
+  tierra: {
+    name: 'Tierra',
+    solid: 'Rombo / Hexaedro',
+    emoji: '🍃',
+    badge: 'Hexaedro · Estabilidad & Materia',
+    color: '#15803d',
+    bg: '#f0fdf4',
+    border: '#bbf7d0',
+    title: 'Suelo Vivo, Raíces & Alimento (vrde)',
+    motto: '“El suelo fértil donde germina la semilla sana y el sustento de la familia.”',
+    connection: 'El puente directo con productores agroecológicos locales, sin intermediarios ni agrotóxicos.'
+  },
+  fuego: {
+    name: 'Fuego',
+    solid: 'Tetraedro',
+    emoji: '🔥',
+    badge: 'Tetraedro · Voluntad & Calor',
+    color: '#ea580c',
+    bg: '#fff7ed',
+    border: '#fed7aa',
+    title: 'Energía Solar & Transformación',
+    motto: '“El sol que madura los frutos y el fuego vivo del corazón comunitario.”',
+    connection: 'La voluntad activa de transformar nuestro entorno, la cocina consciente y el encuentro cálido en la feria.'
+  },
+  aire: {
+    name: 'Aire',
+    solid: 'Octaedro',
+    emoji: '💨',
+    badge: 'Octaedro · Aliento & Comunicación',
+    color: '#0d9488',
+    bg: '#f0fdfa',
+    border: '#99f6e4',
+    title: 'Aliento, Polinización & Claridad',
+    motto: '“La brisa que transporta el polen, el vuelo de las aves y la libertad de pensamiento.”',
+    connection: 'El diálogo honesto, la claridad mental y el intercambio abierto de ideas en el barrio.'
+  },
+  eter: {
+    name: 'Éter',
+    solid: 'Dodecaedro / Flor',
+    emoji: '✨',
+    badge: 'Dodecaedro · Cosmos & Flor Sagrada',
+    color: '#a6634f',
+    bg: '#fcf4f0',
+    border: '#c0826d',
+    title: 'Quintaesencia, Saberes & Felicidad (En Conjunto)',
+    motto: '“La red invisible que une a cada persona como un elemento fundamental para la vida sana.”',
+    connection: 'La gestación de comunidades vivas mediante capacitaciones, talleres de saberes y felicidad compartida.'
+  }
+};
+
+let activeElementalKey = null;
+
+function selectElement(key) {
+  activeElementalKey = key;
+  sounds.playElementTone(key);
+
+  const info = ELEMENTAL_WISDOM[key];
+  if (!info) return;
+
+  // Actualizar clases activas en nodos SVG
+  document.querySelectorAll('.elemental-node-group').forEach(el => {
+    el.classList.remove('active');
+  });
+  const activeGroup = document.getElementById(`node-elemental-${key}`);
+  if (activeGroup) {
+    activeGroup.classList.add('active');
+  }
+
+  // Actualizar botones inferiores
+  document.querySelectorAll('.elemental-pill-btn').forEach(btn => {
+    btn.classList.remove('active-elemental-pill');
+  });
+  const activePill = document.getElementById(`pill-elemental-${key}`);
+  if (activePill) {
+    activePill.classList.add('active-elemental-pill');
+  }
+
+  // Mostrar la tarjeta de sabiduría elemental
+  const card = document.getElementById('elemental-wisdom-card');
+  if (card) {
+    card.classList.remove('hidden');
+    card.style.borderColor = info.color;
+    card.style.backgroundColor = info.bg;
+
+    document.getElementById('wisdom-element-badge').textContent = info.badge;
+    document.getElementById('wisdom-element-badge').style.color = info.color;
+    document.getElementById('wisdom-element-badge').style.borderColor = info.color + '40';
+    document.getElementById('wisdom-element-badge').style.backgroundColor = '#ffffff';
+
+    document.getElementById('wisdom-element-title').textContent = `${info.emoji} ${info.title}`;
+    document.getElementById('wisdom-element-motto').textContent = info.motto;
+    document.getElementById('wisdom-element-connection').textContent = info.connection;
+
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function closeElementalCard() {
+  sounds.playPop();
+  activeElementalKey = null;
+  const card = document.getElementById('elemental-wisdom-card');
+  if (card) card.classList.add('hidden');
+  document.querySelectorAll('.elemental-node-group').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.elemental-pill-btn').forEach(btn => btn.classList.remove('active-elemental-pill'));
+}
 
 // --- ESTADO PRINCIPAL DE LA APLICACIÓN ---
 const AppState = {
