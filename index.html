@@ -365,20 +365,32 @@
       </div>
 
       <!-- Botones de Acción -->
-      <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+      <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full sm:w-auto">
         <button 
           onclick="navigateTo('hub')" 
-          class="btn-enter-node flex items-center justify-center gap-3 w-full sm:w-auto !min-w-[220px]">
-          <span>Ingresar al Nodo</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          class="btn-enter-node flex items-center justify-center gap-2.5 w-full sm:w-auto !min-w-[200px]">
+          <span>Ingresar a la Feria</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
         </button>
 
         <button 
+          onclick="navigateTo('membership')" 
+          class="btn-spotify btn-spotify-blue text-xs sm:text-sm !py-3 !px-4 font-bold w-full sm:w-auto flex items-center justify-center gap-1.5 shadow-sm">
+          <span>💧 Membresía CsC</span>
+        </button>
+
+        <button 
+          onclick="navigateTo('nodes')" 
+          class="btn-spotify btn-spotify-secondary text-xs sm:text-sm !py-3 !px-4 font-bold w-full sm:w-auto flex items-center justify-center gap-1.5 border-[#c0826d]/40 hover:border-[#c0826d] hover:bg-[#fcf4f0] bg-white/90 shadow-sm">
+          <span>📍 Nodos</span>
+        </button>
+
+        <button 
           onclick="openManifestoModal()" 
-          class="btn-spotify btn-spotify-secondary text-xs sm:text-sm !py-3 !px-5 font-bold w-full sm:w-auto flex items-center justify-center gap-1.5 border-[#c0826d]/40 hover:border-[#c0826d] hover:bg-[#fcf4f0] bg-white/90 shadow-sm">
-          <span>📖 Nuestro Propósito</span>
+          class="btn-spotify btn-spotify-secondary text-xs sm:text-sm !py-3 !px-3 font-bold w-full sm:w-auto flex items-center justify-center gap-1.5 border-stone-200 hover:border-stone-300 bg-white/90 shadow-sm">
+          <span>📖 Propósito</span>
         </button>
       </div>
 
@@ -402,6 +414,13 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <button 
+          onclick="navigateTo('profile')" 
+          class="text-xs font-bold text-stone-700 hover:text-stone-900 px-3 py-1.5 rounded-full bg-white border border-stone-200 shadow-sm flex items-center gap-1"
+          title="Mi Carnet de Socio">
+          <span>🪪</span>
+          <span class="hidden sm:inline">Mi Carnet</span>
+        </button>
         <button 
           onclick="sounds.enabled = !sounds.enabled; this.textContent = sounds.enabled ? '🔊' : '🔇';" 
           class="p-2 bg-white hover:bg-stone-100 border border-stone-200 rounded-full text-sm text-stone-700 shadow-sm"
@@ -427,7 +446,7 @@
         </div>
         <h1 class="text-2xl sm:text-3xl font-black text-stone-900 mb-2">¡Todo listo para la feria! 🌿</h1>
         <p class="text-stone-600 text-sm max-w-lg mb-4">
-          Selecciona una acción para tomar pedidos en vivo o registrar nuevos integrantes que quieran sumarse a las compras comunitarias.
+          Selecciona una acción para tomar pedidos en vivo, explorar la membresía comunitaria o gestionar los nodos barriales.
         </p>
 
         <div class="flex flex-wrap gap-2 text-xs font-bold">
@@ -441,7 +460,51 @@
     <!-- Cuadrícula de Botones / Tarjetas estilo Spotify -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8">
       
-      <!-- Botón 1: NUEVO PEDIDO -->
+      <!-- Botón 1: MEMBRESÍA CsC (NOVEDAD RED ELEMENTAL) -->
+      <div 
+        onclick="navigateTo('membership')" 
+        class="spotify-card p-6 cursor-pointer flex flex-col justify-between group border-2 border-sky-300 bg-gradient-to-br from-white via-sky-50/40 to-blue-50/60 hover:border-sky-500 shadow-sm hover:shadow-md">
+        <div class="flex items-start justify-between mb-6">
+          <div class="w-14 h-14 rounded-2xl bg-[#7ca1b5] text-white flex items-center justify-center text-3xl shadow-md shadow-sky-400/30 group-hover:scale-110 transition-transform">
+            💧
+          </div>
+          <span class="px-2.5 py-1 rounded-full bg-sky-100 text-sky-800 text-[11px] font-extrabold uppercase tracking-wide border border-sky-200">
+            Membresía CsC
+          </span>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black text-stone-900 group-hover:text-sky-800 transition-colors mb-1">
+            Membresía CsC
+          </h2>
+          <p class="text-stone-500 text-xs sm:text-sm">
+            Comunidades que Sostienen el Campo. Conocé los 3 planes de aporte mensual solidario y accedé a compras al costo.
+          </p>
+        </div>
+      </div>
+
+      <!-- Botón 2: RED DE NODOS & GUARDIANES -->
+      <div 
+        onclick="navigateTo('nodes')" 
+        class="spotify-card p-6 cursor-pointer flex flex-col justify-between group border-2 border-[#8ca15d]/50 bg-gradient-to-br from-white via-[#f4f6ef]/50 to-emerald-50/40 hover:border-[#8ca15d] shadow-sm hover:shadow-md">
+        <div class="flex items-start justify-between mb-6">
+          <div class="w-14 h-14 rounded-2xl bg-[#8ca15d] text-white flex items-center justify-center text-3xl shadow-md shadow-emerald-400/30 group-hover:scale-110 transition-transform">
+            📍
+          </div>
+          <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold uppercase tracking-wide border border-emerald-200">
+            4 Sedes
+          </span>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black text-stone-900 group-hover:text-emerald-800 transition-colors mb-1">
+            Red de Nodos
+          </h2>
+          <p class="text-stone-500 text-xs sm:text-sm">
+            Elegí tu nodo barrial de retiro, consultá los días de entrega y contactá al Guardián de tu sede por WhatsApp.
+          </p>
+        </div>
+      </div>
+
+      <!-- Botón 3: NUEVO PEDIDO / CATÁLOGO MULTIMODO -->
       <div 
         onclick="navigateTo('new-order')" 
         class="spotify-card p-6 cursor-pointer flex flex-col justify-between group border-2 border-[#c0826d]/40 bg-gradient-to-br from-white to-[#fcf4f0] hover:border-[#c0826d] shadow-sm hover:shadow-md">
@@ -458,34 +521,50 @@
             Nuevo Pedido
           </h2>
           <p class="text-stone-500 text-xs sm:text-sm">
-            Elegir productos del catálogo, calcular el total al instante y generar el ticket para el cliente.
+            Elegir productos del catálogo, alternar modalidad (Local, Semanal, Lunar) y generar el ticket para el cliente.
           </p>
         </div>
       </div>
 
-      <!-- Botón 2: NUEVO INTEGRANTE DE LA COMUNIDAD -->
+      <!-- Botón 4: MI CARNET DIGITAL DE SOCIO -->
       <div 
-        onclick="navigateTo('new-member')" 
-        class="spotify-card p-6 cursor-pointer flex flex-col justify-between group border-2 border-emerald-300 bg-gradient-to-br from-white to-[#f0faf2] hover:border-emerald-500 shadow-sm hover:shadow-md">
+        onclick="navigateTo('profile')" 
+        class="spotify-card p-6 cursor-pointer flex flex-col justify-between group border-2 border-stone-300 bg-gradient-to-br from-white to-stone-50 hover:border-[#c0826d] shadow-sm hover:shadow-md">
         <div class="flex items-start justify-between mb-6">
-          <div class="w-14 h-14 rounded-2xl bg-[#1db954] text-white flex items-center justify-center text-3xl shadow-md shadow-[#1db954]/30 group-hover:scale-110 transition-transform">
-            👥
+          <div class="w-14 h-14 rounded-2xl bg-stone-800 text-white flex items-center justify-center text-3xl shadow-md group-hover:scale-110 transition-transform">
+            🪪
           </div>
-          <span class="w-10 h-10 rounded-full bg-stone-100 group-hover:bg-[#1db954] group-hover:text-white flex items-center justify-center text-stone-600 transition-colors border border-stone-200">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+          <span class="px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 text-[11px] font-extrabold uppercase tracking-wide border border-stone-200">
+            Credencial QR
           </span>
         </div>
         <div>
-          <h2 class="text-xl sm:text-2xl font-black text-stone-900 group-hover:text-emerald-700 transition-colors mb-1">
-            Nuevo Integrante
+          <h2 class="text-xl sm:text-2xl font-black text-stone-900 group-hover:text-stone-950 transition-colors mb-1">
+            Mi Carnet de Socio
           </h2>
           <p class="text-stone-500 text-xs sm:text-sm">
-            Sumar personas interesadas en comprar bolsones y productos comunitarios en próximas aperturas de nodo.
+            Tu carnet digital con código QR para retiros en el nodo y selector de prueba para simular compras de socio.
           </p>
         </div>
       </div>
 
-      <!-- Botón 3: PANEL DE PEDIDOS Y CAJA -->
+      <!-- Botón 5: NUEVO INTEGRANTE DE LA COMUNIDAD -->
+      <div 
+        onclick="navigateTo('new-member')" 
+        class="spotify-card p-5 cursor-pointer flex items-center justify-between group">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
+            👥
+          </div>
+          <div>
+            <h3 class="font-black text-base text-stone-900 group-hover:text-emerald-700 transition-colors">Nuevo Integrante</h3>
+            <p class="text-xs text-stone-500">Registrar personas interesadas en las compras comunitarias</p>
+          </div>
+        </div>
+        <svg class="w-5 h-5 text-stone-400 group-hover:text-stone-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </div>
+
+      <!-- Botón 6: PANEL DE PEDIDOS Y CAJA -->
       <div 
         onclick="navigateTo('orders-dashboard')" 
         class="spotify-card p-5 cursor-pointer flex items-center justify-between group">
@@ -501,33 +580,33 @@
         <svg class="w-5 h-5 text-stone-400 group-hover:text-stone-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
       </div>
 
-      <!-- Botón 4: DIRECTORIO DE INTEGRANTES -->
+      <!-- Botón 7: DIRECTORIO DE INTEGRANTES -->
       <div 
         onclick="navigateTo('members-directory')" 
         class="spotify-card p-5 cursor-pointer flex items-center justify-between group">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
+          <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 border border-teal-200 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
             🌱
           </div>
           <div>
-            <h3 class="font-black text-base text-stone-900 group-hover:text-emerald-700 transition-colors">Directorio de la Comunidad</h3>
-            <p class="text-xs text-stone-500">Ver listado de personas sumadas, barrios, WhatsApp y contacto</p>
+            <h3 class="font-black text-base text-stone-900 group-hover:text-teal-700 transition-colors">Directorio de la Comunidad</h3>
+            <p class="text-xs text-stone-500">Ver listado de personas sumadas, barrios y WhatsApp</p>
           </div>
         </div>
         <svg class="w-5 h-5 text-stone-400 group-hover:text-stone-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
       </div>
 
-      <!-- Botón 5: GESTOR DE PRODUCTOS Y PRECIOS -->
+      <!-- Botón 8: GESTOR DE PRODUCTOS Y PRECIOS -->
       <div 
         onclick="navigateTo('product-manager')" 
-        class="spotify-card p-5 cursor-pointer flex items-center justify-between group md:col-span-2">
+        class="spotify-card p-5 cursor-pointer flex items-center justify-between group">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
             🏷️
           </div>
           <div>
             <h3 class="font-black text-base text-stone-900 group-hover:text-purple-700 transition-colors">Gestor de Productos y Precios</h3>
-            <p class="text-xs text-stone-500">Modificar precios en vivo o agregar nuevos productos al catálogo de la feria</p>
+            <p class="text-xs text-stone-500">Modificar precios o agregar nuevos productos al catálogo</p>
           </div>
         </div>
         <svg class="w-5 h-5 text-stone-400 group-hover:text-stone-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -541,20 +620,52 @@
   <!-- ========================================================================= -->
   <div id="view-new-order" class="app-view hidden max-w-4xl mx-auto px-4 sm:px-6 pt-4 pb-28">
     <!-- Header Navegación -->
-    <div class="flex items-center justify-between gap-3 mb-4">
+    <div class="flex items-center justify-between gap-3 mb-3">
       <button 
         onclick="navigateTo('hub')" 
         class="btn-spotify btn-spotify-secondary text-xs !py-2 !px-3 font-bold flex items-center gap-1">
         ← Menú
       </button>
 
-      <h1 class="font-black text-xl text-stone-900">Nuevo Pedido</h1>
+      <h1 class="font-black text-xl text-stone-900">Catálogo & Pedidos</h1>
 
       <button 
         onclick="openCustomProductModal()" 
         class="btn-spotify btn-spotify-primary text-xs !py-2 !px-3 font-bold">
         + Ítem Libre
       </button>
+    </div>
+
+    <!-- Selector de Modalidad de Compra (Local, Semanal, Lunar) -->
+    <div class="bg-white p-3.5 rounded-2xl border border-stone-200 shadow-sm mb-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-stone-600 flex items-center gap-1.5">
+          <span>⚖️ Escala de Precios Red Elemental</span>
+        </span>
+        <span id="catalog-mode-badge" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+          🏪 Local / Feria
+        </span>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <button onclick="setCatalogMode('local')" id="btn-mode-local" class="mode-btn active">
+          <span class="text-lg">🏪</span>
+          <span class="font-extrabold text-xs">Local</span>
+          <span class="text-[10px] text-stone-500 font-medium">Público / Feria</span>
+        </button>
+        <button onclick="setCatalogMode('semanal')" id="btn-mode-semanal" class="mode-btn">
+          <span class="text-lg">🥬</span>
+          <span class="font-extrabold text-xs">Semanal</span>
+          <span class="text-[10px] text-emerald-600 font-bold">-10% Socio CsC</span>
+        </button>
+        <button onclick="setCatalogMode('lunar')" id="btn-mode-lunar" class="mode-btn">
+          <span class="text-lg">🌕</span>
+          <span class="font-extrabold text-xs">Lunar</span>
+          <span class="text-[10px] text-[#a6634f] font-bold">-20% Costo Red</span>
+        </button>
+      </div>
+      <p id="catalog-mode-description" class="text-[11px] text-stone-600 mt-2 text-center bg-stone-50 py-1.5 px-2 rounded-xl border border-stone-200/60">
+        Precios regulares de feria para público visitante.
+      </p>
     </div>
 
     <!-- Buscador de Productos -->
@@ -948,6 +1059,329 @@
   </div>
 
   <!-- ========================================================================= -->
+  <!-- 8. VISTA: MEMBRESÍA CsC (RED ELEMENTAL) -->
+  <!-- ========================================================================= -->
+  <div id="view-membership" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-20">
+    <!-- Header Navegación -->
+    <div class="flex items-center justify-between gap-3 mb-6">
+      <button 
+        onclick="navigateTo('hub')" 
+        class="btn-spotify btn-spotify-secondary text-xs !py-2 !px-3 font-bold flex items-center gap-1">
+        ← Menú
+      </button>
+
+      <div class="text-center">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-[#7ca1b5] bg-sky-50 px-3 py-0.5 rounded-full border border-sky-200">
+          Comunidades que Sostienen el Campo
+        </span>
+        <h1 class="font-black text-2xl text-stone-900 mt-1">Membresía CsC</h1>
+      </div>
+
+      <button 
+        onclick="navigateTo('profile')" 
+        class="text-xs font-bold text-stone-700 hover:text-stone-900 px-3 py-1.5 rounded-full bg-white border border-stone-200 shadow-sm flex items-center gap-1">
+        <span>🪪 Mi Carnet</span>
+      </button>
+    </div>
+
+    <!-- Banner de Estado de Usuario Actual -->
+    <div id="membership-user-status-card" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-sky-50 via-white to-emerald-50 border border-sky-200 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+      <div class="flex items-center gap-3 text-left">
+        <div class="w-12 h-12 rounded-2xl bg-[#7ca1b5] text-white flex items-center justify-center text-2xl shadow-sm">
+          💧
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-stone-500 uppercase">Estado actual:</span>
+            <span id="membership-status-badge" class="text-xs font-black px-2.5 py-0.5 rounded-full bg-stone-200 text-stone-800">
+              Visitante / No Socio
+            </span>
+          </div>
+          <p id="membership-status-desc" class="text-xs text-stone-600 mt-0.5">
+            Súmate a la CsC para acceder a compras semanales y lunares a precio directo campesino.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button 
+          onclick="toggleUserRole()" 
+          id="btn-toggle-role-membership"
+          class="btn-spotify btn-spotify-secondary text-xs !py-2 !px-3 font-bold flex items-center gap-1.5 border-stone-300">
+          <span>🔄 Probar como Socio CsC</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filosofía CsC Breve -->
+    <div class="text-center max-w-2xl mx-auto mb-8">
+      <h2 class="text-xl sm:text-2xl font-black text-stone-900 mb-2">Un pacto de reciprocidad entre el campo y la ciudad</h2>
+      <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+        En la CsC (Comunidades que Sostienen la Cultura y el Campo), los vecinos nos comprometemos con un aporte mensual solidario para cubrir la logística del nodo y brindar previsibilidad económica a las familias campesinas agroecológicas.
+      </p>
+    </div>
+
+    <!-- Cuadrícula de los 3 Planes de Membresía -->
+    <div id="membership-plans-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <!-- Inyectado por JS desde PLANES_MEMBRESIA -->
+    </div>
+
+    <!-- Tabla Comparativa de Beneficios -->
+    <div class="bg-white rounded-3xl border border-stone-200 shadow-sm p-5 sm:p-7 mb-10 overflow-hidden">
+      <div class="mb-5 text-center sm:text-left">
+        <h3 class="font-black text-lg text-stone-900">Tabla Comparativa de Beneficios</h3>
+        <p class="text-xs text-stone-500">Conocé lo que incluye cada modalidad dentro de la red.</p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-stone-200 text-stone-500 uppercase tracking-wider text-[11px]">
+              <th class="py-3 px-3">Beneficio</th>
+              <th class="py-3 px-3 text-center">Visitante</th>
+              <th class="py-3 px-3 text-center bg-sky-50/70 text-sky-900 rounded-t-xl">Semilla ($5k)</th>
+              <th class="py-3 px-3 text-center bg-emerald-50/70 text-emerald-900 rounded-t-xl font-black">Raíz ($9k) ⭐</th>
+              <th class="py-3 px-3 text-center bg-amber-50/70 text-amber-900 rounded-t-xl">Guardián ($15k)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-100 text-stone-700">
+            <tr>
+              <td class="py-3 px-3 font-semibold">Descuento en Tienda / Feria</td>
+              <td class="py-3 px-3 text-center text-stone-400">0%</td>
+              <td class="py-3 px-3 text-center bg-sky-50/40 font-bold text-sky-800">5%</td>
+              <td class="py-3 px-3 text-center bg-emerald-50/40 font-black text-emerald-800">10%</td>
+              <td class="py-3 px-3 text-center bg-amber-50/40 font-black text-amber-800">15%</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-3 font-semibold">Compras Semanales de Huerta</td>
+              <td class="py-3 px-3 text-center text-stone-400">Precio General</td>
+              <td class="py-3 px-3 text-center bg-sky-50/40 font-bold text-sky-800">Precio Socio</td>
+              <td class="py-3 px-3 text-center bg-emerald-50/40 font-black text-emerald-800">Prioridad Alta</td>
+              <td class="py-3 px-3 text-center bg-amber-50/40 font-black text-amber-800">Prioridad Máxima</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-3 font-semibold">Compras Lunares al Costo Red</td>
+              <td class="py-3 px-3 text-center text-stone-400">✕</td>
+              <td class="py-3 px-3 text-center bg-sky-50/40 text-stone-400">✕</td>
+              <td class="py-3 px-3 text-center bg-emerald-50/40 font-black text-emerald-700">✓ Acceso Total</td>
+              <td class="py-3 px-3 text-center bg-amber-50/40 font-black text-amber-700">✓ Acceso Total</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-3 font-semibold">Bolsón de Estación Bonificado</td>
+              <td class="py-3 px-3 text-center text-stone-400">✕</td>
+              <td class="py-3 px-3 text-center bg-sky-50/40 text-stone-400">✕</td>
+              <td class="py-3 px-3 text-center bg-emerald-50/40 font-bold text-emerald-800">1 cada 3 meses</td>
+              <td class="py-3 px-3 text-center bg-amber-50/40 font-bold text-amber-800">Caja bimestral</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-3 font-semibold">Carnet Digital de Socio CsC</td>
+              <td class="py-3 px-3 text-center text-stone-400">✕</td>
+              <td class="py-3 px-3 text-center bg-sky-50/40 font-bold text-sky-800">✓ Incluido</td>
+              <td class="py-3 px-3 text-center bg-emerald-50/40 font-black text-emerald-800">✓ Incluido</td>
+              <td class="py-3 px-3 text-center bg-amber-50/40 font-black text-amber-800">✓ Incluido</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-3 font-semibold">Talleres y Encuentros en el Nodo</td>
+              <td class="py-3 px-3 text-center text-stone-400">Arancelado</td>
+              <td class="py-3 px-3 text-center bg-sky-50/40 font-bold text-sky-800">20% Off</td>
+              <td class="py-3 px-3 text-center bg-emerald-50/40 font-black text-emerald-700">✓ 100% Bonificado</td>
+              <td class="py-3 px-3 text-center bg-amber-50/40 font-black text-amber-700">✓ 100% Bonificado</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ¿Cómo Funciona la CsC? en 3 Pasos -->
+    <div class="bg-[#fcfaf8] p-6 rounded-3xl border border-[#c0826d]/30 text-center">
+      <h3 class="font-black text-lg text-stone-900 mb-6">¿Cómo funciona sumarse a la red en 3 pasos?</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+        <div class="p-4 rounded-2xl bg-white border border-stone-200 shadow-2xs">
+          <div class="w-9 h-9 rounded-full bg-sky-100 text-sky-800 font-black flex items-center justify-center mb-3">1</div>
+          <h4 class="font-black text-sm text-stone-900 mb-1">Elegís tu Nodo y Plan</h4>
+          <p class="text-xs text-stone-500">Seleccionas tu sede barrial de cercanía y el aporte solidario mensual que mejor se adapte a tu hogar.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-white border border-stone-200 shadow-2xs">
+          <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 font-black flex items-center justify-center mb-3">2</div>
+          <h4 class="font-black text-sm text-stone-900 mb-1">Aporte Mensual Solidario</h4>
+          <p class="text-xs text-stone-500">Tu cuota financia el espacio físico, los fletes directos y el anticipo de cosecha a las familias productoras.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-white border border-stone-200 shadow-2xs">
+          <div class="w-9 h-9 rounded-full bg-amber-100 text-amber-800 font-black flex items-center justify-center mb-3">3</div>
+          <h4 class="font-black text-sm text-stone-900 mb-1">Retirás tus Alimentos</h4>
+          <p class="text-xs text-stone-500">Hacés tus pedidos en vivo o semanales al precio diferencial de socio y retirás en tu nodo o coordinás envío.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 9. VISTA: RED DE NODOS & GUARDIANES (RED ELEMENTAL) -->
+  <!-- ========================================================================= -->
+  <div id="view-nodes" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-20">
+    <!-- Header Navegación -->
+    <div class="flex items-center justify-between gap-3 mb-6">
+      <button 
+        onclick="navigateTo('hub')" 
+        class="btn-spotify btn-spotify-secondary text-xs !py-2 !px-3 font-bold flex items-center gap-1">
+        ← Menú
+      </button>
+
+      <div class="text-center">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-[#8ca15d] bg-emerald-50 px-3 py-0.5 rounded-full border border-emerald-200">
+          Territorio & Cercanía
+        </span>
+        <h1 class="font-black text-2xl text-stone-900 mt-1">Red de Nodos</h1>
+      </div>
+
+      <button 
+        onclick="navigateTo('new-order')" 
+        class="btn-spotify btn-spotify-primary text-xs !py-2 !px-3 font-bold">
+        🛒 Ir a Tienda
+      </button>
+    </div>
+
+    <!-- Banner de Nodo Seleccionado -->
+    <div class="p-4 rounded-2xl bg-white border-2 border-emerald-300 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl">
+          📍
+        </div>
+        <div>
+          <span class="text-[11px] font-bold uppercase text-stone-400">Tu Nodo Activo:</span>
+          <h3 id="active-node-banner-title" class="font-black text-base text-stone-900">Nodo Central - Florida / Olivos</h3>
+          <p id="active-node-banner-info" class="text-xs text-stone-500">Guardián: JuanEco · Miércoles y Sábados 10:00 a 18:00 hs</p>
+        </div>
+      </div>
+      <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200">
+        ✓ Seleccionado para retiros
+      </span>
+    </div>
+
+    <p class="text-stone-600 text-xs sm:text-sm max-w-xl mx-auto text-center mb-8">
+      Cada nodo cuenta con un <strong>Guardián</strong> que coordina la recepción de alimentos frescos, la entrega de bolsones y la atención de la comunidad.
+    </p>
+
+    <!-- Lista de Nodos -->
+    <div id="nodes-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Inyectado por JS desde NODOS_COMUNIDAD -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 10. VISTA: MI CARNET DIGITAL DE SOCIO (RED ELEMENTAL) -->
+  <!-- ========================================================================= -->
+  <div id="view-profile" class="app-view hidden max-w-3xl mx-auto px-4 sm:px-6 pt-4 pb-20">
+    <!-- Header Navegación -->
+    <div class="flex items-center justify-between gap-3 mb-6">
+      <button 
+        onclick="navigateTo('hub')" 
+        class="btn-spotify btn-spotify-secondary text-xs !py-2 !px-3 font-bold flex items-center gap-1">
+        ← Menú
+      </button>
+
+      <div class="text-center">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-stone-500 bg-stone-100 px-3 py-0.5 rounded-full border border-stone-200">
+          Credencial de la Comunidad
+        </span>
+        <h1 class="font-black text-2xl text-stone-900 mt-1">Mi Carnet Digital</h1>
+      </div>
+
+      <button 
+        onclick="navigateTo('membership')" 
+        class="btn-spotify btn-spotify-secondary text-xs !py-2 !px-3 font-bold">
+        💧 Planes
+      </button>
+    </div>
+
+    <!-- TARJETA CREDENCIAL ESTILO CARNET PREMIUM -->
+    <div class="max-w-md mx-auto mb-8">
+      <div class="rounded-3xl p-6 sm:p-7 bg-gradient-to-br from-[#ffffff] via-[#fcfaf8] to-[#f5efe6] border-2 border-[#c0826d]/50 shadow-xl relative overflow-hidden">
+        <!-- Detalle de fondo botánico sutil -->
+        <div class="absolute -right-8 -bottom-8 w-40 h-40 opacity-10 pointer-events-none text-stone-900">
+          <svg viewBox="0 0 100 100" fill="currentColor">
+            <polygon points="50,10 90,50 50,90 10,50" />
+          </svg>
+        </div>
+
+        <div class="flex items-center justify-between pb-4 border-b border-stone-200/80 mb-5">
+          <div class="flex items-center gap-2.5">
+            <img src="public/assets/logo_icon.png" class="w-8 h-8 object-contain" alt="Logo" />
+            <div>
+              <span class="font-black text-xs text-stone-900 tracking-wider block uppercase">RED ELEMENTAL</span>
+              <span class="text-[10px] text-[#a6634f] font-bold">Comunidad CsC</span>
+            </div>
+          </div>
+          <span id="carnet-status-pill" class="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+            Socio Activo
+          </span>
+        </div>
+
+        <!-- Nombre e Identificación -->
+        <div class="mb-5">
+          <span class="text-[10px] uppercase font-bold text-stone-400 tracking-wider block mb-0.5">Titular de la Membresía</span>
+          <h2 id="carnet-member-name" class="font-black text-2xl text-stone-900 leading-tight">Lucía Gómez</h2>
+          <div class="flex items-center gap-2 mt-1">
+            <span id="carnet-plan-name" class="text-xs font-extrabold text-[#a6634f]">Membresía Raíz (Tierra)</span>
+            <span class="text-stone-300">•</span>
+            <span id="carnet-member-code" class="text-xs font-mono font-bold text-stone-500">CSC-2026-0482</span>
+          </div>
+        </div>
+
+        <!-- Código QR y Datos del Nodo -->
+        <div class="flex items-center justify-between gap-4 bg-white/90 p-4 rounded-2xl border border-stone-200/80 shadow-2xs">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-stone-400 block">Nodo de Retiro Habitual</span>
+            <p id="carnet-node-name" class="font-bold text-xs text-stone-800 mt-0.5">Nodo Central - Florida</p>
+            <p id="carnet-node-guardian" class="text-[11px] text-stone-500">Guardián: JuanEco</p>
+            <span class="inline-block mt-2 text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold">Vigencia: Activa 2026</span>
+          </div>
+
+          <!-- SVG QR Dinámico / Simulado -->
+          <div class="w-20 h-20 bg-stone-50 p-1.5 rounded-xl border border-stone-200 flex-shrink-0 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" class="w-full h-full text-stone-800" fill="currentColor">
+              <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm-2 10h8v8H2v-8zm2 2v4h4v-4H4zm10-14h8v8h-8V2zm2 2v4h4V4h-4zm3 8h2v2h-2v-2zm-3 2h2v2h-2v-2zm2 2h2v2h-2v-2zm3-2h2v2h-2v-2zm0 4h2v2h-2v-2zm-5 0h2v2h-2v-2zM5 5h2v2H5V5zm0 12h2v2H5v-2zm12-12h2v2h-2V5z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Simulador de Rol (Para Pruebas) -->
+    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 max-w-md mx-auto text-center mb-8 shadow-sm">
+      <h3 class="font-black text-sm text-stone-800 mb-1">🎮 Simulador de Experiencia de Compra</h3>
+      <p class="text-xs text-stone-500 mb-4">
+        Cambia tu rol aquí para ver cómo la tienda muestra los precios con descuento de Socio CsC o de Visitante.
+      </p>
+
+      <div class="grid grid-cols-2 gap-3">
+        <button 
+          onclick="toggleUserRole('visitante')" 
+          id="btn-role-sim-visitante"
+          class="p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-white border-stone-200 text-stone-700">
+          <span>👤</span>
+          <span>Visitante</span>
+        </button>
+        <button 
+          onclick="toggleUserRole('socio')" 
+          id="btn-role-sim-socio"
+          class="p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-emerald-50 border-emerald-500 text-emerald-800">
+          <span>🌱</span>
+          <span>Socio CsC Activo</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="flex justify-center gap-3">
+      <button 
+        onclick="navigateTo('new-order')" 
+        class="btn-spotify btn-spotify-primary text-xs sm:text-sm !py-3 !px-6 font-black shadow-md">
+        🛒 Ir a Comprar con mi Carnet
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
   <!-- MODAL: CHECKOUT / DATOS DEL COMPRADOR -->
   <!-- ========================================================================= -->
   <div id="modal-checkout" class="modal-backdrop hidden">
@@ -1134,6 +1568,114 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: REGISTRO / SUMARSE A LA MEMBRESÍA CsC -->
+  <!-- ========================================================================= -->
+  <div id="modal-join-membership" class="modal-backdrop hidden">
+    <div class="modal-content p-6 max-w-lg">
+      <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold">
+            💧
+          </div>
+          <div>
+            <h3 class="font-black text-base text-stone-900">Sumarme a la Membresía CsC</h3>
+            <p class="text-[11px] text-stone-500">Pacto de reciprocidad y sostén agroecológico</p>
+          </div>
+        </div>
+        <button onclick="closeJoinModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg">✕</button>
+      </div>
+
+      <form onsubmit="submitJoinMembership(event)" class="space-y-3.5">
+        <!-- Plan Seleccionado -->
+        <div>
+          <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Plan de Membresía Deseado</label>
+          <select 
+            id="join-plan-select"
+            class="w-full bg-stone-50 border border-stone-300 focus:border-[#7ca1b5] rounded-xl p-2.5 text-xs sm:text-sm font-semibold text-stone-900 focus:outline-none focus:bg-white">
+            <option value="plan-flujo">💧 Membresía Agua (Semilla) · $5.000/mes</option>
+            <option value="plan-raices" selected>🌿 Membresía Tierra (Raíz) · $9.000/mes ⭐ Recomendado</option>
+            <option value="plan-guardian">✨ Membresía Guardián / Sostén · $15.000/mes</option>
+          </select>
+        </div>
+
+        <!-- Nombre y Apellido -->
+        <div>
+          <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Nombre Completo *</label>
+          <input 
+            type="text" 
+            id="join-member-name" 
+            required 
+            placeholder="Ej: Lucía Gómez" 
+            class="w-full bg-stone-50 border border-stone-300 focus:border-[#7ca1b5] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white transition-colors"
+          />
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">WhatsApp / Celular *</label>
+            <input 
+              type="tel" 
+              id="join-member-phone" 
+              required 
+              placeholder="Ej: 1155667788" 
+              class="w-full bg-stone-50 border border-stone-300 focus:border-[#7ca1b5] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white transition-colors"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Nodo de Cercanía</label>
+            <select 
+              id="join-member-node"
+              class="w-full bg-stone-50 border border-stone-300 focus:border-[#7ca1b5] rounded-xl p-2.5 text-xs text-stone-900 focus:outline-none focus:bg-white">
+              <option value="nodo-central">📍 Florida / Olivos (JuanEco)</option>
+              <option value="nodo-sur">📍 Barracas / La Boca (MariaTierra)</option>
+              <option value="nodo-norte">📍 San Isidro (LucasSol)</option>
+              <option value="nodo-palermo">📍 Palermo Botánico (ClaraBio)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Forma de Aporte Solidario -->
+        <div>
+          <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Forma de Aporte Solidario Preferida</label>
+          <select 
+            id="join-payment-pref"
+            class="w-full bg-stone-50 border border-stone-300 focus:border-[#7ca1b5] rounded-xl p-2.5 text-xs text-stone-900 focus:outline-none focus:bg-white">
+            <option value="Transferencia Bancaria">🏦 Transferencia Bancaria (CBU / Alias)</option>
+            <option value="Mercado Pago">📱 Mercado Pago (Débito mensual o QR)</option>
+            <option value="Efectivo en el Nodo">💵 Efectivo directo en el retiro del nodo</option>
+          </select>
+        </div>
+
+        <!-- Mensaje o Notas -->
+        <div>
+          <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Comentario o Consulta (Opcional)</label>
+          <input 
+            type="text" 
+            id="join-member-notes" 
+            placeholder="Ej: ¿Cuándo es la próxima entrega de bolsones?" 
+            class="w-full bg-stone-50 border border-stone-300 focus:border-[#7ca1b5] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white transition-colors"
+          />
+        </div>
+
+        <div class="flex gap-2 pt-3">
+          <button 
+            type="button" 
+            onclick="closeJoinModal()" 
+            class="btn-spotify btn-spotify-secondary w-1/3 text-xs font-bold">
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="btn-spotify btn-spotify-green w-2/3 text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 shadow-md">
+            <span>Confirmar Membresía ✓</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 

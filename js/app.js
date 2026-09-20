@@ -249,12 +249,34 @@ const AppState = {
   lastCompletedOrder: null,
   lastCompletedMember: null,
 
+  // Sistema Multimodo & Membresía CsC (Red Elemental)
+  catalogMode: 'local', // 'local' | 'semanal' | 'lunar'
+  activeNodeId: 'nodo-central',
+  userRole: 'visitante', // 'visitante' | 'socio'
+  userPlan: 'plan-raices',
+  userName: 'Lucía Gómez',
+  userCode: 'CSC-2026-0482',
+
   init() {
-    // Cargar productos
+    // Cargar nodo activo, modo y rol
+    this.catalogMode = localStorage.getItem('elementales_catalog_mode') || 'local';
+    this.activeNodeId = localStorage.getItem('elementales_active_node') || 'nodo-central';
+    this.userRole = localStorage.getItem('elementales_user_role') || 'visitante';
+    this.userPlan = localStorage.getItem('elementales_user_plan') || 'plan-raices';
+    this.userName = localStorage.getItem('elementales_user_name') || 'Lucía Gómez';
+    this.userCode = localStorage.getItem('elementales_user_code') || 'CSC-2026-0482';
+
+    // Cargar productos asegurando que contengan los precios escalonados
     const savedProducts = localStorage.getItem('elementales_products');
     if (savedProducts) {
       try {
-        this.products = JSON.parse(savedProducts);
+        const parsed = JSON.parse(savedProducts);
+        if (parsed.length > 0 && parsed[0].precioSemanal !== undefined) {
+          this.products = parsed;
+        } else {
+          this.products = [...INITIAL_PRODUCTS];
+          this.saveProducts();
+        }
       } catch (e) {
         this.products = [...INITIAL_PRODUCTS];
       }
@@ -273,7 +295,7 @@ const AppState = {
       }
     }
 
-    // Cargar integrantes
+    // Cargar integrantes o inicializar con ejemplos
     const savedMembers = localStorage.getItem('elementales_members');
     if (savedMembers) {
       try {
@@ -282,6 +304,63 @@ const AppState = {
         this.members = [];
       }
     }
+    
+    if (!this.members || this.members.length === 0) {
+      this.members = [
+        {
+          id: 'mem-1',
+          name: 'Lucía Gómez',
+          phone: '1155667788',
+          email: 'lucia.gomez@ejemplo.com',
+          neighborhood: 'Florida / Vicente López',
+          communityRole: 'Socio CsC (Plan Raíz)',
+          nodePreference: 'Nodo Central - Florida / Olivos',
+          notes: 'Aporte mensual al día. Retira bolsones los sábados.',
+          dateStr: '2026-09-15',
+          timestamp: 1789400000000
+        },
+        {
+          id: 'mem-2',
+          name: 'Marcos Benítez',
+          phone: '1144332211',
+          email: 'marcos.b@ejemplo.com',
+          neighborhood: 'Palermo Botánico',
+          communityRole: 'Socio CsC (Plan Agua)',
+          nodePreference: 'Nodo Palermo - Plaza Armenia',
+          notes: 'Interés en compras lunares y fermentos.',
+          dateStr: '2026-09-18',
+          timestamp: 1789600000000
+        },
+        {
+          id: 'mem-3',
+          name: 'Valeria Rossi',
+          phone: '1166778899',
+          email: 'valeria.rossi@ejemplo.com',
+          neighborhood: 'San Isidro',
+          communityRole: 'Membresía Guardián / Sostén',
+          nodePreference: 'Nodo Norte - San Isidro',
+          notes: 'Participa activamente en talleres y compras comunitarias.',
+          dateStr: '2026-09-19',
+          timestamp: 1789700000000
+        }
+      ];
+      this.saveMembers();
+    }
+  },
+
+  // Obtener precio según modalidad de compra activa
+  getProductPrice(prod) {
+    if (this.catalogMode === 'semanal') {
+      return prod.precioSemanal || Math.round((prod.precioLocal || prod.price) * 0.9);
+    }
+    if (this.catalogMode === 'lunar') {
+      return prod.precioLunar || Math.round((prod.precioLocal || prod.price) * 0.8);
+    }
+    return prod.precioLocal || prod.price || 0;
+  },
+
+  getLocalRetailPrice(prod) {
+    return prod.precioLocal || prod.price || 0;
   },
 
   saveProducts() {
@@ -354,23 +433,30 @@ const AppState = {
   getCartDetails() {
     const items = [];
     let subtotal = 0;
+    let retailTotal = 0;
     let totalItems = 0;
 
     // Productos de catálogo
     for (const [prodId, qty] of Object.entries(this.cart)) {
       const prod = this.products.find(p => p.id === prodId);
       if (prod && qty > 0) {
-        const itemTotal = prod.price * qty;
+        const itemPrice = this.getProductPrice(prod);
+        const itemRetail = this.getLocalRetailPrice(prod);
+        const itemTotal = itemPrice * qty;
         items.push({
           id: prod.id,
           name: prod.name,
-          price: prod.price,
+          price: itemPrice,
+          retailPrice: itemRetail,
           unit: prod.unit,
           qty: qty,
           total: itemTotal,
-          emoji: prod.emoji || '📦'
+          emoji: prod.emoji || '📦',
+          mode: this.catalogMode,
+          elemento: prod.elemento || 'tierra'
         });
         subtotal += itemTotal;
+        retailTotal += itemRetail * qty;
         totalItems += qty;
       }
     }
@@ -382,6 +468,7 @@ const AppState = {
         id: custom.id,
         name: custom.name,
         price: custom.price,
+        retailPrice: custom.price,
         unit: custom.unit,
         qty: custom.qty,
         total: itemTotal,
@@ -389,10 +476,12 @@ const AppState = {
         isCustom: true
       });
       subtotal += itemTotal;
+      retailTotal += itemTotal;
       totalItems += custom.qty;
     }
 
-    return { items, subtotal, totalItems };
+    const totalSavings = Math.max(0, retailTotal - subtotal);
+    return { items, subtotal, retailTotal, totalSavings, totalItems };
   }
 };
 
@@ -425,6 +514,12 @@ function navigateTo(viewName) {
     renderMembersDirectory();
   } else if (viewName === 'product-manager') {
     renderProductManager();
+  } else if (viewName === 'membership') {
+    renderMembership();
+  } else if (viewName === 'nodes') {
+    renderNodes();
+  } else if (viewName === 'profile') {
+    renderProfile();
   }
 }
 
@@ -454,6 +549,32 @@ function renderOrderCatalog() {
   const categoriesContainer = document.getElementById('catalog-categories-bar');
   if (!container) return;
 
+  // Actualizar estado visual de los botones de modo (Local, Semanal, Lunar)
+  const modeBadge = document.getElementById('catalog-mode-badge');
+  const modeDesc = document.getElementById('catalog-mode-description');
+  ['local', 'semanal', 'lunar'].forEach(m => {
+    const btn = document.getElementById(`btn-mode-${m}`);
+    if (btn) {
+      btn.classList.toggle('active', AppState.catalogMode === m);
+    }
+  });
+
+  if (modeBadge && modeDesc) {
+    if (AppState.catalogMode === 'local') {
+      modeBadge.textContent = '🏪 Local / Feria';
+      modeBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-800 border border-stone-200';
+      modeDesc.innerHTML = 'Precios regulares de feria para público visitante.';
+    } else if (AppState.catalogMode === 'semanal') {
+      modeBadge.textContent = '🥬 Semanal (-10% Socio CsC)';
+      modeBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200';
+      modeDesc.innerHTML = '✨ <strong>Compras Semanales de Huerta:</strong> 10% de ahorro directo para socios CsC.';
+    } else if (AppState.catalogMode === 'lunar') {
+      modeBadge.textContent = '🌕 Lunar (-20% Costo Red)';
+      modeBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-[#c0826d]/15 text-[#a6634f] border border-[#c0826d]/30';
+      modeDesc.innerHTML = '🌕 <strong>Compras Lunares al Costo:</strong> 20% de ahorro directo a precio de productor campesino.';
+    }
+  }
+
   // Renderizar filtros de categorías
   if (categoriesContainer) {
     categoriesContainer.innerHTML = CATEGORIES.map(cat => `
@@ -468,8 +589,9 @@ function renderOrderCatalog() {
   // Filtrar productos
   const query = AppState.searchQuery.toLowerCase().trim();
   const filtered = AppState.products.filter(prod => {
-    const matchesCategory = AppState.activeCategory === 'Todos' || prod.category === AppState.activeCategory;
-    const matchesSearch = !query || prod.name.toLowerCase().includes(query) || (prod.category && prod.category.toLowerCase().includes(query));
+    const cat = prod.categoria || prod.category;
+    const matchesCategory = AppState.activeCategory === 'Todos' || cat === AppState.activeCategory || prod.category === AppState.activeCategory;
+    const matchesSearch = !query || prod.name.toLowerCase().includes(query) || (cat && cat.toLowerCase().includes(query));
     return matchesCategory && matchesSearch;
   });
 
@@ -490,56 +612,93 @@ function renderOrderCatalog() {
   container.innerHTML = filtered.map(prod => {
     const qty = AppState.cart[prod.id] || 0;
     const isSelected = qty > 0;
+    const activePrice = AppState.getProductPrice(prod);
+    const localPrice = AppState.getLocalRetailPrice(prod);
+    const hasDiscount = AppState.catalogMode !== 'local' && activePrice < localPrice;
+    const discountPercent = hasDiscount ? Math.round(((localPrice - activePrice) / localPrice) * 100) : 0;
+    const elementColor = prod.elemento === 'agua' ? '#7ca1b5' : (prod.elemento === 'tierra' ? '#8ca15d' : (prod.elemento === 'fuego' ? '#d97757' : '#aab091'));
 
     return `
-      <div class="spotify-card p-4 flex flex-col justify-between relative overflow-hidden transition-all ${isSelected ? 'border-[#c0826d] bg-[#fdfaf8] ring-2 ring-[#c0826d]/30 shadow-md' : 'border-stone-200' }">
-        ${isSelected ? `<div class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[#c0826d] animate-pulse"></div>` : ''}
+      <div class="spotify-card flex flex-col justify-between relative overflow-hidden transition-all ${isSelected ? 'border-[#c0826d] bg-[#fdfaf8] ring-2 ring-[#c0826d]/30 shadow-md' : 'border-stone-200' }">
+        ${isSelected ? `<div class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[#c0826d] animate-pulse z-10"></div>` : ''}
         
-        <div>
-          <div class="flex items-start justify-between gap-2 mb-2">
-            <span class="text-3xl filter drop-shadow-sm">${prod.emoji || '🌱'}</span>
-            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
+        <!-- Foto / Imagen del Producto -->
+        <div class="h-32 w-full relative overflow-hidden bg-stone-100">
+          ${prod.img ? `
+            <img src="${prod.img}" class="w-full h-full object-cover" alt="${escapeHtml(prod.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <div class="w-full h-full hidden items-center justify-center text-4xl bg-stone-50">${prod.emoji || '🌱'}</div>
+          ` : `
+            <div class="w-full h-full flex items-center justify-center text-4xl bg-stone-50">${prod.emoji || '🌱'}</div>
+          `}
+          <div class="absolute top-2 left-2">
+            <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md shadow-2xs border" style="color: ${elementColor}; border-color: ${elementColor}40;">
+              ${prod.categoria || prod.category}
+            </span>
+          </div>
+          ${hasDiscount ? `
+            <div class="absolute bottom-2 left-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md shadow-sm">
+              -${discountPercent}% Ahorro
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="p-3.5 flex flex-col flex-1 justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-1 mb-1">
+              <h3 class="font-bold text-sm text-stone-900 leading-snug">
+                ${escapeHtml(prod.name)}
+              </h3>
+            </div>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 inline-block mb-3">
               ${prod.unit}
             </span>
           </div>
 
-          <h3 class="font-bold text-base text-stone-900 leading-tight mb-1">
-            ${escapeHtml(prod.name)}
-          </h3>
-          <p class="text-xs font-medium text-stone-500 mb-3">${prod.category}</p>
-        </div>
+          <div class="pt-2 border-t border-stone-100 flex items-center justify-between mt-auto">
+            <div>
+              ${hasDiscount ? `
+                <span class="text-[10px] text-stone-400 font-bold line-through block leading-tight">$${formatMoney(localPrice)}</span>
+                <span class="text-base font-black text-emerald-700">$${formatMoney(activePrice)}</span>
+              ` : `
+                <span class="text-[10px] text-stone-400 font-bold block uppercase leading-tight">Precio</span>
+                <span class="text-base font-black text-[#a6634f]">$${formatMoney(activePrice)}</span>
+              `}
+            </div>
 
-        <div class="pt-2 border-t border-stone-100 flex items-center justify-between mt-auto">
-          <div>
-            <span class="text-[11px] text-stone-400 font-bold block uppercase">Precio</span>
-            <span class="text-lg font-black text-[#a6634f]">$${formatMoney(prod.price)}</span>
-          </div>
-
-          <!-- Controles de Cantidad -->
-          <div class="flex items-center gap-1.5 bg-stone-100/90 p-1 rounded-full border border-stone-200">
-            ${qty > 0 ? `
+            <!-- Controles de Cantidad -->
+            <div class="flex items-center gap-1.5 bg-stone-100/90 p-1 rounded-full border border-stone-200">
+              ${qty > 0 ? `
+                <button 
+                  onclick="AppState.addToCart('${prod.id}', -1)" 
+                  class="stepper-btn hover:bg-stone-200 text-stone-700"
+                  title="Restar">
+                  −
+                </button>
+                <span class="font-black text-xs px-1.5 min-w-[20px] text-center text-stone-900">
+                  ${qty}
+                </span>
+              ` : ''}
+              
               <button 
-                onclick="AppState.addToCart('${prod.id}', -1)" 
-                class="stepper-btn hover:bg-stone-200 text-stone-700"
-                title="Restar">
-                −
+                onclick="AppState.addToCart('${prod.id}', 1)" 
+                class="stepper-btn ${qty > 0 ? 'bg-[#c0826d] text-white hover:bg-[#a6634f]' : 'bg-white hover:bg-[#c0826d] text-stone-800 hover:text-white'}"
+                title="Sumar">
+                +
               </button>
-              <span class="font-black text-sm px-2 min-w-[24px] text-center text-stone-900">
-                ${qty}
-              </span>
-            ` : ''}
-            
-            <button 
-              onclick="AppState.addToCart('${prod.id}', 1)" 
-              class="stepper-btn ${qty > 0 ? 'bg-[#c0826d] text-white hover:bg-[#a6634f]' : 'bg-white hover:bg-[#c0826d] text-stone-800 hover:text-white'}"
-              title="Sumar">
-              +
-            </button>
+            </div>
           </div>
         </div>
       </div>
     `;
   }).join('');
+}
+
+function setCatalogMode(mode) {
+  AppState.catalogMode = mode;
+  localStorage.setItem('elementales_catalog_mode', mode);
+  sounds.playPop();
+  renderOrderCatalog();
+  renderFloatingCart();
 }
 
 function setFilterCategory(category) {
@@ -566,8 +725,19 @@ function renderFloatingCart() {
   }
 
   floatingBar.classList.remove('hidden');
-  document.getElementById('floating-cart-items-count').textContent = `${cartSummary.totalItems} ${cartSummary.totalItems === 1 ? 'ítem' : 'ítems'}`;
-  document.getElementById('floating-cart-total').textContent = `$${formatMoney(cartSummary.subtotal)}`;
+  const itemsCountEl = document.getElementById('floating-cart-items-count');
+  const totalEl = document.getElementById('floating-cart-total');
+
+  if (itemsCountEl) {
+    itemsCountEl.textContent = `${cartSummary.totalItems} ${cartSummary.totalItems === 1 ? 'ítem' : 'ítems'}`;
+  }
+  if (totalEl) {
+    if (cartSummary.totalSavings > 0) {
+      totalEl.innerHTML = `$${formatMoney(cartSummary.subtotal)} <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 ml-1">Ahorraste $${formatMoney(cartSummary.totalSavings)}</span>`;
+    } else {
+      totalEl.textContent = `$${formatMoney(cartSummary.subtotal)}`;
+    }
+  }
 }
 
 // --- MODAL DE CIERRE DE PEDIDO (CHECKOUT) ---
@@ -583,7 +753,11 @@ function openCheckoutModal() {
   const itemsContainer = document.getElementById('checkout-items-list');
   const totalAmountEl = document.getElementById('checkout-total-amount');
 
-  totalAmountEl.textContent = `$${formatMoney(summary.subtotal)}`;
+  if (summary.totalSavings > 0) {
+    totalAmountEl.innerHTML = `$${formatMoney(summary.subtotal)} <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full block sm:inline mt-1 sm:mt-0 ml-0 sm:ml-2">Ahorro CsC: -$${formatMoney(summary.totalSavings)}</span>`;
+  } else {
+    totalAmountEl.textContent = `$${formatMoney(summary.subtotal)}`;
+  }
 
   itemsContainer.innerHTML = summary.items.map(item => `
     <div class="flex items-center justify-between py-2.5 border-b border-stone-100 text-sm">
@@ -1452,6 +1626,347 @@ function triggerCelebrationConfetti() {
       colors: ['#c0826d', '#d99a86', '#1db954', '#a6634f', '#fbbf24']
     });
   }
+}
+
+// --- MEMBRESÍA CsC (RED ELEMENTAL) ---
+function renderMembership() {
+  const statusBadge = document.getElementById('membership-status-badge');
+  const statusDesc = document.getElementById('membership-status-desc');
+  const toggleBtn = document.getElementById('btn-toggle-role-membership');
+  const plansContainer = document.getElementById('membership-plans-grid');
+
+  const isSocio = AppState.userRole === 'socio';
+  const planInfo = PLANES_MEMBRESIA.find(p => p.id === AppState.userPlan) || PLANES_MEMBRESIA[1];
+
+  if (statusBadge) {
+    if (isSocio) {
+      statusBadge.textContent = `✓ Socio CsC Activo (${planInfo.name})`;
+      statusBadge.className = 'text-xs font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300';
+    } else {
+      statusBadge.textContent = 'Visitante / No Socio';
+      statusBadge.className = 'text-xs font-black px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-300';
+    }
+  }
+
+  if (statusDesc) {
+    if (isSocio) {
+      statusDesc.innerHTML = `Tu aporte solidario de <strong>$${formatMoney(planInfo.aporteMensual)}/mes</strong> sostiene el nodo y te permite acceder a compras directas al costo campesino.`;
+    } else {
+      statusDesc.textContent = 'Súmate a la CsC para acceder a compras semanales y lunares a precio directo campesino.';
+    }
+  }
+
+  if (toggleBtn) {
+    toggleBtn.innerHTML = isSocio ? '<span>👤 Probar como Visitante</span>' : '<span>🌱 Probar como Socio CsC</span>';
+  }
+
+  if (plansContainer) {
+    plansContainer.innerHTML = PLANES_MEMBRESIA.map(plan => {
+      const isSelected = isSocio && AppState.userPlan === plan.id;
+      const elementColor = plan.element === 'agua' ? '#7ca1b5' : (plan.element === 'tierra' ? '#8ca15d' : '#c59b8b');
+      const isPopular = plan.badge === 'Recomendado' || plan.badge === 'Popular';
+
+      return `
+        <div class="spotify-card p-6 flex flex-col justify-between relative overflow-hidden transition-all ${isSelected ? 'ring-2 ring-emerald-500 bg-emerald-50/30' : (isPopular ? 'border-2 border-[#8ca15d]/60 shadow-md' : 'border-stone-200')}">
+          ${plan.badge ? `
+            <div class="absolute top-4 right-4">
+              <span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full ${plan.badge === 'Recomendado' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-sky-100 text-sky-800 border border-sky-300'}">
+                ${plan.badge}
+              </span>
+            </div>
+          ` : ''}
+
+          <div>
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4" style="background-color: ${elementColor}20; color: ${elementColor};">
+              ${plan.element === 'agua' ? '💧' : (plan.element === 'tierra' ? '🍃' : '✨')}
+            </div>
+
+            <h3 class="font-black text-xl text-stone-900 mb-1">${escapeHtml(plan.name)}</h3>
+            <p class="text-xs text-stone-500 mb-4 min-h-[32px]">${escapeHtml(plan.desc)}</p>
+
+            <div class="mb-5 pb-4 border-b border-stone-100">
+              <div class="flex items-baseline gap-1">
+                <span class="text-3xl font-black text-stone-900">$${formatMoney(plan.aporteMensual)}</span>
+                <span class="text-xs text-stone-500 font-semibold">/ mes</span>
+              </div>
+              <span class="text-[11px] text-stone-400 block mt-0.5">${plan.periodo}</span>
+            </div>
+
+            <ul class="space-y-2.5 mb-6 text-xs text-stone-700">
+              ${plan.beneficios.map(ben => `
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-600 font-bold">✓</span>
+                  <span>${escapeHtml(ben)}</span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+
+          <button 
+            onclick="openJoinModal('${plan.id}')"
+            class="btn-spotify ${isSelected ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : (isPopular ? 'btn-spotify-primary' : 'btn-spotify-secondary')} w-full text-xs font-black !py-3 shadow-sm">
+            ${isSelected ? '✓ Tu Plan Actual' : 'Quiero sumarme a este Plan'}
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+function openJoinModal(planId = 'plan-raices') {
+  sounds.playPop();
+  const modal = document.getElementById('modal-join-membership');
+  if (!modal) return;
+
+  const select = document.getElementById('join-plan-select');
+  if (select && planId) {
+    select.value = planId;
+  }
+
+  const nameInput = document.getElementById('join-member-name');
+  if (nameInput && AppState.userName) {
+    nameInput.value = AppState.userName;
+  }
+
+  const nodeSelect = document.getElementById('join-member-node');
+  if (nodeSelect && AppState.activeNodeId) {
+    nodeSelect.value = AppState.activeNodeId;
+  }
+
+  modal.classList.remove('hidden');
+}
+
+function closeJoinModal() {
+  sounds.playPop();
+  const modal = document.getElementById('modal-join-membership');
+  if (modal) modal.classList.add('hidden');
+}
+
+function submitJoinMembership(e) {
+  e.preventDefault();
+  const planId = document.getElementById('join-plan-select').value;
+  const name = document.getElementById('join-member-name').value.trim();
+  const phone = document.getElementById('join-member-phone').value.trim();
+  const nodeId = document.getElementById('join-member-node').value;
+  const paymentPref = document.getElementById('join-payment-pref').value;
+  const notes = document.getElementById('join-member-notes').value.trim();
+
+  if (!name || !phone) {
+    alert('Por favor completa tu nombre y teléfono.');
+    return;
+  }
+
+  const plan = PLANES_MEMBRESIA.find(p => p.id === planId) || PLANES_MEMBRESIA[1];
+  const node = NODOS_COMUNIDAD.find(n => n.id === nodeId) || NODOS_COMUNIDAD[0];
+
+  // Actualizar estado activo
+  AppState.userRole = 'socio';
+  AppState.userPlan = planId;
+  AppState.userName = name;
+  AppState.activeNodeId = nodeId;
+
+  localStorage.setItem('elementales_user_role', 'socio');
+  localStorage.setItem('elementales_user_plan', planId);
+  localStorage.setItem('elementales_user_name', name);
+  localStorage.setItem('elementales_active_node', nodeId);
+
+  // Registrar en la lista de integrantes si no existe
+  const existingIndex = AppState.members.findIndex(m => m.phone === phone);
+  const memberData = {
+    id: 'mem-' + Date.now(),
+    name,
+    phone,
+    email: '',
+    neighborhood: node.name,
+    communityRole: `Socio CsC (${plan.name})`,
+    nodePreference: node.name,
+    notes: `Aporte: $${formatMoney(plan.aporteMensual)}/mes - ${paymentPref}. ${notes}`,
+    dateStr: new Date().toLocaleDateString('es-AR'),
+    timestamp: Date.now()
+  };
+
+  if (existingIndex >= 0) {
+    AppState.members[existingIndex] = { ...AppState.members[existingIndex], ...memberData };
+  } else {
+    AppState.members.unshift(memberData);
+  }
+  AppState.saveMembers();
+
+  closeJoinModal();
+  sounds.playSuccess();
+  triggerCelebrationConfetti();
+
+  // Generar mensaje para WhatsApp al Guardián del Nodo
+  const waMsg = encodeURIComponent(
+    `¡Hola ${node.guardian}! 🌱 Me acabo de sumar a la Red Elemental en el *${node.name}*.\n` +
+    `Mi nombre es *${name}*.\n` +
+    `Elegí el plan: *${plan.name}* ($${formatMoney(plan.aporteMensual)}/mes).\n` +
+    `Forma de aporte: ${paymentPref}.\n` +
+    (notes ? `Mensaje: ${notes}\n` : '') +
+    `¡Gracias por sostener el espacio!`
+  );
+
+  const waUrl = `https://wa.me/${node.phone}?text=${waMsg}`;
+
+  // Mostrar confirmación
+  alert(`¡Felicitaciones ${name}! Te has sumado como Socio CsC a la Red Elemental 🎉\n\nAhora abriremos WhatsApp para conectarte con ${node.guardian}, el Guardián de tu nodo.`);
+  window.open(waUrl, '_blank');
+
+  renderMembership();
+  renderProfile();
+  renderHubStats();
+  navigateTo('profile');
+}
+
+// --- RED DE NODOS (RED ELEMENTAL) ---
+function renderNodes() {
+  const container = document.getElementById('nodes-cards-container');
+  const bannerTitle = document.getElementById('active-node-banner-title');
+  const bannerInfo = document.getElementById('active-node-banner-info');
+
+  const activeNode = NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) || NODOS_COMUNIDAD[0];
+
+  if (bannerTitle) {
+    bannerTitle.textContent = activeNode.name;
+  }
+  if (bannerInfo) {
+    bannerInfo.textContent = `Guardián: ${activeNode.guardian} · ${activeNode.time} · ${activeNode.address}`;
+  }
+
+  if (container) {
+    container.innerHTML = NODOS_COMUNIDAD.map(node => {
+      const isCurrent = node.id === AppState.activeNodeId;
+      const waMsg = encodeURIComponent(`Hola ${node.guardian}! Te consulto por el nodo *${node.name}* de Elementales.`);
+      const waUrl = `https://wa.me/${node.phone}?text=${waMsg}`;
+
+      return `
+        <div class="spotify-card overflow-hidden flex flex-col justify-between border-2 transition-all ${isCurrent ? 'border-emerald-500 ring-2 ring-emerald-500/30 bg-emerald-50/10' : 'border-stone-200'}">
+          <div>
+            <div class="h-36 w-full relative overflow-hidden bg-stone-100">
+              <img src="${node.cover}" class="w-full h-full object-cover" alt="${escapeHtml(node.name)}" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600'" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div class="absolute bottom-3 left-3 text-white">
+                <span class="text-[10px] font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/30">
+                  Nodo Barrial
+                </span>
+                <h3 class="font-black text-lg text-white leading-tight mt-1">${escapeHtml(node.name)}</h3>
+              </div>
+              ${isCurrent ? `
+                <div class="absolute top-3 right-3 bg-emerald-600 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-md">
+                  ✓ Tu Nodo Activo
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center font-black text-sm text-stone-700 border border-stone-200">
+                  👤
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase font-bold text-stone-400 block">Guardián del Nodo</span>
+                  <span class="font-black text-sm text-stone-800">${escapeHtml(node.guardian)}</span>
+                </div>
+              </div>
+
+              <div class="text-xs text-stone-600 space-y-1 bg-stone-50 p-3 rounded-xl border border-stone-200/60">
+                <p>📍 <strong>Dirección:</strong> ${escapeHtml(node.address)}</p>
+                <p>🕒 <strong>Horarios:</strong> ${escapeHtml(node.time)}</p>
+                <p class="text-stone-500 pt-1 text-[11px]">${escapeHtml(node.desc)}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 pt-0 grid grid-cols-2 gap-2">
+            <button 
+              onclick="selectNode('${node.id}')"
+              class="btn-spotify ${isCurrent ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'btn-spotify-secondary'} text-xs font-bold !py-2.5">
+              ${isCurrent ? '✓ Seleccionado' : 'Elegir Nodo'}
+            </button>
+            <a 
+              href="${waUrl}" 
+              target="_blank" 
+              class="btn-spotify btn-spotify-green text-xs font-bold !py-2.5 flex items-center justify-center gap-1.5 shadow-sm">
+              <span>💬 WhatsApp</span>
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+function selectNode(nodeId) {
+  AppState.activeNodeId = nodeId;
+  localStorage.setItem('elementales_active_node', nodeId);
+  sounds.playPop();
+  renderNodes();
+  renderProfile();
+}
+
+// --- PERFIL Y CARNET DIGITAL (RED ELEMENTAL) ---
+function renderProfile() {
+  const isSocio = AppState.userRole === 'socio';
+  const planInfo = PLANES_MEMBRESIA.find(p => p.id === AppState.userPlan) || PLANES_MEMBRESIA[1];
+  const nodeInfo = NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) || NODOS_COMUNIDAD[0];
+
+  const nameEl = document.getElementById('carnet-member-name');
+  const planEl = document.getElementById('carnet-plan-name');
+  const codeEl = document.getElementById('carnet-member-code');
+  const pillEl = document.getElementById('carnet-status-pill');
+  const nodeEl = document.getElementById('carnet-node-name');
+  const guardianEl = document.getElementById('carnet-node-guardian');
+
+  if (nameEl) nameEl.textContent = AppState.userName || 'Lucía Gómez';
+  if (planEl) planEl.textContent = isSocio ? `${planInfo.name}` : 'Visitante (Sin Membresía)';
+  if (codeEl) codeEl.textContent = AppState.userCode || 'CSC-2026-0482';
+  if (nodeEl) nodeEl.textContent = nodeInfo.name;
+  if (guardianEl) guardianEl.textContent = `Guardián: ${nodeInfo.guardian}`;
+
+  if (pillEl) {
+    if (isSocio) {
+      pillEl.textContent = 'Socio CsC Activo';
+      pillEl.className = 'text-[11px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200';
+    } else {
+      pillEl.textContent = 'Visitante';
+      pillEl.className = 'text-[11px] font-black px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200';
+    }
+  }
+
+  // Actualizar botones de simulación
+  const btnVisitante = document.getElementById('btn-role-sim-visitante');
+  const btnSocio = document.getElementById('btn-role-sim-socio');
+  if (btnVisitante && btnSocio) {
+    if (isSocio) {
+      btnSocio.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-emerald-50 border-emerald-500 text-emerald-800 shadow-sm';
+      btnVisitante.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-white border-stone-200 text-stone-500 hover:bg-stone-50';
+    } else {
+      btnVisitante.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-stone-100 border-stone-600 text-stone-900 shadow-sm';
+      btnSocio.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-white border-stone-200 text-stone-500 hover:bg-stone-50';
+    }
+  }
+}
+
+function toggleUserRole(forcedRole = null) {
+  if (forcedRole) {
+    AppState.userRole = forcedRole;
+  } else {
+    AppState.userRole = AppState.userRole === 'socio' ? 'visitante' : 'socio';
+  }
+  localStorage.setItem('elementales_user_role', AppState.userRole);
+  sounds.playPop();
+
+  if (AppState.userRole === 'socio') {
+    AppState.catalogMode = 'semanal';
+  } else {
+    AppState.catalogMode = 'local';
+  }
+  localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
+
+  renderProfile();
+  renderMembership();
+  renderOrderCatalog();
+  renderFloatingCart();
 }
 
 // --- INICIALIZACIÓN ---
