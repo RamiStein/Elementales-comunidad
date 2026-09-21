@@ -555,6 +555,9 @@ function navigateTo(viewName) {
     renderNodes();
   } else if (viewName === 'profile') {
     renderProfile();
+  } else if (viewName === 'eter') {
+    // El panel Éter CRM — abre por defecto la Gestión de los 5 Elementos
+    showEterModule('elementos');
   }
 }
 
@@ -2485,20 +2488,22 @@ function renderTalleres() {
   const talleres = BarrioStorage.getTalleres();
 
   container.innerHTML = talleres.map(t => `
-    <div class="bg-white rounded-3xl border border-stone-200 hover:border-[#7ca1b5]/50 p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+    <div class="bg-white rounded-3xl border border-stone-200 hover:border-[#7ca1b5]/50 p-5 sm:p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
       <div>
-        <div class="flex items-start justify-between gap-3 mb-3">
-          <div class="flex items-center gap-3">
-            <span class="w-12 h-12 rounded-2xl bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center text-2xl shadow-xs">
-              ${t.icono || '🌱'}
-            </span>
-            <div>
-              <h3 class="font-black text-base text-stone-900 leading-tight">${t.titulo}</h3>
-              <p class="text-xs text-[#52778c] font-bold mt-0.5">Dictado por: ${t.tallerista}</p>
-            </div>
+        <div class="flex items-start gap-3 mb-2">
+          <span class="w-11 h-11 rounded-2xl bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center text-2xl shadow-xs shrink-0">
+            ${t.icono || '🌱'}
+          </span>
+          <div class="min-w-0 flex-1">
+            <h3 class="font-black text-sm sm:text-base text-stone-900 leading-tight">${t.titulo}</h3>
+            <p class="text-xs text-[#52778c] font-bold mt-0.5">Dictado por: ${t.tallerista}</p>
           </div>
-          <span class="text-[10px] font-bold uppercase bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full border border-indigo-200 shrink-0">
-            ${t.cupos}
+        </div>
+
+        <!-- Badge cupos en fila propia para no desbordar -->
+        <div class="mb-3">
+          <span class="inline-flex items-center text-[10px] font-bold uppercase bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full border border-indigo-200">
+            🎟️ ${t.cupos}
           </span>
         </div>
 
@@ -2528,7 +2533,7 @@ function renderTalleres() {
           href="https://wa.me/${t.telefonoContacto || '5491133221100'}?text=${encodeURIComponent('Hola! Quiero anotarme al taller de ' + t.titulo + ' en La Lucila.')}"
           target="_blank"
           rel="noopener noreferrer"
-          class="btn-spotify !bg-[#7ca1b5] hover:!bg-[#668fa6] !text-white text-xs font-bold px-4 py-2 shadow-xs inline-flex items-center gap-1.5"
+          class="btn-spotify !bg-[#7ca1b5] hover:!bg-[#668fa6] !text-white text-xs font-bold px-4 py-2 shadow-xs inline-flex items-center gap-1.5 shrink-0"
         >
           <span>Anotarme por WhatsApp</span>
           <span>→</span>
@@ -2913,7 +2918,187 @@ document.addEventListener('DOMContentLoaded', () => {
   AppState.init();
   document.body.addEventListener('click', () => sounds.init(), { once: true });
   
+  // Cargar notas guardadas del nodo
+  const notasGuardadas = localStorage.getItem('eter_notas_internas');
+  if (notasGuardadas) {
+    const ta = document.getElementById('eter-notas-internas');
+    if (ta) ta.value = notasGuardadas;
+  }
+  
   // Iniciar en la vista del Portal Barrial
   navigateTo('barrio');
 });
+
+
+// =========================================================================
+// ÉTER CRM — PANEL INTERNO DEL NODO
+// =========================================================================
+
+function showEterModule(moduleName) {
+  sounds.playPop();
+
+  // Highlight del botón activo
+  document.querySelectorAll('.eter-module-btn').forEach(btn => {
+    btn.classList.remove('ring-2', 'ring-[#c0826d]', 'border-[#c0826d]', 'bg-[#fdf4f0]');
+    btn.classList.add('border-stone-200', 'bg-white');
+  });
+  const activeBtn = document.querySelector(`.eter-module-btn[data-module="${moduleName}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('ring-2', 'ring-[#c0826d]', 'border-[#c0826d]', 'bg-[#fdf4f0]');
+    activeBtn.classList.remove('border-stone-200', 'bg-white');
+  }
+
+  // Ocultar todos los paneles
+  document.querySelectorAll('.eter-panel').forEach(p => p.classList.add('hidden'));
+  const defaultPanel = document.getElementById('eter-panel-default');
+  if (defaultPanel) defaultPanel.classList.add('hidden');
+
+  // Mostrar panel activo
+  const panel = document.getElementById(`eter-panel-${moduleName}`);
+  if (panel) panel.classList.remove('hidden');
+
+  // Cargar datos específicos del módulo
+  if (moduleName === 'membresia') renderEterMembresia();
+  if (moduleName === 'economia') renderEterEconomia();
+}
+
+function renderEterMembresia() {
+  const miembros = typeof AppState !== 'undefined' && AppState.getMiembros
+    ? AppState.getMiembros()
+    : JSON.parse(localStorage.getItem('elementales_members') || '[]');
+
+  const activos = miembros.filter(m => m.activo !== false);
+  const hoyMs = Date.now();
+  const finMes = new Date();
+  finMes.setDate(finMes.getDate() + 30);
+
+  const vencenProx = activos.filter(m => {
+    if (!m.fechaVencimiento) return false;
+    const vence = new Date(m.fechaVencimiento).getTime();
+    return vence >= hoyMs && vence <= finMes.getTime();
+  });
+
+  // Actualizar contadores
+  const elActivos = document.getElementById('memb-activos');
+  const elVencen = document.getElementById('memb-vencen');
+  const elIngresos = document.getElementById('memb-ingresos');
+
+  if (elActivos) elActivos.textContent = activos.length;
+  if (elVencen) elVencen.textContent = vencenProx.length;
+  if (elIngresos) {
+    const total = activos.reduce((sum, m) => sum + (Number(m.montoCuota) || 0), 0);
+    elIngresos.textContent = `$${total.toLocaleString('es-AR')}`;
+  }
+
+  // Listado de socios
+  const lista = document.getElementById('memb-socios-list');
+  if (!lista) return;
+  if (activos.length === 0) {
+    lista.innerHTML = '<p class="text-stone-400 text-center py-4">Sin socios registrados aún.</p>';
+    return;
+  }
+  lista.innerHTML = activos.slice(0, 8).map(m => `
+    <div class="flex items-center justify-between py-1.5 border-b border-stone-50 last:border-0">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="w-6 h-6 rounded-full bg-[#fcf4f0] border border-[#c0826d]/30 flex items-center justify-center text-xs font-black text-[#a6634f] shrink-0">
+          ${(m.nombre || '?').charAt(0).toUpperCase()}
+        </span>
+        <span class="font-semibold text-stone-800 truncate">${m.nombre || 'Sin nombre'}</span>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="text-[10px] font-bold uppercase text-stone-500">${m.plan || 'Base'}</span>
+        <span class="w-2 h-2 rounded-full ${m.activo !== false ? 'bg-emerald-500' : 'bg-stone-300'}"></span>
+      </div>
+    </div>
+  `).join('');
+  if (activos.length > 8) {
+    lista.innerHTML += `<p class="text-xs text-stone-400 text-center pt-2">+${activos.length - 8} socios más en el directorio</p>`;
+  }
+}
+
+function renderEterEconomia() {
+  const movimientos = JSON.parse(localStorage.getItem('eter_movimientos') || '[]');
+  const ingresos = movimientos.filter(m => m.tipo === 'ingreso').reduce((s, m) => s + Number(m.monto), 0);
+  const egresos = movimientos.filter(m => m.tipo === 'egreso').reduce((s, m) => s + Number(m.monto), 0);
+  const balance = ingresos - egresos;
+
+  const elI = document.getElementById('eco-ingresos');
+  const elE = document.getElementById('eco-egresos');
+  const elB = document.getElementById('eco-balance');
+  const elF = document.getElementById('eco-fondo');
+
+  if (elI) elI.textContent = `$${ingresos.toLocaleString('es-AR')}`;
+  if (elE) elE.textContent = `$${egresos.toLocaleString('es-AR')}`;
+  if (elB) {
+    elB.textContent = `$${balance.toLocaleString('es-AR')}`;
+    elB.className = `text-xl font-black ${balance >= 0 ? 'text-blue-800' : 'text-red-800'}`;
+  }
+  if (elF) elF.textContent = `$${Math.max(0, Math.floor(ingresos * 0.1)).toLocaleString('es-AR')}`;
+
+  const lista = document.getElementById('eco-movimientos-list');
+  if (!lista) return;
+  if (movimientos.length === 0) {
+    lista.innerHTML = '<p class="text-stone-400 text-center py-4">Sin movimientos cargados aún.</p>';
+    return;
+  }
+  lista.innerHTML = [...movimientos].reverse().slice(0, 10).map(m => `
+    <div class="flex items-center justify-between py-1.5 border-b border-stone-50 last:border-0">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="text-sm shrink-0">${m.tipo === 'ingreso' ? '⬆️' : '⬇️'}</span>
+        <span class="text-stone-700 truncate">${m.concepto || 'Sin concepto'}</span>
+      </div>
+      <span class="font-black text-xs shrink-0 ${m.tipo === 'ingreso' ? 'text-emerald-700' : 'text-red-600'}">
+        ${m.tipo === 'ingreso' ? '+' : '-'}$${Number(m.monto).toLocaleString('es-AR')}
+      </span>
+    </div>
+  `).join('');
+}
+
+function openEterMovimientoForm() {
+  const concepto = prompt('Concepto del movimiento:');
+  if (!concepto) return;
+  const monto = prompt('Monto ($):');
+  if (!monto || isNaN(Number(monto))) return;
+  const tipo = confirm('¿Es un ingreso? OK = Ingreso | Cancelar = Egreso') ? 'ingreso' : 'egreso';
+
+  const movimientos = JSON.parse(localStorage.getItem('eter_movimientos') || '[]');
+  movimientos.push({ concepto, monto: Number(monto), tipo, fecha: new Date().toLocaleDateString('es-AR') });
+  localStorage.setItem('eter_movimientos', JSON.stringify(movimientos));
+  renderEterEconomia();
+  sounds.playPop();
+}
+
+function openEterTareaForm() {
+  const tarea = prompt('Descripción de la tarea o labor:');
+  if (!tarea) return;
+  const lista = document.getElementById('horas-tareas-list');
+  if (!lista) return;
+  const item = document.createElement('label');
+  item.className = 'flex items-start gap-2 p-2 rounded-xl hover:bg-stone-50 cursor-pointer';
+  item.innerHTML = `<input type="checkbox" class="mt-0.5 rounded shrink-0" /><span class="text-xs text-stone-700">${tarea}</span>`;
+  lista.appendChild(item);
+  sounds.playPop();
+}
+
+function openEterClaveForm() {
+  alert('Para agregar claves, editá el listado directamente en el código del panel Éter o contactá a Rami como administrador del nodo.');
+}
+
+function saveEterNotas() {
+  const ta = document.getElementById('eter-notas-internas');
+  if (!ta) return;
+  localStorage.setItem('eter_notas_internas', ta.value);
+  sounds.playPop();
+  // Feedback visual
+  const btn = ta.nextElementSibling;
+  if (btn) {
+    const original = btn.textContent;
+    btn.textContent = '✓ Guardado';
+    btn.classList.add('text-emerald-700', 'bg-emerald-50', 'border-emerald-200');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('text-emerald-700', 'bg-emerald-50', 'border-emerald-200');
+    }, 2000);
+  }
+}
 

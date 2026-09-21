@@ -195,12 +195,12 @@
                 </div>
 
                 <!-- 5. ÉTER -->
-                <div class="waffle-item" onclick="navigateTo('centro-lucila'); closeGoogleWaffle();">
+                <div class="waffle-item" onclick="navigateTo('eter'); closeGoogleWaffle();">
                   <div class="w-12 h-12 rounded-2xl bg-[#fcf4f0] border border-[#dfc2b7]/50 flex items-center justify-center p-2 mb-1 shadow-xs">
                     <img src="public/assets/brand/eter_clean.png" class="w-full h-full object-contain" alt="Éter" />
                   </div>
                   <span class="text-xs font-bold text-stone-800">✨ Éter</span>
-                  <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Centro La Lucila</span>
+                  <span class="text-[10px] text-stone-500 leading-tight mt-0.5">CRM del Nodo</span>
                 </div>
 
                 <!-- 6. COSMOS / CONSTELACIÓN -->
@@ -307,6 +307,9 @@
       </button>
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-centro-lucila" onclick="navigateTo('centro-lucila')">
         <span>🏡</span> Centro La Lucila (Nueva Era)
+      </button>
+      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-eter" onclick="navigateTo('eter')">
+        <span>✨</span> Éter CRM
       </button>
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-financiamiento" onclick="navigateTo('financiamiento')">
         <span>💡</span> Financiamiento
@@ -725,6 +728,525 @@
     <h2 class="text-lg font-black text-stone-900 mb-4">Proyectos Barriales en Curso</h2>
     <div id="proyectos-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
       <!-- Se puebla dinámicamente con renderProyectos() -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 0.H VISTA: ÉTER CRM — PANEL INTERNO DEL NODO ELEMENTALES LA LUCILA -->
+  <!-- ========================================================================= -->
+  <div id="view-eter" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-24">
+
+    <!-- HEADER ÉTER CRM -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#1c1917] via-[#292524] to-[#1a1614] border border-[#c0826d]/30 mb-6 shadow-lg relative overflow-hidden">
+      <!-- Fondo decorativo -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute w-80 h-80 bg-[#c0826d]/8 rounded-full blur-3xl top-0 right-0"></div>
+        <div class="absolute w-60 h-60 bg-[#8ca15d]/6 rounded-full blur-3xl bottom-0 left-0"></div>
+      </div>
+      <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-[#c0826d]/20 border border-[#c0826d]/40 flex items-center justify-center">
+              <img src="public/assets/brand/eter_clean.png" class="w-7 h-7 object-contain" alt="Éter" />
+            </div>
+            <div>
+              <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight">Panel Éter · CRM del Nodo</h1>
+              <span class="text-[11px] font-bold text-[#d99a86] uppercase tracking-widest">Uso interno del equipo · La Lucila</span>
+            </div>
+          </div>
+          <p class="text-stone-400 text-xs sm:text-sm max-w-lg">
+            Gestión centralizada de la economía, membresía, equipo, horas de labor y seguridad del nodo Elementales La Lucila.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="flex items-center gap-1.5 text-[11px] font-bold bg-emerald-900/50 text-emerald-400 border border-emerald-700/50 px-3 py-1.5 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Nodo Activo
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCESO RÁPIDO — MÓDULOS DEL CRM -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6" id="eter-modules-grid">
+      
+      <button onclick="showEterModule('elementos')" class="eter-module-btn bg-white border border-stone-200 hover:border-emerald-500 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group col-span-2 sm:col-span-3" data-module="elementos">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🌀</span>
+            <div>
+              <h3 class="font-black text-sm text-stone-900 group-hover:text-emerald-700">Gestión de los 5 Elementos</h3>
+              <p class="text-[11px] text-stone-500 mt-0.5">Control y supervisión de Tierra, Agua, Fuego, Aire y Éter del nodo</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full hidden sm:inline-block">5 Activos</span>
+        </div>
+      </button>
+
+      <button onclick="showEterModule('economia')" class="eter-module-btn bg-white border border-stone-200 hover:border-amber-400 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="economia">
+        <span class="text-2xl mb-2 block">💰</span>
+        <h3 class="font-black text-sm text-stone-900 group-hover:text-amber-700">Economía del Nodo</h3>
+        <p class="text-[11px] text-stone-500 mt-0.5">Ingresos, egresos y balance</p>
+      </button>
+
+      <button onclick="showEterModule('membresia')" class="eter-module-btn bg-white border border-stone-200 hover:border-blue-400 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="membresia">
+        <span class="text-2xl mb-2 block">💧</span>
+        <h3 class="font-black text-sm text-stone-900 group-hover:text-blue-700">Membresías CsC</h3>
+        <p class="text-[11px] text-stone-500 mt-0.5">Socios activos y renovaciones</p>
+      </button>
+
+      <button onclick="showEterModule('equipo')" class="eter-module-btn bg-white border border-stone-200 hover:border-[#c0826d] p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="equipo">
+        <span class="text-2xl mb-2 block">🌿</span>
+        <h3 class="font-black text-sm text-stone-900 group-hover:text-[#a6634f]">Equipo & Guardianes</h3>
+        <p class="text-[11px] text-stone-500 mt-0.5">Perfiles y roles del nodo</p>
+      </button>
+
+      <button onclick="showEterModule('horas')" class="eter-module-btn bg-white border border-stone-200 hover:border-emerald-500 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="horas">
+        <span class="text-2xl mb-2 block">⏰</span>
+        <h3 class="font-black text-sm text-stone-900 group-hover:text-emerald-700">Horas & Labores</h3>
+        <p class="text-[11px] text-stone-500 mt-0.5">Turnos y tareas del nodo</p>
+      </button>
+
+      <button onclick="showEterModule('claves')" class="eter-module-btn bg-white border border-stone-200 hover:border-red-400 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="claves">
+        <span class="text-2xl mb-2 block">🔐</span>
+        <h3 class="font-black text-sm text-stone-900 group-hover:text-red-700">Claves & Accesos</h3>
+        <p class="text-[11px] text-stone-500 mt-0.5">Plataformas y credenciales</p>
+      </button>
+
+      <button onclick="showEterModule('info')" class="eter-module-btn bg-white border border-stone-200 hover:border-purple-400 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="info">
+        <span class="text-2xl mb-2 block">📋</span>
+        <h3 class="font-black text-sm text-stone-900 group-hover:text-purple-700">Info del Nodo</h3>
+        <p class="text-[11px] text-stone-500 mt-0.5">Datos legales y contactos</p>
+      </button>
+
+    </div>
+
+    <!-- PANEL DE CONTENIDO DEL MÓDULO ACTIVO -->
+    <div id="eter-module-content" class="min-h-64">
+      <!-- MÓDULO: GESTIÓN DE TODOS LOS ELEMENTOS -->
+      <div id="eter-panel-elementos" class="eter-panel hidden">
+        <div class="flex items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🌀</span>
+            <h2 class="text-lg font-black text-stone-900">Gestión de los 5 Elementos en La Lucila</h2>
+          </div>
+          <span class="text-xs font-bold text-stone-500 bg-stone-100 px-3 py-1 rounded-full">Nodo Activo</span>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- 1. TIERRA -->
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-xl bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center text-base">🌱</span>
+                <h3 class="font-black text-sm text-stone-900">Elemento Tierra</h3>
+              </div>
+              <span class="text-[10px] font-bold text-[#8ca15d] bg-[#f4f6ef] px-2 py-0.5 rounded-full">6 Oficios Activos</span>
+            </div>
+            <p class="text-xs text-stone-600 mb-3">Vidriera de oficios de confianza, red de huerta y compostaje comunitario.</p>
+            <div class="flex gap-2">
+              <button onclick="navigateTo('oficios')" class="text-xs font-bold text-[#8ca15d] bg-[#f4f6ef] border border-[#c2d49e]/50 px-3 py-1.5 rounded-xl hover:bg-[#e6edd5] transition-colors">Ver Vidriera →</button>
+              <button onclick="openModalSumarAlBarrio('oficio')" class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl hover:bg-stone-200 transition-colors">+ Sumar Oficio</button>
+            </div>
+          </div>
+
+          <!-- 2. AGUA -->
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-xl bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center text-base">💧</span>
+                <h3 class="font-black text-sm text-stone-900">Elemento Agua</h3>
+              </div>
+              <span class="text-[10px] font-bold text-[#52778c] bg-[#f2f6f9] px-2 py-0.5 rounded-full">4 Grupos WA</span>
+            </div>
+            <p class="text-xs text-stone-600 mb-3">Vínculos vecinales, talleres prácticos y canal de alertas y avisos comunitarios.</p>
+            <div class="flex gap-2">
+              <button onclick="navigateTo('whatsapp')" class="text-xs font-bold text-[#52778c] bg-[#f2f6f9] border border-[#b4cfdf]/50 px-3 py-1.5 rounded-xl hover:bg-[#e0ecf3] transition-colors">Grupos WhatsApp →</button>
+              <button onclick="navigateTo('talleres')" class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl hover:bg-stone-200 transition-colors">Talleres</button>
+            </div>
+          </div>
+
+          <!-- 3. FUEGO -->
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-xl bg-[#fdf4f0] border border-[#f2b5a2]/50 flex items-center justify-center text-base">🔥</span>
+                <h3 class="font-black text-sm text-stone-900">Elemento Fuego</h3>
+              </div>
+              <span class="text-[10px] font-bold text-[#d97757] bg-[#fdf4f0] px-2 py-0.5 rounded-full">3 Proyectos</span>
+            </div>
+            <p class="text-xs text-stone-600 mb-3">Financiamiento de proyectos locales, incubadora barrial y motor de transformación.</p>
+            <div class="flex gap-2">
+              <button onclick="navigateTo('financiamiento')" class="text-xs font-bold text-[#d97757] bg-[#fdf4f0] border border-[#f2b5a2]/50 px-3 py-1.5 rounded-xl hover:bg-[#fae3da] transition-colors">Ver Proyectos →</button>
+              <button onclick="openModalSumarAlBarrio('proyecto')" class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl hover:bg-stone-200 transition-colors">+ Postular</button>
+            </div>
+          </div>
+
+          <!-- 4. AIRE -->
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-xl bg-[#f6f7f3] border border-[#d2d7c1]/50 flex items-center justify-center text-base">💨</span>
+                <h3 class="font-black text-sm text-stone-900">Elemento Aire</h3>
+              </div>
+              <span class="text-[10px] font-bold text-[#7d8560] bg-[#f6f7f3] px-2 py-0.5 rounded-full">Noticias Activas</span>
+            </div>
+            <p class="text-xs text-stone-600 mb-3">Google News de La Lucila, alertas de marea y clima, y comunicación oficial del nodo.</p>
+            <div class="flex gap-2">
+              <button onclick="navigateTo('noticias')" class="text-xs font-bold text-[#7d8560] bg-[#f6f7f3] border border-[#d2d7c1]/50 px-3 py-1.5 rounded-xl hover:bg-[#ebeee4] transition-colors">Noticias Locales →</button>
+            </div>
+          </div>
+
+          <!-- 5. ÉTER -->
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs md:col-span-2">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-xl bg-[#fcf4f0] border border-[#dfc2b7]/50 flex items-center justify-center text-base">✨</span>
+                <h3 class="font-black text-sm text-stone-900">Elemento Éter (El Nodo Central)</h3>
+              </div>
+              <span class="text-[10px] font-bold text-[#a6634f] bg-[#fcf4f0] px-2 py-0.5 rounded-full">Oficina Rawson 3450</span>
+            </div>
+            <p class="text-xs text-stone-600 mb-3">Coordinación de los 5 guardianes, atención presencial en La Lucila, administración general de membresías y economía.</p>
+            <div class="flex gap-2">
+              <button onclick="navigateTo('centro-lucila')" class="text-xs font-bold text-[#a6634f] bg-[#fcf4f0] border border-[#c0826d]/30 px-3 py-1.5 rounded-xl hover:bg-[#fde9e1] transition-colors">Oficina Pública →</button>
+              <button onclick="showEterModule('economia')" class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl hover:bg-stone-200 transition-colors">Economía</button>
+              <button onclick="showEterModule('membresia')" class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl hover:bg-stone-200 transition-colors">Membresías</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- MÓDULO: ECONOMÍA -->
+      <div id="eter-panel-economia" class="eter-panel hidden">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xl">💰</span>
+          <h2 class="text-lg font-black text-stone-900">Economía del Nodo</h2>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
+            <p class="text-xs font-bold text-emerald-700 mb-1">Ingresos (mes)</p>
+            <p class="text-xl font-black text-emerald-800" id="eco-ingresos">$0</p>
+          </div>
+          <div class="bg-red-50 border border-red-200 rounded-2xl p-4 text-center">
+            <p class="text-xs font-bold text-red-700 mb-1">Egresos (mes)</p>
+            <p class="text-xl font-black text-red-800" id="eco-egresos">$0</p>
+          </div>
+          <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-center">
+            <p class="text-xs font-bold text-blue-700 mb-1">Balance</p>
+            <p class="text-xl font-black text-blue-800" id="eco-balance">$0</p>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
+            <p class="text-xs font-bold text-amber-700 mb-1">Fondo Barrial</p>
+            <p class="text-xl font-black text-amber-800" id="eco-fondo">$0</p>
+          </div>
+        </div>
+        <!-- Registro de movimientos -->
+        <div class="bg-white rounded-2xl border border-stone-200 p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-sm text-stone-900">Movimientos recientes</h3>
+            <button onclick="openEterMovimientoForm()" class="text-xs font-bold text-[#a6634f] bg-[#fcf4f0] border border-[#c0826d]/30 px-3 py-1 rounded-full hover:bg-[#fde9e1] transition-colors">+ Cargar</button>
+          </div>
+          <div id="eco-movimientos-list" class="space-y-2 text-xs">
+            <p class="text-stone-400 text-center py-4">Sin movimientos cargados aún.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÓDULO: MEMBRESÍAS -->
+      <div id="eter-panel-membresia" class="eter-panel hidden">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xl">💧</span>
+          <h2 class="text-lg font-black text-stone-900">Membresías CsC Activas</h2>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
+          <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-center">
+            <p class="text-xs font-bold text-blue-700 mb-1">Socios activos</p>
+            <p id="memb-activos" class="text-2xl font-black text-blue-800">0</p>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
+            <p class="text-xs font-bold text-amber-700 mb-1">Vencen este mes</p>
+            <p id="memb-vencen" class="text-2xl font-black text-amber-800">0</p>
+          </div>
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
+            <p class="text-xs font-bold text-emerald-700 mb-1">Ingresos membresía</p>
+            <p id="memb-ingresos" class="text-2xl font-black text-emerald-800">$0</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-stone-200 p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-sm text-stone-900">Listado de socios</h3>
+            <button onclick="navigateTo('members-directory')" class="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full hover:bg-blue-100 transition-colors">Ver directorio completo →</button>
+          </div>
+          <div id="memb-socios-list" class="space-y-2 text-xs">
+            <p class="text-stone-400 text-center py-4">Cargando socios...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÓDULO: EQUIPO -->
+      <div id="eter-panel-equipo" class="eter-panel hidden">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xl">🌿</span>
+          <h2 class="text-lg font-black text-stone-900">Equipo & Guardianes del Nodo</h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="eter-equipo-grid">
+          <!-- Guardianes del nodo -->
+          <div class="bg-white border border-stone-200 rounded-2xl p-4 flex items-start gap-3">
+            <span class="w-10 h-10 rounded-full bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center text-xl shrink-0">🌿</span>
+            <div class="min-w-0">
+              <h3 class="font-black text-sm text-stone-900">Rami</h3>
+              <span class="text-[11px] font-bold text-[#8ca15d] bg-[#f4f6ef] px-2 py-0.5 rounded-full border border-[#c2d49e]/50">Coordinador & Tecnología Barrial</span>
+              <p class="text-xs text-stone-500 mt-1.5 leading-snug">Gestión del portal, GitHub, dominio, integraciones y estrategia digital del nodo.</p>
+            </div>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl p-4 flex items-start gap-3">
+            <span class="w-10 h-10 rounded-full bg-[#fdf4f0] border border-[#f2b5a2]/50 flex items-center justify-center text-xl shrink-0">🔥</span>
+            <div class="min-w-0">
+              <h3 class="font-black text-sm text-stone-900">Gonza</h3>
+              <span class="text-[11px] font-bold text-[#d97757] bg-[#fdf4f0] px-2 py-0.5 rounded-full border border-[#f2b5a2]/50">Guardián de la Energía Vital</span>
+              <p class="text-xs text-stone-500 mt-1.5 leading-snug">Motor del nodo, visión y acción comunitaria. Liderazgo de proyectos y talleres de fuego.</p>
+            </div>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl p-4 flex items-start gap-3">
+            <span class="w-10 h-10 rounded-full bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center text-xl shrink-0">💧</span>
+            <div class="min-w-0">
+              <h3 class="font-black text-sm text-stone-900">Agus</h3>
+              <span class="text-[11px] font-bold text-[#52778c] bg-[#f2f6f9] px-2 py-0.5 rounded-full border border-[#b4cfdf]/50">Vínculos & Bienvenida Vecinal</span>
+              <p class="text-xs text-stone-500 mt-1.5 leading-snug">Recibe a los vecinos, gestiona membresías, coordina la agenda y facilita los círculos comunitarios.</p>
+            </div>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl p-4 flex items-start gap-3">
+            <span class="w-10 h-10 rounded-full bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center text-xl shrink-0">🌱</span>
+            <div class="min-w-0">
+              <h3 class="font-black text-sm text-stone-900">Cris</h3>
+              <span class="text-[11px] font-bold text-[#8ca15d] bg-[#f4f6ef] px-2 py-0.5 rounded-full border border-[#c2d49e]/50">Guardián del Suelo Vivo</span>
+              <p class="text-xs text-stone-500 mt-1.5 leading-snug">Huerta regenerativa, compostaje, semillas y talleres de tierra. Gestión del espacio exterior.</p>
+            </div>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl p-4 flex items-start gap-3">
+            <span class="w-10 h-10 rounded-full bg-[#fcf4f0] border border-[#dfc2b7]/50 flex items-center justify-center text-xl shrink-0">✨</span>
+            <div class="min-w-0">
+              <h3 class="font-black text-sm text-stone-900">Ro</h3>
+              <span class="text-[11px] font-bold text-[#a6634f] bg-[#fcf4f0] px-2 py-0.5 rounded-full border border-[#dfc2b7]/50">Alquimista Natural & Salud</span>
+              <p class="text-xs text-stone-500 mt-1.5 leading-snug">Nutrición consciente, fermentos, cosmética artesanal. Coordina talleres de alquimia y el espacio de salud.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÓDULO: HORAS & LABORES -->
+      <div id="eter-panel-horas" class="eter-panel hidden">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xl">⏰</span>
+          <h2 class="text-lg font-black text-stone-900">Horas & Labores del Nodo</h2>
+        </div>
+        <!-- Guardias de la semana -->
+        <div class="bg-white rounded-2xl border border-stone-200 p-4 mb-4">
+          <h3 class="font-bold text-sm text-stone-900 mb-3">Turnos de atención — Semana actual</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs border-collapse min-w-[400px]">
+              <thead>
+                <tr class="border-b border-stone-100">
+                  <th class="text-left font-bold text-stone-600 pb-2 pr-3">Día</th>
+                  <th class="text-left font-bold text-stone-600 pb-2 pr-3">Guardián</th>
+                  <th class="text-left font-bold text-stone-600 pb-2 pr-3">Horario</th>
+                  <th class="text-left font-bold text-stone-600 pb-2">Estado</th>
+                </tr>
+              </thead>
+              <tbody id="horas-turnos-tbody" class="space-y-1">
+                <tr class="border-b border-stone-50">
+                  <td class="py-2 pr-3 font-bold text-stone-800">Lunes</td>
+                  <td class="py-2 pr-3 text-stone-600">Agus</td>
+                  <td class="py-2 pr-3 text-stone-500">09:30 – 14:00</td>
+                  <td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td>
+                </tr>
+                <tr class="border-b border-stone-50">
+                  <td class="py-2 pr-3 font-bold text-stone-800">Martes</td>
+                  <td class="py-2 pr-3 text-stone-600">Gonza</td>
+                  <td class="py-2 pr-3 text-stone-500">10:00 – 19:30</td>
+                  <td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td>
+                </tr>
+                <tr class="border-b border-stone-50">
+                  <td class="py-2 pr-3 font-bold text-stone-800">Miércoles</td>
+                  <td class="py-2 pr-3 text-stone-600">Rami + Cris</td>
+                  <td class="py-2 pr-3 text-stone-500">09:30 – 19:30</td>
+                  <td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td>
+                </tr>
+                <tr class="border-b border-stone-50">
+                  <td class="py-2 pr-3 font-bold text-stone-800">Jueves</td>
+                  <td class="py-2 pr-3 text-stone-600">Ro</td>
+                  <td class="py-2 pr-3 text-stone-500">14:00 – 19:30</td>
+                  <td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td>
+                </tr>
+                <tr class="border-b border-stone-50">
+                  <td class="py-2 pr-3 font-bold text-stone-800">Viernes</td>
+                  <td class="py-2 pr-3 text-stone-600 italic text-amber-600">Sin asignar</td>
+                  <td class="py-2 pr-3 text-stone-500">09:30 – 19:30</td>
+                  <td class="py-2"><span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-bold">⚠ Pendiente</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2 pr-3 font-bold text-stone-800">Sábado</td>
+                  <td class="py-2 pr-3 text-stone-600">Gonza + Agus</td>
+                  <td class="py-2 pr-3 text-stone-500">10:00 – 16:00</td>
+                  <td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Tareas pendientes -->
+        <div class="bg-white rounded-2xl border border-stone-200 p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-sm text-stone-900">Tareas y labores pendientes</h3>
+            <button onclick="openEterTareaForm()" class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full hover:bg-emerald-100 transition-colors">+ Agregar</button>
+          </div>
+          <div id="horas-tareas-list" class="space-y-2">
+            <label class="flex items-start gap-2 p-2 rounded-xl hover:bg-stone-50 cursor-pointer">
+              <input type="checkbox" class="mt-0.5 rounded shrink-0" />
+              <span class="text-xs text-stone-700">Reponer papel higiénico y artículos de limpieza del local</span>
+            </label>
+            <label class="flex items-start gap-2 p-2 rounded-xl hover:bg-stone-50 cursor-pointer">
+              <input type="checkbox" class="mt-0.5 rounded shrink-0" />
+              <span class="text-xs text-stone-700">Regar la huerta y revisar el compostador de balcón</span>
+            </label>
+            <label class="flex items-start gap-2 p-2 rounded-xl hover:bg-stone-50 cursor-pointer">
+              <input type="checkbox" class="mt-0.5 rounded shrink-0" />
+              <span class="text-xs text-stone-700 font-bold text-amber-700">🔥 URGENTE: Preparar espacio para taller del Sábado 26/09 (10:30 hs)</span>
+            </label>
+            <label class="flex items-start gap-2 p-2 rounded-xl hover:bg-stone-50 cursor-pointer">
+              <input type="checkbox" class="mt-0.5 rounded shrink-0" />
+              <span class="text-xs text-stone-700">Actualizar el cartel de horarios de la puerta del local</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÓDULO: CLAVES & ACCESOS -->
+      <div id="eter-panel-claves" class="eter-panel hidden">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xl">🔐</span>
+          <h2 class="text-lg font-black text-stone-900">Claves & Accesos del Nodo</h2>
+        </div>
+        <div class="bg-amber-50 border border-amber-300 rounded-2xl p-3 mb-4 flex items-start gap-2">
+          <span class="text-amber-600 text-sm mt-0.5 shrink-0">⚠️</span>
+          <p class="text-xs text-amber-800 font-semibold">Esta sección es de uso exclusivo del equipo. No compartir pantalla ni acceso con vecinos. Las claves aquí son de referencia interna.</p>
+        </div>
+        <div class="space-y-3" id="claves-list">
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-lg shrink-0">🌐</span>
+              <div class="min-w-0">
+                <p class="font-bold text-sm text-stone-900">Dominio: elementales.store</p>
+                <p class="text-xs text-stone-500">GoDaddy · Admin: Rami · Renueva: Mar 2026</p>
+              </div>
+            </div>
+            <a href="https://www.godaddy.com" target="_blank" class="text-[11px] font-bold text-[#a6634f] bg-[#fcf4f0] px-2 py-1 rounded-full border border-[#c0826d]/30 shrink-0">Acceder →</a>
+          </div>
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-lg shrink-0">🐙</span>
+              <div class="min-w-0">
+                <p class="font-bold text-sm text-stone-900">GitHub: RamiStein / Elementales-comunidad</p>
+                <p class="text-xs text-stone-500">Repo principal · Admin: Rami · Rama: main</p>
+              </div>
+            </div>
+            <a href="https://github.com/RamiStein/Elementales-comunidad" target="_blank" class="text-[11px] font-bold text-stone-700 bg-stone-100 px-2 py-1 rounded-full border border-stone-200 shrink-0">Acceder →</a>
+          </div>
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center text-lg shrink-0">📊</span>
+              <div class="min-w-0">
+                <p class="font-bold text-sm text-stone-900">Google Workspace / Drive del Nodo</p>
+                <p class="text-xs text-stone-500">Admin: Rami · Carpeta: Elementales La Lucila</p>
+              </div>
+            </div>
+            <a href="https://drive.google.com" target="_blank" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-200 shrink-0">Acceder →</a>
+          </div>
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center text-lg shrink-0">💬</span>
+              <div class="min-w-0">
+                <p class="font-bold text-sm text-stone-900">WhatsApp Business del Centro</p>
+                <p class="text-xs text-stone-500">Nro del local · Admin: Agus y Gonza</p>
+              </div>
+            </div>
+            <a href="https://business.whatsapp.com" target="_blank" class="text-[11px] font-bold text-green-700 bg-green-50 px-2 py-1 rounded-full border border-green-200 shrink-0">Acceder →</a>
+          </div>
+          <button onclick="openEterClaveForm()" class="w-full border-2 border-dashed border-stone-200 rounded-2xl py-4 text-xs font-bold text-stone-400 hover:border-[#c0826d] hover:text-[#a6634f] transition-colors">
+            + Agregar nueva clave o acceso
+          </button>
+        </div>
+      </div>
+
+      <!-- MÓDULO: INFORMACIÓN DEL NODO -->
+      <div id="eter-panel-info" class="eter-panel hidden">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xl">📋</span>
+          <h2 class="text-lg font-black text-stone-900">Información del Nodo</h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-white rounded-2xl border border-stone-200 p-4">
+            <h3 class="font-bold text-sm text-stone-900 mb-3 flex items-center gap-2"><span>🏡</span> Datos del Local</h3>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between border-b border-stone-50 pb-1.5">
+                <span class="text-stone-500 font-semibold">Dirección</span>
+                <span class="text-stone-800 font-bold text-right">Rawson 3450, La Lucila</span>
+              </div>
+              <div class="flex justify-between border-b border-stone-50 pb-1.5">
+                <span class="text-stone-500 font-semibold">Partido</span>
+                <span class="text-stone-800 font-bold">Vicente López, PBA</span>
+              </div>
+              <div class="flex justify-between border-b border-stone-50 pb-1.5">
+                <span class="text-stone-500 font-semibold">Horario</span>
+                <span class="text-stone-800 font-bold">Lun-Sáb 09:30–19:30</span>
+              </div>
+              <div class="flex justify-between border-b border-stone-50 pb-1.5">
+                <span class="text-stone-500 font-semibold">Tipo de espacio</span>
+                <span class="text-stone-800 font-bold">Alquiler mensual</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-stone-500 font-semibold">Capacidad</span>
+                <span class="text-stone-800 font-bold">~20 personas</span>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl border border-stone-200 p-4">
+            <h3 class="font-bold text-sm text-stone-900 mb-3 flex items-center gap-2"><span>⚡</span> Servicios & Recursos</h3>
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center justify-between border-b border-stone-50 pb-1.5">
+                <span class="text-stone-500 font-semibold">WiFi</span>
+                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Activo</span>
+              </div>
+              <div class="flex items-center justify-between border-b border-stone-50 pb-1.5">
+                <span class="text-stone-500 font-semibold">Impresora</span>
+                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Activa</span>
+              </div>
+              <div class="flex items-center justify-between border-b border-stone-50 pb-1.5">
+                <span class="text-stone-500 font-semibold">Proyector</span>
+                <span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-bold">⚠ Prestado</span>
+              </div>
+              <div class="flex items-center justify-between border-b border-stone-50 pb-1.5">
+                <span class="text-stone-500 font-semibold">Huerta exterior</span>
+                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Activa</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-stone-500 font-semibold">Compostador</span>
+                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Activo</span>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl border border-stone-200 p-4 sm:col-span-2">
+            <h3 class="font-bold text-sm text-stone-900 mb-3 flex items-center gap-2"><span>📌</span> Notas internas del equipo</h3>
+            <textarea id="eter-notas-internas" class="w-full text-xs text-stone-700 bg-stone-50 rounded-xl border border-stone-200 p-3 resize-none outline-none focus:border-[#c0826d] transition-colors" rows="4" placeholder="Anotá acá cualquier cosa importante del nodo que el equipo deba recordar..."></textarea>
+            <button onclick="saveEterNotas()" class="mt-2 text-xs font-bold text-[#a6634f] bg-[#fcf4f0] border border-[#c0826d]/30 px-4 py-1.5 rounded-full hover:bg-[#fde9e1] transition-colors">Guardar nota</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLACEHOLDER si no hay módulo seleccionado -->
+      <div id="eter-panel-default" class="text-center py-10">
+        <span class="text-4xl block mb-3">✨</span>
+        <p class="text-stone-500 text-sm font-semibold">Seleccioná un módulo arriba para comenzar a gestionar el nodo.</p>
+      </div>
     </div>
   </div>
 
