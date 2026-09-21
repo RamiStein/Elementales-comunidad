@@ -242,6 +242,19 @@
             <span class="text-xs">Publicar</span>
           </button>
 
+          <!-- Selector de Rol Visible en Cabecera (No Miembro / Socio CsC / Gestor) -->
+          <button 
+            type="button"
+            id="header-role-badge"
+            onclick="openRoleSwitcherModal()"
+            class="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-700 border-stone-300 hover:bg-stone-200"
+            title="Cambiar perspectiva: Vecino No Miembro, Socio CsC o Gestor del Nodo"
+          >
+            <span id="header-role-dot" class="w-2 h-2 rounded-full bg-stone-400"></span>
+            <span id="header-role-text">Vecino</span>
+            <span class="text-[9px] opacity-60">▼</span>
+          </button>
+
           <!-- Avatar Vecino / Carnet -->
           <button 
             type="button"
@@ -334,6 +347,83 @@
   <!-- ========================================================================= -->
   <div id="view-barrio" class="app-view max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-20">
     
+    <!-- BANNER CONTEXTUAL POR ROL (NO MIEMBRO / SOCIO CsC / GESTOR DEL NODO) -->
+    <div id="role-context-banners-container" class="mb-5">
+      
+      <!-- 1. BANNER PARA USUARIO NO MIEMBRO -->
+      <div id="role-banner-visitante" class="bg-gradient-to-r from-stone-50 via-[#fcf6f2] to-amber-50/40 border border-[#c0826d]/30 rounded-2xl p-3.5 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-start sm:items-center gap-3">
+          <span class="w-10 h-10 rounded-2xl bg-[#fcf4f0] border border-[#c0826d]/30 flex items-center justify-center text-xl shrink-0 shadow-2xs">🌱</span>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h4 class="font-black text-sm text-stone-900">Estás explorando como Vecino No Miembro</h4>
+              <span class="text-[10px] font-bold bg-stone-200 text-stone-700 px-2 py-0.5 rounded-full">Acceso Abierto</span>
+            </div>
+            <p class="text-xs text-stone-600 mt-0.5 leading-snug">
+              Tenés acceso a noticias, oficios y grupos vecinales. Sumate a la Membresía CsC para acceder a compras comunitarias a precio de costo y cupos prioritarios.
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="navigateTo('membership')" class="bg-[#c0826d] hover:bg-[#a6634f] text-white text-xs font-bold px-3.5 py-2 rounded-full shadow-xs transition-transform active:scale-95">
+            💧 Hacerte Socio CsC
+          </button>
+          <button onclick="openRoleSwitcherModal()" class="text-stone-600 hover:text-stone-900 text-xs font-bold px-2.5 py-1.5 rounded-full hover:bg-stone-200/50 border border-stone-300">
+            Cambiar rol ⇄
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. BANNER PARA MIEMBRO / SOCIO CsC -->
+      <div id="role-banner-socio" class="hidden bg-gradient-to-r from-blue-50/90 via-sky-50/60 to-indigo-50/70 border border-blue-200 rounded-2xl p-3.5 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-start sm:items-center gap-3">
+          <span class="w-10 h-10 rounded-2xl bg-blue-100 border border-blue-300 flex items-center justify-center text-xl shrink-0 shadow-2xs">💧</span>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h4 class="font-black text-sm text-blue-950">¡Bienvenida Socia CsC! · Lucía Gómez</h4>
+              <span class="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-full">Socio Activo #CSC-0482</span>
+            </div>
+            <p class="text-xs text-blue-800/80 mt-0.5 leading-snug">
+              Tu membresía está activa en el Nodo La Lucila. Disfrutás de compras colectivas a precio de costo, prioridad en talleres y participación en asambleas.
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="navigateTo('profile')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3.5 py-2 rounded-full shadow-xs transition-transform active:scale-95">
+            🪪 Mi Carnet Digital
+          </button>
+          <button onclick="openRoleSwitcherModal()" class="text-blue-800 hover:text-blue-950 text-xs font-bold px-2.5 py-1.5 rounded-full hover:bg-blue-100/50 border border-blue-300">
+            Cambiar rol ⇄
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. BANNER PARA GESTOR DEL NODO -->
+      <div id="role-banner-gestor" class="hidden bg-gradient-to-r from-amber-50 via-orange-50/50 to-stone-100 border border-amber-300 rounded-2xl p-3.5 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-start sm:items-center gap-3">
+          <span class="w-10 h-10 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-xl shrink-0 shadow-2xs">👑</span>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h4 class="font-black text-sm text-amber-950">Modo Gestor del Nodo Activo</h4>
+              <span class="text-[10px] font-black bg-amber-600 text-white px-2 py-0.5 rounded-full">Equipo Rawson 3450</span>
+            </div>
+            <p class="text-xs text-amber-900/80 mt-0.5 leading-snug">
+              Tenés control administrativo: economía de caja, altas de membresía, cuadrante de turnos, claves del nodo y supervisión de los 5 Elementos.
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="navigateTo('eter')" class="bg-gradient-to-r from-[#c0826d] to-[#a6634f] hover:opacity-95 text-white text-xs font-bold px-3.5 py-2 rounded-full shadow-xs transition-transform active:scale-95">
+            ✨ Abrir Éter CRM
+          </button>
+          <button onclick="openRoleSwitcherModal()" class="text-stone-700 hover:text-stone-900 text-xs font-bold px-2.5 py-1.5 rounded-full hover:bg-amber-100/50 border border-amber-300">
+            Cambiar rol ⇄
+          </button>
+        </div>
+      </div>
+
+    </div>
+
     <!-- BANNER DE BIENVENIDA AL NODO LA LUCILA -->
     <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#ffffff] via-[#fcf6f2] to-[#f5eee6] border border-[#c0826d]/30 mb-6 shadow-xs relative overflow-hidden">
       <div class="relative z-10">
@@ -765,6 +855,11 @@
           </span>
         </div>
       </div>
+    </div>
+
+    <!-- BANNER DE ACCESO / PERSPECTIVA EN ÉTER CRM -->
+    <div id="eter-role-access-card" class="mb-6 p-4 rounded-2xl border transition-all">
+      <!-- Se puebla dinámicamente con updateRoleUI() -->
     </div>
 
     <!-- ACCESO RÁPIDO — MÓDULOS DEL CRM -->
@@ -2504,20 +2599,27 @@
         Cambia tu rol aquí para ver cómo la tienda muestra los precios con descuento de Socio CsC o de Visitante.
       </p>
 
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-3 gap-2">
         <button 
           onclick="toggleUserRole('visitante')" 
           id="btn-role-sim-visitante"
-          class="p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-white border-stone-200 text-stone-700">
-          <span>👤</span>
-          <span>Visitante</span>
+          class="p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex flex-col items-center justify-center gap-1 bg-white border-stone-200 text-stone-700">
+          <span class="text-base">👤</span>
+          <span class="leading-tight">No Miembro</span>
         </button>
         <button 
           onclick="toggleUserRole('socio')" 
           id="btn-role-sim-socio"
-          class="p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-emerald-50 border-emerald-500 text-emerald-800">
-          <span>🌱</span>
-          <span>Socio CsC Activo</span>
+          class="p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex flex-col items-center justify-center gap-1 bg-white border-stone-200 text-stone-700">
+          <span class="text-base">💧</span>
+          <span class="leading-tight">Socio CsC</span>
+        </button>
+        <button 
+          onclick="toggleUserRole('gestor')" 
+          id="btn-role-sim-gestor"
+          class="p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex flex-col items-center justify-center gap-1 bg-white border-stone-200 text-stone-700">
+          <span class="text-base">👑</span>
+          <span class="leading-tight">Gestor Nodo</span>
         </button>
       </div>
     </div>
@@ -2528,6 +2630,90 @@
         class="btn-spotify btn-spotify-primary text-xs sm:text-sm !py-3 !px-6 font-black shadow-md">
         🛒 Ir a Comprar con mi Carnet
       </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: SELECTOR DE ROL Y PERSPECTIVA (NO MIEMBRO / SOCIO CsC / GESTOR NODO) -->
+  <!-- ========================================================================= -->
+  <div id="modal-role-switcher" class="modal-backdrop hidden" onclick="if(event.target === this) closeRoleSwitcherModal()">
+    <div class="modal-content p-6 max-w-lg mx-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">👥</span>
+          <div>
+            <h3 class="font-black text-lg text-stone-900 leading-none">Selector de Perspectiva</h3>
+            <p class="text-[11px] text-stone-500 mt-0.5">Elegí cómo querés navegar y experimentar la plataforma</p>
+          </div>
+        </div>
+        <button onclick="closeRoleSwitcherModal()" class="text-stone-400 hover:text-stone-700 text-lg font-bold w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center">✕</button>
+      </div>
+
+      <!-- 3 OPCIONES CLARAS DE ROL -->
+      <div class="space-y-3 mb-4">
+        
+        <!-- Rol 1: Vecino No Miembro -->
+        <div 
+          onclick="toggleUserRole('visitante'); closeRoleSwitcherModal();"
+          id="role-option-visitante"
+          class="p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-start gap-3.5 hover:border-stone-400 hover:bg-stone-50"
+        >
+          <span class="w-10 h-10 rounded-xl bg-stone-100 border border-stone-200 flex items-center justify-center text-xl shrink-0">👤</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <h4 class="font-black text-sm text-stone-900">Vecino No Miembro</h4>
+              <span class="role-active-check text-xs font-black text-emerald-600 hidden">✓ Activo</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-snug">
+              Público general. Acceso al portal barrial, vidriera de oficios, grupos de WhatsApp, noticias y talleres abiertos. En la feria compras a precio minorista con opción de asociarte.
+            </p>
+            <span class="inline-block mt-2 text-[10px] font-bold text-stone-500 bg-stone-100 px-2 py-0.5 rounded-full">Acceso Abierto</span>
+          </div>
+        </div>
+
+        <!-- Rol 2: Socio CsC (Miembro) -->
+        <div 
+          onclick="toggleUserRole('socio'); closeRoleSwitcherModal();"
+          id="role-option-socio"
+          class="p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-start gap-3.5 hover:border-blue-400 hover:bg-blue-50/40"
+        >
+          <span class="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center text-xl shrink-0">💧</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <h4 class="font-black text-sm text-blue-950">Miembro / Socio CsC</h4>
+              <span class="role-active-check text-xs font-black text-blue-600 hidden">✓ Activo</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-snug">
+              Socio activo de la Comunidad de Sustento Compartido. Precios mayoristas de compras colectivas en feria, carnet digital de socio con QR, cupos reservados en talleres y voto barrial.
+            </p>
+            <span class="inline-block mt-2 text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">Precios de Costo · Carnet Digital</span>
+          </div>
+        </div>
+
+        <!-- Rol 3: Gestor del Nodo -->
+        <div 
+          onclick="toggleUserRole('gestor'); closeRoleSwitcherModal();"
+          id="role-option-gestor"
+          class="p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-start gap-3.5 hover:border-amber-400 hover:bg-amber-50/40"
+        >
+          <span class="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-xl shrink-0">👑</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <h4 class="font-black text-sm text-amber-950">Gestor del Nodo (Equipo)</h4>
+              <span class="role-active-check text-xs font-black text-amber-700 hidden">✓ Activo</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-snug">
+              Equipo de guardianía de Rawson 3450 (Gonza, Agus, Rami, Cris, Ro). Acceso completo al Éter CRM, finanzas de caja, altas de membresía, cuadrante de turnos y bóveda de claves seguras.
+            </p>
+            <span class="inline-block mt-2 text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200">Control Total Éter CRM</span>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="text-[11px] text-stone-400 text-center">
+        💡 Podés cambiar de rol en cualquier momento desde el selector en la cabecera.
+      </p>
     </div>
   </div>
 

@@ -1945,7 +1945,9 @@ function selectNode(nodeId) {
 
 // --- PERFIL Y CARNET DIGITAL (RED ELEMENTAL) ---
 function renderProfile() {
-  const isSocio = AppState.userRole === 'socio';
+  const role = AppState.userRole || 'visitante';
+  const isSocio = role === 'socio';
+  const isGestor = role === 'gestor';
   const planInfo = PLANES_MEMBRESIA.find(p => p.id === AppState.userPlan) || PLANES_MEMBRESIA[1];
   const nodeInfo = NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) || NODOS_COMUNIDAD[0];
 
@@ -1956,56 +1958,200 @@ function renderProfile() {
   const nodeEl = document.getElementById('carnet-node-name');
   const guardianEl = document.getElementById('carnet-node-guardian');
 
-  if (nameEl) nameEl.textContent = AppState.userName || 'Lucía Gómez';
-  if (planEl) planEl.textContent = isSocio ? `${planInfo.name}` : 'Visitante (Sin Membresía)';
-  if (codeEl) codeEl.textContent = AppState.userCode || 'CSC-2026-0482';
+  if (nameEl) {
+    if (isGestor) nameEl.textContent = 'Equipo Guardián La Lucila';
+    else if (isSocio) nameEl.textContent = AppState.userName || 'Lucía Gómez';
+    else nameEl.textContent = 'Vecino Visitante';
+  }
+
+  if (planEl) {
+    if (isGestor) planEl.textContent = 'Guardián del Nodo (Rawson 3450)';
+    else if (isSocio) planEl.textContent = `${planInfo.name}`;
+    else planEl.textContent = 'Acceso Público (Sin Membresía)';
+  }
+
+  if (codeEl) {
+    if (isGestor) codeEl.textContent = 'NODO-LUCILA-GEST';
+    else if (isSocio) codeEl.textContent = AppState.userCode || 'CSC-2026-0482';
+    else codeEl.textContent = 'VISITANTE-PUBLIC';
+  }
+
   if (nodeEl) nodeEl.textContent = nodeInfo.name;
-  if (guardianEl) guardianEl.textContent = `Guardián: ${nodeInfo.guardian}`;
+  if (guardianEl) guardianEl.textContent = isGestor ? 'Gestores: Gonza, Agus, Rami, Cris, Ro' : `Guardián: ${nodeInfo.guardian}`;
 
   if (pillEl) {
-    if (isSocio) {
-      pillEl.textContent = 'Socio CsC Activo';
-      pillEl.className = 'text-[11px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200';
+    if (isGestor) {
+      pillEl.textContent = '👑 Gestor Activo';
+      pillEl.className = 'text-[11px] font-black px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300';
+    } else if (isSocio) {
+      pillEl.textContent = '💧 Socio CsC Activo';
+      pillEl.className = 'text-[11px] font-black px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 border border-blue-200';
     } else {
-      pillEl.textContent = 'Visitante';
+      pillEl.textContent = '👤 No Miembro';
       pillEl.className = 'text-[11px] font-black px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200';
     }
   }
 
-  // Actualizar botones de simulación
-  const btnVisitante = document.getElementById('btn-role-sim-visitante');
-  const btnSocio = document.getElementById('btn-role-sim-socio');
-  if (btnVisitante && btnSocio) {
-    if (isSocio) {
-      btnSocio.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-emerald-50 border-emerald-500 text-emerald-800 shadow-sm';
-      btnVisitante.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-white border-stone-200 text-stone-500 hover:bg-stone-50';
-    } else {
-      btnVisitante.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-stone-100 border-stone-600 text-stone-900 shadow-sm';
-      btnSocio.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-1.5 bg-white border-stone-200 text-stone-500 hover:bg-stone-50';
-    }
-  }
+  updateRoleUI();
 }
 
 function toggleUserRole(forcedRole = null) {
   if (forcedRole) {
     AppState.userRole = forcedRole;
   } else {
-    AppState.userRole = AppState.userRole === 'socio' ? 'visitante' : 'socio';
+    if (AppState.userRole === 'visitante') AppState.userRole = 'socio';
+    else if (AppState.userRole === 'socio') AppState.userRole = 'gestor';
+    else AppState.userRole = 'visitante';
   }
   localStorage.setItem('elementales_user_role', AppState.userRole);
   sounds.playPop();
 
-  if (AppState.userRole === 'socio') {
+  if (AppState.userRole === 'socio' || AppState.userRole === 'gestor') {
     AppState.catalogMode = 'semanal';
   } else {
     AppState.catalogMode = 'local';
   }
   localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
 
+  updateRoleUI();
   renderProfile();
   renderMembership();
   renderOrderCatalog();
   renderFloatingCart();
+  if (AppState.currentView === 'barrio') renderBarrioFeed();
+  if (AppState.currentView === 'eter') showEterModule('elementos');
+}
+
+// CONTROL DEL MODAL SELECTOR DE ROL
+function openRoleSwitcherModal() {
+  sounds.playPop();
+  const modal = document.getElementById('modal-role-switcher');
+  if (modal) modal.classList.remove('hidden');
+  updateRoleSwitcherModalActiveCheck();
+}
+
+function closeRoleSwitcherModal() {
+  const modal = document.getElementById('modal-role-switcher');
+  if (modal) modal.classList.add('hidden');
+}
+
+function updateRoleSwitcherModalActiveCheck() {
+  const currentRole = AppState.userRole || 'visitante';
+  ['visitante', 'socio', 'gestor'].forEach(r => {
+    const card = document.getElementById(`role-option-${r}`);
+    if (card) {
+      const check = card.querySelector('.role-active-check');
+      if (r === currentRole) {
+        card.classList.add('ring-2', 'ring-emerald-500', 'bg-stone-50');
+        if (check) check.classList.remove('hidden');
+      } else {
+        card.classList.remove('ring-2', 'ring-emerald-500', 'bg-stone-50');
+        if (check) check.classList.add('hidden');
+      }
+    }
+  });
+}
+
+// ACTUALIZACIÓN GLOBAL DE LA INTERFAZ SEGÚN EL ROL ACTIVO
+function updateRoleUI() {
+  const role = AppState.userRole || 'visitante';
+
+  // 1. Botón de rol en la cabecera
+  const badge = document.getElementById('header-role-badge');
+  const dot = document.getElementById('header-role-dot');
+  const text = document.getElementById('header-role-text');
+  if (badge && dot && text) {
+    if (role === 'gestor') {
+      badge.className = 'flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs border bg-amber-100 border-amber-400 text-amber-950 hover:bg-amber-200';
+      dot.className = 'w-2 h-2 rounded-full bg-amber-600 animate-pulse';
+      text.textContent = '👑 Gestor Nodo';
+    } else if (role === 'socio') {
+      badge.className = 'flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs border bg-blue-50 border-blue-300 text-blue-900 hover:bg-blue-100';
+      dot.className = 'w-2 h-2 rounded-full bg-blue-600';
+      text.textContent = '💧 Socio CsC';
+    } else {
+      badge.className = 'flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs border bg-stone-100 border-stone-300 text-stone-700 hover:bg-stone-200';
+      dot.className = 'w-2 h-2 rounded-full bg-stone-400';
+      text.textContent = '👤 No Miembro';
+    }
+  }
+
+  // 2. Banners contextuales en view-barrio
+  const bVisitante = document.getElementById('role-banner-visitante');
+  const bSocio = document.getElementById('role-banner-socio');
+  const bGestor = document.getElementById('role-banner-gestor');
+  if (bVisitante) bVisitante.classList.toggle('hidden', role !== 'visitante');
+  if (bSocio) bSocio.classList.toggle('hidden', role !== 'socio');
+  if (bGestor) bGestor.classList.toggle('hidden', role !== 'gestor');
+
+  // 3. Tab de Éter en la subnav
+  const tabEter = document.getElementById('tab-btn-eter');
+  if (tabEter) {
+    if (role === 'gestor') {
+      tabEter.innerHTML = '<span>👑</span> Éter CRM';
+      tabEter.title = 'Panel interno de gestión del nodo';
+      tabEter.classList.add('border-b-2', 'border-amber-500');
+    } else {
+      tabEter.innerHTML = '<span>✨</span> Éter CRM';
+      tabEter.title = 'Centro y gestión del nodo';
+      tabEter.classList.remove('border-b-2', 'border-amber-500');
+    }
+  }
+
+  // 4. Banner de acceso en Éter CRM
+  const eterRoleCard = document.getElementById('eter-role-access-card');
+  if (eterRoleCard) {
+    if (role === 'gestor') {
+      eterRoleCard.className = 'mb-6 p-4 rounded-2xl border bg-amber-50/90 border-amber-300 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs';
+      eterRoleCard.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">👑</span>
+          <div>
+            <h4 class="font-black text-sm text-amber-950">Modo Gestor del Nodo Activo</h4>
+            <p class="text-xs text-amber-900/80">Acceso irrestricto: administración de caja chica, altas de socios, cuadrante de guardia y claves seguras.</p>
+          </div>
+        </div>
+        <span class="text-xs font-bold text-amber-800 bg-amber-200/80 px-3 py-1 rounded-full shrink-0">Permisos Totales</span>
+      `;
+    } else if (role === 'socio') {
+      eterRoleCard.className = 'mb-6 p-4 rounded-2xl border bg-blue-50/90 border-blue-200 text-blue-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs';
+      eterRoleCard.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">💧</span>
+          <div>
+            <h4 class="font-black text-sm text-blue-950">Vista Comunitaria de Socia CsC</h4>
+            <p class="text-xs text-blue-800/80">Podes consultar los 5 Elementos, la agenda de talleres y notas del nodo. La caja interna y claves están reservadas para los 5 guardianes.</p>
+          </div>
+        </div>
+        <button onclick="openRoleSwitcherModal()" class="text-xs font-bold text-blue-800 bg-blue-100 hover:bg-blue-200 border border-blue-300 px-3 py-1.5 rounded-full shrink-0">Cambiar a Gestor ⇄</button>
+      `;
+    } else {
+      eterRoleCard.className = 'mb-6 p-4 rounded-2xl border bg-stone-100 border-stone-200 text-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs';
+      eterRoleCard.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">👤</span>
+          <div>
+            <h4 class="font-black text-sm text-stone-900">Vista Institucional (Vecino No Miembro)</h4>
+            <p class="text-xs text-stone-600">Éter es el centro de mando del Nodo La Lucila. Para gestionar el nodo podés activar el Modo Gestor o sumarte como Socio CsC.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="toggleUserRole('gestor')" class="text-xs font-bold text-amber-900 bg-amber-100 hover:bg-amber-200 border border-amber-300 px-3 py-1.5 rounded-full">Activar Modo Gestor 👑</button>
+          <button onclick="navigateTo('membership')" class="text-xs font-bold text-white bg-[#c0826d] hover:bg-[#a6634f] px-3 py-1.5 rounded-full">Hacerme Socio 💧</button>
+        </div>
+      `;
+    }
+  }
+
+  // 5. Botones de simulación en view-profile
+  const btnVis = document.getElementById('btn-role-sim-visitante');
+  const btnSoc = document.getElementById('btn-role-sim-socio');
+  const btnGes = document.getElementById('btn-role-sim-gestor');
+  if (btnVis && btnSoc && btnGes) {
+    btnVis.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex flex-col items-center justify-center gap-1 ' + (role === 'visitante' ? 'bg-stone-100 border-stone-700 text-stone-900 shadow-xs' : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50');
+    btnSoc.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex flex-col items-center justify-center gap-1 ' + (role === 'socio' ? 'bg-blue-50 border-blue-600 text-blue-900 shadow-xs' : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50');
+    btnGes.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex flex-col items-center justify-center gap-1 ' + (role === 'gestor' ? 'bg-amber-50 border-amber-600 text-amber-950 shadow-xs' : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50');
+  }
 }
 
 // =========================================================================
@@ -2916,6 +3062,7 @@ function openElementInfoModal(elementId) {
 // --- INICIALIZACIÓN ---
 document.addEventListener('DOMContentLoaded', () => {
   AppState.init();
+  updateRoleUI();
   document.body.addEventListener('click', () => sounds.init(), { once: true });
   
   // Cargar notas guardadas del nodo
