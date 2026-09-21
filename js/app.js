@@ -2017,25 +2017,39 @@ let activeOficioCategory = 'todos';
 function toggleGoogleWaffle() {
   sounds.playPop();
   const menu = document.getElementById('google-waffle-menu');
+  const backdrop = document.getElementById('google-waffle-backdrop');
   if (menu) {
-    menu.classList.toggle('hidden');
+    const isNowHidden = menu.classList.toggle('hidden');
+    if (backdrop) {
+      if (isNowHidden) {
+        backdrop.classList.add('hidden');
+      } else {
+        backdrop.classList.remove('hidden');
+      }
+    }
   }
 }
 
 function closeGoogleWaffle() {
   const menu = document.getElementById('google-waffle-menu');
+  const backdrop = document.getElementById('google-waffle-backdrop');
   if (menu) {
     menu.classList.add('hidden');
   }
+  if (backdrop) {
+    backdrop.classList.add('hidden');
+  }
 }
 
-// Cerrar waffle si se hace clic afuera
+// Cerrar waffle si se hace clic afuera o en el telón
 document.addEventListener('click', (e) => {
   const menu = document.getElementById('google-waffle-menu');
   const btn = document.getElementById('btn-google-waffle');
+  const backdrop = document.getElementById('google-waffle-backdrop');
   if (menu && !menu.classList.contains('hidden')) {
     if (!menu.contains(e.target) && btn && !btn.contains(e.target)) {
       menu.classList.add('hidden');
+      if (backdrop) backdrop.classList.add('hidden');
     }
   }
 });
@@ -2043,6 +2057,13 @@ document.addEventListener('click', (e) => {
 // 2. BUSCADOR OMNIBAR Y FILTROS POR ELEMENTO
 function handleBarrioSearch(val) {
   activeBarrioSearchQuery = (val || '').trim().toLowerCase();
+
+  // Sincronizar inputs desktop y móvil si difieren
+  const inputDesk = document.getElementById('barrio-omnibar-input');
+  const inputMob = document.getElementById('barrio-omnibar-input-mobile');
+  if (inputDesk && inputDesk.value !== val) inputDesk.value = val;
+  if (inputMob && inputMob.value !== val) inputMob.value = val;
+
   if (AppState.currentView !== 'barrio') {
     navigateTo('barrio');
   } else {
