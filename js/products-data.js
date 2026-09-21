@@ -12,6 +12,16 @@ const ELEMENTOS = [
 // 2. NODOS Y GUARDIANES
 const NODOS_COMUNIDAD = [
   {
+    id: 'nodo-lucila',
+    name: 'Centro Comunitario Elementales - La Lucila',
+    address: 'Calle Rawson 3450 (e/ Roma y Debenedetti), La Lucila',
+    time: 'Lunes a Sábados 09:30 a 19:30 hs (Oficina Barrial)',
+    guardian: 'Gonza, Agus, Rami, Cris & Ro',
+    phone: '5491123456789',
+    desc: 'Oficina Barrial de la Nueva Era: gestión comunitaria, recepción de proyectos, financiamiento y feria activa.',
+    cover: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200&h=400'
+  },
+  {
     id: 'nodo-central',
     name: 'Nodo Central - Florida / Olivos',
     address: 'Av. Maipú 1420, Vicente López',

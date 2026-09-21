@@ -497,9 +497,19 @@ const AppState = {
 };
 
 // --- NAVEGACIÓN Y VISTAS ---
+// --- NAVEGACIÓN Y VISTAS ---
 function navigateTo(viewName) {
   sounds.playPop();
   AppState.currentView = viewName;
+
+  // Actualizar estado de las pestañas en la barra Google Subnav
+  document.querySelectorAll('.google-tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const activeBtn = document.getElementById(`tab-btn-${viewName}`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+  }
 
   // Ocultar todas las vistas
   document.querySelectorAll('.app-view').forEach(el => {
@@ -514,7 +524,21 @@ function navigateTo(viewName) {
   }
 
   // Renderizar contenido según la vista
-  if (viewName === 'hub') {
+  if (viewName === 'barrio') {
+    renderBarrioFeed();
+  } else if (viewName === 'oficios') {
+    renderOficios();
+  } else if (viewName === 'whatsapp') {
+    renderWhatsAppFeed();
+  } else if (viewName === 'noticias') {
+    renderNoticias();
+  } else if (viewName === 'talleres') {
+    renderTalleres();
+  } else if (viewName === 'centro-lucila') {
+    renderCentroLucila();
+  } else if (viewName === 'financiamiento') {
+    renderFinanciamiento();
+  } else if (viewName === 'hub') {
     renderHubStats();
   } else if (viewName === 'new-order') {
     renderOrderCatalog();
@@ -533,6 +557,7 @@ function navigateTo(viewName) {
     renderProfile();
   }
 }
+
 
 // --- RENDERIZADO: HUB PRINCIPAL ---
 function renderHubStats() {
@@ -1980,8 +2005,894 @@ function toggleUserRole(forcedRole = null) {
   renderFloatingCart();
 }
 
+// =========================================================================
+// GESTIÓN DEL PORTAL Y RED SOCIAL BARRIAL - ELEMENTALES LA LUCILA
+// =========================================================================
+
+let activeBarrioElement = 'todos';
+let activeBarrioSearchQuery = '';
+let activeOficioCategory = 'todos';
+
+// 1. CONTROL DEL MENÚ WAFFLE DE 9 PUNTOS (GOOGLE SUITE)
+function toggleGoogleWaffle() {
+  sounds.playPop();
+  const menu = document.getElementById('google-waffle-menu');
+  if (menu) {
+    menu.classList.toggle('hidden');
+  }
+}
+
+function closeGoogleWaffle() {
+  const menu = document.getElementById('google-waffle-menu');
+  if (menu) {
+    menu.classList.add('hidden');
+  }
+}
+
+// Cerrar waffle si se hace clic afuera
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('google-waffle-menu');
+  const btn = document.getElementById('btn-google-waffle');
+  if (menu && !menu.classList.contains('hidden')) {
+    if (!menu.contains(e.target) && btn && !btn.contains(e.target)) {
+      menu.classList.add('hidden');
+    }
+  }
+});
+
+// 2. BUSCADOR OMNIBAR Y FILTROS POR ELEMENTO
+function handleBarrioSearch(val) {
+  activeBarrioSearchQuery = (val || '').trim().toLowerCase();
+  if (AppState.currentView !== 'barrio') {
+    navigateTo('barrio');
+  } else {
+    renderBarrioFeed();
+  }
+}
+
+function handleBarrioElementChange(elem) {
+  selectElementFilter(elem);
+}
+
+function selectElementFilter(elemId) {
+  sounds.playPop();
+  activeBarrioElement = elemId;
+
+  // Sincronizar selector del omnibar
+  const omniSelect = document.getElementById('barrio-omnibar-element');
+  if (omniSelect) {
+    omniSelect.value = elemId;
+  }
+
+  // Sincronizar pills de elementos
+  document.querySelectorAll('.barrio-pill').forEach(btn => {
+    if (btn.getAttribute('data-element') === elemId) {
+      btn.className = 'barrio-pill active text-xs font-bold px-3.5 py-1.5 rounded-full border bg-stone-900 text-white transition-all shadow-xs';
+    } else {
+      btn.className = 'barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#c0826d] transition-all shadow-xs';
+    }
+  });
+
+  if (AppState.currentView !== 'barrio') {
+    navigateTo('barrio');
+  } else {
+    renderBarrioFeed();
+  }
+}
+
+function executeGoogleSearch(query) {
+  const q = (query || '').trim();
+  if (!q) {
+    window.open('https://www.google.com/search?q=La+Lucila+Vicente+Lopez+comunidad+noticias', '_blank');
+    return;
+  }
+  window.open(`https://www.google.com/search?q=${encodeURIComponent(q + ' La Lucila Vicente Lopez')}`, '_blank');
+}
+
+// 3. RENDERIZADO DEL FEED BARRIAL MULTI-ELEMENTO (TODO EL BARRIO)
+function renderBarrioFeed() {
+  const container = document.getElementById('barrio-feed-container');
+  const countBadge = document.getElementById('barrio-results-count');
+  if (!container) return;
+
+  const oficios = BarrioStorage.getOficios();
+  const avisos = BarrioStorage.getAvisosWA();
+  const noticias = typeof NOTICIAS_BARRIO_INICIALES !== 'undefined' ? NOTICIAS_BARRIO_INICIALES : [];
+  const talleres = BarrioStorage.getTalleres();
+  const proyectos = BarrioStorage.getProyectos();
+
+  let feedItems = [];
+
+  // Oficios referenciados (Tierra)
+  oficios.forEach(o => {
+    feedItems.push({
+      tipo: 'oficio',
+      elemento: o.elemento || 'tierra',
+      titulo: o.nombre,
+      subtitulo: o.rubro,
+      icono: o.icono || '🛠️',
+      cuerpo: o.descripcion,
+      zona: o.zona,
+      badge: 'Oficio Referenciado',
+      badgeClass: 'bg-[#f4f6ef] text-[#8ca15d] border-[#c2d49e]',
+      calificacion: `⭐ ${o.calificacion || '5.0'} (${o.referencias || 12} vecinos)`,
+      accionTexto: 'WhatsApp',
+      accionUrl: `https://wa.me/${o.telefonoRaw || '5491144001122'}?text=${encodeURIComponent('Hola ' + o.nombre + '! Te contacto desde la vidriera del Centro Comunitario Elementales La Lucila.')}`,
+      keywords: [o.nombre, o.rubro, o.descripcion, ...(o.palabrasClave || [])].join(' ').toLowerCase()
+    });
+  });
+
+  // Avisos de WhatsApp (Aire / Agua / Tierra)
+  avisos.forEach(a => {
+    feedItems.push({
+      tipo: 'whatsapp',
+      elemento: a.elemento || 'aire',
+      titulo: a.emisor,
+      subtitulo: a.grupo,
+      icono: a.icono || '💬',
+      cuerpo: a.texto,
+      fecha: a.fecha,
+      badge: a.badge || 'Aviso WhatsApp',
+      badgeClass: a.esAlerta ? 'bg-red-50 text-red-600 border-red-200' : 'bg-blue-50 text-blue-700 border-blue-200',
+      accionTexto: 'Escribir',
+      accionUrl: `https://wa.me/5491123456789?text=${encodeURIComponent('Hola! Vi el aviso de ' + a.emisor + ' en el portal barrial de La Lucila: ' + a.texto)}`,
+      keywords: [a.emisor, a.grupo, a.texto, a.badge].join(' ').toLowerCase()
+    });
+  });
+
+  // Noticias locales (Aire)
+  noticias.forEach(n => {
+    feedItems.push({
+      tipo: 'noticia',
+      elemento: n.elemento || 'aire',
+      titulo: n.titulo,
+      subtitulo: n.fuente,
+      icono: '📰',
+      cuerpo: n.resumen,
+      fecha: n.fecha,
+      badge: n.etiqueta || 'Noticia Local',
+      badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      accionTexto: 'Google ↗',
+      accionUrl: n.enlaceGoogle,
+      keywords: [n.titulo, n.fuente, n.resumen, n.etiqueta].join(' ').toLowerCase()
+    });
+  });
+
+  // Talleres de vecinos (Agua / Tierra)
+  talleres.forEach(t => {
+    feedItems.push({
+      tipo: 'taller',
+      elemento: t.elemento || 'agua',
+      titulo: t.titulo,
+      subtitulo: `Por ${t.tallerista} • ${t.fecha}`,
+      icono: t.icono || '🎨',
+      cuerpo: t.descripcion,
+      zona: t.lugar,
+      badge: `Taller`,
+      badgeClass: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+      accionTexto: 'Inscribirme por WA',
+      accionUrl: `https://wa.me/${t.telefonoContacto || '5491133221100'}?text=${encodeURIComponent('Hola! Quiero anotarme al taller de ' + t.titulo + ' en La Lucila.')}`,
+      keywords: [t.titulo, t.tallerista, t.descripcion, t.lugar].join(' ').toLowerCase()
+    });
+  });
+
+  // Proyectos locales (Fuego)
+  proyectos.forEach(p => {
+    feedItems.push({
+      tipo: 'proyecto',
+      elemento: p.elemento || 'fuego',
+      titulo: p.titulo,
+      subtitulo: `Impulsado por ${p.proponente}`,
+      icono: p.icono || '💡',
+      cuerpo: p.descripcion,
+      progreso: `${p.porcentaje}% financiado ($${(p.montoRecaudado || 0).toLocaleString()} de $${(p.montoObjetivo || 0).toLocaleString()})`,
+      badge: p.estado || 'Proyecto Local',
+      badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',
+      accionTexto: 'Apoyar',
+      accionUrl: `https://wa.me/5491123456789?text=${encodeURIComponent('Hola Gonza y equipo! Quiero apoyar el proyecto barrial: ' + p.titulo)}`,
+      keywords: [p.titulo, p.proponente, p.descripcion, p.beneficioBarrio].join(' ').toLowerCase()
+    });
+  });
+
+  // Filtrar por elemento si no es 'todos'
+  if (activeBarrioElement && activeBarrioElement !== 'todos') {
+    feedItems = feedItems.filter(item => item.elemento === activeBarrioElement);
+  }
+
+  // Filtrar por query de búsqueda
+  if (activeBarrioSearchQuery) {
+    feedItems = feedItems.filter(item => item.keywords.includes(activeBarrioSearchQuery));
+  }
+
+  if (countBadge) {
+    countBadge.textContent = `${feedItems.length} novedades en La Lucila`;
+  }
+
+  if (feedItems.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full py-12 text-center bg-white rounded-3xl border border-stone-200 p-8 shadow-xs">
+        <span class="text-4xl block mb-2">🔍</span>
+        <h3 class="text-lg font-bold text-stone-800">No encontramos resultados en esta búsqueda</h3>
+        <p class="text-stone-500 text-xs sm:text-sm max-w-md mx-auto mt-1 mb-4">
+          No hay publicaciones que coincidan con "${activeBarrioSearchQuery}". Podés buscar en Google o sumar la información al barrio.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <button onclick="executeGoogleSearch('${activeBarrioSearchQuery}')" class="btn-spotify !bg-blue-600 !text-white text-xs font-bold px-4 py-2">
+            Buscar en Google La Lucila ↗
+          </button>
+          <button onclick="openModalSumarAlBarrio()" class="btn-spotify !bg-[#c0826d] !text-white text-xs font-bold px-4 py-2">
+            + Publicar esta información
+          </button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = feedItems.map(item => `
+    <div class="bg-white rounded-2xl border border-stone-200 hover:border-[#c0826d]/40 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+      <div>
+        <div class="flex items-start justify-between gap-2 mb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">${item.icono}</span>
+            <div>
+              <h3 class="font-bold text-sm text-stone-900 leading-tight">${item.titulo}</h3>
+              <p class="text-[11px] text-stone-500 font-medium">${item.subtitulo}</p>
+            </div>
+          </div>
+          <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${item.badgeClass} shrink-0">
+            ${item.badge}
+          </span>
+        </div>
+
+        <p class="text-xs text-stone-600 leading-relaxed mb-3">
+          ${item.cuerpo}
+        </p>
+
+        ${item.progreso ? `
+          <div class="mb-3 bg-stone-100 p-2 rounded-xl text-[11px] font-bold text-stone-700">
+            <span>${item.progreso}</span>
+          </div>
+        ` : ''}
+
+        ${item.calificacion ? `
+          <div class="mb-3 flex items-center gap-1.5 text-xs text-amber-700 font-bold">
+            <span>${item.calificacion}</span>
+            <span class="text-stone-300">•</span>
+            <span class="text-stone-500 text-[11px]">${item.zona || 'La Lucila'}</span>
+          </div>
+        ` : ''}
+      </div>
+
+      <div class="pt-3 border-t border-stone-100 flex items-center justify-between gap-2 mt-2">
+        <button 
+          type="button"
+          onclick="openElementInfoModal('${item.elemento}')"
+          class="text-[11px] font-bold text-stone-500 hover:text-stone-900 transition-colors flex items-center gap-1"
+        >
+          <span>${item.elemento === 'tierra' ? '🌱 Tierra' : item.elemento === 'agua' ? '💧 Agua' : item.elemento === 'fuego' ? '🔥 Fuego' : item.elemento === 'aire' ? '💨 Aire' : '✨ Éter'}</span>
+          <span class="text-stone-400">ℹ️</span>
+        </button>
+
+        <a 
+          href="${item.accionUrl}" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 bg-[#fcf4f0] hover:bg-[#faede7] text-[#a6634f] text-xs font-bold px-3 py-1.5 rounded-full border border-[#c0826d]/30 transition-all active:scale-95"
+        >
+          <span>${item.accionTexto}</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 4. RENDERIZADO DE LA VIDRIERA DE OFICIOS
+function renderOficios(categoryFilter = null) {
+  const container = document.getElementById('oficios-grid-container');
+  if (!container) return;
+
+  let oficios = BarrioStorage.getOficios();
+  if (categoryFilter && categoryFilter !== 'todos') {
+    oficios = oficios.filter(o => o.rubro.toLowerCase().includes(categoryFilter.toLowerCase()));
+  }
+
+  container.innerHTML = oficios.map(o => `
+    <div class="bg-white rounded-3xl border border-stone-200 hover:border-[#8ca15d]/50 p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+      <div>
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <div class="flex items-center gap-3">
+            <span class="w-12 h-12 rounded-2xl bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center text-2xl shadow-xs">
+              ${o.icono || '🔧'}
+            </span>
+            <div>
+              <h3 class="font-black text-base text-stone-900">${o.nombre}</h3>
+              <p class="text-xs text-[#75894b] font-bold">${o.rubro}</p>
+            </div>
+          </div>
+          <span class="badge-referenciado shrink-0" title="Verificado por el Centro Comunitario">
+            ✓ Referenciado
+          </span>
+        </div>
+
+        <p class="text-xs text-stone-600 leading-relaxed mb-4">
+          ${o.descripcion}
+        </p>
+
+        <div class="bg-stone-50 p-3 rounded-2xl border border-stone-100 text-xs space-y-1 mb-4">
+          <div class="flex items-center justify-between text-stone-700 font-medium">
+            <span>📍 Zona:</span>
+            <span class="font-bold text-stone-900">${o.zona}</span>
+          </div>
+          <div class="flex items-center justify-between text-stone-700 font-medium">
+            <span>⏳ Experiencia:</span>
+            <span class="font-bold text-stone-900">${o.aniosBarrio}</span>
+          </div>
+          <div class="flex items-center justify-between text-stone-700 font-medium">
+            <span>⭐ Reseñas:</span>
+            <span class="font-bold text-amber-700">${o.calificacion || '5.0'} (${o.referencias || 12} vecinos de La Lucila)</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-1 mb-4">
+          ${(o.badges || ['Referenciado Centro Elementales']).map(b => `
+            <span class="text-[10px] font-bold bg-stone-100 text-stone-600 px-2.5 py-0.5 rounded-full border border-stone-200">
+              ${b}
+            </span>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-stone-100 flex items-center justify-between gap-2">
+        <span class="text-xs text-stone-500 font-semibold">📞 ${o.telefono || '+54 9 11 ...'}</span>
+        <a 
+          href="https://wa.me/${o.telefonoRaw || '5491144001122'}?text=${encodeURIComponent('Hola ' + o.nombre + '! Te contacto desde la Vidriera de Oficios del Centro Comunitario Elementales La Lucila.')}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-spotify !bg-[#25D366] hover:!bg-[#1ebc59] !text-white text-xs font-bold px-4 py-2 shadow-xs inline-flex items-center gap-1.5"
+        >
+          <span>💬</span>
+          <span>Escribir por WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterOficiosByCategory(cat) {
+  sounds.playPop();
+  activeOficioCategory = cat;
+  document.querySelectorAll('.oficio-cat-btn').forEach(btn => {
+    btn.classList.remove('active', 'bg-stone-900', 'text-white');
+    btn.classList.add('bg-white', 'text-stone-700');
+  });
+  event.target.classList.add('active', 'bg-stone-900', 'text-white');
+  event.target.classList.remove('bg-white', 'text-stone-700');
+  renderOficios(cat);
+}
+
+// 5. RENDERIZADO DEL FEED DE WHATSAPP
+function renderWhatsAppFeed() {
+  const container = document.getElementById('whatsapp-feed-list');
+  if (!container) return;
+
+  const avisos = BarrioStorage.getAvisosWA();
+
+  container.innerHTML = avisos.map(a => `
+    <div class="wa-bubble ${a.esAlerta ? 'alert-bubble' : 'agua-bubble'}">
+      <div class="flex items-start justify-between gap-3 mb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">${a.icono || '💬'}</span>
+          <div>
+            <h4 class="font-bold text-sm text-stone-900">${a.emisor}</h4>
+            <span class="text-[11px] text-stone-500 font-semibold">${a.grupo}</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${a.esAlerta ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-blue-50 text-blue-700 border border-blue-200'}">
+            ${a.badge || 'Aviso'}
+          </span>
+          <span class="text-xs text-stone-400 font-medium">${a.fecha}</span>
+        </div>
+      </div>
+
+      <p class="text-xs sm:text-sm text-stone-700 leading-relaxed mb-3">
+        ${a.texto}
+      </p>
+
+      <div class="flex items-center justify-between pt-2 border-t border-stone-100 text-xs">
+        <span class="text-stone-400 text-[11px]">Enviado desde WhatsApp Barrial</span>
+        <a 
+          href="https://wa.me/5491123456789?text=${encodeURIComponent('Hola! Vi el aviso de ' + a.emisor + ' en el portal de La Lucila: ' + a.texto)}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-[#a6634f] font-bold hover:underline inline-flex items-center gap-1"
+        >
+          <span>Responder en el grupo →</span>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 6. RENDERIZADO DE NOTICIAS DE GOOGLE & LA LUCILA
+function renderNoticias() {
+  const container = document.getElementById('noticias-grid-container');
+  if (!container) return;
+
+  const noticias = typeof NOTICIAS_BARRIO_INICIALES !== 'undefined' ? NOTICIAS_BARRIO_INICIALES : [];
+
+  container.innerHTML = noticias.map(n => `
+    <div class="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+      <div class="h-44 w-full overflow-hidden bg-stone-100 relative">
+        <img src="${n.imagen}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt="${n.titulo}" />
+        <span class="absolute top-3 right-3 text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-stone-900/80 backdrop-blur-xs text-white border border-white/20">
+          ${n.etiqueta}
+        </span>
+      </div>
+
+      <div class="p-5 flex-1 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between text-[11px] text-stone-400 font-bold mb-1.5">
+            <span>${n.fuente}</span>
+            <span>${n.fecha}</span>
+          </div>
+          <h3 class="font-black text-base text-stone-900 leading-snug mb-2">${n.titulo}</h3>
+          <p class="text-xs text-stone-600 leading-relaxed mb-4">${n.resumen}</p>
+        </div>
+
+        <a 
+          href="${n.enlaceGoogle}" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#fcf4f0] hover:bg-[#faede7] text-[#a6634f] text-xs font-bold border border-[#c0826d]/30 transition-all"
+        >
+          <span>Ver búsqueda en Google Noticias</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 7. RENDERIZADO DE TALLERES DE VECINOS
+function renderTalleres() {
+  const container = document.getElementById('talleres-grid-container');
+  if (!container) return;
+
+  const talleres = BarrioStorage.getTalleres();
+
+  container.innerHTML = talleres.map(t => `
+    <div class="bg-white rounded-3xl border border-stone-200 hover:border-[#7ca1b5]/50 p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+      <div>
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <div class="flex items-center gap-3">
+            <span class="w-12 h-12 rounded-2xl bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center text-2xl shadow-xs">
+              ${t.icono || '🌱'}
+            </span>
+            <div>
+              <h3 class="font-black text-base text-stone-900 leading-tight">${t.titulo}</h3>
+              <p class="text-xs text-[#52778c] font-bold mt-0.5">Dictado por: ${t.tallerista}</p>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold uppercase bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full border border-indigo-200 shrink-0">
+            ${t.cupos}
+          </span>
+        </div>
+
+        <p class="text-xs text-stone-600 leading-relaxed mb-4">
+          ${t.descripcion}
+        </p>
+
+        <div class="bg-stone-50 p-3 rounded-2xl border border-stone-100 text-xs space-y-1.5 mb-4">
+          <div class="flex items-center gap-2 text-stone-700">
+            <span>📅</span>
+            <span class="font-bold text-stone-900">${t.fecha}</span>
+          </div>
+          <div class="flex items-center gap-2 text-stone-700">
+            <span>📍</span>
+            <span class="font-semibold">${t.lugar}</span>
+          </div>
+          <div class="flex items-center gap-2 text-stone-700">
+            <span>⏳</span>
+            <span>Duración: ${t.duracion} • Contribución: ${t.contribucion}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-stone-100 flex items-center justify-between gap-2">
+        <span class="text-[11px] text-stone-400">Cupos limitados</span>
+        <a 
+          href="https://wa.me/${t.telefonoContacto || '5491133221100'}?text=${encodeURIComponent('Hola! Quiero anotarme al taller de ' + t.titulo + ' en La Lucila.')}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-spotify !bg-[#7ca1b5] hover:!bg-[#668fa6] !text-white text-xs font-bold px-4 py-2 shadow-xs inline-flex items-center gap-1.5"
+        >
+          <span>Anotarme por WhatsApp</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 8. RENDERIZADO DEL CENTRO COMUNITARIO ELEMENTALES (LA LUCILA)
+function renderCentroLucila() {
+  const gridGuardianes = document.getElementById('guardianes-lucila-grid');
+  const gridServicios = document.getElementById('servicios-oficina-grid');
+  if (!gridGuardianes || typeof CENTRO_COMUNITARIO_LUCILA === 'undefined') return;
+
+  const data = CENTRO_COMUNITARIO_LUCILA;
+
+  gridGuardianes.innerHTML = data.guardianes.map(g => `
+    <div class="bg-white rounded-3xl border border-stone-200 hover:border-[#c0826d]/40 p-5 shadow-xs transition-all flex flex-col justify-between">
+      <div>
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-12 h-12 rounded-full bg-[#fcf4f0] border border-[#c0826d]/30 flex items-center justify-center text-2xl shadow-xs">
+            ${g.avatar}
+          </span>
+          <div>
+            <h3 class="font-black text-base text-stone-900">${g.nombre}</h3>
+            <span class="text-[11px] font-bold text-[#a6634f] bg-[#fcf4f0] px-2 py-0.5 rounded-full border border-[#c0826d]/25">
+              ${g.apodo}
+            </span>
+          </div>
+        </div>
+
+        <h4 class="text-xs font-bold text-stone-800 mb-1.5">${g.rol}</h4>
+        <p class="text-xs text-stone-600 leading-relaxed">
+          ${g.descripcion}
+        </p>
+      </div>
+
+      <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between text-xs">
+        <span class="text-stone-400 font-semibold">Atiende en local</span>
+        <a 
+          href="https://wa.me/${data.telefonoRaw}?text=${encodeURIComponent('Hola ' + g.nombre + '! Te contacto desde el portal barrial de La Lucila.')}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-[#a6634f] font-bold hover:underline inline-flex items-center gap-1"
+        >
+          <span>Escribirle →</span>
+        </a>
+      </div>
+    </div>
+  `).join('');
+
+  if (gridServicios) {
+    gridServicios.innerHTML = data.serviciosOficina.map(s => `
+      <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 flex items-start gap-3">
+        <span class="text-2xl shrink-0 mt-0.5">${s.icono}</span>
+        <div>
+          <h3 class="font-bold text-sm text-stone-900 mb-1">${s.titulo}</h3>
+          <p class="text-xs text-stone-600 leading-relaxed">${s.detalle}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// 9. RENDERIZADO DE PROYECTOS DE FINANCIAMIENTO
+function renderFinanciamiento() {
+  const container = document.getElementById('proyectos-grid-container');
+  if (!container) return;
+
+  const proyectos = BarrioStorage.getProyectos();
+
+  container.innerHTML = proyectos.map(p => `
+    <div class="bg-white rounded-3xl border border-stone-200 hover:border-[#d97757]/50 p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+      <div>
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <div class="flex items-center gap-3">
+            <span class="w-12 h-12 rounded-2xl bg-[#fdf4f0] border border-[#f2b5a2]/50 flex items-center justify-center text-2xl shadow-xs">
+              ${p.icono || '💡'}
+            </span>
+            <div>
+              <h3 class="font-black text-base text-stone-900 leading-tight">${p.titulo}</h3>
+              <p class="text-xs text-[#b85b3d] font-bold mt-0.5">Impulsa: ${p.proponente}</p>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold uppercase bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full border border-amber-200 shrink-0">
+            ${p.estado}
+          </span>
+        </div>
+
+        <p class="text-xs text-stone-600 leading-relaxed mb-4">
+          ${p.descripcion}
+        </p>
+
+        <!-- Barra de Progreso de Financiamiento -->
+        <div class="mb-4 bg-stone-50 p-3.5 rounded-2xl border border-stone-200">
+          <div class="flex items-center justify-between text-xs font-bold text-stone-800 mb-1.5">
+            <span>Recaudado: $${(p.montoRecaudado || 0).toLocaleString()}</span>
+            <span class="text-[#d97757]">${p.porcentaje}%</span>
+          </div>
+          <div class="w-full bg-stone-200 rounded-full h-2.5 overflow-hidden">
+            <div class="bg-gradient-to-r from-amber-500 to-[#d97757] h-2.5 rounded-full transition-all duration-700" style="width: ${p.porcentaje}%"></div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-stone-500 mt-1.5">
+            <span>Objetivo: $${(p.montoObjetivo || 0).toLocaleString()}</span>
+            <span>${p.apoyos || 10} vecinos aportaron</span>
+          </div>
+        </div>
+
+        <div class="text-xs bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-200/60 text-emerald-900 mb-4">
+          <strong>Beneficio para La Lucila:</strong> ${p.beneficioBarrio || 'Mejora ambiental y social del barrio.'}
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+        <span class="text-[11px] text-stone-400">Micro-financiamiento ético</span>
+        <a 
+          href="https://wa.me/5491123456789?text=${encodeURIComponent('Hola Gonza y equipo! Quiero colaborar con financiamiento para el proyecto: ' + p.titulo)}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-spotify !bg-[#d97757] hover:!bg-[#c06345] !text-white text-xs font-bold px-4 py-2 shadow-xs inline-flex items-center gap-1.5"
+        >
+          <span>Aportar al Fondo</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 10. GESTIÓN DEL MODAL "SUMAR AL BARRIO"
+function openModalSumarAlBarrio(initialTab = 'producto') {
+  sounds.playPop();
+  const modal = document.getElementById('modal-sumar-barrio');
+  if (modal) {
+    modal.classList.remove('hidden');
+    switchSumarTab(initialTab);
+  }
+}
+
+function closeModalSumarAlBarrio() {
+  const modal = document.getElementById('modal-sumar-barrio');
+  if (modal) {
+    modal.classList.add('hidden');
+  }
+}
+
+function switchSumarTab(tabName) {
+  sounds.playPop();
+  document.querySelectorAll('.sumar-tab-pane').forEach(el => el.classList.add('hidden'));
+  const target = document.getElementById(`tab-content-${tabName}`);
+  if (target) target.classList.remove('hidden');
+
+  const tabs = ['producto', 'inquietud', 'oficio', 'proyecto'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`btn-tab-modal-${t}`);
+    if (btn) {
+      if (t === tabName) {
+        btn.className = 'flex-1 min-w-[110px] py-2 px-3 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-xs text-center';
+      } else {
+        btn.className = 'flex-1 min-w-[110px] py-2 px-3 rounded-xl text-xs font-bold transition-all text-stone-600 hover:text-stone-900 text-center';
+      }
+    }
+  });
+}
+
+// MANEJADORES DE FORMULARIOS DEL MODAL SUMAR AL BARRIO
+function handleSubirProducto(e) {
+  e.preventDefault();
+  sounds.playSuccess();
+
+  const nombre = document.getElementById('sumar-prod-nombre').value.trim();
+  const categoria = document.getElementById('sumar-prod-categoria').value;
+  const precio = Number(document.getElementById('sumar-prod-precio').value) || 0;
+  const productor = document.getElementById('sumar-prod-productor').value.trim();
+  const whatsapp = document.getElementById('sumar-prod-whatsapp').value.trim();
+  const desc = document.getElementById('sumar-prod-desc').value.trim();
+
+  const nuevoProd = {
+    id: 'prod-barrio-' + Date.now(),
+    name: nombre,
+    category: categoria,
+    price: precio,
+    precioLocal: precio,
+    precioSemanal: Math.round(precio * 0.9),
+    precioLunar: Math.round(precio * 0.8),
+    unit: 'Unidad Artesanal',
+    desc: desc ? `${desc} • Elaborado por ${productor}` : `Elaborado por ${productor} en La Lucila`,
+    emoji: categoria.includes('Pan') ? '🥖' : categoria.includes('Lácteos') ? '🧀' : categoria.includes('Cosmética') ? '🧴' : '🧺',
+    stock: 15,
+    productor,
+    whatsapp
+  };
+
+  BarrioStorage.saveProductoPropuesto(nuevoProd);
+  AppState.products.unshift(nuevoProd);
+  AppState.saveProducts();
+
+  // Lanzar confeti
+  try {
+    confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+  } catch(err){}
+
+  closeModalSumarAlBarrio();
+  document.getElementById('form-sumar-producto').reset();
+
+  alert(`¡Gracias ${productor}! Tu producto "${nombre}" fue sumado con éxito a la feria. Se abrirá WhatsApp para avisarle al Centro Comunitario en La Lucila.`);
+
+  const msgWA = encodeURIComponent(`¡Hola Gonza, Agus, Rami, Cris y Ro! Acabo de cargar un producto para la venta comunitaria en el portal de La Lucila:\n\n*Producto:* ${nombre}\n*Categoría:* ${categoria}\n*Precio sugerido:* $${precio}\n*Elaborador:* ${productor}\n*Contacto:* ${whatsapp}\n*Detalles:* ${desc}`);
+  window.open(`https://wa.me/5491123456789?text=${msgWA}`, '_blank');
+
+  navigateTo('barrio');
+}
+
+function handleSubirInquietud(e) {
+  e.preventDefault();
+  sounds.playSuccess();
+
+  const titulo = document.getElementById('sumar-inq-titulo').value.trim();
+  const categoria = document.getElementById('sumar-inq-categoria').value;
+  const vecino = document.getElementById('sumar-inq-vecino').value.trim() || 'Vecino de La Lucila';
+  const detalle = document.getElementById('sumar-inq-detalle').value.trim();
+  const propuesta = document.getElementById('sumar-inq-propuesta').value.trim();
+
+  const nuevaInq = {
+    id: 'inq-' + Date.now(),
+    titulo,
+    categoria,
+    vecino,
+    fecha: 'Recién cargada',
+    estado: 'Ingresada al Centro',
+    detalle,
+    propuesta,
+    apoyos: 1
+  };
+
+  BarrioStorage.saveInquietud(nuevaInq);
+
+  // También se suma al feed de WhatsApp
+  BarrioStorage.saveAvisoWA({
+    id: 'wa-inq-' + Date.now(),
+    grupo: 'Buzón Vecinal La Lucila',
+    emisor: vecino,
+    fecha: 'Hoy recién',
+    elemento: 'aire',
+    texto: `[Inquietud: ${titulo}] ${detalle}. ${propuesta ? 'Propuesta: ' + propuesta : ''}`,
+    esAlerta: true,
+    tipo: 'inquietud',
+    icono: '📢',
+    badge: 'Inquietud Barrial'
+  });
+
+  try {
+    confetti({ particleCount: 70, spread: 50, origin: { y: 0.6 } });
+  } catch(err){}
+
+  closeModalSumarAlBarrio();
+  document.getElementById('form-sumar-inquietud').reset();
+
+  alert(`¡Inquietud registrada! Ya está visible en el portal barrial y el Centro Comunitario la sumará a los temas vecinales.`);
+
+  const msgWA = encodeURIComponent(`Hola equipo del Centro Comunitario (Gonza, Agus, Rami, Cris, Ro): Cargué una inquietud en el buzón barrial:\n\n*Tema:* ${titulo}\n*Detalle:* ${detalle}\n*Propuesta:* ${propuesta}\n*Vecino:* ${vecino}`);
+  window.open(`https://wa.me/5491123456789?text=${msgWA}`, '_blank');
+
+  navigateTo('barrio');
+}
+
+function handleSubirOficio(e) {
+  e.preventDefault();
+  sounds.playSuccess();
+
+  const nombre = document.getElementById('sumar-oficio-nombre').value.trim();
+  const rubro = document.getElementById('sumar-oficio-rubro').value.trim();
+  const zona = document.getElementById('sumar-oficio-zona').value.trim();
+  const whatsapp = document.getElementById('sumar-oficio-whatsapp').value.trim();
+  const desc = document.getElementById('sumar-oficio-desc').value.trim();
+
+  const nuevoOficio = {
+    id: 'oficio-' + Date.now(),
+    nombre,
+    rubro,
+    elemento: 'tierra',
+    icono: rubro.toLowerCase().includes('carp') ? '🪚' : rubro.toLowerCase().includes('elec') ? '⚡' : '🔧',
+    zona,
+    aniosBarrio: 'Vecino de La Lucila',
+    telefono: whatsapp,
+    telefonoRaw: whatsapp.replace(/\D/g, ''),
+    descripcion: desc || 'Servicios profesionales y arreglo vecinal en La Lucila.',
+    referencias: 1,
+    calificacion: 5.0,
+    referenciadoPorCentro: true,
+    badges: ['Vecino Recomendado', 'En Vidriera']
+  };
+
+  BarrioStorage.saveOficio(nuevoOficio);
+
+  try {
+    confetti({ particleCount: 70, spread: 50, origin: { y: 0.6 } });
+  } catch(err){}
+
+  closeModalSumarAlBarrio();
+  document.getElementById('form-sumar-oficio').reset();
+
+  alert(`¡Genial ${nombre}! Tu oficio ya fue publicado en la Vidriera del Barrio.`);
+  navigateTo('oficios');
+}
+
+function handleSubirProyecto(e) {
+  e.preventDefault();
+  sounds.playSuccess();
+
+  const titulo = document.getElementById('sumar-proy-titulo').value.trim();
+  const elemento = document.getElementById('sumar-proy-elemento').value;
+  const monto = Number(document.getElementById('sumar-proy-monto').value) || 200000;
+  const desc = document.getElementById('sumar-proy-desc').value.trim();
+
+  const nuevoProy = {
+    id: 'proy-' + Date.now(),
+    titulo,
+    proponente: 'Vecino de La Lucila',
+    elemento,
+    icono: elemento === 'tierra' ? '🌱' : elemento === 'fuego' ? '💡' : elemento === 'agua' ? '💧' : '📚',
+    estado: 'Presentado al Nodo',
+    porcentaje: 10,
+    montoObjetivo: monto,
+    montoRecaudado: Math.round(monto * 0.1),
+    apoyos: 1,
+    descripcion: desc,
+    beneficioBarrio: 'Impacto comunitario directo en La Lucila.'
+  };
+
+  BarrioStorage.saveProyecto(nuevoProy);
+
+  try {
+    confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+  } catch(err){}
+
+  closeModalSumarAlBarrio();
+  document.getElementById('form-sumar-proyecto').reset();
+
+  alert(`¡Proyecto presentado! Se notificará al Centro Comunitario para evaluar el apoyo del fondo barrial.`);
+
+  const msgWA = encodeURIComponent(`Hola Gonza, Agus, Rami, Cris y Ro! Presenté un proyecto para recibir financiamiento barrial:\n\n*Título:* ${titulo}\n*Elemento:* ${elemento}\n*Monto estimado:* $${monto}\n*Descripción:* ${desc}`);
+  window.open(`https://wa.me/5491123456789?text=${msgWA}`, '_blank');
+
+  navigateTo('financiamiento');
+}
+
+// 11. MODAL EXPLICATIVO DE CADA ELEMENTO
+function openElementInfoModal(elementId) {
+  sounds.playPop();
+  if (typeof ELEMENTOS_BARRIO === 'undefined') return;
+
+  const elem = ELEMENTOS_BARRIO.find(e => e.id === elementId);
+  if (!elem) return;
+
+  const modal = document.getElementById('modal-element-info');
+  const img = document.getElementById('elem-modal-icon');
+  const title = document.getElementById('elem-modal-title');
+  const subtitle = document.getElementById('elem-modal-subtitle');
+  const desc = document.getElementById('elem-modal-desc');
+  const role = document.getElementById('elem-modal-role');
+  const filterBtn = document.getElementById('elem-modal-filter-btn');
+
+  if (img) img.src = elem.iconUrl;
+  if (title) title.innerHTML = `${elem.emoji} ${elem.name}`;
+  if (subtitle) subtitle.textContent = elem.subtitulo;
+  if (desc) desc.textContent = elem.descripcion;
+  if (role) role.textContent = elem.rolComunitario;
+  if (filterBtn) {
+    filterBtn.onclick = () => {
+      modal.classList.add('hidden');
+      selectElementFilter(elem.id);
+    };
+  }
+
+  if (modal) modal.classList.remove('hidden');
+}
+
 // --- INICIALIZACIÓN ---
 document.addEventListener('DOMContentLoaded', () => {
   AppState.init();
   document.body.addEventListener('click', () => sounds.init(), { once: true });
+  
+  // Iniciar en la vista del Portal Barrial
+  navigateTo('barrio');
 });
+

@@ -52,9 +52,649 @@
 <body class="bg-[#fcfaf8] text-stone-800 min-h-screen selection:bg-[#c0826d] selection:text-white pb-16">
 
   <!-- ========================================================================= -->
+  <!-- BARRA DE NAVEGACIÓN FIJA ESTILO GOOGLE SUITE (PORTAL BARRIAL LA LUCILA) -->
+  <!-- ========================================================================= -->
+  <header class="google-nav-fixed w-full">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2 sm:gap-4">
+      
+      <!-- LOGO ELEMENTALES & DISTINTIVO LA LUCILA -->
+      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="navigateTo('barrio')">
+        <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-9 h-9 sm:w-10 sm:h-10 object-contain drop-shadow-xs" alt="Elementales" />
+        <div class="flex flex-col">
+          <span class="font-black text-base sm:text-lg text-stone-900 tracking-tight leading-none">
+            Elementales <span class="text-[#a6634f]">Barrio</span>
+          </span>
+          <span class="text-[10px] sm:text-[11px] font-bold text-[#8ca15d] flex items-center gap-1 leading-tight">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            La Lucila • Vicente López
+          </span>
+        </div>
+      </div>
+
+      <!-- OMNIBAR / BUSCADOR POR ELEMENTO ESTILO GOOGLE -->
+      <div class="google-omnibar-container flex-1 mx-1 sm:mx-3">
+        <div class="google-omnibar">
+          <!-- Ícono Lupa Google -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-stone-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+
+          <!-- Input de búsqueda -->
+          <input 
+            type="text" 
+            id="barrio-omnibar-input"
+            oninput="handleBarrioSearch(this.value)"
+            onkeydown="if(event.key === 'Enter') executeGoogleSearch(this.value)"
+            placeholder="Buscar en La Lucila: plomeros, talleres, avisos WhatsApp, noticias..."
+          />
+
+          <!-- Selector de Elemento integrado en el Buscador -->
+          <select 
+            id="barrio-omnibar-element"
+            onchange="handleBarrioElementChange(this.value)"
+            class="bg-stone-50 hover:bg-stone-100 text-[11px] font-bold text-stone-700 border border-stone-200 rounded-full px-2 py-1 outline-none cursor-pointer hidden md:block shrink-0 transition-colors"
+          >
+            <option value="todos">🌐 Todos los Elementos</option>
+            <option value="tierra">🌱 Tierra (Oficios & Huerta)</option>
+            <option value="agua">💧 Agua (Talleres & Vínculos)</option>
+            <option value="fuego">🔥 Fuego (Financiamiento & Proyectos)</option>
+            <option value="aire">💨 Aire (Noticias & WhatsApp)</option>
+            <option value="espiritu">✨ Éter (Centro La Lucila)</option>
+          </select>
+
+          <!-- Botón Buscar en Google -->
+          <button 
+            type="button"
+            onclick="executeGoogleSearch(document.getElementById('barrio-omnibar-input').value)"
+            class="p-1.5 rounded-full hover:bg-stone-100 text-stone-500 hover:text-stone-800 transition-colors shrink-0"
+            title="Buscar en Google & Red Barrial"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- BOTONES DERECHA: + PUBLICAR / SUMAR, WAFFLE 9 PUNTOS & PERFIL -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        
+        <!-- Botón + Publicar / Sumar -->
+        <button 
+          type="button"
+          onclick="openModalSumarAlBarrio()"
+          class="bg-[#c0826d] hover:bg-[#a6634f] text-white text-xs sm:text-sm font-bold px-3 sm:px-4 py-2 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
+          title="Sumar producto a la venta, inquietud, oficio o proyecto"
+        >
+          <span class="text-base font-black leading-none">+</span>
+          <span class="hidden sm:inline">Publicar</span>
+        </button>
+
+        <!-- Botón Waffle 9 Puntos (Google Apps Suite) -->
+        <div class="relative">
+          <button 
+            type="button"
+            id="btn-google-waffle"
+            onclick="toggleGoogleWaffle()"
+            class="google-waffle-btn"
+            title="Suite de los 5 Elementos"
+          >
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <circle cx="5" cy="5" r="2.2"></circle>
+              <circle cx="12" cy="5" r="2.2"></circle>
+              <circle cx="19" cy="5" r="2.2"></circle>
+              <circle cx="5" cy="12" r="2.2"></circle>
+              <circle cx="12" cy="12" r="2.2"></circle>
+              <circle cx="19" cy="12" r="2.2"></circle>
+              <circle cx="5" cy="19" r="2.2"></circle>
+              <circle cx="12" cy="19" r="2.2"></circle>
+              <circle cx="19" cy="19" r="2.2"></circle>
+            </svg>
+          </button>
+
+          <!-- MENÚ FLOTANTE WAFFLE (LOS 5 ELEMENTOS) -->
+          <div id="google-waffle-menu" class="google-waffle-menu hidden">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-stone-100">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-black text-stone-900">Suite Elemental</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-[#a6634f] bg-[#fcf4f0] px-2 py-0.5 rounded-full">La Lucila</span>
+              </div>
+              <span class="text-xs text-stone-400 font-semibold">5 Dimensiones</span>
+            </div>
+
+            <!-- GRID DE LOS 5 ELEMENTOS CON SELLOS OFICIALES -->
+            <div class="grid grid-cols-3 gap-2">
+              
+              <!-- 1. TIERRA -->
+              <div class="waffle-item" onclick="selectElementFilter('tierra'); closeGoogleWaffle();">
+                <div class="w-12 h-12 rounded-2xl bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center p-2 mb-1 shadow-xs">
+                  <img src="public/assets/brand/tierra_clean.png" class="w-full h-full object-contain" alt="Tierra" />
+                </div>
+                <span class="text-xs font-bold text-stone-800">🌱 Tierra</span>
+                <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Oficios & Huerta</span>
+              </div>
+
+              <!-- 2. AGUA -->
+              <div class="waffle-item" onclick="selectElementFilter('agua'); closeGoogleWaffle();">
+                <div class="w-12 h-12 rounded-2xl bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center p-2 mb-1 shadow-xs">
+                  <img src="public/assets/brand/agua_clean.png" class="w-full h-full object-contain" alt="Agua" />
+                </div>
+                <span class="text-xs font-bold text-stone-800">💧 Agua</span>
+                <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Talleres & Vínculos</span>
+              </div>
+
+              <!-- 3. FUEGO -->
+              <div class="waffle-item" onclick="selectElementFilter('fuego'); closeGoogleWaffle();">
+                <div class="w-12 h-12 rounded-2xl bg-[#fdf4f0] border border-[#f2b5a2]/50 flex items-center justify-center p-2 mb-1 shadow-xs">
+                  <img src="public/assets/brand/fuego_clean.png" class="w-full h-full object-contain" alt="Fuego" />
+                </div>
+                <span class="text-xs font-bold text-stone-800">🔥 Fuego</span>
+                <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Financiamiento</span>
+              </div>
+
+              <!-- 4. AIRE -->
+              <div class="waffle-item" onclick="selectElementFilter('aire'); closeGoogleWaffle();">
+                <div class="w-12 h-12 rounded-2xl bg-[#f6f7f3] border border-[#d2d7c1]/50 flex items-center justify-center p-2 mb-1 shadow-xs">
+                  <img src="public/assets/brand/aire_clean.png" class="w-full h-full object-contain" alt="Aire" />
+                </div>
+                <span class="text-xs font-bold text-stone-800">💨 Aire</span>
+                <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Noticias & Avisos</span>
+              </div>
+
+              <!-- 5. ÉTER -->
+              <div class="waffle-item" onclick="navigateTo('centro-lucila'); closeGoogleWaffle();">
+                <div class="w-12 h-12 rounded-2xl bg-[#fcf4f0] border border-[#dfc2b7]/50 flex items-center justify-center p-2 mb-1 shadow-xs">
+                  <img src="public/assets/brand/eter_clean.png" class="w-full h-full object-contain" alt="Éter" />
+                </div>
+                <span class="text-xs font-bold text-stone-800">✨ Éter</span>
+                <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Centro La Lucila</span>
+              </div>
+
+              <!-- 6. COSMOS / CONSTELACIÓN -->
+              <div class="waffle-item" onclick="navigateTo('welcome'); closeGoogleWaffle();">
+                <div class="w-12 h-12 rounded-2xl bg-[#fff] border border-stone-200 flex items-center justify-center p-2 mb-1 shadow-xs">
+                  <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Comunidad" />
+                </div>
+                <span class="text-xs font-bold text-stone-800">🪐 Cosmos</span>
+                <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Constelación</span>
+              </div>
+            </div>
+
+            <!-- ENLACES DIRECTOS ADICIONALES EN EL WAFFLE -->
+            <div class="mt-3 pt-3 border-t border-stone-100 flex flex-col gap-1 text-xs">
+              <button type="button" onclick="navigateTo('hub'); closeGoogleWaffle();" class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-stone-50 text-stone-700 font-semibold flex items-center justify-between">
+                <span>🧺 Feria Agroecológica & Pedidos</span>
+                <span class="text-[10px] text-[#a6634f]">Activa →</span>
+              </button>
+              <button type="button" onclick="navigateTo('membership'); closeGoogleWaffle();" class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-stone-50 text-stone-700 font-semibold flex items-center justify-between">
+                <span>💧 Membresía CsC del Nodo</span>
+                <span class="text-[10px] text-blue-600">Socio →</span>
+              </button>
+              <button type="button" onclick="openModalSumarAlBarrio('inquietud'); closeGoogleWaffle();" class="w-full text-left px-3 py-1.5 rounded-lg hover:bg-stone-50 text-stone-700 font-semibold flex items-center justify-between">
+                <span>📢 Buzón de Inquietudes Barriales</span>
+                <span class="text-[10px] text-emerald-600">Sumar →</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avatar Vecino / Carnet -->
+        <button 
+          type="button"
+          onclick="navigateTo('profile')" 
+          class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-[#d99a86] to-[#a6634f] text-white flex items-center justify-center font-bold text-xs shadow-xs border border-white hover:opacity-90 transition-opacity"
+          title="Mi Carnet de Vecino"
+        >
+          <span>👤</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- TIRA DE SUB-NAVEGACIÓN ESTILO GOOGLE (TABS) -->
+    <div class="google-subnav max-w-7xl mx-auto px-3 sm:px-6">
+      <button type="button" class="google-tab-btn active" id="tab-btn-barrio" onclick="navigateTo('barrio')">
+        <span>🌐</span> Todo el Barrio
+      </button>
+      <button type="button" class="google-tab-btn" id="tab-btn-oficios" onclick="navigateTo('oficios')">
+        <span>🛠️</span> Vidriera de Oficios
+      </button>
+      <button type="button" class="google-tab-btn" id="tab-btn-whatsapp" onclick="navigateTo('whatsapp')">
+        <span>💬</span> Grupos de WhatsApp
+      </button>
+      <button type="button" class="google-tab-btn" id="tab-btn-noticias" onclick="navigateTo('noticias')">
+        <span>📰</span> Noticias Locales
+      </button>
+      <button type="button" class="google-tab-btn" id="tab-btn-talleres" onclick="navigateTo('talleres')">
+        <span>🎨</span> Talleres de Vecinos
+      </button>
+      <button type="button" class="google-tab-btn" id="tab-btn-centro-lucila" onclick="navigateTo('centro-lucila')">
+        <span>🏡</span> Centro La Lucila (Nueva Era)
+      </button>
+      <button type="button" class="google-tab-btn" id="tab-btn-financiamiento" onclick="navigateTo('financiamiento')">
+        <span>💡</span> Financiamiento de Proyectos
+      </button>
+      <button type="button" class="google-tab-btn" id="tab-btn-hub" onclick="navigateTo('hub')">
+        <span>🧺</span> Feria & Pedidos
+      </button>
+      <button type="button" class="google-tab-btn" id="tab-btn-sumar" onclick="openModalSumarAlBarrio()">
+        <span>➕</span> Sumar Producto / Inquietud
+      </button>
+      <button type="button" class="google-tab-btn" id="tab-btn-welcome" onclick="navigateTo('welcome')">
+        <span>✨</span> Constelación
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 0. VISTA: PORTAL & RED SOCIAL BARRIAL (TODO EL BARRIO - LA LUCILA) -->
+  <!-- ========================================================================= -->
+  <div id="view-barrio" class="app-view max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-20">
+    
+    <!-- BANNER DE BIENVENIDA AL NODO LA LUCILA -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#ffffff] via-[#fcf6f2] to-[#f5eee6] border border-[#c0826d]/30 mb-6 shadow-xs relative overflow-hidden">
+      <div class="relative z-10">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-3 py-1 rounded-full border border-[#c0826d]/25 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+              Nodo Activo La Lucila
+            </span>
+            <span class="text-xs font-semibold text-stone-500">Vicente López • Red Barrial</span>
+          </div>
+
+          <!-- Mini widget de Estado del Tiempo / Marea -->
+          <div class="flex items-center gap-3 bg-white/90 px-3.5 py-1.5 rounded-full border border-stone-200 text-xs text-stone-700 shadow-xs">
+            <span title="Clima actual">☀️ 21°C</span>
+            <span>•</span>
+            <span title="Marea del Río de la Plata en La Lucila">🌊 Río: Marea normal</span>
+            <span>•</span>
+            <span title="Punto Verde"><a href="https://www.google.com/search?q=punto+verde+la+lucila" target="_blank" class="text-emerald-700 font-bold hover:underline">♻️ Punto Verde hoy</a></span>
+          </div>
+        </div>
+
+        <h1 class="text-2xl sm:text-4xl font-black text-stone-900 tracking-tight mb-2">
+          La información viva del barrio, <span class="text-[#a6634f]">organizada por Elementos</span> 🌿
+        </h1>
+        <p class="text-stone-600 text-sm sm:text-base max-w-3xl mb-5 leading-relaxed">
+          Nucleamos lo que pasa en los grupos de WhatsApp, las noticias de La Lucila, los talleres comunitarios y la vidriera de oficios de confianza (plomeros, carpinteros, jardineros) referenciados por nuestro Centro Comunitario en calle Rawson.
+        </p>
+
+        <!-- 3 TARJETAS DESTACADAS DE GESTIÓN BARRIAL -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-stone-200/70">
+          
+          <!-- Card 1: Centro Comunitario -->
+          <div onclick="navigateTo('centro-lucila')" class="bg-white/85 hover:bg-white p-4 rounded-2xl border border-stone-200 hover:border-[#c0826d]/40 transition-all cursor-pointer shadow-xs group">
+            <div class="flex items-center gap-2.5 mb-1.5">
+              <span class="text-xl">🏡</span>
+              <h3 class="font-bold text-sm text-stone-900 group-hover:text-[#a6634f] transition-colors">Oficina de la Nueva Era</h3>
+            </div>
+            <p class="text-xs text-stone-600 leading-snug">
+              Atienden Gonza, Agus, Rami, Cris y Ro en Rawson 3450. Vení a sacarte dudas y charlar.
+            </p>
+            <span class="text-[11px] font-bold text-[#a6634f] mt-2 inline-block">Conocer el equipo →</span>
+          </div>
+
+          <!-- Card 2: Financiamiento -->
+          <div onclick="navigateTo('financiamiento')" class="bg-white/85 hover:bg-white p-4 rounded-2xl border border-stone-200 hover:border-amber-400/50 transition-all cursor-pointer shadow-xs group">
+            <div class="flex items-center gap-2.5 mb-1.5">
+              <span class="text-xl">💡</span>
+              <h3 class="font-bold text-sm text-stone-900 group-hover:text-amber-700 transition-colors">Financiamiento de Proyectos</h3>
+            </div>
+            <p class="text-xs text-stone-600 leading-snug">
+              ¿Tenés una idea para el barrio? Contanos tu proyecto y recibí financiamiento vecinal.
+            </p>
+            <span class="text-[11px] font-bold text-amber-700 mt-2 inline-block">Presentar proyecto →</span>
+          </div>
+
+          <!-- Card 3: Sumar Productos -->
+          <div onclick="openModalSumarAlBarrio('producto')" class="bg-white/85 hover:bg-white p-4 rounded-2xl border border-stone-200 hover:border-emerald-500/50 transition-all cursor-pointer shadow-xs group">
+            <div class="flex items-center gap-2.5 mb-1.5">
+              <span class="text-xl">🧺</span>
+              <h3 class="font-bold text-sm text-stone-900 group-hover:text-emerald-700 transition-colors">Sumar Productos a la Venta</h3>
+            </div>
+            <p class="text-xs text-stone-600 leading-snug">
+              Si hacés panificados, miel, plantas o cosmética, sumalos a la feria comunitaria.
+            </p>
+            <span class="text-[11px] font-bold text-emerald-700 mt-2 inline-block">Cargar producto →</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTRO RÁPIDO DE ELEMENTOS -->
+    <div class="mb-6 flex items-center justify-between flex-wrap gap-2">
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full" id="barrio-element-pills">
+        <button onclick="selectElementFilter('todos')" class="barrio-pill active text-xs font-bold px-3.5 py-1.5 rounded-full border bg-stone-900 text-white transition-all shadow-xs" data-element="todos">
+          🌐 Todos
+        </button>
+        <button onclick="selectElementFilter('tierra')" class="barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs" data-element="tierra">
+          🌱 Tierra (Oficios & Huerta)
+        </button>
+        <button onclick="selectElementFilter('agua')" class="barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#7ca1b5] transition-all shadow-xs" data-element="agua">
+          💧 Agua (Talleres & Vínculos)
+        </button>
+        <button onclick="selectElementFilter('fuego')" class="barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#d97757] transition-all shadow-xs" data-element="fuego">
+          🔥 Fuego (Financiamiento)
+        </button>
+        <button onclick="selectElementFilter('aire')" class="barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#aab091] transition-all shadow-xs" data-element="aire">
+          💨 Aire (Noticias & Avisos)
+        </button>
+        <button onclick="selectElementFilter('espiritu')" class="barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#c59b8b] transition-all shadow-xs" data-element="espiritu">
+          ✨ Éter (Centro La Lucila)
+        </button>
+      </div>
+
+      <!-- Conteo de elementos encontrados -->
+      <span id="barrio-results-count" class="text-xs font-semibold text-stone-500">
+        Mostrando todas las novedades
+      </span>
+    </div>
+
+    <!-- FEED DINÁMICO UNIFICADO DEL BARRIO -->
+    <div id="barrio-feed-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Se puebla dinámicamente con renderBarrioFeed() -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 0.B VISTA: VIDRIERA DE OFICIOS Y SERVICIOS DEL BARRIO -->
+  <!-- ========================================================================= -->
+  <div id="view-oficios" class="app-view hidden max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-20">
+    <!-- Header de la Vidriera -->
+    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-2xl">🛠️</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Vidriera de Oficios de La Lucila</h1>
+        </div>
+        <p class="text-stone-600 text-sm max-w-2xl">
+          Plomeros, carpinteros, electricistas, gasistas y servicios vecinales recomendados y referenciados por el Centro Comunitario Elementales.
+        </p>
+      </div>
+
+      <button 
+        onclick="openModalSumarAlBarrio('oficio')"
+        class="bg-[#8ca15d] hover:bg-[#738848] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
+      >
+        <span>➕</span>
+        <span>Ofrecer mi Oficio / Recomendar</span>
+      </button>
+    </div>
+
+    <!-- Filtro por Rubro -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none" id="oficios-category-filters">
+      <button onclick="filterOficiosByCategory('todos')" class="oficio-cat-btn active text-xs font-bold px-3.5 py-1.5 rounded-full border bg-stone-900 text-white transition-all shadow-xs">
+        Todos
+      </button>
+      <button onclick="filterOficiosByCategory('Plomería')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs">
+        🔧 Plomería & Gas
+      </button>
+      <button onclick="filterOficiosByCategory('Carpintería')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs">
+        🪚 Carpintería
+      </button>
+      <button onclick="filterOficiosByCategory('Electricidad')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs">
+        ⚡ Electricidad
+      </button>
+      <button onclick="filterOficiosByCategory('Jardinería')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs">
+        🌿 Jardinería & Poda
+      </button>
+      <button onclick="filterOficiosByCategory('Costura')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs">
+        🧵 Costura & Arreglos
+      </button>
+      <button onclick="filterOficiosByCategory('Mascotas')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs">
+        🐾 Cuidados de Mascotas
+      </button>
+    </div>
+
+    <!-- Grid de Oficios -->
+    <div id="oficios-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Se puebla dinámicamente con renderOficios() -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 0.C VISTA: GRUPOS DE WHATSAPP DEL BARRIO EN VIVO -->
+  <!-- ========================================================================= -->
+  <div id="view-whatsapp" class="app-view hidden max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-20">
+    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-2xl">💬</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Grupos de WhatsApp de La Lucila</h1>
+        </div>
+        <p class="text-stone-600 text-sm max-w-xl">
+          Nuclear la información viva de los grupos vecinales en un solo lugar: alertas, mascotas perdidas, trueque y avisos comunitarios.
+        </p>
+      </div>
+
+      <button 
+        onclick="openModalSumarAlBarrio('whatsapp')"
+        class="bg-[#25D366] hover:bg-[#1ebc59] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
+      >
+        <span>📢</span>
+        <span>Publicar Aviso al Barrio</span>
+      </button>
+    </div>
+
+    <!-- Feed de Mensajes estilo WhatsApp -->
+    <div id="whatsapp-feed-list" class="space-y-4">
+      <!-- Se puebla dinámicamente con renderWhatsAppFeed() -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 0.D VISTA: NOTICIAS LOCALES & GOOGLE NEWS -->
+  <!-- ========================================================================= -->
+  <div id="view-noticias" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-20">
+    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-2xl">📰</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Noticias Importantes de La Lucila</h1>
+        </div>
+        <p class="text-stone-600 text-sm max-w-xl">
+          Información verificada del barrio proveniente de Google News, avisos municipales de Vicente López y la red barrial.
+        </p>
+      </div>
+
+      <a 
+        href="https://www.google.com/search?q=noticias+la+lucila+vicente+lopez&tbm=nws" 
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-2 transition-all"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span>Ver más en Google Noticias ↗</span>
+      </a>
+    </div>
+
+    <!-- Grid de Noticias -->
+    <div id="noticias-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Se puebla dinámicamente con renderNoticias() -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 0.E VISTA: TALLERES DE VECINOS & AGENDA DE SABERES -->
+  <!-- ========================================================================= -->
+  <div id="view-talleres" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-20">
+    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-2xl">🎨</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Talleres & Saberes de Vecinos</h1>
+        </div>
+        <p class="text-stone-600 text-sm max-w-xl">
+          Espacio abierto para compartir conocimientos prácticos: huerta urbana, carpintería, fermentos, respiración consciente y oficios sustentables en La Lucila.
+        </p>
+      </div>
+
+      <button 
+        onclick="openModalSumarAlBarrio('taller')"
+        class="bg-[#7ca1b5] hover:bg-[#688ca0] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
+      >
+        <span>➕</span>
+        <span>Proponer mi Taller</span>
+      </button>
+    </div>
+
+    <!-- Lista de Talleres -->
+    <div id="talleres-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <!-- Se puebla dinámicamente con renderTalleres() -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 0.F VISTA: CENTRO COMUNITARIO ELEMENTALES (LA LUCILA - NUEVA ERA) -->
+  <!-- ========================================================================= -->
+  <div id="view-centro-lucila" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-20">
+    
+    <!-- Hero del Centro Comunitario -->
+    <div class="p-6 sm:p-10 rounded-3xl bg-gradient-to-br from-[#ffffff] via-[#fcf4f0] to-[#f5ebe6] border border-[#c0826d]/40 mb-8 shadow-sm text-center relative overflow-hidden">
+      <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-white p-3 border border-[#c0826d]/40 shadow-xs mb-3 flex items-center justify-center">
+        <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Emblema" />
+      </div>
+
+      <span class="text-xs font-extrabold uppercase tracking-widest text-[#a6634f] bg-[#c0826d]/15 px-3 py-1 rounded-full">
+        Nodo Central La Lucila
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-black text-stone-900 mt-2 mb-2">
+        Centro Comunitario Elementales
+      </h1>
+      <p class="text-stone-700 text-sm sm:text-base font-semibold max-w-2xl mx-auto mb-4">
+        Oficina Barrial de la Nueva Era para la Gestión Comunitaria
+      </p>
+      <p class="text-stone-600 text-xs sm:text-sm max-w-xl mx-auto mb-6 leading-relaxed">
+        Un espacio físico y humano donde los vecinos de La Lucila pueden acercarse a resolver dudas, compartir ideas, solicitar financiamiento para proyectos locales e incorporar productos caseros a la feria activa.
+      </p>
+
+      <!-- Ficha de Ubicación y Horarios -->
+      <div class="inline-flex flex-wrap items-center justify-center gap-4 bg-white/95 px-6 py-3 rounded-2xl border border-stone-200 shadow-xs text-xs sm:text-sm text-stone-800">
+        <div class="flex items-center gap-2">
+          <span>📍</span>
+          <span class="font-bold">Rawson 3450 (e/ Roma y Debenedetti), La Lucila</span>
+        </div>
+        <span>•</span>
+        <div class="flex items-center gap-2">
+          <span>🕒</span>
+          <span>Lunes a Sábados 09:30 a 19:30 hs</span>
+        </div>
+        <span>•</span>
+        <a 
+          href="https://www.google.com/maps/search/Calle+Rawson+La+Lucila+Vicente+Lopez" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-[#a6634f] font-bold hover:underline flex items-center gap-1"
+        >
+          <span>Abrir en Google Maps ↗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- EQUIPO DE LOS 5 GUARDIANES QUE ATIENDEN EN EL CENTRO -->
+    <div class="mb-10">
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-black text-stone-900">¿Quiénes atienden en la oficina barrial?</h2>
+        <p class="text-stone-600 text-xs sm:text-sm max-w-lg mx-auto">
+          En el Centro te reciben Gonza, Agus, Rami, Cris y Ro para escucharte, resolver dudas y acompañar tus proyectos.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="guardianes-lucila-grid">
+        <!-- Se puebla dinámicamente con renderGuardianesCentro() -->
+      </div>
+    </div>
+
+    <!-- ¿PARA QUÉ PODÉS VENIR AL CENTRO? -->
+    <div class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-8 shadow-xs mb-8">
+      <h2 class="text-xl font-black text-stone-900 mb-4 flex items-center gap-2">
+        <span>✨</span>
+        <span>¿Qué podés hacer si venís al local?</span>
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm" id="servicios-oficina-grid">
+        <!-- Se puebla dinámicamente -->
+      </div>
+    </div>
+
+    <!-- BOTÓN DE CONTACTO DIRECTO POR WHATSAPP CON EL CENTRO -->
+    <div class="text-center">
+      <a 
+        href="https://wa.me/5491123456789?text=Hola%20Gonza,%20Agus,%20Rami,%20Cris%20y%20Ro!%20Me%20comunico%20desde%20el%20portal%20barrial%20de%20La%20Lucila..."
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-spotify !bg-[#25D366] hover:!bg-[#1ebc59] !text-white !font-black !px-8 !py-4 shadow-md inline-flex items-center gap-2 text-sm sm:text-base"
+      >
+        <span>💬</span>
+        <span>Escribir al WhatsApp del Centro Comunitario</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 0.G VISTA: FINANCIAMIENTO DE PROYECTOS LOCALES -->
+  <!-- ========================================================================= -->
+  <div id="view-financiamiento" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-20">
+    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-2xl">💡</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Financiamiento de Proyectos Locales</h1>
+        </div>
+        <p class="text-stone-600 text-sm max-w-xl">
+          Fondo comunitario barrial para impulsar iniciativas sustentables, huertas, arte y tecnología en La Lucila.
+        </p>
+      </div>
+
+      <button 
+        onclick="openModalSumarAlBarrio('proyecto')"
+        class="bg-[#d97757] hover:bg-[#c06345] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
+      >
+        <span>🚀</span>
+        <span>Presentar mi Proyecto</span>
+      </button>
+    </div>
+
+    <!-- Cómo funciona el fondo -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
+        <span class="w-8 h-8 rounded-full bg-[#fdf4f0] text-[#d97757] font-black flex items-center justify-center text-sm mb-2">1</span>
+        <h3 class="font-bold text-sm text-stone-900 mb-1">Contanos tu Idea</h3>
+        <p class="text-xs text-stone-600">Completá el formulario o vení al Centro Comunitario en Rawson 3450 a charlar con el equipo.</p>
+      </div>
+      <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
+        <span class="w-8 h-8 rounded-full bg-[#fdf4f0] text-[#d97757] font-black flex items-center justify-center text-sm mb-2">2</span>
+        <h3 class="font-bold text-sm text-stone-900 mb-1">Evaluación Comunitaria</h3>
+        <p class="text-xs text-stone-600">Evaluamos el impacto barrial, presupuestos y herramientas compartidas con los vecinos.</p>
+      </div>
+      <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
+        <span class="w-8 h-8 rounded-full bg-[#fdf4f0] text-[#d97757] font-black flex items-center justify-center text-sm mb-2">3</span>
+        <h3 class="font-bold text-sm text-stone-900 mb-1">Fondo & Difusión</h3>
+        <p class="text-xs text-stone-600">Activamos micro-aportes del fondo barrial y te ayudamos a hacerlo realidad en La Lucila.</p>
+      </div>
+    </div>
+
+    <!-- Proyectos Activos -->
+    <h2 class="text-lg font-black text-stone-900 mb-4">Proyectos Barriales en Curso</h2>
+    <div id="proyectos-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <!-- Se puebla dinámicamente con renderProyectos() -->
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
   <!-- 1. VISTA: BIENVENIDA (TABLERO ELEMENTAL & BOTÁNICA TROPICAL) -->
   <!-- ========================================================================= -->
-  <div id="view-welcome" class="app-view relative min-h-screen overflow-hidden tropical-sky-bg flex flex-col justify-between items-center px-4 py-6 sm:py-10 text-center selection:bg-[#c0826d] selection:text-white">
+  <div id="view-welcome" class="app-view hidden relative min-h-screen overflow-hidden tropical-sky-bg flex flex-col justify-between items-center px-4 py-6 sm:py-10 text-center selection:bg-[#c0826d] selection:text-white">
     
     <!-- ILUSTRACIÓN BOTÁNICA Y AVES DE FONDO (REFERENCIA 1) -->
     <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -1894,8 +2534,445 @@
     </div>
   </div>
 
+  <!-- ========================================================================= -->
+  <!-- MODAL UNIFICADO: SUMAR AL BARRIO (PRODUCTOS, INQUIETUDES, OFICIOS, PROYECTOS) -->
+  <!-- ========================================================================= -->
+  <div id="modal-sumar-barrio" class="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-7 border border-stone-200 shadow-2xl relative my-auto animate-fade-in">
+      
+      <!-- Botón Cerrar -->
+      <button 
+        type="button"
+        onclick="closeModalSumarAlBarrio()" 
+        class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center font-bold text-lg transition-colors"
+      >
+        ✕
+      </button>
+
+      <!-- Encabezado del Modal -->
+      <div class="mb-4">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-2xl">🌱</span>
+          <h2 class="text-xl sm:text-2xl font-black text-stone-900">Sumar al Barrio La Lucila</h2>
+        </div>
+        <p class="text-stone-600 text-xs sm:text-sm">
+          Este portal lo construimos entre todos los vecinos. Elegí qué te gustaría sumar o compartir con la comunidad.
+        </p>
+      </div>
+
+      <!-- Selector de Pestañas del Modal -->
+      <div class="flex items-center gap-1.5 p-1 bg-stone-100 rounded-2xl mb-5 overflow-x-auto">
+        <button 
+          type="button" 
+          id="btn-tab-modal-producto"
+          onclick="switchSumarTab('producto')" 
+          class="flex-1 min-w-[110px] py-2 px-3 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-xs text-center"
+        >
+          🧺 Sumar Producto
+        </button>
+        <button 
+          type="button" 
+          id="btn-tab-modal-inquietud"
+          onclick="switchSumarTab('inquietud')" 
+          class="flex-1 min-w-[110px] py-2 px-3 rounded-xl text-xs font-bold transition-all text-stone-600 hover:text-stone-900 text-center"
+        >
+          📢 Inquietud Barrial
+        </button>
+        <button 
+          type="button" 
+          id="btn-tab-modal-oficio"
+          onclick="switchSumarTab('oficio')" 
+          class="flex-1 min-w-[110px] py-2 px-3 rounded-xl text-xs font-bold transition-all text-stone-600 hover:text-stone-900 text-center"
+        >
+          🛠️ Oficio / Servicio
+        </button>
+        <button 
+          type="button" 
+          id="btn-tab-modal-proyecto"
+          onclick="switchSumarTab('proyecto')" 
+          class="flex-1 min-w-[110px] py-2 px-3 rounded-xl text-xs font-bold transition-all text-stone-600 hover:text-stone-900 text-center"
+        >
+          💡 Proyecto
+        </button>
+      </div>
+
+      <!-- PESTAÑA 1: SUMAR PRODUCTO A LA VENTA -->
+      <div id="tab-content-producto" class="sumar-tab-pane">
+        <form id="form-sumar-producto" onsubmit="handleSubirProducto(event)" class="space-y-3.5">
+          <div class="bg-[#fcf4f0] p-3 rounded-2xl border border-[#c0826d]/30 text-xs text-stone-700 mb-2">
+            <strong>¿Elaborás algún producto artesanal o agroecológico?</strong> Podés sumarlo a la venta en el Centro Comunitario y feria barrial. Gonza, Agus, Rami, Cris y Ro te contactarán para coordinar entrega.
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Nombre del Producto *</label>
+            <input 
+              type="text" 
+              id="sumar-prod-nombre" 
+              required 
+              placeholder="Ej: Miel pura de isla, Pan integral de masa madre, Jabón natural..." 
+              class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Categoría / Elemento *</label>
+              <select 
+                id="sumar-prod-categoria" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white font-medium"
+              >
+                <option value="Almacén">🌱 Almacén Agroecológico</option>
+                <option value="Panificados">🔥 Panificados & Masa Madre</option>
+                <option value="Granja & Lácteos">💧 Granja, Lácteos & Fermentos</option>
+                <option value="Cosmética Natural">✨ Cosmética Natural & Hierbas</option>
+                <option value="Plantas & Semillas">🌿 Plantas, Semillas & Huerta</option>
+                <option value="Artesanías">🪚 Artesanías & Maderas</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Precio Sugerido ($) *</label>
+              <input 
+                type="number" 
+                id="sumar-prod-precio" 
+                required 
+                placeholder="Ej: 3800" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Tu Nombre o Emprendimiento *</label>
+              <input 
+                type="text" 
+                id="sumar-prod-productor" 
+                required 
+                placeholder="Ej: Laura (Vecina La Lucila)" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">WhatsApp de Contacto *</label>
+              <input 
+                type="tel" 
+                id="sumar-prod-whatsapp" 
+                required 
+                placeholder="Ej: 11 5566 7788" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Descripción & Origen del Producto</label>
+            <textarea 
+              id="sumar-prod-desc" 
+              rows="2" 
+              placeholder="Contanos los ingredientes, forma de elaboración, si es sin agroquímicos o apto celíacos..." 
+              class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+            ></textarea>
+          </div>
+
+          <div class="pt-2 flex items-center justify-end gap-2">
+            <button 
+              type="button" 
+              onclick="closeModalSumarAlBarrio()" 
+              class="btn-spotify btn-spotify-secondary text-xs font-bold px-4 py-2.5"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn-spotify !bg-[#c0826d] hover:!bg-[#a6634f] !text-white text-xs font-black px-6 py-2.5 shadow-sm"
+            >
+              Sumar Producto a la Venta
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- PESTAÑA 2: COMPARTIR UNA INQUIETUD BARRIAL -->
+      <div id="tab-content-inquietud" class="sumar-tab-pane hidden">
+        <form id="form-sumar-inquietud" onsubmit="handleSubirInquietud(event)" class="space-y-3.5">
+          <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200 text-xs text-amber-900 mb-2">
+            <strong>Buzón Abierto de La Lucila:</strong> Las inquietudes se publican de forma transparente en el portal barrial y son tratadas por el equipo del Centro Comunitario y vecinos en las reuniones periódicas.
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Tema / Asunto de la Inquietud *</label>
+            <input 
+              type="text" 
+              id="sumar-inq-titulo" 
+              required 
+              placeholder="Ej: Falta de luz en pasaje de la estación, canasto de reciclaje..." 
+              class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Categoría Barrial *</label>
+              <select 
+                id="sumar-inq-categoria" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white font-medium"
+              >
+                <option value="arbolado">🌳 Poda & Arbolado Urbano</option>
+                <option value="reciclaje">♻️ Reciclaje & Basura Cero</option>
+                <option value="seguridad">💡 Alumbrado & Seguridad</option>
+                <option value="transito">🚶 Tránsito, Bicisenda & Veredas</option>
+                <option value="animales">🐕 Animales & Mascotas</option>
+                <option value="comunidad">🤝 Convivencia & Espacios Verdes</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Tu Nombre / Calle</label>
+              <input 
+                type="text" 
+                id="sumar-inq-vecino" 
+                placeholder="Ej: Marcos (calle Roma)" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Detalle de la Situación *</label>
+            <textarea 
+              id="sumar-inq-detalle" 
+              required 
+              rows="3" 
+              placeholder="Explicá claramente qué sucede y en qué lugar exacto del barrio..." 
+              class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Propuesta de Solución Sugerida</label>
+            <input 
+              type="text" 
+              id="sumar-inq-propuesta" 
+              placeholder="¿Qué creés que podríamos hacer entre los vecinos para resolverlo?" 
+              class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+            />
+          </div>
+
+          <div class="pt-2 flex items-center justify-end gap-2">
+            <button 
+              type="button" 
+              onclick="closeModalSumarAlBarrio()" 
+              class="btn-spotify btn-spotify-secondary text-xs font-bold px-4 py-2.5"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn-spotify !bg-amber-600 hover:!bg-amber-700 !text-white text-xs font-black px-6 py-2.5 shadow-sm"
+            >
+              Publicar Inquietud Barrial
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- PESTAÑA 3: OFRECER OFICIO O SERVICIO -->
+      <div id="tab-content-oficio" class="sumar-tab-pane hidden">
+        <form id="form-sumar-oficio" onsubmit="handleSubirOficio(event)" class="space-y-3.5">
+          <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 text-xs text-emerald-900 mb-2">
+            <strong>Vidriera de Oficios de Confianza:</strong> Si ofrecés plomería, carpintería, electricidad, costura, jardinería o cuidado, sumate a la red de prestadores recomendados del barrio.
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Nombre y Apellido *</label>
+              <input 
+                type="text" 
+                id="sumar-oficio-nombre" 
+                required 
+                placeholder="Ej: Marcelo Gómez" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Rubro / Especialidad *</label>
+              <input 
+                type="text" 
+                id="sumar-oficio-rubro" 
+                required 
+                placeholder="Ej: Plomería & Gas, Carpintero, Electricista..." 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Zona en La Lucila *</label>
+              <input 
+                type="text" 
+                id="sumar-oficio-zona" 
+                required 
+                placeholder="Ej: Cerca de Rawson / Estación La Lucila" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">WhatsApp de Contacto *</label>
+              <input 
+                type="tel" 
+                id="sumar-oficio-whatsapp" 
+                required 
+                placeholder="Ej: 11 4433 2211" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Descripción de Trabajos & Experiencia</label>
+            <textarea 
+              id="sumar-oficio-desc" 
+              rows="2" 
+              placeholder="Contanos qué tipo de trabajos realizás, si hacés urgencias o tenés matrícula..." 
+              class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+            ></textarea>
+          </div>
+
+          <div class="pt-2 flex items-center justify-end gap-2">
+            <button 
+              type="button" 
+              onclick="closeModalSumarAlBarrio()" 
+              class="btn-spotify btn-spotify-secondary text-xs font-bold px-4 py-2.5"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn-spotify !bg-[#8ca15d] hover:!bg-[#75894b] !text-white text-xs font-black px-6 py-2.5 shadow-sm"
+            >
+              Sumar mi Oficio a la Vidriera
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- PESTAÑA 4: PROYECTO PARA FINANCIAMIENTO -->
+      <div id="tab-content-proyecto" class="sumar-tab-pane hidden">
+        <form id="form-sumar-proyecto" onsubmit="handleSubirProyecto(event)" class="space-y-3.5">
+          <div class="bg-[#fdf4f0] p-3 rounded-2xl border border-[#d97757]/30 text-xs text-stone-800 mb-2">
+            <strong>Fondo Barrial de Proyectos:</strong> Presentá tu iniciativa para La Lucila (huertas, energía limpia, arte, tecnología apropiada) para recibir apoyo económico y herramientas del Centro Comunitario.
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Título del Proyecto *</label>
+            <input 
+              type="text" 
+              id="sumar-proy-titulo" 
+              required 
+              placeholder="Ej: Compostera Comunitaria en Plaza La Lucila, Bicisendas..." 
+              class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Elemento Rector *</label>
+              <select 
+                id="sumar-proy-elemento" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white font-medium"
+              >
+                <option value="tierra">🌱 Tierra (Huerta, Suelo & Compost)</option>
+                <option value="fuego">🔥 Fuego (Energía Renovable & Tecnología)</option>
+                <option value="agua">💧 Agua (Río, Vínculos & Salud)</option>
+                <option value="aire">💨 Aire (Cultura, Comunicación & Educación)</option>
+                <option value="espiritu">✨ Éter (Centro & Gobernanza)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Monto Estimado Solicitado ($)</label>
+              <input 
+                type="number" 
+                id="sumar-proy-monto" 
+                placeholder="Ej: 250000" 
+                class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Descripción del Proyecto & Beneficio para el Barrio *</label>
+            <textarea 
+              id="sumar-proy-desc" 
+              required 
+              rows="3" 
+              placeholder="¿Qué materiales se necesitan? ¿Cómo mejora la vida en La Lucila?" 
+              class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white"
+            ></textarea>
+          </div>
+
+          <div class="pt-2 flex items-center justify-end gap-2">
+            <button 
+              type="button" 
+              onclick="closeModalSumarAlBarrio()" 
+              class="btn-spotify btn-spotify-secondary text-xs font-bold px-4 py-2.5"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn-spotify !bg-[#d97757] hover:!bg-[#c06345] !text-white text-xs font-black px-6 py-2.5 shadow-sm"
+            >
+              Enviar Proyecto para Financiamiento
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL EXPLICATIVO DE CADA ELEMENTO (SIMPLE & DIDÁCTICO) -->
+  <!-- ========================================================================= -->
+  <div id="modal-element-info" class="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 border border-stone-200 shadow-2xl relative text-center animate-fade-in">
+      
+      <button 
+        type="button"
+        onclick="document.getElementById('modal-element-info').classList.add('hidden');" 
+        class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center font-bold"
+      >
+        ✕
+      </button>
+
+      <div id="elem-modal-icon-container" class="w-20 h-20 mx-auto rounded-3xl p-3 border mb-3 flex items-center justify-center shadow-xs">
+        <img id="elem-modal-icon" src="" class="w-full h-full object-contain" alt="Elemento" />
+      </div>
+
+      <h3 id="elem-modal-title" class="text-2xl font-black text-stone-900 mb-1"></h3>
+      <p id="elem-modal-subtitle" class="text-xs font-extrabold uppercase tracking-wider text-[#a6634f] mb-3"></p>
+      
+      <p id="elem-modal-desc" class="text-stone-600 text-sm leading-relaxed mb-4"></p>
+      
+      <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200 text-left text-xs mb-5">
+        <strong class="block text-stone-800 font-bold mb-1">Rol en el Barrio La Lucila:</strong>
+        <p id="elem-modal-role" class="text-stone-600"></p>
+      </div>
+
+      <button 
+        type="button" 
+        id="elem-modal-filter-btn"
+        onclick="" 
+        class="btn-spotify !bg-stone-900 !text-white text-xs font-bold w-full py-3"
+      >
+        Ver publicaciones de este Elemento →
+      </button>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="js/products-data.js"></script>
+  <script src="js/barrio-data.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
