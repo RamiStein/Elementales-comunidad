@@ -119,6 +119,7 @@ const ELEMENTAL_WISDOM = {
     name: 'Agua',
     solid: 'Icosaedro',
     emoji: '💧',
+    img: 'public/assets/brand/agua_clean.png',
     badge: 'Icosaedro · 20 Caras Sagradas',
     color: '#0284c7',
     bg: '#f0f9ff',
@@ -131,6 +132,7 @@ const ELEMENTAL_WISDOM = {
     name: 'Tierra',
     solid: 'Rombo / Hexaedro',
     emoji: '🍃',
+    img: 'public/assets/brand/tierra_clean.png',
     badge: 'Hexaedro · Estabilidad & Materia',
     color: '#15803d',
     bg: '#f0fdf4',
@@ -143,6 +145,7 @@ const ELEMENTAL_WISDOM = {
     name: 'Fuego',
     solid: 'Tetraedro',
     emoji: '🔥',
+    img: 'public/assets/brand/fuego_clean.png',
     badge: 'Tetraedro · Voluntad & Calor',
     color: '#ea580c',
     bg: '#fff7ed',
@@ -155,6 +158,7 @@ const ELEMENTAL_WISDOM = {
     name: 'Aire',
     solid: 'Octaedro',
     emoji: '💨',
+    img: 'public/assets/brand/aire_clean.png',
     badge: 'Octaedro · Aliento & Comunicación',
     color: '#0d9488',
     bg: '#f0fdfa',
@@ -167,6 +171,7 @@ const ELEMENTAL_WISDOM = {
     name: 'Éter',
     solid: 'Dodecaedro / Flor',
     emoji: '✨',
+    img: 'public/assets/brand/eter_clean.png',
     badge: 'Dodecaedro · Cosmos & Flor Sagrada',
     color: '#a6634f',
     bg: '#fcf4f0',
@@ -210,6 +215,12 @@ function selectElement(key) {
     card.classList.remove('hidden');
     card.style.borderColor = info.color;
     card.style.backgroundColor = info.bg;
+
+    const imgEl = document.getElementById('wisdom-element-img');
+    if (imgEl && info.img) {
+      imgEl.src = info.img;
+      imgEl.alt = info.name;
+    }
 
     document.getElementById('wisdom-element-badge').textContent = info.badge;
     document.getElementById('wisdom-element-badge').style.color = info.color;
