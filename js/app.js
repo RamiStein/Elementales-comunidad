@@ -527,17 +527,23 @@ function navigateTo(viewName) {
   if (viewName === 'barrio') {
     renderBarrioFeed();
   } else if (viewName === 'oficios') {
-    renderOficios();
+    switchTierraTab('oficios');
   } else if (viewName === 'whatsapp') {
-    renderWhatsAppFeed();
+    // Redirige al elemento Agua en la pestaña de WhatsApp
+    navigateTo('talleres');
+    switchAguaTab('whatsapp');
+    return;
   } else if (viewName === 'noticias') {
-    renderNoticias();
+    switchAireTab('noticias');
   } else if (viewName === 'talleres') {
-    renderTalleres();
+    switchAguaTab('talleres');
   } else if (viewName === 'centro-lucila') {
-    renderCentroLucila();
+    // Redirige a Éter en el módulo de la Oficina Rawson 3450
+    navigateTo('eter');
+    showEterModule('centro');
+    return;
   } else if (viewName === 'financiamiento') {
-    renderFinanciamiento();
+    switchFuegoTab('fondo');
   } else if (viewName === 'hub') {
     renderHubStats();
   } else if (viewName === 'new-order') {
@@ -556,8 +562,11 @@ function navigateTo(viewName) {
   } else if (viewName === 'profile') {
     renderProfile();
   } else if (viewName === 'eter') {
-    // El panel Éter CRM — abre por defecto la Gestión de los 5 Elementos
-    showEterModule('elementos');
+    if (AppState.userRole === 'gestor') {
+      showEterModule('elementos');
+    } else {
+      showEterModule('centro');
+    }
   }
 }
 
@@ -2076,13 +2085,33 @@ function updateRoleUI() {
     }
   }
 
-  // 2. Banners contextuales en view-barrio
+  // 2. Banners contextuales y Secciones dedicadas en view-barrio
   const bVisitante = document.getElementById('role-banner-visitante');
   const bSocio = document.getElementById('role-banner-socio');
   const bGestor = document.getElementById('role-banner-gestor');
   if (bVisitante) bVisitante.classList.toggle('hidden', role !== 'visitante');
   if (bSocio) bSocio.classList.toggle('hidden', role !== 'socio');
   if (bGestor) bGestor.classList.toggle('hidden', role !== 'gestor');
+
+  const sVisitante = document.getElementById('role-section-visitante');
+  const sSocio = document.getElementById('role-section-socio');
+  const sGestor = document.getElementById('role-section-gestor');
+  if (sVisitante) sVisitante.classList.toggle('hidden', role !== 'visitante');
+  if (sSocio) sSocio.classList.toggle('hidden', role !== 'socio');
+  if (sGestor) sGestor.classList.toggle('hidden', role !== 'gestor');
+
+  // 2.b Botones de cambio rápido en view-barrio
+  const qbVis = document.getElementById('quick-role-btn-visitante');
+  const qbSoc = document.getElementById('quick-role-btn-socio');
+  const qbGes = document.getElementById('quick-role-btn-gestor');
+  if (qbVis && qbSoc && qbGes) {
+    qbVis.className = 'px-3 py-1.5 rounded-xl text-xs font-black transition-all text-center border ' + 
+      (role === 'visitante' ? 'bg-stone-900 text-white border-stone-900 shadow-xs ring-2 ring-stone-900/20' : 'bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100');
+    qbSoc.className = 'px-3 py-1.5 rounded-xl text-xs font-black transition-all text-center border ' + 
+      (role === 'socio' ? 'bg-blue-600 text-white border-blue-600 shadow-xs ring-2 ring-blue-600/20' : 'bg-blue-50/50 text-blue-800 border-blue-200 hover:bg-blue-100');
+    qbGes.className = 'px-3 py-1.5 rounded-xl text-xs font-black transition-all text-center border ' + 
+      (role === 'gestor' ? 'bg-amber-600 text-white border-amber-600 shadow-xs ring-2 ring-amber-600/20' : 'bg-amber-50/50 text-amber-900 border-amber-200 hover:bg-amber-100');
+  }
 
   // 3. Tab de Éter en la subnav
   const tabEter = document.getElementById('tab-btn-eter');
@@ -2456,6 +2485,68 @@ function renderBarrioFeed() {
       </div>
     </div>
   `).join('');
+}
+
+// --- NAVEGACIÓN POR CATEGORÍAS DENTRO DE LOS ELEMENTOS ---
+function switchTierraTab(tabName) {
+  sounds.playPop();
+  document.querySelectorAll('#tierra-subnav-tabs .element-subtab-btn').forEach(btn => {
+    btn.classList.remove('active-tierra');
+  });
+  const activeBtn = document.getElementById(`tierra-tab-btn-${tabName}`);
+  if (activeBtn) activeBtn.classList.add('active-tierra');
+
+  document.querySelectorAll('.tierra-panel').forEach(p => p.classList.add('hidden'));
+  const target = document.getElementById(`tierra-panel-${tabName}`);
+  if (target) target.classList.remove('hidden');
+
+  if (tabName === 'oficios') renderOficios();
+}
+
+function switchAguaTab(tabName) {
+  sounds.playPop();
+  document.querySelectorAll('#agua-subnav-tabs .element-subtab-btn').forEach(btn => {
+    btn.classList.remove('active-agua');
+  });
+  const activeBtn = document.getElementById(`agua-tab-btn-${tabName}`);
+  if (activeBtn) activeBtn.classList.add('active-agua');
+
+  document.querySelectorAll('.agua-panel').forEach(p => p.classList.add('hidden'));
+  const target = document.getElementById(`agua-panel-${tabName}`);
+  if (target) target.classList.remove('hidden');
+
+  if (tabName === 'talleres') renderTalleres();
+  if (tabName === 'whatsapp') renderWhatsAppFeed();
+}
+
+function switchFuegoTab(tabName) {
+  sounds.playPop();
+  document.querySelectorAll('#fuego-subnav-tabs .element-subtab-btn').forEach(btn => {
+    btn.classList.remove('active-fuego');
+  });
+  const activeBtn = document.getElementById(`fuego-tab-btn-${tabName}`);
+  if (activeBtn) activeBtn.classList.add('active-fuego');
+
+  document.querySelectorAll('.fuego-panel').forEach(p => p.classList.add('hidden'));
+  const target = document.getElementById(`fuego-panel-${tabName}`);
+  if (target) target.classList.remove('hidden');
+
+  if (tabName === 'proyectos') renderFinanciamiento();
+}
+
+function switchAireTab(tabName) {
+  sounds.playPop();
+  document.querySelectorAll('#aire-subnav-tabs .element-subtab-btn').forEach(btn => {
+    btn.classList.remove('active-aire');
+  });
+  const activeBtn = document.getElementById(`aire-tab-btn-${tabName}`);
+  if (activeBtn) activeBtn.classList.add('active-aire');
+
+  document.querySelectorAll('.aire-panel').forEach(p => p.classList.add('hidden'));
+  const target = document.getElementById(`aire-panel-${tabName}`);
+  if (target) target.classList.remove('hidden');
+
+  if (tabName === 'noticias') renderNoticias();
 }
 
 // 4. RENDERIZADO DE LA VIDRIERA DE OFICIOS
@@ -3105,6 +3196,7 @@ function showEterModule(moduleName) {
   if (panel) panel.classList.remove('hidden');
 
   // Cargar datos específicos del módulo
+  if (moduleName === 'centro') renderCentroLucila();
   if (moduleName === 'membresia') renderEterMembresia();
   if (moduleName === 'economia') renderEterEconomia();
 }

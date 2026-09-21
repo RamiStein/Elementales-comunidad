@@ -631,13 +631,18 @@ body {
   right: 0;
   width: 360px;
   max-width: calc(100vw - 24px);
-  background: #ffffff;
+  background: #ffffff !important;
   border: 1px solid #e7e5e4;
   border-radius: 24px;
-  box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.18), 0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 1.25rem;
-  z-index: 100;
-  animation: waffleFade 0.2s ease-out;
+  z-index: 10005 !important;
+  animation: waffleFade 0.18s ease-out;
+}
+
+/* En desktop el backdrop NO se muestra nunca para que no oscurezca ni desenfoque la pantalla */
+.waffle-backdrop {
+  display: none !important;
 }
 
 @media (max-width: 640px) {
@@ -654,8 +659,17 @@ body {
     overflow-y: auto !important;
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3) !important;
     padding: 1.25rem 1rem 2rem !important;
-    z-index: 10000 !important;
+    z-index: 10005 !important;
     animation: waffleSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  /* Solo en móvil se muestra el fondo oscuro para el bottom-sheet */
+  .waffle-backdrop:not(.hidden) {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    background: rgba(28, 25, 23, 0.5);
+    z-index: 10000;
   }
 
   @keyframes waffleSlideUp {
@@ -679,15 +693,6 @@ body {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
-}
-
-.waffle-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(28, 25, 23, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 9998;
 }
 
 .waffle-item {
@@ -801,3 +806,60 @@ body {
   align-items: center;
   gap: 0.25rem;
 }
+
+/* Tabs internas de categorías dentro de cada Elemento */
+.element-subtab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  border-radius: 9999px;
+  border: 1px solid #e7e5e4;
+  background: #ffffff;
+  color: #57534e;
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.element-subtab-btn:hover {
+  background: #fbfbfb;
+  border-color: #d6d3d1;
+  color: #1c1917;
+  transform: translateY(-1px);
+}
+
+.element-subtab-btn.active {
+  background: #1c1917 !important;
+  color: #ffffff !important;
+  border-color: #1c1917 !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.18) !important;
+}
+
+.element-subtab-btn.active-tierra {
+  background: #5d6e3c !important;
+  color: #ffffff !important;
+  border-color: #5d6e3c !important;
+}
+
+.element-subtab-btn.active-agua {
+  background: #467b96 !important;
+  color: #ffffff !important;
+  border-color: #467b96 !important;
+}
+
+.element-subtab-btn.active-fuego {
+  background: #b54a2a !important;
+  color: #ffffff !important;
+  border-color: #b54a2a !important;
+}
+
+.element-subtab-btn.active-aire {
+  background: #4d5e68 !important;
+  color: #ffffff !important;
+  border-color: #4d5e68 !important;
+}
+

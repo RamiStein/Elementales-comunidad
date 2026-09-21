@@ -159,7 +159,7 @@
               <div class="grid grid-cols-3 gap-2">
                 
                 <!-- 1. TIERRA -->
-                <div class="waffle-item" onclick="selectElementFilter('tierra'); closeGoogleWaffle();">
+                <div class="waffle-item" onclick="navigateTo('oficios'); closeGoogleWaffle();">
                   <div class="w-12 h-12 rounded-2xl bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center p-2 mb-1 shadow-xs">
                     <img src="public/assets/brand/tierra_clean.png" class="w-full h-full object-contain" alt="Tierra" />
                   </div>
@@ -168,7 +168,7 @@
                 </div>
 
                 <!-- 2. AGUA -->
-                <div class="waffle-item" onclick="selectElementFilter('agua'); closeGoogleWaffle();">
+                <div class="waffle-item" onclick="navigateTo('talleres'); closeGoogleWaffle();">
                   <div class="w-12 h-12 rounded-2xl bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center p-2 mb-1 shadow-xs">
                     <img src="public/assets/brand/agua_clean.png" class="w-full h-full object-contain" alt="Agua" />
                   </div>
@@ -177,7 +177,7 @@
                 </div>
 
                 <!-- 3. FUEGO -->
-                <div class="waffle-item" onclick="selectElementFilter('fuego'); closeGoogleWaffle();">
+                <div class="waffle-item" onclick="navigateTo('financiamiento'); closeGoogleWaffle();">
                   <div class="w-12 h-12 rounded-2xl bg-[#fdf4f0] border border-[#f2b5a2]/50 flex items-center justify-center p-2 mb-1 shadow-xs">
                     <img src="public/assets/brand/fuego_clean.png" class="w-full h-full object-contain" alt="Fuego" />
                   </div>
@@ -186,7 +186,7 @@
                 </div>
 
                 <!-- 4. AIRE -->
-                <div class="waffle-item" onclick="selectElementFilter('aire'); closeGoogleWaffle();">
+                <div class="waffle-item" onclick="navigateTo('noticias'); closeGoogleWaffle();">
                   <div class="w-12 h-12 rounded-2xl bg-[#f6f7f3] border border-[#d2d7c1]/50 flex items-center justify-center p-2 mb-1 shadow-xs">
                     <img src="public/assets/brand/aire_clean.png" class="w-full h-full object-contain" alt="Aire" />
                   </div>
@@ -301,40 +301,31 @@
 
     </div>
 
-    <!-- TIRA DE SUB-NAVEGACIÓN ESTILO GOOGLE (TABS) -->
+    <!-- TIRA DE SUB-NAVEGACIÓN ESTILO GOOGLE: LOS ELEMENTOS DEL NODO -->
     <div class="google-subnav max-w-7xl mx-auto px-3 sm:px-6">
       <button type="button" class="google-tab-btn active shrink-0" id="tab-btn-barrio" onclick="navigateTo('barrio')">
-        <span>🌐</span> Todo el Barrio
+        <span>🏠</span> El Nodo (Inicio)
       </button>
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-oficios" onclick="navigateTo('oficios')">
-        <span>🛠️</span> Vidriera de Oficios
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-whatsapp" onclick="navigateTo('whatsapp')">
-        <span>💬</span> Grupos de WhatsApp
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-noticias" onclick="navigateTo('noticias')">
-        <span>📰</span> Noticias Locales
+        <span>🌱</span> Tierra (Oficios & Huerta)
       </button>
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-talleres" onclick="navigateTo('talleres')">
-        <span>🎨</span> Talleres de Vecinos
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-centro-lucila" onclick="navigateTo('centro-lucila')">
-        <span>🏡</span> Centro La Lucila (Nueva Era)
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-eter" onclick="navigateTo('eter')">
-        <span>✨</span> Éter CRM
+        <span>💧</span> Agua (Talleres & WhatsApp)
       </button>
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-financiamiento" onclick="navigateTo('financiamiento')">
-        <span>💡</span> Financiamiento
+        <span>🔥</span> Fuego (Financiamiento)
+      </button>
+      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-noticias" onclick="navigateTo('noticias')">
+        <span>💨</span> Aire (Noticias & Avisos)
+      </button>
+      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-eter" onclick="navigateTo('eter')">
+        <span>✨</span> Éter (Centro & CRM)
       </button>
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-hub" onclick="navigateTo('hub')">
         <span>🧺</span> Feria & Pedidos
       </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-sumar" onclick="openModalSumarAlBarrio()">
-        <span>➕</span> Publicar
-      </button>
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-welcome" onclick="navigateTo('welcome')">
-        <span>✨</span> Constelación
+        <span>🪐</span> Constelación
       </button>
     </div>
   </header>
@@ -347,6 +338,26 @@
   <!-- ========================================================================= -->
   <div id="view-barrio" class="app-view max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-20">
     
+    <!-- SELECTOR RÁPIDO DE PERSPECTIVA BARRIAL (NO MIEMBRO / SOCIO CsC / GESTOR DEL NODO) -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/95 p-2.5 sm:px-4 sm:py-2.5 rounded-2xl border border-stone-200 shadow-2xs mb-4 gap-2.5">
+      <div class="flex items-center gap-2 text-xs font-bold text-stone-700">
+        <span class="text-base">🧭</span>
+        <span>Perspectiva Activa en la Plataforma:</span>
+        <span class="text-[11px] font-normal text-stone-400 hidden md:inline">• Elegí cómo querés experimentar la plataforma</span>
+      </div>
+      <div class="grid grid-cols-3 gap-1.5 w-full sm:w-auto" id="quick-role-switcher-bar">
+        <button type="button" onclick="toggleUserRole('visitante')" id="quick-role-btn-visitante" class="px-3 py-1.5 rounded-xl text-xs font-black transition-all text-center border">
+          👤 No Miembro
+        </button>
+        <button type="button" onclick="toggleUserRole('socio')" id="quick-role-btn-socio" class="px-3 py-1.5 rounded-xl text-xs font-black transition-all text-center border">
+          💧 Socio CsC
+        </button>
+        <button type="button" onclick="toggleUserRole('gestor')" id="quick-role-btn-gestor" class="px-3 py-1.5 rounded-xl text-xs font-black transition-all text-center border">
+          👑 Gestor Nodo
+        </button>
+      </div>
+    </div>
+
     <!-- BANNER CONTEXTUAL POR ROL (NO MIEMBRO / SOCIO CsC / GESTOR DEL NODO) -->
     <div id="role-context-banners-container" class="mb-5">
       
@@ -360,7 +371,7 @@
               <span class="text-[10px] font-bold bg-stone-200 text-stone-700 px-2 py-0.5 rounded-full">Acceso Abierto</span>
             </div>
             <p class="text-xs text-stone-600 mt-0.5 leading-snug">
-              Tenés acceso a noticias, oficios y grupos vecinales. Sumate a la Membresía CsC para acceder a compras comunitarias a precio de costo y cupos prioritarios.
+              Tenés acceso libre a noticias, oficios y grupos vecinales. Sumate a la Membresía CsC para acceder a compras comunitarias a precio de costo y cupos prioritarios.
             </p>
           </div>
         </div>
@@ -424,6 +435,143 @@
 
     </div>
 
+    <!-- SECCIONES DE EXPERIENCIA ESPECÍFICA POR ROL (VISITANTE / SOCIO / GESTOR) -->
+    <!-- A. EXPERIENCIA DEDICADA PARA VECINO NO MIEMBRO -->
+    <div id="role-section-visitante" class="mb-6 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-amber-50/60 via-white to-stone-50 border border-[#c0826d]/30 shadow-xs">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-2.5 py-0.5 rounded-full">Tu lugar en La Lucila</span>
+          <h3 class="text-lg sm:text-xl font-black text-stone-900 mt-1">¿Cómo participás hoy como Vecino vs. como Socio CsC?</h3>
+          <p class="text-xs text-stone-600">Comparamos de manera transparente lo que tenés abierto hoy y los beneficios directos que desbloqueás al asociarte:</p>
+        </div>
+        <button onclick="navigateTo('membership')" class="bg-[#c0826d] hover:bg-[#a6634f] text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xs shrink-0 inline-flex items-center gap-1.5">
+          <span>💧 Asociarme al Nodo</span>
+          <span>→</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <div class="bg-white/90 p-4 rounded-2xl border border-stone-200">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-lg">👤</span>
+            <h4 class="font-bold text-stone-900 text-sm">Tu estado actual: Vecino No Miembro</h4>
+          </div>
+          <ul class="space-y-1.5 text-stone-600">
+            <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Vidriera de oficios barriales recomendados de confianza</li>
+            <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Acceso libre a grupos de WhatsApp y noticias barriales</li>
+            <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Compras de feria a precio de venta minorista al público</li>
+            <li class="flex items-start gap-1.5"><span class="text-amber-600 font-bold">ℹ</span> Consultas presenciales y mate en la oficina de Rawson 3450</li>
+          </ul>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-50/70 to-indigo-50/50 p-4 rounded-2xl border border-blue-200">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">💧</span>
+              <h4 class="font-bold text-blue-950 text-sm">Beneficios de la Membresía CsC</h4>
+            </div>
+            <span class="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-full">Ahorro Activo</span>
+          </div>
+          <ul class="space-y-1.5 text-blue-900">
+            <li class="flex items-start gap-1.5"><span class="text-blue-600 font-bold">★</span> <strong>Compras a precio de costo de origen</strong> (Ahorro del 25% al 35% en huerta y almacén)</li>
+            <li class="flex items-start gap-1.5"><span class="text-blue-600 font-bold">★</span> <strong>Cupos y descuentos prioritarios</strong> en talleres vecinales</li>
+            <li class="flex items-start gap-1.5"><span class="text-blue-600 font-bold">★</span> <strong>Acceso al Fondo Barrial</strong> para recibir financiamiento de proyectos</li>
+            <li class="flex items-start gap-1.5"><span class="text-blue-600 font-bold">★</span> <strong>Voz y voto</strong> en las asambleas mensuales del nodo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- B. EXPERIENCIA DEDICADA PARA SOCIO CsC -->
+    <div id="role-section-socio" class="hidden mb-6 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-blue-50/80 via-sky-50/40 to-white border border-blue-200 shadow-xs">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-wider text-blue-800 bg-blue-100 px-2.5 py-0.5 rounded-full">Panel Exclusivo de Socia</span>
+          <h3 class="text-lg sm:text-xl font-black text-blue-950 mt-1">💧 Tu Membresía CsC está Activa · Lucía Gómez</h3>
+          <p class="text-xs text-blue-800/80">Código: #CSC-2026-0482 · Plan Raíces ($2.500/mes) · Cuota al día</p>
+        </div>
+        <button onclick="navigateTo('profile')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-xs shrink-0 flex items-center gap-1.5">
+          <span>🪪 Ver Carnet Digital con QR</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <div onclick="navigateTo('new-order')" class="bg-white p-3.5 rounded-2xl border border-blue-200 hover:border-blue-400 cursor-pointer transition-all shadow-2xs group">
+          <span class="text-xl block mb-1">🧺</span>
+          <h4 class="font-bold text-stone-900 group-hover:text-blue-700">Feria a Precio de Costo</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">Ahorro habilitado en catálogo semanal</p>
+          <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-2">30% Ahorro Activo</span>
+        </div>
+
+        <div onclick="navigateTo('talleres')" class="bg-white p-3.5 rounded-2xl border border-blue-200 hover:border-blue-400 cursor-pointer transition-all shadow-2xs group">
+          <span class="text-xl block mb-1">🎨</span>
+          <h4 class="font-bold text-stone-900 group-hover:text-blue-700">Talleres con Descuento</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">Cupo asegurado en saberes barriales</p>
+          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full inline-block mt-2">Pase Prioritario</span>
+        </div>
+
+        <div onclick="navigateTo('financiamiento')" class="bg-white p-3.5 rounded-2xl border border-blue-200 hover:border-blue-400 cursor-pointer transition-all shadow-2xs group">
+          <span class="text-xl block mb-1">💡</span>
+          <h4 class="font-bold text-stone-900 group-hover:text-blue-700">Fondo de Financiamiento</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">Presentá tu proyecto con prioridad</p>
+          <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block mt-2">Postulación Abierta</span>
+        </div>
+
+        <div onclick="navigateTo('whatsapp')" class="bg-white p-3.5 rounded-2xl border border-blue-200 hover:border-blue-400 cursor-pointer transition-all shadow-2xs group">
+          <span class="text-xl block mb-1">💬</span>
+          <h4 class="font-bold text-stone-900 group-hover:text-blue-700">Comunidad de Socios</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">Canal directo con el equipo del nodo</p>
+          <span class="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full inline-block mt-2">Chat Cerrado</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- C. EXPERIENCIA DEDICADA PARA GESTOR DEL NODO -->
+    <div id="role-section-gestor" class="hidden mb-6 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-amber-50 via-orange-50/40 to-white border border-amber-300 shadow-xs">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-wider text-amber-900 bg-amber-200 px-2.5 py-0.5 rounded-full">Consola de Guardia · Rawson 3450</span>
+          <h3 class="text-lg sm:text-xl font-black text-amber-950 mt-1">👑 Panel Rápido de Gestión del Nodo La Lucila</h3>
+          <p class="text-xs text-amber-900/80">Gestores: Gonza, Agus, Rami, Cris y Ro · Horario de atención activo: 09:30 a 19:30 hs</p>
+        </div>
+        <button onclick="navigateTo('eter')" class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white text-xs font-bold px-4 py-2 rounded-full shadow-xs shrink-0 flex items-center gap-1.5">
+          <span>✨ Abrir Éter CRM Completo</span>
+          <span>→</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <div onclick="navigateTo('eter'); showEterModule('economia');" class="bg-white p-3.5 rounded-2xl border border-amber-200 hover:border-amber-400 cursor-pointer transition-all shadow-2xs group">
+          <span class="text-xl block mb-1">💰</span>
+          <h4 class="font-bold text-stone-900 group-hover:text-amber-800">Caja y Finanzas</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">$142.500 caja • $320.000 fondo</p>
+          <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-2">Equilibrado</span>
+        </div>
+
+        <div onclick="navigateTo('eter'); showEterModule('membresia');" class="bg-white p-3.5 rounded-2xl border border-amber-200 hover:border-amber-400 cursor-pointer transition-all shadow-2xs group">
+          <span class="text-xl block mb-1">👥</span>
+          <h4 class="font-bold text-stone-900 group-hover:text-amber-800">Directorio de Socios</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">3 solicitudes barriales pendientes</p>
+          <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block mt-2">Revisar Altas</span>
+        </div>
+
+        <div onclick="navigateTo('eter'); showEterModule('horas');" class="bg-white p-3.5 rounded-2xl border border-amber-200 hover:border-amber-400 cursor-pointer transition-all shadow-2xs group">
+          <span class="text-xl block mb-1">⏰</span>
+          <h4 class="font-bold text-stone-900 group-hover:text-amber-800">Guardia Rawson 3450</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">Turno hoy: Gonza & Ro</p>
+          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full inline-block mt-2">Local Abierto</span>
+        </div>
+
+        <div onclick="navigateTo('eter'); showEterModule('claves');" class="bg-white p-3.5 rounded-2xl border border-amber-200 hover:border-amber-400 cursor-pointer transition-all shadow-2xs group">
+          <span class="text-xl block mb-1">🔐</span>
+          <h4 class="font-bold text-stone-900 group-hover:text-amber-800">Claves del Nodo</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">Wi-Fi, Mercado Pago y accesos</p>
+          <span class="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full inline-block mt-2">Bóveda Segura</span>
+        </div>
+      </div>
+    </div>
+
+
     <!-- BANNER DE BIENVENIDA AL NODO LA LUCILA -->
     <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#ffffff] via-[#fcf6f2] to-[#f5eee6] border border-[#c0826d]/30 mb-6 shadow-xs relative overflow-hidden">
       <div class="relative z-10">
@@ -447,82 +595,339 @@
         </div>
 
         <h1 class="text-2xl sm:text-4xl font-black text-stone-900 tracking-tight mb-2">
-          La información viva del barrio, <span class="text-[#a6634f]">organizada por Elementos</span> 🌿
+          Nodo Elementales La Lucila · <span class="text-[#a6634f]">Centro de la Nueva Era</span> 🌿
         </h1>
-        <p class="text-stone-600 text-sm sm:text-base max-w-3xl mb-5 leading-relaxed">
-          Nucleamos lo que pasa en los grupos de WhatsApp, las noticias de La Lucila, los talleres comunitarios y la vidriera de oficios de confianza (plomeros, carpinteros, jardineros) referenciados por nuestro Centro Comunitario en calle Rawson.
+        <p class="text-stone-600 text-sm sm:text-base max-w-3xl leading-relaxed">
+          Espacio comunitario autogestionado en Rawson 3450 para la organización vecinal, soberanía alimentaria, oficios de confianza y financiamiento de proyectos locales.
         </p>
-
-        <!-- 3 TARJETAS DESTACADAS DE GESTIÓN BARRIAL -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-stone-200/70">
-          
-          <!-- Card 1: Centro Comunitario -->
-          <div onclick="navigateTo('centro-lucila')" class="bg-white/85 hover:bg-white p-4 rounded-2xl border border-stone-200 hover:border-[#c0826d]/40 transition-all cursor-pointer shadow-xs group">
-            <div class="flex items-center gap-2.5 mb-1.5">
-              <span class="text-xl">🏡</span>
-              <h3 class="font-bold text-sm text-stone-900 group-hover:text-[#a6634f] transition-colors">Oficina de la Nueva Era</h3>
-            </div>
-            <p class="text-xs text-stone-600 leading-snug">
-              Atienden Gonza, Agus, Rami, Cris y Ro en Rawson 3450. Vení a sacarte dudas y charlar.
-            </p>
-            <span class="text-[11px] font-bold text-[#a6634f] mt-2 inline-block">Conocer el equipo →</span>
-          </div>
-
-          <!-- Card 2: Financiamiento -->
-          <div onclick="navigateTo('financiamiento')" class="bg-white/85 hover:bg-white p-4 rounded-2xl border border-stone-200 hover:border-amber-400/50 transition-all cursor-pointer shadow-xs group">
-            <div class="flex items-center gap-2.5 mb-1.5">
-              <span class="text-xl">💡</span>
-              <h3 class="font-bold text-sm text-stone-900 group-hover:text-amber-700 transition-colors">Financiamiento de Proyectos</h3>
-            </div>
-            <p class="text-xs text-stone-600 leading-snug">
-              ¿Tenés una idea para el barrio? Contanos tu proyecto y recibí financiamiento vecinal.
-            </p>
-            <span class="text-[11px] font-bold text-amber-700 mt-2 inline-block">Presentar proyecto →</span>
-          </div>
-
-          <!-- Card 3: Sumar Productos -->
-          <div onclick="openModalSumarAlBarrio('producto')" class="bg-white/85 hover:bg-white p-4 rounded-2xl border border-stone-200 hover:border-emerald-500/50 transition-all cursor-pointer shadow-xs group">
-            <div class="flex items-center gap-2.5 mb-1.5">
-              <span class="text-xl">🧺</span>
-              <h3 class="font-bold text-sm text-stone-900 group-hover:text-emerald-700 transition-colors">Sumar Productos a la Venta</h3>
-            </div>
-            <p class="text-xs text-stone-600 leading-snug">
-              Si hacés panificados, miel, plantas o cosmética, sumalos a la feria comunitaria.
-            </p>
-            <span class="text-[11px] font-bold text-emerald-700 mt-2 inline-block">Cargar producto →</span>
-          </div>
-
-        </div>
       </div>
     </div>
 
-    <!-- FILTRO RÁPIDO DE ELEMENTOS -->
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-1.5 max-w-full scrollbar-none" id="barrio-element-pills">
-        <button onclick="selectElementFilter('todos')" class="barrio-pill active text-xs font-bold px-3.5 py-1.5 rounded-full border bg-stone-900 text-white transition-all shadow-xs shrink-0" data-element="todos">
-          🌐 Todos
-        </button>
-        <button onclick="selectElementFilter('tierra')" class="barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0" data-element="tierra">
-          🌱 Tierra (Oficios & Huerta)
-        </button>
-        <button onclick="selectElementFilter('agua')" class="barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#7ca1b5] transition-all shadow-xs shrink-0" data-element="agua">
-          💧 Agua (Talleres & Vínculos)
-        </button>
-        <button onclick="selectElementFilter('fuego')" class="barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#d97757] transition-all shadow-xs shrink-0" data-element="fuego">
-          🔥 Fuego (Financiamiento)
-        </button>
-        <button onclick="selectElementFilter('aire')" class="barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#aab091] transition-all shadow-xs shrink-0" data-element="aire">
-          💨 Aire (Noticias & Avisos)
-        </button>
-        <button onclick="selectElementFilter('espiritu')" class="barrio-pill text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#c59b8b] transition-all shadow-xs shrink-0" data-element="espiritu">
-          ✨ Éter (Centro La Lucila)
-        </button>
+    <!-- ========================================================================= -->
+    <!-- INFORMACIÓN ESENCIAL DEL NODO (EXPANDIDA CON ESPACIO GENEROSO HACIA ABAJO) -->
+    <!-- ========================================================================= -->
+    <div class="space-y-6 mb-10">
+
+      <!-- 1. LA OFICINA BARRIAL DE LA NUEVA ERA (RAWSON 3450) -->
+      <div class="bg-gradient-to-br from-white via-[#fcf6f2] to-[#f9ede6] rounded-3xl border border-[#c0826d]/30 p-6 sm:p-8 shadow-xs hover:shadow-md transition-all">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="w-12 h-12 rounded-2xl bg-[#fcf4f0] border border-[#c0826d]/30 flex items-center justify-center text-2xl shrink-0 shadow-xs">🏡</span>
+              <div>
+                <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-2.5 py-0.5 rounded-full">Sede Física & Gestión Vecinal</span>
+                <h2 class="text-xl sm:text-2xl font-black text-stone-900 mt-0.5">Oficina Barrial de la Nueva Era · Rawson 3450</h2>
+              </div>
+            </div>
+            
+            <p class="text-xs sm:text-sm text-stone-700 leading-relaxed mb-4">
+              En Rawson 3450 atienden presencialmente <strong>Gonza, Agus, Rami, Cris y Ro</strong>. Este es el punto de encuentro físico del barrio de La Lucila: un espacio abierto para sacarte dudas, charlar sobre la comunidad, gestionar tu membresía CsC, retirar tus compras colectivas de huerta o proponer iniciativas para el barrio.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-stone-700 mb-5">
+              <div class="bg-white/90 p-3 rounded-2xl border border-stone-200/80 flex items-center gap-2.5">
+                <span class="text-base">👥</span>
+                <div>
+                  <p class="font-bold text-stone-900">Equipo Guardián</p>
+                  <p class="text-[11px] text-stone-500">Gonza, Agus, Rami, Cris y Ro</p>
+                </div>
+              </div>
+              <div class="bg-white/90 p-3 rounded-2xl border border-stone-200/80 flex items-center gap-2.5">
+                <span class="text-base">📍</span>
+                <div>
+                  <p class="font-bold text-stone-900">Ubicación</p>
+                  <p class="text-[11px] text-stone-500">Rawson 3450, La Lucila</p>
+                </div>
+              </div>
+              <div class="bg-white/90 p-3 rounded-2xl border border-stone-200/80 flex items-center gap-2.5">
+                <span class="text-base">⏰</span>
+                <div>
+                  <p class="font-bold text-stone-900">Horario de Atención</p>
+                  <p class="text-[11px] text-stone-500">Lunes a Sábados 09:30 a 19:30 hs</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <a 
+                href="https://wa.me/5491133221100?text=${encodeURIComponent('Hola! Quiero consultar sobre el Centro Comunitario Elementales en Rawson 3450.')}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs inline-flex items-center gap-2 transition-transform active:scale-95"
+              >
+                <span>💬</span>
+                <span>Contactar por WhatsApp</span>
+              </a>
+              <button 
+                onclick="navigateTo('centro-lucila')"
+                class="bg-white hover:bg-stone-50 text-[#a6634f] border border-[#c0826d]/40 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs inline-flex items-center gap-1.5 transition-colors"
+              >
+                <span>✨</span>
+                <span>Conocer la Oficina y el Equipo →</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Conteo de elementos encontrados -->
-      <span id="barrio-results-count" class="text-xs font-semibold text-stone-500 shrink-0">
-        Mostrando todas las novedades
-      </span>
+      <!-- 2. FINANCIAMIENTO DE PROYECTOS LOCALES (FONDO BARRIAL) -->
+      <div class="bg-gradient-to-br from-white via-amber-50/50 to-orange-50/30 rounded-3xl border border-amber-300/70 p-6 sm:p-8 shadow-xs hover:shadow-md transition-all">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-2xl shrink-0 shadow-xs">💡</span>
+              <div>
+                <span class="text-[10px] font-black uppercase tracking-wider text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full">Incubadora Comunitaria</span>
+                <h2 class="text-xl sm:text-2xl font-black text-stone-900 mt-0.5">Financiamiento de Proyectos Locales</h2>
+              </div>
+            </div>
+
+            <p class="text-xs sm:text-sm text-stone-700 leading-relaxed mb-4">
+              ¿Tenés una idea para mejorar La Lucila? El nodo dispone de un <strong>Fondo Barrial Autogestionado</strong> para impulsar proyectos vecinales de huertas urbanas, compostaje, arte, educación, oficios sustentables y tecnologías compartidas.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-stone-700 mb-5">
+              <div class="bg-white/90 p-3 rounded-2xl border border-stone-200/80">
+                <span class="text-amber-700 font-bold text-xs">1. Contanos tu Idea</span>
+                <p class="text-[11px] text-stone-500 mt-0.5">Completás un formulario simple o charlás con Gonza y el equipo en Rawson 3450.</p>
+              </div>
+              <div class="bg-white/90 p-3 rounded-2xl border border-stone-200/80">
+                <span class="text-amber-700 font-bold text-xs">2. Evaluación Vecinal</span>
+                <p class="text-[11px] text-stone-500 mt-0.5">Analizamos el impacto barrial, presupuestos y herramientas compartidas.</p>
+              </div>
+              <div class="bg-white/90 p-3 rounded-2xl border border-stone-200/80">
+                <span class="text-amber-700 font-bold text-xs">3. Fondo & Difusión</span>
+                <p class="text-[11px] text-stone-500 mt-0.5">Activamos micro-aportes del fondo y ayudamos a que sea realidad en el barrio.</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <button 
+                onclick="openModalSumarAlBarrio('proyecto')"
+                class="bg-[#d97757] hover:bg-[#c06345] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs inline-flex items-center gap-2 transition-transform active:scale-95"
+              >
+                <span>🚀</span>
+                <span>Presentar mi Proyecto Barrial</span>
+              </button>
+              <button 
+                onclick="navigateTo('financiamiento')"
+                class="bg-white hover:bg-stone-50 text-amber-800 border border-amber-300 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs inline-flex items-center gap-1.5 transition-colors"
+              >
+                <span>💡</span>
+                <span>Ver Proyectos en Curso →</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. VIDRIERA DEL BARRIO: OFICIOS DE CONFIANZA Y PRODUCCIÓN LOCAL -->
+      <div class="bg-gradient-to-br from-white via-emerald-50/40 to-[#f3f7eb] rounded-3xl border border-[#8ca15d]/40 p-6 sm:p-8 shadow-xs hover:shadow-md transition-all">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="w-12 h-12 rounded-2xl bg-[#f4f6ef] border border-[#c2d49e]/60 flex items-center justify-center text-2xl shrink-0 shadow-xs">🧺</span>
+              <div>
+                <span class="text-[10px] font-black uppercase tracking-wider text-[#8ca15d] bg-[#f4f6ef] px-2.5 py-0.5 rounded-full">Economía Local & Oficios</span>
+                <h2 class="text-xl sm:text-2xl font-black text-stone-900 mt-0.5">Vidriera Barrial: Oficios y Productos Locales</h2>
+              </div>
+            </div>
+
+            <p class="text-xs sm:text-sm text-stone-700 leading-relaxed mb-4">
+              Impulsamos el trabajo y los oficios de vecinos de confianza: plomeros, carpinteros, gasistas, electricistas y jardineros referenciados por el centro. Y si elaborás panificados, miel, plantas o cosmética natural, podés sumarlos a la feria comunitaria del nodo.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-stone-700 mb-5">
+              <div class="bg-white/90 p-3 rounded-2xl border border-stone-200/80">
+                <span class="text-emerald-800 font-bold text-xs">🛠️ Vidriera de Oficios de Confianza</span>
+                <p class="text-[11px] text-stone-500 mt-0.5">Encontrá profesionales del barrio recomendados por los propios vecinos de La Lucila.</p>
+              </div>
+              <div class="bg-white/90 p-3 rounded-2xl border border-stone-200/80">
+                <span class="text-emerald-800 font-bold text-xs">🍯 Sumar Productos a la Feria</span>
+                <p class="text-[11px] text-stone-500 mt-0.5">Punto físico de venta y compras colectivas para productores locales conscientes.</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <button 
+                onclick="navigateTo('oficios')"
+                class="bg-[#8ca15d] hover:bg-[#7b8f4f] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs inline-flex items-center gap-2 transition-transform active:scale-95"
+              >
+                <span>🛠️</span>
+                <span>Buscar Oficios en la Vidriera</span>
+              </button>
+              <button 
+                onclick="openModalSumarAlBarrio('producto')"
+                class="bg-white hover:bg-stone-50 text-emerald-800 border border-emerald-300 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs inline-flex items-center gap-1.5 transition-colors"
+              >
+                <span>➕</span>
+                <span>Sumar Producto o Servicio</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- EXPLORACIÓN POR LOS 5 ELEMENTOS (LAS CATEGORÍAS DENTRO DE CADA ELEMENTO) -->
+    <!-- ========================================================================= -->
+    <div class="mb-10">
+      <div class="flex items-center justify-between gap-4 mb-4">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black text-stone-900">Ecosistema Elemental del Barrio</h2>
+          <p class="text-xs sm:text-sm text-stone-500">Cada Elemento agrupa las áreas clave de la comunidad. Seleccioná una dimensión:</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        
+        <!-- 1. TIERRA -->
+        <div onclick="navigateTo('oficios')" class="bg-white rounded-3xl border border-stone-200 hover:border-[#8ca15d] p-5 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center p-2">
+                <img src="public/assets/brand/tierra_clean.png" class="w-full h-full object-contain" alt="Tierra" />
+              </div>
+              <div>
+                <h3 class="font-black text-base text-stone-900 group-hover:text-[#8ca15d] transition-colors">🌱 Elemento Tierra</h3>
+                <span class="text-[11px] font-bold text-stone-400">Oficios, Huerta & Alimentos</span>
+              </div>
+            </div>
+            <div class="space-y-1.5 text-xs text-stone-600 mb-4 bg-stone-50/70 p-3 rounded-2xl">
+              <p class="font-semibold text-stone-800">Categorías contenidas:</p>
+              <p>• 🛠️ <strong>Vidriera de Oficios</strong> (plomeros, carpinteros...)</p>
+              <p>• 🥕 <strong>Huerta Urbana & Compost</strong> vecinal</p>
+              <p>• 🧺 <strong>Feria Agroecológica</strong> a precio de costo</p>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#8ca15d]">
+            <span>Explorar Tierra</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- 2. AGUA -->
+        <div onclick="navigateTo('talleres')" class="bg-white rounded-3xl border border-stone-200 hover:border-[#7ca1b5] p-5 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center p-2">
+                <img src="public/assets/brand/agua_clean.png" class="w-full h-full object-contain" alt="Agua" />
+              </div>
+              <div>
+                <h3 class="font-black text-base text-stone-900 group-hover:text-[#7ca1b5] transition-colors">💧 Elemento Agua</h3>
+                <span class="text-[11px] font-bold text-stone-400">Talleres & WhatsApp</span>
+              </div>
+            </div>
+            <div class="space-y-1.5 text-xs text-stone-600 mb-4 bg-stone-50/70 p-3 rounded-2xl">
+              <p class="font-semibold text-stone-800">Categorías contenidas:</p>
+              <p>• 🎨 <strong>Talleres & Saberes</strong> de vecinos</p>
+              <p>• 💬 <strong>Grupos de WhatsApp</strong> de La Lucila</p>
+              <p>• 🤝 <strong>Círculos y Vínculos</strong> comunitarios</p>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#7ca1b5]">
+            <span>Explorar Agua</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- 3. FUEGO -->
+        <div onclick="navigateTo('financiamiento')" class="bg-white rounded-3xl border border-stone-200 hover:border-[#d97757] p-5 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-[#fdf4f0] border border-[#f2b5a2]/50 flex items-center justify-center p-2">
+                <img src="public/assets/brand/fuego_clean.png" class="w-full h-full object-contain" alt="Fuego" />
+              </div>
+              <div>
+                <h3 class="font-black text-base text-stone-900 group-hover:text-[#d97757] transition-colors">🔥 Elemento Fuego</h3>
+                <span class="text-[11px] font-bold text-stone-400">Financiamiento & Proyectos</span>
+              </div>
+            </div>
+            <div class="space-y-1.5 text-xs text-stone-600 mb-4 bg-stone-50/70 p-3 rounded-2xl">
+              <p class="font-semibold text-stone-800">Categorías contenidas:</p>
+              <p>• 💡 <strong>Fondo Barrial Comunitario</strong></p>
+              <p>• 🚀 <strong>Presentar Ideas y Proyectos</strong></p>
+              <p>• ⚡ <strong>Incubadora de Iniciativas</strong> locales</p>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#d97757]">
+            <span>Explorar Fuego</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- 4. AIRE -->
+        <div onclick="navigateTo('noticias')" class="bg-white rounded-3xl border border-stone-200 hover:border-[#aab091] p-5 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-[#f6f7f3] border border-[#d2d7c1]/50 flex items-center justify-center p-2">
+                <img src="public/assets/brand/aire_clean.png" class="w-full h-full object-contain" alt="Aire" />
+              </div>
+              <div>
+                <h3 class="font-black text-base text-stone-900 group-hover:text-[#7d8560] transition-colors">💨 Elemento Aire</h3>
+                <span class="text-[11px] font-bold text-stone-400">Noticias & Alertas</span>
+              </div>
+            </div>
+            <div class="space-y-1.5 text-xs text-stone-600 mb-4 bg-stone-50/70 p-3 rounded-2xl">
+              <p class="font-semibold text-stone-800">Categorías contenidas:</p>
+              <p>• 📰 <strong>Google News</strong> en tiempo real de La Lucila</p>
+              <p>• 🌊 <strong>Alertas del Río y Marea</strong></p>
+              <p>• 📢 <strong>Avisos Barriales</strong> importantes</p>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#7d8560]">
+            <span>Explorar Aire</span>
+            <span>→</span>
+          </div>
+        </div>
+
+        <!-- 5. ÉTER -->
+        <div onclick="navigateTo('eter')" class="bg-white rounded-3xl border border-stone-200 hover:border-[#c0826d] p-5 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between sm:col-span-2 lg:col-span-2">
+          <div>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-[#fcf4f0] border border-[#dfc2b7]/50 flex items-center justify-center p-2">
+                <img src="public/assets/brand/eter_clean.png" class="w-full h-full object-contain" alt="Éter" />
+              </div>
+              <div>
+                <h3 class="font-black text-base text-stone-900 group-hover:text-[#a6634f] transition-colors">✨ Elemento Éter</h3>
+                <span class="text-[11px] font-bold text-stone-400">Oficina Rawson 3450 & CRM del Nodo</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-stone-600 mb-4 bg-stone-50/70 p-3 rounded-2xl">
+              <div>
+                <p class="font-semibold text-stone-800">Atención Pública:</p>
+                <p>• 🏡 <strong>Oficina de la Nueva Era</strong></p>
+                <p>• 👥 <strong>Gonza, Agus, Rami, Cris y Ro</strong></p>
+              </div>
+              <div>
+                <p class="font-semibold text-stone-800">Gestión Interna:</p>
+                <p>• 💰 <strong>Economía & Membresías CsC</strong></p>
+                <p>• ⏰ <strong>Cuadrante de Horas & Claves</strong></p>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#a6634f]">
+            <span>Explorar Éter y CRM</span>
+            <span>→</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- PULSO RECIENTE DEL BARRIO -->
+    <!-- ========================================================================= -->
+    <div class="mb-4 flex items-center justify-between gap-3">
+      <div>
+        <h2 class="text-lg sm:text-xl font-black text-stone-900">Pulso Barrial Reciente</h2>
+        <p class="text-xs text-stone-500">Últimos avisos, talleres y novedades compartidas en La Lucila</p>
+      </div>
+      <button onclick="openModalSumarAlBarrio()" class="text-xs font-bold text-[#a6634f] bg-[#fcf4f0] hover:bg-[#fde8df] px-3.5 py-1.5 rounded-full border border-[#c0826d]/30 transition-colors">
+        + Publicar Aviso
+      </button>
     </div>
 
     <!-- FEED DINÁMICO UNIFICADO DEL BARRIO -->
@@ -539,11 +944,11 @@
     <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <span class="text-2xl">🛠️</span>
-          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Vidriera de Oficios de La Lucila</h1>
+          <span class="text-2xl">🌱</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Elemento Tierra · Oficios, Huerta & Producción</h1>
         </div>
         <p class="text-stone-600 text-sm max-w-2xl">
-          Plomeros, carpinteros, electricistas, gasistas y servicios vecinales recomendados y referenciados por el Centro Comunitario Elementales.
+          El sustento material y el arraigo de La Lucila: oficios de confianza recomendados por vecinos, bancales de huerta y compostaje, y vidriera de productores locales.
         </p>
       </div>
 
@@ -552,135 +957,371 @@
         class="bg-[#8ca15d] hover:bg-[#738848] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
       >
         <span>➕</span>
-        <span>Ofrecer mi Oficio / Recomendar</span>
+        <span>Sumar Oficio o Producto</span>
       </button>
     </div>
 
-    <!-- Filtro por Rubro -->
-    <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none" id="oficios-category-filters">
-      <button onclick="filterOficiosByCategory('todos')" class="oficio-cat-btn active text-xs font-bold px-3.5 py-1.5 rounded-full border bg-stone-900 text-white transition-all shadow-xs shrink-0">
-        Todos
+    <!-- TABS INTERNOS DEL ELEMENTO TIERRA -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-stone-200/70" id="tierra-subnav-tabs">
+      <button onclick="switchTierraTab('oficios')" id="tierra-tab-btn-oficios" class="element-subtab-btn active-tierra shrink-0">
+        🛠️ Vidriera de Oficios de Confianza
       </button>
-      <button onclick="filterOficiosByCategory('Plomería')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
-        🔧 Plomería & Gas
+      <button onclick="switchTierraTab('huerta')" id="tierra-tab-btn-huerta" class="element-subtab-btn shrink-0">
+        🌱 Huerta Comunitaria & Compost
       </button>
-      <button onclick="filterOficiosByCategory('Carpintería')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
-        🪚 Carpintería
-      </button>
-      <button onclick="filterOficiosByCategory('Electricidad')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
-        ⚡ Electricidad
-      </button>
-      <button onclick="filterOficiosByCategory('Jardinería')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
-        🌿 Jardinería & Poda
-      </button>
-      <button onclick="filterOficiosByCategory('Costura')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
-        🧵 Costura & Arreglos
-      </button>
-      <button onclick="filterOficiosByCategory('Mascotas')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
-        🐾 Cuidados de Mascotas
+      <button onclick="switchTierraTab('productores')" id="tierra-tab-btn-productores" class="element-subtab-btn shrink-0">
+        🧺 Productores Locales & Venta Barrial
       </button>
     </div>
 
-    <!-- Grid de Oficios -->
-    <div id="oficios-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      <!-- Se puebla dinámicamente con renderOficios() -->
-    </div>
-  </div>
+    <!-- PANEL 1: VIDRIERA DE OFICIOS -->
+    <div id="tierra-panel-oficios" class="tierra-panel">
+      <!-- Filtro por Rubro -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none" id="oficios-category-filters">
+        <button onclick="filterOficiosByCategory('todos')" class="oficio-cat-btn active text-xs font-bold px-3.5 py-1.5 rounded-full border bg-stone-900 text-white transition-all shadow-xs shrink-0">
+          Todos
+        </button>
+        <button onclick="filterOficiosByCategory('Plomería')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
+          🔧 Plomería & Gas
+        </button>
+        <button onclick="filterOficiosByCategory('Carpintería')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
+          🪚 Carpintería
+        </button>
+        <button onclick="filterOficiosByCategory('Electricidad')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
+          ⚡ Electricidad
+        </button>
+        <button onclick="filterOficiosByCategory('Jardinería')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
+          🌿 Jardinería & Poda
+        </button>
+        <button onclick="filterOficiosByCategory('Costura')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
+          🧵 Costura & Arreglos
+        </button>
+        <button onclick="filterOficiosByCategory('Mascotas')" class="oficio-cat-btn text-xs font-bold px-3.5 py-1.5 rounded-full border border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d] transition-all shadow-xs shrink-0">
+          🐾 Cuidados de Mascotas
+        </button>
+      </div>
 
-  <!-- ========================================================================= -->
-  <!-- 0.C VISTA: GRUPOS DE WHATSAPP DEL BARRIO EN VIVO -->
-  <!-- ========================================================================= -->
-  <div id="view-whatsapp" class="app-view hidden max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-20">
-    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
-      <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="text-2xl">💬</span>
-          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Grupos de WhatsApp de La Lucila</h1>
+      <!-- Grid de Oficios -->
+      <div id="oficios-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Se puebla dinámicamente con renderOficios() -->
+      </div>
+    </div>
+
+    <!-- PANEL 2: HUERTA COMUNITARIA & COMPOST -->
+    <div id="tierra-panel-huerta" class="tierra-panel hidden">
+      <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-emerald-50/70 via-stone-50 to-amber-50/50 border border-emerald-200 mb-6 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div class="flex items-center gap-3">
+            <span class="w-12 h-12 rounded-2xl bg-emerald-100 border border-emerald-300 flex items-center justify-center text-2xl shadow-xs">🌿</span>
+            <div>
+              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">Soberanía Alimentaria Barrial</span>
+              <h2 class="text-xl sm:text-2xl font-black text-stone-900 mt-0.5">Huerta Urbana & Estación de Compostaje · Rawson 3450</h2>
+            </div>
+          </div>
+          <a 
+            href="https://wa.me/5491123456789?text=Hola!%20Quiero%20sumarme%20al%20voluntariado%20de%20Huerta%20y%20Compost%20en%20Rawson%203450..." 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xs shrink-0 flex items-center gap-1.5"
+          >
+            <span>💬</span>
+            <span>Sumarme al Voluntariado de Huerta</span>
+          </a>
         </div>
-        <p class="text-stone-600 text-sm max-w-xl">
-          Nuclear la información viva de los grupos vecinales en un solo lugar: alertas, mascotas perdidas, trueque y avisos comunitarios.
+        <p class="text-xs sm:text-sm text-stone-700 max-w-3xl leading-relaxed">
+          En la sede de Rawson 3450 cultivamos hortalizas de temporada sin agrotóxicos y compostamos los residuos orgánicos de los vecinos de La Lucila. Un espacio vivo para aprender, conectar con la tierra y llevarte abono maduro para tus plantas.
         </p>
       </div>
 
-      <button 
-        onclick="openModalSumarAlBarrio('whatsapp')"
-        class="bg-[#25D366] hover:bg-[#1ebc59] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
-      >
-        <span>📢</span>
-        <span>Publicar Aviso al Barrio</span>
-      </button>
-    </div>
-
-    <!-- Feed de Mensajes estilo WhatsApp -->
-    <div id="whatsapp-feed-list" class="space-y-4">
-      <!-- Se puebla dinámicamente con renderWhatsAppFeed() -->
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- 0.D VISTA: NOTICIAS LOCALES & GOOGLE NEWS -->
-  <!-- ========================================================================= -->
-  <div id="view-noticias" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-20">
-    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
-      <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="text-2xl">📰</span>
-          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Noticias Importantes de La Lucila</h1>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <span class="text-2xl mb-2 block">🥬</span>
+            <h3 class="font-black text-stone-900 text-base mb-1">Bancales Agroecológicos</h3>
+            <p class="text-xs text-stone-600 leading-relaxed mb-4">
+              Cultivo escalonado de rúcula silvestre, espinaca, acelga, kale, tomates reliquia y aromáticas medicinales para el consumo de la comunidad.
+            </p>
+          </div>
+          <span class="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full text-center">Libre de Agrotóxicos</span>
         </div>
-        <p class="text-stone-600 text-sm max-w-xl">
-          Información verificada del barrio proveniente de Google News, avisos municipales de Vicente López y la red barrial.
+
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <span class="text-2xl mb-2 block">♻️</span>
+            <h3 class="font-black text-stone-900 text-base mb-1">Compostaje Barrial Activo</h3>
+            <p class="text-xs text-stone-600 leading-relaxed mb-4">
+              Traé tus restos de cáscaras, yerba y café en tu tachito. Por cada entrega podés llevarte una bolsita de tierra fértil y humus de lombriz.
+            </p>
+          </div>
+          <span class="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full text-center">Intercambio Vecinal</span>
+        </div>
+
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <span class="text-2xl mb-2 block">🌰</span>
+            <h3 class="font-black text-stone-900 text-base mb-1">Banco de Semillas Libres</h3>
+            <p class="text-xs text-stone-600 leading-relaxed mb-4">
+              Semillero abierto para intercambiar semillas nativas, aromáticas y flores polinizadoras adaptadas al clima ribereño de Vicente López.
+            </p>
+          </div>
+          <span class="text-[11px] font-bold text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full text-center">Intercambio Gratuito</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 3: PRODUCTORES LOCALES & VENTA BARRIAL -->
+    <div id="tierra-panel-productores" class="tierra-panel hidden">
+      <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-amber-50/80 via-white to-stone-50 border border-amber-300/80 mb-6 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div class="flex items-center gap-3">
+            <span class="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-2xl shadow-xs">🧺</span>
+            <div>
+              <span class="text-[10px] font-black uppercase tracking-wider text-amber-900 bg-amber-200 px-2.5 py-0.5 rounded-full">Comercio de Cercanía</span>
+              <h2 class="text-xl sm:text-2xl font-black text-stone-900 mt-0.5">Vidriera de Productores Locales de La Lucila</h2>
+            </div>
+          </div>
+          <button 
+            onclick="openModalSumarAlBarrio('producto')" 
+            class="bg-[#c0826d] hover:bg-[#a6634f] text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xs shrink-0 flex items-center gap-1.5"
+          >
+            <span>➕</span>
+            <span>Sumar mi Producto a la Venta</span>
+          </button>
+        </div>
+        <p class="text-xs sm:text-sm text-stone-700 max-w-3xl leading-relaxed">
+          ¿Elaborás alimentos caseros, conservas, miel o cosmética natural? En el centro comunitario de Rawson 3450 te ofrecemos una vidriera física y digital para vender tus productos a los vecinos sin intermediarios abusivos.
         </p>
       </div>
 
-      <a 
-        href="https://www.google.com/search?q=noticias+la+lucila+vicente+lopez&tbm=nws" 
-        target="_blank"
-        rel="noopener noreferrer"
-        class="bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-2 transition-all"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-        </svg>
-        <span>Ver más en Google Noticias ↗</span>
-      </a>
-    </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <span class="text-2xl block mb-2">🥖</span>
+            <h4 class="font-black text-stone-900 text-sm">Panadería Silvestre</h4>
+            <span class="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full inline-block mt-1 mb-2">La Lucila · Debenedetti</span>
+            <p class="text-stone-600 leading-relaxed">
+              Panes 100% de masa madre fermentados 24 hs con harinas orgánicas integrales y semillas tostadas.
+            </p>
+          </div>
+          <div class="pt-3 mt-3 border-t border-stone-100 flex items-center justify-between text-stone-500 font-semibold">
+            <span>$4.200 / hogaza</span>
+            <span class="text-emerald-700 font-bold">✓ En tienda</span>
+          </div>
+        </div>
 
-    <!-- Grid de Noticias -->
-    <div id="noticias-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Se puebla dinámicamente con renderNoticias() -->
+        <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <span class="text-2xl block mb-2">🍯</span>
+            <h4 class="font-black text-stone-900 text-sm">Miel Ribereña del Delta</h4>
+            <span class="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full inline-block mt-1 mb-2">San Fernando / Delta</span>
+            <p class="text-stone-600 leading-relaxed">
+              Miel pura multifloral de monte blanco, cruda sin pasteurizar, recolectada por apicultores isleños.
+            </p>
+          </div>
+          <div class="pt-3 mt-3 border-t border-stone-100 flex items-center justify-between text-stone-500 font-semibold">
+            <span>$5.500 / frasco 1kg</span>
+            <span class="text-emerald-700 font-bold">✓ En tienda</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <span class="text-2xl block mb-2">🧴</span>
+            <h4 class="font-black text-stone-900 text-sm">Botica Botánica</h4>
+            <span class="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full inline-block mt-1 mb-2">Vicente López</span>
+            <p class="text-stone-600 leading-relaxed">
+              Jabones naturales saponificados en frío con aceite de oliva, caléndula y lavanda de huerta.
+            </p>
+          </div>
+          <div class="pt-3 mt-3 border-t border-stone-100 flex items-center justify-between text-stone-500 font-semibold">
+            <span>$3.200 / barra</span>
+            <span class="text-emerald-700 font-bold">✓ En tienda</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <span class="text-2xl block mb-2">🍵</span>
+            <h4 class="font-black text-stone-900 text-sm">Fermentos Vivos</h4>
+            <span class="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full inline-block mt-1 mb-2">Olivos</span>
+            <p class="text-stone-600 leading-relaxed">
+              Kombucha de té verde, chucrut artesanal con enebro y kéfir de agua con frutas deshidratadas.
+            </p>
+          </div>
+          <div class="pt-3 mt-3 border-t border-stone-100 flex items-center justify-between text-stone-500 font-semibold">
+            <span>$2.800 / botella</span>
+            <span class="text-emerald-700 font-bold">✓ En tienda</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 0.E VISTA: TALLERES DE VECINOS & AGENDA DE SABERES -->
+  <!-- 0.C VISTA: ELEMENTO AGUA (TALLERES & WHATSAPP DEL BARRIO) -->
   <!-- ========================================================================= -->
   <div id="view-talleres" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-20">
     <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <span class="text-2xl">🎨</span>
-          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Talleres & Saberes de Vecinos</h1>
+          <span class="text-2xl">💧</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Elemento Agua · Talleres & WhatsApp Comunitario</h1>
         </div>
         <p class="text-stone-600 text-sm max-w-xl">
-          Espacio abierto para compartir conocimientos prácticos: huerta urbana, carpintería, fermentos, respiración consciente y oficios sustentables en La Lucila.
+          La fluidez y los vínculos del barrio: talleres prácticos de vecinos y el pulso vivo de los grupos de WhatsApp de La Lucila.
         </p>
       </div>
 
-      <button 
-        onclick="openModalSumarAlBarrio('taller')"
-        class="bg-[#7ca1b5] hover:bg-[#688ca0] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
-      >
-        <span>➕</span>
-        <span>Proponer mi Taller</span>
+      <div class="flex items-center gap-2">
+        <button 
+          onclick="openModalSumarAlBarrio('taller')"
+          class="bg-[#7ca1b5] hover:bg-[#688ca0] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
+        >
+          <span>➕</span>
+          <span>Proponer Taller</span>
+        </button>
+        <button 
+          onclick="openModalSumarAlBarrio('whatsapp')"
+          class="bg-[#25D366] hover:bg-[#1ebc59] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
+        >
+          <span>📢</span>
+          <span>Publicar Aviso</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TABS INTERNOS DEL ELEMENTO AGUA -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-stone-200/70" id="agua-subnav-tabs">
+      <button onclick="switchAguaTab('talleres')" id="agua-tab-btn-talleres" class="element-subtab-btn active-agua shrink-0">
+        🎨 Talleres & Saberes de Vecinos
+      </button>
+      <button onclick="switchAguaTab('whatsapp')" id="agua-tab-btn-whatsapp" class="element-subtab-btn shrink-0">
+        💬 Grupos de WhatsApp de La Lucila (En Vivo)
       </button>
     </div>
 
-    <!-- Lista de Talleres -->
-    <div id="talleres-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <!-- Se puebla dinámicamente con renderTalleres() -->
+    <!-- PANEL 1: TALLERES DE VECINOS -->
+    <div id="agua-panel-talleres" class="agua-panel">
+      <div id="talleres-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Se puebla dinámicamente con renderTalleres() -->
+      </div>
+    </div>
+
+    <!-- PANEL 2: GRUPOS DE WHATSAPP -->
+    <div id="agua-panel-whatsapp" class="agua-panel hidden">
+      <!-- Tarjetas de Grupos Activos -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+        <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-2xs">
+          <span class="text-xl block mb-1">💬</span>
+          <h4 class="font-bold text-stone-900 text-sm">La Lucila Vecinal</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">1.420 vecinos activos</p>
+          <a href="https://chat.whatsapp.com/demo-lucila-vecinal" target="_blank" class="text-xs font-bold text-[#25D366] hover:underline inline-block mt-2">Unirse al grupo ↗</a>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-2xs">
+          <span class="text-xl block mb-1">🌿</span>
+          <h4 class="font-bold text-stone-900 text-sm">Huerta, Plantas & Compost</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">380 vecinos intercambiando</p>
+          <a href="https://chat.whatsapp.com/demo-lucila-huerta" target="_blank" class="text-xs font-bold text-[#25D366] hover:underline inline-block mt-2">Unirse al grupo ↗</a>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-2xs">
+          <span class="text-xl block mb-1">🐾</span>
+          <h4 class="font-bold text-stone-900 text-sm">Mascotas Perdidas & Halladas</h4>
+          <p class="text-[11px] text-stone-500 mt-0.5">620 vecinos atentos</p>
+          <a href="https://chat.whatsapp.com/demo-lucila-mascotas" target="_blank" class="text-xs font-bold text-[#25D366] hover:underline inline-block mt-2">Unirse al grupo ↗</a>
+        </div>
+      </div>
+
+      <!-- Feed de Mensajes estilo WhatsApp -->
+      <div class="mb-3 flex items-center justify-between">
+        <h3 class="font-bold text-stone-800 text-sm">Pulso de Mensajes en Grupos Barriales</h3>
+        <span class="text-[11px] text-stone-500 font-semibold">Moderado por el Centro Comunitario</span>
+      </div>
+      <div id="whatsapp-feed-list" class="space-y-4">
+        <!-- Se puebla dinámicamente con renderWhatsAppFeed() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 0.D VISTA: ELEMENTO AIRE (NOTICIAS & AVISOS BARRIALES) -->
+  <!-- ========================================================================= -->
+  <div id="view-noticias" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-20">
+    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-2xl">💨</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Elemento Aire · Noticias & Avisos Barriales</h1>
+        </div>
+        <p class="text-stone-600 text-sm max-w-xl">
+          La circulación transparente de la información: noticias verificadas de Vicente López, Google News y avisos comunitarios de La Lucila.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a 
+          href="https://www.google.com/search?q=noticias+la+lucila+vicente+lopez&tbm=nws" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-2 transition-all"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span>Google Noticias ↗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- TABS INTERNOS DEL ELEMENTO AIRE -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-stone-200/70" id="aire-subnav-tabs">
+      <button onclick="switchAireTab('noticias')" id="aire-tab-btn-noticias" class="element-subtab-btn active-aire shrink-0">
+        📰 Noticias de La Lucila (Google News)
+      </button>
+      <button onclick="switchAireTab('avisos')" id="aire-tab-btn-avisos" class="element-subtab-btn shrink-0">
+        📢 Avisos Barriales & Puntos Verdes
+      </button>
+    </div>
+
+    <!-- PANEL 1: NOTICIAS LOCALES -->
+    <div id="aire-panel-noticias" class="aire-panel">
+      <div id="noticias-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Se puebla dinámicamente con renderNoticias() -->
+      </div>
+    </div>
+
+    <!-- PANEL 2: AVISOS & PUNTOS VERDES -->
+    <div id="aire-panel-avisos" class="aire-panel hidden">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs">
+          <span class="text-2xl block mb-2">♻️</span>
+          <h4 class="font-black text-stone-900 text-sm mb-1">Punto Verde La Lucila</h4>
+          <p class="text-stone-600 leading-relaxed mb-3">
+            Recepción de plásticos limpios, cartón, vidrios, latas y aparatos electrónicos en desuso en el playón de la estación.
+          </p>
+          <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full">Sáb 10 a 16 hs</span>
+        </div>
+
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs">
+          <span class="text-2xl block mb-2">🌊</span>
+          <h4 class="font-black text-stone-900 text-sm mb-1">Limpieza de Costa & Humedales</h4>
+          <p class="text-stone-600 leading-relaxed mb-3">
+            Jornada comunitaria de recolección de microplásticos y reforestación de sauces nativos en la ribera de Vicente López.
+          </p>
+          <span class="text-[10px] font-bold text-blue-800 bg-blue-50 px-2.5 py-1 rounded-full">Próximo Domingo 15 hs</span>
+        </div>
+
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs">
+          <span class="text-2xl block mb-2">🐾</span>
+          <h4 class="font-black text-stone-900 text-sm mb-1">Campaña de Zoonosis Barrial</h4>
+          <p class="text-stone-600 leading-relaxed mb-3">
+            Vacunación antirrábica y desparasitación gratuita para perros y gatos en la plaza de La Lucila.
+          </p>
+          <span class="text-[10px] font-bold text-purple-800 bg-purple-50 px-2.5 py-1 rounded-full">Miércoles 09:00 hs</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -778,11 +1419,11 @@
     <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-200 mb-6">
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <span class="text-2xl">💡</span>
-          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Financiamiento de Proyectos Locales</h1>
+          <span class="text-2xl">🔥</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-stone-900">Elemento Fuego · Financiamiento de Proyectos</h1>
         </div>
         <p class="text-stone-600 text-sm max-w-xl">
-          Fondo comunitario barrial para impulsar iniciativas sustentables, huertas, arte y tecnología en La Lucila.
+          La chispa que transforma: fondo comunitario autogestionado para financiar iniciativas sustentables, huertas, oficios y tecnología en La Lucila.
         </p>
       </div>
 
@@ -795,29 +1436,59 @@
       </button>
     </div>
 
-    <!-- Cómo funciona el fondo -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-      <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
-        <span class="w-8 h-8 rounded-full bg-[#fdf4f0] text-[#d97757] font-black flex items-center justify-center text-sm mb-2">1</span>
-        <h3 class="font-bold text-sm text-stone-900 mb-1">Contanos tu Idea</h3>
-        <p class="text-xs text-stone-600">Completá el formulario o vení al Centro Comunitario en Rawson 3450 a charlar con el equipo.</p>
+    <!-- TABS INTERNOS DEL ELEMENTO FUEGO -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-stone-200/70" id="fuego-subnav-tabs">
+      <button onclick="switchFuegoTab('fondo')" id="fuego-tab-btn-fondo" class="element-subtab-btn active-fuego shrink-0">
+        💡 Fondo Barrial & Convocatoria
+      </button>
+      <button onclick="switchFuegoTab('proyectos')" id="fuego-tab-btn-proyectos" class="element-subtab-btn shrink-0">
+        🌱 Proyectos en Marcha & Casos de Éxito
+      </button>
+    </div>
+
+    <!-- PANEL 1: FONDO BARRIAL & CONVOCATORIA -->
+    <div id="fuego-panel-fondo" class="fuego-panel">
+      <!-- Cómo funciona el fondo -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs">
+          <span class="w-8 h-8 rounded-full bg-[#fdf4f0] text-[#d97757] font-black flex items-center justify-center text-sm mb-2">1</span>
+          <h3 class="font-bold text-sm text-stone-900 mb-1">Contanos tu Idea</h3>
+          <p class="text-xs text-stone-600 leading-relaxed">Completá el formulario digital o acercate a la oficina barrial en Rawson 3450 a tomar un mate con los guardianes.</p>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs">
+          <span class="w-8 h-8 rounded-full bg-[#fdf4f0] text-[#d97757] font-black flex items-center justify-center text-sm mb-2">2</span>
+          <h3 class="font-bold text-sm text-stone-900 mb-1">Evaluación Comunitaria</h3>
+          <p class="text-xs text-stone-600 leading-relaxed">Analizamos el impacto social y ecológico para La Lucila, presupuesto estimado y herramientas compartidas.</p>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-xs">
+          <span class="w-8 h-8 rounded-full bg-[#fdf4f0] text-[#d97757] font-black flex items-center justify-center text-sm mb-2">3</span>
+          <h3 class="font-bold text-sm text-stone-900 mb-1">Micro-Fondo & Acompañamiento</h3>
+          <p class="text-xs text-stone-600 leading-relaxed">Asignamos capital semilla no bancario del fondo del nodo y difundimos tu iniciativa en toda la red de socios.</p>
+        </div>
       </div>
-      <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
-        <span class="w-8 h-8 rounded-full bg-[#fdf4f0] text-[#d97757] font-black flex items-center justify-center text-sm mb-2">2</span>
-        <h3 class="font-bold text-sm text-stone-900 mb-1">Evaluación Comunitaria</h3>
-        <p class="text-xs text-stone-600">Evaluamos el impacto barrial, presupuestos y herramientas compartidas con los vecinos.</p>
-      </div>
-      <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs">
-        <span class="w-8 h-8 rounded-full bg-[#fdf4f0] text-[#d97757] font-black flex items-center justify-center text-sm mb-2">3</span>
-        <h3 class="font-bold text-sm text-stone-900 mb-1">Fondo & Difusión</h3>
-        <p class="text-xs text-stone-600">Activamos micro-aportes del fondo barrial y te ayudamos a hacerlo realidad en La Lucila.</p>
+
+      <!-- Banner de invitación a postular -->
+      <div class="p-6 rounded-3xl bg-gradient-to-br from-[#fcf4f0] via-white to-amber-50/40 border border-[#c0826d]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-2.5 py-0.5 rounded-full">Convocatoria Permanente</span>
+          <h3 class="text-base sm:text-lg font-black text-stone-900 mt-1">¿Tenés un proyecto para mejorar La Lucila?</h3>
+          <p class="text-xs text-stone-600 max-w-lg mt-0.5">Financiamos composteras comunitarias, bibliotecas al paso, talleres de oficio y herramientas compartidas.</p>
+        </div>
+        <button onclick="openModalSumarAlBarrio('proyecto')" class="bg-[#d97757] hover:bg-[#c06345] text-white text-xs font-bold px-5 py-2.5 rounded-full shadow-xs shrink-0">
+          Presentar Proyecto Ahora 🚀
+        </button>
       </div>
     </div>
 
-    <!-- Proyectos Activos -->
-    <h2 class="text-lg font-black text-stone-900 mb-4">Proyectos Barriales en Curso</h2>
-    <div id="proyectos-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <!-- Se puebla dinámicamente con renderProyectos() -->
+    <!-- PANEL 2: PROYECTOS EN MARCHA -->
+    <div id="fuego-panel-proyectos" class="fuego-panel hidden">
+      <div class="mb-4">
+        <h2 class="text-lg font-black text-stone-900">Proyectos Barriales en Curso</h2>
+        <p class="text-xs text-stone-500">Iniciativas financiadas e impulsadas por el Fondo Barrial Elementales</p>
+      </div>
+      <div id="proyectos-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Se puebla dinámicamente con renderProyectos() -->
+      </div>
     </div>
   </div>
 
@@ -865,6 +1536,19 @@
     <!-- ACCESO RÁPIDO — MÓDULOS DEL CRM -->
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6" id="eter-modules-grid">
       
+      <button onclick="showEterModule('centro')" class="eter-module-btn bg-white border border-stone-200 hover:border-[#c0826d] p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group col-span-2 sm:col-span-3" data-module="centro">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🏡</span>
+            <div>
+              <h3 class="font-black text-sm text-stone-900 group-hover:text-[#a6634f]">Oficina Barrial Rawson 3450 (Centro de la Nueva Era)</h3>
+              <p class="text-[11px] text-stone-500 mt-0.5">Espacio físico, atención vecinal por Gonza, Agus, Rami, Cris y Ro, consultas y mate</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-[#a6634f] bg-[#fcf4f0] border border-[#c0826d]/30 px-2.5 py-1 rounded-full hidden sm:inline-block">Atención Abierta</span>
+        </div>
+      </button>
+
       <button onclick="showEterModule('elementos')" class="eter-module-btn bg-white border border-stone-200 hover:border-emerald-500 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group col-span-2 sm:col-span-3" data-module="elementos">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
@@ -918,6 +1602,52 @@
 
     <!-- PANEL DE CONTENIDO DEL MÓDULO ACTIVO -->
     <div id="eter-module-content" class="min-h-64">
+      
+      <!-- MÓDULO: CENTRO COMUNITARIO RAWSON 3450 -->
+      <div id="eter-panel-centro" class="eter-panel hidden">
+        <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#ffffff] via-[#fcf4f0] to-[#f5ebe6] border border-[#c0826d]/40 mb-6 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="w-12 h-12 rounded-2xl bg-[#fcf4f0] border border-[#c0826d]/30 flex items-center justify-center text-2xl shadow-xs">🏡</span>
+              <div>
+                <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-2.5 py-0.5 rounded-full">Sede Física & Oficina Barrial</span>
+                <h2 class="text-xl sm:text-2xl font-black text-stone-900 mt-0.5">Centro Comunitario Elementales · Rawson 3450</h2>
+              </div>
+            </div>
+            <div class="text-xs text-stone-600 bg-white/90 px-3.5 py-1.5 rounded-full border border-stone-200 shadow-2xs font-semibold">
+              ⏰ Lun-Sáb 09:30 a 19:30 hs
+            </div>
+          </div>
+          <p class="text-xs sm:text-sm text-stone-700 leading-relaxed max-w-3xl mb-4">
+            Esta es la oficina de la nueva era para la gestión comunitaria de La Lucila. Un espacio abierto de encuentro donde atienden <strong>Gonza, Agus, Rami, Cris y Ro</strong> para charlar, sacarse dudas, coordinar compras colectivas a precio de costo, registrar oficios o solicitar financiamiento para proyectos barriales.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <a 
+              href="https://wa.me/5491123456789?text=Hola%20Gonza,%20Agus,%20Rami,%20Cris%20y%20Ro!%20Me%20comunico%20desde%20el%20portal%20barrial..."
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-[#25D366] hover:bg-[#1ebc59] text-white text-xs font-bold px-4 py-2 rounded-full shadow-xs inline-flex items-center gap-1.5"
+            >
+              <span>💬</span>
+              <span>Escribir al WhatsApp de la Oficina</span>
+            </a>
+            <a 
+              href="https://www.google.com/maps/search/Rawson+3450+La+Lucila+Vicente+Lopez"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 text-xs font-bold px-4 py-2 rounded-full shadow-xs inline-flex items-center gap-1.5"
+            >
+              <span>📍</span>
+              <span>Abrir en Google Maps ↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="guardianes-lucila-grid">
+          <!-- Se puebla dinámicamente con renderCentroLucila() -->
+        </div>
+      </div>
+
       <!-- MÓDULO: GESTIÓN DE TODOS LOS ELEMENTOS -->
       <div id="eter-panel-elementos" class="eter-panel hidden">
         <div class="flex items-center justify-between gap-2 mb-4">
