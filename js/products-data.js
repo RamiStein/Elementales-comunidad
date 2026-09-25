@@ -120,8 +120,8 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-1',
     name: 'Bolsón de Verduras Agroecológicas (7kg)',
-    categoria: 'Tierra',
-    category: 'Verduras & Frutas',
+    categoria: 'Verduras & Huerta',
+    category: 'Verduras & Huerta',
     elemento: 'tierra',
     precioLocal: 9500,
     precioSemanal: 8500,
@@ -135,8 +135,8 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-2',
     name: 'Bolsón de Fruta de Estación (3kg)',
-    categoria: 'Tierra',
-    category: 'Verduras & Frutas',
+    categoria: 'Verduras & Huerta',
+    category: 'Verduras & Huerta',
     elemento: 'tierra',
     precioLocal: 7200,
     precioSemanal: 6500,
@@ -150,7 +150,7 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-3',
     name: 'Huevos de Campo Pastoriles Agroecológicos',
-    categoria: 'Agua',
+    categoria: 'Granja & Lácteos',
     category: 'Granja & Lácteos',
     elemento: 'agua',
     precioLocal: 4800,
@@ -165,8 +165,10 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-4',
     name: 'Miel Pura de Monte Nativo / Sin pasteurizar',
-    categoria: 'Fuego',
-    category: 'Almacén',
+    categoria: 'Almacén Agroecológico',
+    category: 'Almacén Agroecológico',
+    productorVecinal: true,
+    productorNombre: 'Don Carlos & Familia (La Lucila)',
     elemento: 'fuego',
     precioLocal: 6200,
     precioSemanal: 5500,
@@ -180,8 +182,8 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-5',
     name: 'Aceite de Oliva Extra Virgen Primera Prensada',
-    categoria: 'Fuego',
-    category: 'Almacén',
+    categoria: 'Almacén Agroecológico',
+    category: 'Almacén Agroecológico',
     elemento: 'fuego',
     precioLocal: 8900,
     precioSemanal: 7800,
@@ -195,8 +197,10 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-6',
     name: 'Pan de Masa Madre Integral con Semillas',
-    categoria: 'Fuego',
-    category: 'Panificados',
+    categoria: 'Panadería & Masa Madre',
+    category: 'Panadería & Masa Madre',
+    productorVecinal: true,
+    productorNombre: 'Lucía Masa Madre (La Lucila)',
     elemento: 'fuego',
     precioLocal: 3800,
     precioSemanal: 3200,
@@ -210,8 +214,8 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-7',
     name: 'Mermelada Artesanal de Frutos Rojos / Pampa',
-    categoria: 'Fuego',
-    category: 'Almacén',
+    categoria: 'Almacén Agroecológico',
+    category: 'Almacén Agroecológico',
     elemento: 'fuego',
     precioLocal: 4400,
     precioSemanal: 3800,
@@ -225,8 +229,8 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-8',
     name: 'Yerba Mate Agroecológica Secado Barbaquá',
-    categoria: 'Aire',
-    category: 'Almacén',
+    categoria: 'Almacén Agroecológico',
+    category: 'Almacén Agroecológico',
     elemento: 'aire',
     precioLocal: 5200,
     precioSemanal: 4600,
@@ -240,8 +244,8 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-9',
     name: 'Harina Integral Orgánica Molida a Piedra',
-    categoria: 'Aire',
-    category: 'Almacén',
+    categoria: 'Almacén Agroecológico',
+    category: 'Almacén Agroecológico',
     elemento: 'aire',
     precioLocal: 2800,
     precioSemanal: 2400,
@@ -255,7 +259,7 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-10',
     name: 'Queso Criollo de Campo Estacionado',
-    categoria: 'Agua',
+    categoria: 'Granja & Lácteos',
     category: 'Granja & Lácteos',
     elemento: 'agua',
     precioLocal: 7200,
@@ -270,8 +274,8 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-11',
     name: 'Tintura Madre Fitoterapéutica (Jarilla / Propóleo)',
-    categoria: 'Agua',
-    category: 'Cosmética Natural',
+    categoria: 'Cosmética & Botiquín',
+    category: 'Cosmética & Botiquín',
     elemento: 'agua',
     precioLocal: 5100,
     precioSemanal: 4500,
@@ -285,8 +289,10 @@ const INITIAL_PRODUCTS = [
   {
     id: 'prod-12',
     name: 'Jabón Vegetal Puro con Aceites Esenciales',
-    categoria: 'Tierra',
-    category: 'Cosmética Natural',
+    categoria: 'Cosmética & Botiquín',
+    category: 'Cosmética & Botiquín',
+    productorVecinal: true,
+    productorNombre: 'Martina & Taller Botánico (La Lucila)',
     elemento: 'tierra',
     precioLocal: 3200,
     precioSemanal: 2800,
@@ -301,8 +307,11 @@ const INITIAL_PRODUCTS = [
 
 const CATEGORIES = [
   'Todos',
-  'Tierra',
-  'Agua',
-  'Fuego',
-  'Aire'
+  'Verduras & Huerta',
+  'Granja & Lácteos',
+  'Almacén Agroecológico',
+  'Panadería & Masa Madre',
+  'Fermentos & Conservas',
+  'Cosmética & Botiquín',
+  'Productorxs Vecinales'
 ];

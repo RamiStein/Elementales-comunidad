@@ -318,7 +318,10 @@
         <span>💨</span> Aire (Red Social)
       </button>
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-eter" onclick="navigateTo('eter')">
-        <span>✨</span> Éter (Mi Comunidad)
+        <span>✨</span> Éter (Espíritu)
+      </button>
+      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-membership" onclick="navigateTo('membership')">
+        <span>🎟️</span> Membresía (CsC)
       </button>
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-welcome" onclick="navigateTo('welcome')">
         <span>🪐</span> Constelación
@@ -1862,6 +1865,19 @@
             </div>
           </div>
           <span class="text-xs font-bold text-[#a6634f] bg-[#fcf4f0] border border-[#c0826d]/30 px-2.5 py-1 rounded-full hidden sm:inline-block">Atención Abierta</span>
+        </div>
+      </button>
+
+      <button onclick="showEterModule('vrde')" class="eter-module-btn bg-white border border-stone-200 hover:border-emerald-600 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group col-span-2 sm:col-span-3" data-module="vrde">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🌿</span>
+            <div>
+              <h3 class="font-black text-sm text-stone-900 group-hover:text-emerald-700">Categorías & Co-Creación VRDE Club</h3>
+              <p class="text-[11px] text-stone-500 mt-0.5">Sincronización de categorías de alimentos y transferencia de Productores Barriales a la red mayor</p>
+            </div>
+          </div>
+          <span id="vrde-sync-badge-crm" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-full hidden sm:inline-block">🟢 Red VRDE Conectada</span>
         </div>
       </button>
 
@@ -4689,11 +4705,88 @@
   </div>
 
   <!-- Scripts -->
+  <script src="js/vrde-api.js"></script>
   <script src="js/products-data.js"></script>
   <script src="js/barrio-data.js"></script>
   <script src="js/app.js"></script>
   <!-- ========================================================================= -->
   <!-- MODAL: LOGIN / SELECCIÓN INICIAL DE PERSPECTIVA (VISITANTE vs MIEMBRO) -->
+    <!-- ========================================================================= -->
+  <!-- MODAL: REGISTRAR VECINO PRODUCTOR DE ALIMENTOS PARA VRDE CLUB -->
+  <!-- ========================================================================= -->
+  <div id="modal-add-vrde-producer" class="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-stone-200 relative animate-scale-up max-h-[90vh] overflow-y-auto">
+      <button onclick="closeAddProducerModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center font-bold text-sm">✕</button>
+      
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-2xl">🌾</span>
+        <h3 class="font-black text-lg text-stone-900">Registrar Vecino Elaborador de Alimentos</h3>
+      </div>
+      <p class="text-xs text-stone-500 mb-4">
+        Esta información se cargará en el nodo La Lucila y podrá ser transferida a la red mayor de VRDE Club con un solo clic.
+      </p>
+
+      <form onsubmit="handleSaveVRDEProducer(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Nombre del Vecino / Taller Familiar *</label>
+          <input type="text" id="vrde-prod-nombre" required placeholder="Ej: Doña Clara & Huerta de Balcón" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">WhatsApp de Contacto *</label>
+            <input type="tel" id="vrde-prod-contacto" required placeholder="54911..." class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Ubicación en el Barrio</label>
+            <input type="text" id="vrde-prod-direccion" placeholder="Ej: Calle Roma 3100, La Lucila" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Especialidad / Rubro de Alimentos *</label>
+          <input type="text" id="vrde-prod-rubro" required placeholder="Ej: Panificados Integrales, Miel de Pradera, Chucrut Vivo..." class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Productos que elabora (separados por coma)</label>
+          <input type="text" id="vrde-prod-productos" placeholder="Ej: Pan de Masa Madre, Focaccia con Tomates, Galletas de Avena" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Capacidad Estimada de Producción</label>
+            <input type="text" id="vrde-prod-capacidad" placeholder="Ej: 25 unidades semanales" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Categoría del Catálogo</label>
+            <select id="vrde-prod-categoria" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600">
+              <option value="Productorxs Vecinales">Productorxs Vecinales</option>
+              <option value="Panadería & Masa Madre">Panadería & Masa Madre</option>
+              <option value="Fermentos & Conservas">Fermentos & Conservas</option>
+              <option value="Almacén Agroecológico">Almacén Agroecológico</option>
+              <option value="Cosmética & Botiquín">Cosmética & Botiquín</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Breve descripción del proceso artesanal</label>
+          <textarea id="vrde-prod-descripcion" rows="2" placeholder="Ej: Elaborado sin aditivos, fermentación natural, materias primas orgánicas..." class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600"></textarea>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <button type="button" onclick="closeAddProducerModal()" class="flex-1 py-2.5 rounded-xl border border-stone-200 text-stone-600 font-bold text-xs hover:bg-stone-50">
+            Cancelar
+          </button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm">
+            Guardar en Nodo & Preparar VRDE
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ========================================================================= -->
   <div id="modal-initial-login" class="fixed inset-0 z-[10010] bg-stone-900/75 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-stone-200 text-center animate-scale-up my-auto">

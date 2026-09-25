@@ -653,23 +653,31 @@ function renderOrderCatalog() {
     }
   }
 
-  // Renderizar filtros de categorías
+  // Renderizar filtros de categorías (Tomadas dinámicamente de VRDE Club y configuradas por el gestor)
   if (categoriesContainer) {
-    categoriesContainer.innerHTML = CATEGORIES.map(cat => `
+    const activeCategories = (typeof VRDEClubBridge !== 'undefined' && VRDEClubBridge.getCategories)
+      ? VRDEClubBridge.getCategories()
+      : (typeof CATEGORIES !== 'undefined' ? CATEGORIES : ['Todos', 'Verduras & Huerta', 'Granja & Lácteos', 'Almacén Agroecológico', 'Panadería & Masa Madre', 'Cosmética & Botiquín', 'Productorxs Vecinales']);
+
+    categoriesContainer.innerHTML = activeCategories.map(cat => `
       <button 
         onclick="setFilterCategory('${cat}')" 
         class="pill-filter ${AppState.activeCategory === cat ? 'active' : ''}">
-        ${cat}
+        ${cat === 'Productorxs Vecinales' ? '🌾 ' + cat : cat}
       </button>
     `).join('');
   }
 
-  // Filtrar productos
+  // Filtrar productos con soporte para Productorxs Vecinales y búsqueda ampliada
   const query = AppState.searchQuery.toLowerCase().trim();
   const filtered = AppState.products.filter(prod => {
     const cat = prod.categoria || prod.category;
-    const matchesCategory = AppState.activeCategory === 'Todos' || cat === AppState.activeCategory || prod.category === AppState.activeCategory;
-    const matchesSearch = !query || prod.name.toLowerCase().includes(query) || (cat && cat.toLowerCase().includes(query));
+    const isProductorMatch = AppState.activeCategory === 'Productorxs Vecinales' && (prod.productorVecinal || cat === 'Productorxs Vecinales');
+    const matchesCategory = AppState.activeCategory === 'Todos' || cat === AppState.activeCategory || prod.category === AppState.activeCategory || isProductorMatch;
+    const matchesSearch = !query || 
+      prod.name.toLowerCase().includes(query) || 
+      (cat && cat.toLowerCase().includes(query)) ||
+      (prod.productorNombre && prod.productorNombre.toLowerCase().includes(query));
     return matchesCategory && matchesSearch;
   });
 
@@ -3347,6 +3355,10 @@ function showEterModule(moduleName) {
   if (moduleName === 'centro') renderCentroLucila();
   if (moduleName === 'membresia') renderEterMembresia();
   if (moduleName === 'economia') renderEterEconomia();
+  if (moduleName === 'vrde') {
+    renderCategoryManager();
+    renderVRDEProducers();
+  }
 }
 
 function renderEterMembresia() {
@@ -3489,3 +3501,233 @@ function saveEterNotas() {
   }
 }
 
+
+
+// =========================================================================
+// GESTIÓN DE CATEGORÍAS & CO-CREACIÓN CON VRDE CLUB (CRM NODO LA LUCILA)
+// =========================================================================
+function renderCategoryManager() {
+  const container = document.getElementById('crm-categories-list');
+  if (!container || typeof VRDEClubBridge === 'undefined') return;
+
+  const categories = VRDEClubBridge.getCategories();
+  container.innerHTML = categories.map(cat => {
+    const isFixed = cat === 'Todos';
+    const isProductor = cat === 'Productorxs Vecinales';
+    return `
+      <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
+        isProductor
+          ? 'bg-emerald-50 text-emerald-800 border-emerald-300' 
+          : 'bg-stone-50 text-stone-700 border-stone-200'
+      }">
+        <span>${isProductor ? '🌾' : '🏷️'} ${escapeHtml(cat)}</span>
+        ${!isFixed ? `
+          <button 
+            type="button" 
+            onclick="removeCatalogCategory('${escapeHtml(cat)}')" 
+            class="text-stone-400 hover:text-red-500 font-bold ml-1 transition-colors" 
+            title="Eliminar categoría">
+            ✕
+          </button>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function handleAddCategoryForm(e) {
+  e.preventDefault();
+  const input = document.getElementById('input-new-category');
+  if (!input || !input.value.trim() || typeof VRDEClubBridge === 'undefined') return;
+
+  const newCat = input.value.trim();
+  const ok = VRDEClubBridge.addCategory(newCat);
+  if (ok) {
+    input.value = '';
+    sounds.playSuccess();
+    renderCategoryManager();
+    renderOrderCatalog();
+  } else {
+    sounds.playPop();
+    alert('La categoría ya existe o no es válida.');
+  }
+}
+
+function removeCatalogCategory(cat) {
+  if (typeof VRDEClubBridge === 'undefined') return;
+  if (confirm(`¿Deseas eliminar la categoría "${cat}" del catálogo?`)) {
+    VRDEClubBridge.removeCategory(cat);
+    sounds.playPop();
+    renderCategoryManager();
+    renderOrderCatalog();
+  }
+}
+
+async function syncCategoriesWithVRDE() {
+  if (typeof VRDEClubBridge === 'undefined') return;
+  sounds.playPop();
+  
+  const badge = document.getElementById('vrde-sync-badge-crm');
+  if (badge) {
+    badge.innerHTML = '🔄 Sincronizando con VRDE...';
+    badge.className = 'text-xs font-bold text-amber-800 bg-amber-50 border border-amber-300 px-2.5 py-1 rounded-full';
+  }
+
+  const res = await VRDEClubBridge.syncCategoriesFromVRDE();
+  
+  if (badge) {
+    badge.innerHTML = '🟢 Red VRDE Sincronizada';
+    badge.className = 'text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-full';
+  }
+
+  sounds.playSuccess();
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 25, spread: 50, origin: { y: 0.6 } });
+  }
+
+  renderCategoryManager();
+  renderOrderCatalog();
+}
+
+function resetCatalogCategories() {
+  if (typeof VRDEClubBridge === 'undefined') return;
+  if (confirm('¿Restaurar las categorías del catálogo a los valores predeterminados de la Red VRDE Club?')) {
+    VRDEClubBridge.resetCategories();
+    sounds.playPop();
+    renderCategoryManager();
+    renderOrderCatalog();
+  }
+}
+
+function renderVRDEProducers() {
+  const container = document.getElementById('crm-vrde-producers-list');
+  if (!container || typeof VRDEClubBridge === 'undefined') return;
+
+  const producers = VRDEClubBridge.getProducers();
+  if (producers.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full text-center py-8 text-stone-400">
+        <p class="text-3xl mb-2">🌾</p>
+        <p class="font-bold text-sm">No hay productores barriales registrados aún</p>
+        <p class="text-xs">Registra vecinos que elaboren alimentos para subirlos a VRDE Club.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = producers.map(p => {
+    const isSynced = p.statusVRDE === 'synced';
+    return `
+      <div class="p-4 rounded-2xl border ${isSynced ? 'border-emerald-200 bg-emerald-50/40' : 'border-amber-200 bg-amber-50/30'} flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <h4 class="font-black text-sm text-stone-900">${escapeHtml(p.nombre)}</h4>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+              isSynced 
+                ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
+                : 'bg-amber-100 text-amber-800 border-amber-300'
+            }">
+              ${isSynced ? `🟢 Sincronizado en VRDE (${escapeHtml(p.vrdeId || 'VRDE')})` : '🟡 Pendiente de Subir'}
+            </span>
+          </div>
+
+          <div class="text-xs text-stone-600 mb-2">
+            <p class="font-bold text-[#8ca15d]">${escapeHtml(p.rubro)}</p>
+            <p class="text-[11px] text-stone-500 mt-0.5">${escapeHtml(p.descripcion)}</p>
+          </div>
+
+          <div class="flex flex-wrap gap-1 mb-3">
+            ${(p.productos || []).map(prod => `
+              <span class="text-[10px] bg-white border border-stone-200 text-stone-700 px-2 py-0.5 rounded-full font-semibold">
+                ${escapeHtml(prod)}
+              </span>
+            `).join('')}
+          </div>
+
+          <div class="text-[11px] text-stone-500 space-y-0.5">
+            <p>📍 ${escapeHtml(p.direccion || 'La Lucila')}</p>
+            <p>📦 Capacidad: ${escapeHtml(p.capacidad || 'Flexible')}</p>
+            ${p.contacto ? `<p>📱 WA: <a href="https://wa.me/${p.contacto}" target="_blank" class="text-emerald-700 underline font-bold">${p.contacto}</a></p>` : ''}
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-stone-200/60 flex items-center justify-between">
+          <span class="text-[10px] text-stone-400">
+            ${isSynced && p.fechaSync ? `Sync: ${p.fechaSync}` : 'Disponible localmente'}
+          </span>
+          ${!isSynced ? `
+            <button 
+              type="button" 
+              onclick="exportProducerToVRDE('${p.id}')" 
+              class="btn-spotify !py-1.5 !px-3 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1 shadow-xs">
+              <span>🚀</span> Subir a VRDE Club
+            </button>
+          ` : `
+            <span class="text-xs font-bold text-emerald-700 flex items-center gap-1">
+              <span>✓</span> Activo en Red Mayor
+            </span>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openAddProducerModal() {
+  const modal = document.getElementById('modal-add-vrde-producer');
+  if (modal) modal.classList.remove('hidden');
+  sounds.playPop();
+}
+
+function closeAddProducerModal() {
+  const modal = document.getElementById('modal-add-vrde-producer');
+  if (modal) modal.classList.add('hidden');
+}
+
+function handleSaveVRDEProducer(e) {
+  e.preventDefault();
+  if (typeof VRDEClubBridge === 'undefined') return;
+
+  const nombre = document.getElementById('vrde-prod-nombre')?.value;
+  const contacto = document.getElementById('vrde-prod-contacto')?.value;
+  const direccion = document.getElementById('vrde-prod-direccion')?.value;
+  const rubro = document.getElementById('vrde-prod-rubro')?.value;
+  const productos = document.getElementById('vrde-prod-productos')?.value;
+  const capacidad = document.getElementById('vrde-prod-capacidad')?.value;
+  const descripcion = document.getElementById('vrde-prod-descripcion')?.value;
+
+  const newProd = VRDEClubBridge.addProducer({
+    nombre,
+    contacto,
+    direccion,
+    rubro,
+    productos,
+    capacidad,
+    descripcion
+  });
+
+  closeAddProducerModal();
+  sounds.playSuccess();
+  renderVRDEProducers();
+  renderOrderCatalog();
+
+  // Reset form
+  e.target.reset();
+}
+
+async function exportProducerToVRDE(producerId) {
+  if (typeof VRDEClubBridge === 'undefined') return;
+  sounds.playPop();
+
+  try {
+    const updated = await VRDEClubBridge.exportProducerToVRDE(producerId);
+    sounds.playSuccess();
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 30, spread: 60, origin: { y: 0.6 } });
+    }
+    renderVRDEProducers();
+    renderOrderCatalog();
+  } catch (err) {
+    alert('Error al transferir productor a VRDE Club: ' + err.message);
+  }
+}
