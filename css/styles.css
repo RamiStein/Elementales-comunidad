@@ -728,11 +728,23 @@ body {
   white-space: nowrap;
   padding: 0.5rem 1rem;
   border-top: 1px solid #f5f2eb;
-  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #d6d3d1 transparent;
 }
 
 .google-subnav::-webkit-scrollbar {
-  display: none;
+  height: 4px;
+}
+
+.google-subnav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.google-subnav::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 4px;
 }
 
 .google-tab-btn {
@@ -861,5 +873,12 @@ body {
   background: #4d5e68 !important;
   color: #ffffff !important;
   border-color: #4d5e68 !important;
+}
+
+.element-subtab-btn.active-eter {
+  background: #1c1917 !important;
+  color: #ffffff !important;
+  border-color: #c0826d !important;
+  box-shadow: 0 4px 14px -2px rgba(192, 130, 109, 0.3) !important;
 }
 

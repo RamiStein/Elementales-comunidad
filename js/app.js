@@ -498,8 +498,48 @@ const AppState = {
 
 // --- NAVEGACIÓN Y VISTAS ---
 // --- NAVEGACIÓN Y VISTAS ---
+// --- NAVEGACIÓN Y VISTAS ---
 function navigateTo(viewName) {
   sounds.playPop();
+
+  // Mapeo de alias retrocompatibles hacia la arquitectura de 5 Elementos
+  if (viewName === 'oficios') {
+    navigateTo('agua');
+    switchAguaTab('oficios');
+    return;
+  }
+  if (viewName === 'talleres') {
+    navigateTo('fuego');
+    switchFuegoTab('talleres');
+    return;
+  }
+  if (viewName === 'financiamiento') {
+    navigateTo('fuego');
+    switchFuegoTab('fondo');
+    return;
+  }
+  if (viewName === 'noticias') {
+    navigateTo('aire');
+    switchAireTab('noticias');
+    return;
+  }
+  if (viewName === 'hub' || viewName === 'new-order') {
+    navigateTo('tierra');
+    switchTierraTab('tienda');
+    return;
+  }
+  if (viewName === 'whatsapp') {
+    navigateTo('agua');
+    switchAguaTab('whatsapp');
+    return;
+  }
+  if (viewName === 'centro-lucila') {
+    navigateTo('eter');
+    switchEterMainTab('centro');
+    showEterModule('centro');
+    return;
+  }
+
   AppState.currentView = viewName;
 
   // Actualizar estado de las pestañas en la barra Google Subnav
@@ -526,29 +566,26 @@ function navigateTo(viewName) {
   // Renderizar contenido según la vista
   if (viewName === 'barrio') {
     renderBarrioFeed();
-  } else if (viewName === 'oficios') {
-    switchTierraTab('oficios');
-  } else if (viewName === 'whatsapp') {
-    // Redirige al elemento Agua en la pestaña de WhatsApp
-    navigateTo('talleres');
-    switchAguaTab('whatsapp');
-    return;
-  } else if (viewName === 'noticias') {
-    switchAireTab('noticias');
-  } else if (viewName === 'talleres') {
-    switchAguaTab('talleres');
-  } else if (viewName === 'centro-lucila') {
-    // Redirige a Éter en el módulo de la Oficina Rawson 3450
-    navigateTo('eter');
-    showEterModule('centro');
-    return;
-  } else if (viewName === 'financiamiento') {
-    switchFuegoTab('fondo');
-  } else if (viewName === 'hub') {
-    renderHubStats();
-  } else if (viewName === 'new-order') {
+  } else if (viewName === 'tierra') {
+    switchTierraTab('tienda');
     renderOrderCatalog();
     renderFloatingCart();
+  } else if (viewName === 'agua') {
+    switchAguaTab('oficios');
+    renderOficios();
+  } else if (viewName === 'fuego') {
+    switchFuegoTab('talleres');
+    renderTalleres();
+  } else if (viewName === 'aire') {
+    switchAireTab('podcasts');
+    renderNoticias();
+  } else if (viewName === 'eter') {
+    if (AppState.userRole === 'gestor' || window.location.hash === '#admin') {
+      switchEterMainTab('gestion');
+      showEterModule('elementos');
+    } else {
+      switchEterMainTab('democracia');
+    }
   } else if (viewName === 'orders-dashboard') {
     renderOrdersDashboard();
   } else if (viewName === 'members-directory') {
@@ -561,15 +598,8 @@ function navigateTo(viewName) {
     renderNodes();
   } else if (viewName === 'profile') {
     renderProfile();
-  } else if (viewName === 'eter') {
-    if (AppState.userRole === 'gestor') {
-      showEterModule('elementos');
-    } else {
-      showEterModule('centro');
-    }
   }
 }
-
 
 // --- RENDERIZADO: HUB PRINCIPAL ---
 function renderHubStats() {
@@ -2487,7 +2517,7 @@ function renderBarrioFeed() {
   `).join('');
 }
 
-// --- NAVEGACIÓN POR CATEGORÍAS DENTRO DE LOS ELEMENTOS ---
+// --- NAVEGACIÓN POR CATEGORÍAS DENTRO DE LOS 5 ELEMENTOS ---
 function switchTierraTab(tabName) {
   sounds.playPop();
   document.querySelectorAll('#tierra-subnav-tabs .element-subtab-btn').forEach(btn => {
@@ -2500,7 +2530,10 @@ function switchTierraTab(tabName) {
   const target = document.getElementById(`tierra-panel-${tabName}`);
   if (target) target.classList.remove('hidden');
 
-  if (tabName === 'oficios') renderOficios();
+  if (tabName === 'tienda') {
+    renderOrderCatalog();
+    renderFloatingCart();
+  }
 }
 
 function switchAguaTab(tabName) {
@@ -2515,7 +2548,7 @@ function switchAguaTab(tabName) {
   const target = document.getElementById(`agua-panel-${tabName}`);
   if (target) target.classList.remove('hidden');
 
-  if (tabName === 'talleres') renderTalleres();
+  if (tabName === 'oficios') renderOficios();
   if (tabName === 'whatsapp') renderWhatsAppFeed();
 }
 
@@ -2531,7 +2564,8 @@ function switchFuegoTab(tabName) {
   const target = document.getElementById(`fuego-panel-${tabName}`);
   if (target) target.classList.remove('hidden');
 
-  if (tabName === 'proyectos') renderFinanciamiento();
+  if (tabName === 'talleres') renderTalleres();
+  if (tabName === 'fondo') renderProyectos();
 }
 
 function switchAireTab(tabName) {
@@ -2548,6 +2582,120 @@ function switchAireTab(tabName) {
 
   if (tabName === 'noticias') renderNoticias();
 }
+
+function switchEterMainTab(tabName) {
+  sounds.playPop();
+  document.querySelectorAll('#eter-main-subnav-tabs .element-subtab-btn').forEach(btn => {
+    btn.classList.remove('active-eter');
+  });
+  const activeBtn = document.getElementById(`eter-tab-btn-${tabName}`);
+  if (activeBtn) activeBtn.classList.add('active-eter');
+
+  // Ocultar paneles principales de Éter
+  const panDemo = document.getElementById('eter-panel-democracia');
+  const panCrm = document.getElementById('eter-panel-micrm');
+  const modulesGrid = document.getElementById('eter-modules-grid');
+  
+  if (panDemo) panDemo.classList.toggle('hidden', tabName !== 'democracia');
+  if (panCrm) panCrm.classList.toggle('hidden', tabName !== 'micrm');
+
+  if (tabName === 'centro') {
+    if (modulesGrid) modulesGrid.classList.remove('hidden');
+    showEterModule('centro');
+  } else if (tabName === 'gestion') {
+    if (modulesGrid) modulesGrid.classList.remove('hidden');
+    showEterModule('elementos');
+  } else {
+    // En democracia o micrm, ocultar el grid de gestión interna para no saturar
+    if (modulesGrid) modulesGrid.classList.add('hidden');
+    document.querySelectorAll('.eter-panel').forEach(p => p.classList.add('hidden'));
+  }
+}
+
+// 🗳️ SISTEMA DE VOTACIÓN DEMOCRÁTICA DEL NODO
+function castVote(proposalId, option) {
+  sounds.playSuccess();
+  const key = `elementales_voted_prop_${proposalId}`;
+  localStorage.setItem(key, option);
+
+  const el = document.getElementById(`vote-count-${proposalId}-${option}`);
+  if (el) {
+    el.classList.add('ring-2', 'ring-emerald-500', 'bg-emerald-100', 'text-emerald-950');
+    el.innerHTML = '✓ Voto computado';
+  }
+
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } });
+  }
+}
+
+// 🧭 CONTROL DEL MODAL DE LOGIN INICIAL & ACCESO #admin
+function checkInitialLogin() {
+  if (window.location.hash === '#admin') {
+    selectInitialRole('gestor');
+    return;
+  }
+
+  const chosen = sessionStorage.getItem('elementales_initial_role_chosen');
+  if (!chosen) {
+    openInitialLoginModal();
+  }
+}
+
+function openInitialLoginModal() {
+  const modal = document.getElementById('modal-initial-login');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeInitialLoginModal() {
+  const modal = document.getElementById('modal-initial-login');
+  if (modal) modal.classList.add('hidden');
+}
+
+function selectInitialRole(role) {
+  AppState.userRole = role;
+  localStorage.setItem('elementales_user_role', role);
+  sessionStorage.setItem('elementales_initial_role_chosen', 'true');
+
+  if (role === 'socio' || role === 'gestor') {
+    AppState.catalogMode = 'semanal';
+  } else {
+    AppState.catalogMode = 'local';
+  }
+  localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
+
+  closeInitialLoginModal();
+  updateRoleUI();
+  sounds.playPop();
+
+  if (role === 'gestor') {
+    navigateTo('eter');
+    switchEterMainTab('gestion');
+    showEterModule('elementos');
+  } else {
+    navigateTo('barrio');
+  }
+}
+
+// Interceptar rueda del ratón para scroll horizontal fluido en la subnavegación de escritorio
+function initSubnavHorizontalScroll() {
+  const subnav = document.querySelector('.google-subnav');
+  if (!subnav) return;
+  subnav.addEventListener('wheel', (e) => {
+    if (e.deltaY !== 0) {
+      e.preventDefault();
+      subnav.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+}
+
+// Escuchar cambios de hash (ej. si el usuario escribe o hace clic en #admin)
+window.addEventListener('hashchange', () => {
+  if (window.location.hash === '#admin') {
+    selectInitialRole('gestor');
+  }
+});
+
 
 // 4. RENDERIZADO DE LA VIDRIERA DE OFICIOS
 function renderOficios(categoryFilter = null) {
