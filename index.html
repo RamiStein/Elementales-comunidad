@@ -242,7 +242,20 @@
           </button>
 
           <!-- Selector de Rol Visible en Cabecera (No Miembro / Socio CsC / Gestor) -->
+                    <!-- Selector de Nodo Activo (La Lucila / Loma Verde) -->
           <button 
+            type="button" 
+            id="header-node-badge" 
+            onclick="openNodeSelectorModal()" 
+            class="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-800 border-stone-300 hover:bg-stone-200"
+            title="Cambiar de Nodo: La Lucila / Loma Verde"
+          >
+            <span class="text-xs">📍</span>
+            <span id="header-node-name">La Lucila</span>
+            <span class="text-[9px] opacity-60">▾</span>
+          </button>
+
+<button 
             type="button"
             id="header-role-badge"
             onclick="openRoleSwitcherModal()"
@@ -308,6 +321,9 @@
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-tierra" onclick="navigateTo('tierra')">
         <span>🌱</span> Tierra (Tienda)
       </button>
+      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-circulos" onclick="navigateTo('circulos')">
+        <span>🌀</span> Círculos
+      </button>
       <button type="button" class="google-tab-btn shrink-0" id="tab-btn-agua" onclick="navigateTo('agua')">
         <span>💧</span> Agua (Comunidad)
       </button>
@@ -337,7 +353,37 @@
   <!-- ========================================================================= -->
   <div id="view-barrio" class="app-view max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-20">
     
-    <!-- SELECTOR RÁPIDO DE PERSPECTIVA BARRIAL (NO MIEMBRO / SOCIO CsC / GESTOR DEL NODO) -->
+        <!-- BANNER CONTEXTUAL PARA NODO LOMA VERDE (FACULTAD DE CÍRCULOS) -->
+    <div id="banner-nodo-lomaverde" class="mb-6 p-6 rounded-3xl bg-gradient-to-br from-emerald-950 via-stone-900 to-emerald-900 text-white border-2 border-emerald-500/40 shadow-xl relative overflow-hidden hidden">
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-xs font-black uppercase tracking-wider text-emerald-300 bg-emerald-900/80 px-2.5 py-0.5 rounded-full border border-emerald-400/30">
+              📍 Nodo Loma Verde · Escobar
+            </span>
+            <span class="text-xs font-bold text-amber-300 bg-amber-900/60 px-2.5 py-0.5 rounded-full border border-amber-400/30">
+              Facultad de Círculos VRDE
+            </span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            Compras Comunitarias en Círculos
+          </h2>
+          <p class="text-xs sm:text-sm text-emerald-100/90 mt-1 max-w-xl leading-relaxed">
+            En Loma Verde la gestión del pedido y entrega queda a cargo de quien pide. Sumate a un Círculo barrial o creá uno con tus vecinos para pedir juntos a la red mayor sin recargar al nodo.
+          </p>
+        </div>
+        <div class="flex flex-wrap sm:flex-nowrap gap-2 shrink-0">
+          <button onclick="navigateTo('circulos')" class="btn-spotify !py-2.5 !px-4 text-xs font-bold bg-emerald-500 text-stone-950 hover:bg-emerald-400 flex items-center gap-1.5 shadow-md">
+            <span>🌀</span> Ver Círculos de Loma Verde
+          </button>
+          <button onclick="openCreateCirculoModal()" class="btn-spotify !py-2.5 !px-4 text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center gap-1.5">
+            <span>+</span> Crear Círculo
+          </button>
+        </div>
+      </div>
+    </div>
+
+<!-- SELECTOR RÁPIDO DE PERSPECTIVA BARRIAL (NO MIEMBRO / SOCIO CsC / GESTOR DEL NODO) -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/95 p-2.5 sm:px-4 sm:py-2.5 rounded-2xl border border-stone-200 shadow-2xs mb-4 gap-2.5">
       <div class="flex items-center gap-2 text-xs font-bold text-stone-700">
         <span class="text-base">🧭</span>
@@ -1689,8 +1735,8 @@
       <button onclick="switchEterMainTab('centro')" id="eter-tab-btn-centro" class="element-subtab-btn shrink-0">
         🏡 Oficina Barrial Rawson 3450
       </button>
-      <button onclick="switchEterMainTab('gestion')" id="eter-tab-btn-gestion" class="element-subtab-btn shrink-0">
-        👑 Gestión Interna (#admin)
+      <button onclick="handleGestionNodoClick()" id="eter-tab-btn-gestion" class="element-subtab-btn shrink-0 opacity-80">
+        🔒 Gestión del Nodo (Equipo)
       </button>
     </div>
 
@@ -1847,6 +1893,28 @@
             </button>
             <span class="text-xs text-stone-400">Total acumulado: $38.400</span>
           </div>
+        </div>
+      
+        <!-- Tarjeta: Mis Círculos de Compra Colectiva (VRDE Club) -->
+        <div class="bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/40 p-6 rounded-3xl border border-emerald-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-2xl">🌀</span>
+              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                Facultad de Círculo
+              </span>
+            </div>
+            <h3 class="font-black text-lg text-emerald-950">Compras en Círculos</h3>
+            <p id="micrm-circle-status" class="text-xs text-emerald-800/90 font-semibold mt-0.5">
+              Sin Círculo Activo
+            </p>
+            <p class="text-xs text-stone-600 mt-3 leading-relaxed">
+              Autogestión de compras colectivas entre vecinos para recibir pedidos consolidados y coordinar el retiro barrial.
+            </p>
+          </div>
+          <button onclick="navigateTo('circulos')" class="w-full mt-4 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold py-2.5 rounded-full shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1.5">
+            <span>🌀</span> Ver y Gestionar Círculos
+          </button>
         </div>
       </div>
     </div>
@@ -3679,9 +3747,9 @@
           </div>
         </div>
 
-        <!-- Rol 3: Gestor del Nodo -->
+        <!-- Rol 3: Gestor del Nodo (Protegido por PIN) -->
         <div 
-          onclick="toggleUserRole('gestor'); closeRoleSwitcherModal();"
+          onclick="handleRoleModalGestorClick();"
           id="role-option-gestor"
           class="p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-start gap-3.5 hover:border-amber-400 hover:bg-amber-50/40"
         >
@@ -3746,6 +3814,35 @@
             placeholder="Para enviar el ticket de compra" 
             class="w-full bg-stone-50 border border-stone-300 focus:border-[#c0826d] rounded-xl p-2.5 text-sm text-stone-900 focus:outline-none focus:bg-white transition-colors"
           />
+        </div>
+
+        <!-- MODALIDAD DE ENTREGA / FACULTAD DE CÍRCULO (VRDE CLUB) -->
+        <div class="p-3.5 bg-stone-50 rounded-2xl border border-stone-200">
+          <label class="block text-xs font-bold text-stone-700 uppercase mb-1.5 flex items-center justify-between">
+            <span>Modalidad de Retiro / Círculo</span>
+            <span class="text-[10px] text-emerald-800 font-bold bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">Facultad de Círculo</span>
+          </label>
+          <div class="space-y-2">
+            <label class="flex items-center gap-2 text-xs font-semibold text-stone-700 cursor-pointer">
+              <input type="radio" name="checkout-delivery-type" value="nodo" checked onchange="toggleCheckoutCirculoSelect(false)" class="text-[#c0826d] focus:ring-[#c0826d]" />
+              <span>Retiro individual en sede del Nodo</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs font-semibold text-stone-700 cursor-pointer">
+              <input type="radio" name="checkout-delivery-type" value="circulo" onchange="toggleCheckoutCirculoSelect(true)" class="text-[#c0826d] focus:ring-[#c0826d]" />
+              <span>Sumar pedido a un Círculo de Vecinos (Autogestión de retiro)</span>
+            </label>
+          </div>
+
+          <!-- Selector de Círculo (visible si elige círculo) -->
+          <div id="checkout-circulo-container" class="mt-2.5 pt-2.5 border-t border-stone-200 hidden">
+            <label class="block text-[11px] font-bold text-stone-600 mb-1">Elegí tu Círculo Barrial:</label>
+            <select id="checkout-selected-circulo" class="w-full bg-white border border-stone-300 rounded-xl p-2 text-xs text-stone-800 focus:outline-none focus:border-emerald-600">
+              <!-- Inyectado dinámicamente con círculos del nodo activo -->
+            </select>
+            <p id="checkout-circulo-info" class="text-[10px] text-stone-500 mt-1 leading-snug">
+              La gestión del pedido y retiro queda a cargo de quien pide y de la coordinación del círculo.
+            </p>
+          </div>
         </div>
 
         <div>
@@ -4706,6 +4803,7 @@
 
   <!-- Scripts -->
   <script src="js/vrde-api.js"></script>
+  <script src="js/circulos.js"></script>
   <script src="js/products-data.js"></script>
   <script src="js/barrio-data.js"></script>
   <script src="js/app.js"></script>
@@ -4787,8 +4885,219 @@
     </div>
   </div>
 
+    <!-- ========================================================================= -->
+  <!-- 0.C VISTA: CÍRCULOS DE COMPRA COLECTIVA (VRDE CLUB & RED ELEMENTALES) -->
   <!-- ========================================================================= -->
-  <div id="modal-initial-login" class="fixed inset-0 z-[10010] bg-stone-900/75 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+  <div id="view-circulos" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-24">
+    
+    <!-- HEADER CÍRCULOS -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-emerald-950 via-stone-900 to-emerald-900 border border-emerald-500/30 text-white mb-6 shadow-xl relative overflow-hidden">
+      <!-- Fondo decorativo -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl top-0 right-0"></div>
+        <div class="absolute w-60 h-60 bg-amber-500/10 rounded-full blur-3xl bottom-0 left-0"></div>
+      </div>
+
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-black uppercase tracking-wider text-emerald-300 bg-emerald-900/80 px-3 py-1 rounded-full border border-emerald-400/30">
+              🌀 Facultad de Círculo · VRDE Club
+            </span>
+            <span id="circulos-node-badge" class="text-xs font-bold text-amber-300 bg-amber-900/60 px-3 py-1 rounded-full border border-amber-400/30">
+              Nodo Loma Verde
+            </span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            Círculos de Compra Colectiva
+          </h1>
+          <p class="text-xs sm:text-sm text-emerald-100/90 mt-1 max-w-xl leading-relaxed">
+            Autogestión vecinal: comprá junto a familias y amigos de tu cuadra. Los pedidos llegan consolidados y la gestión del retiro queda a cargo de quien pide, ahorrando fletes y fortaleciendo la comunidad.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap sm:flex-nowrap gap-2 shrink-0">
+          <button onclick="openCreateCirculoModal()" class="btn-spotify !py-2.5 !px-4 text-xs font-bold bg-emerald-500 text-stone-950 hover:bg-emerald-400 flex items-center gap-1.5 shadow-md">
+            <span>+</span> Crear Círculo
+          </button>
+          <button onclick="navigateTo('tierra')" class="btn-spotify !py-2.5 !px-4 text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center gap-1.5">
+            <span>🌱</span> Ir a la Tienda
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TARJETA: MI CÍRCULO ACTIVO (SI PERTENECE A UNO) -->
+    <div id="circulos-my-active-circle-container" class="mb-8">
+      <!-- Inyectado dinámicamente por JS -->
+    </div>
+
+    <!-- FILTRO POR NODO -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <div class="flex items-center gap-2 overflow-x-auto pb-1" id="circulos-node-filter-tabs">
+        <button onclick="filterCirculosByNode('todos')" id="circulos-filter-todos" class="element-subtab-btn active shrink-0">
+          Todos los Nodos
+        </button>
+        <button onclick="filterCirculosByNode('nodo-lomaverde')" id="circulos-filter-lomaverde" class="element-subtab-btn shrink-0">
+          📍 Nodo Loma Verde (Escobar)
+        </button>
+        <button onclick="filterCirculosByNode('nodo-lucila')" id="circulos-filter-lucila" class="element-subtab-btn shrink-0">
+          📍 Nodo La Lucila (Vicente López)
+        </button>
+      </div>
+
+      <span class="text-xs text-stone-500 font-semibold shrink-0" id="circulos-count-indicator">
+        Cargando círculos...
+      </span>
+    </div>
+
+    <!-- GRID DE CÍRCULOS DISPONIBLES -->
+    <div id="circulos-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Inyectado por JS -->
+    </div>
+  </div>
+
+<!-- ========================================================================= -->
+  <div   <!-- ========================================================================= -->
+  <!-- MODAL: AUTORIZACIÓN PIN DE GESTOR DEL NODO -->
+  <!-- ========================================================================= -->
+  <div id="modal-admin-pin-auth" class="modal-backdrop hidden" onclick="if(event.target === this) closeAdminPinModal()">
+    <div class="modal-content p-6 max-w-sm mx-auto text-center">
+      <div class="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-300 flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs">
+        🔐
+      </div>
+      <h3 class="font-black text-lg text-stone-900 leading-tight">Acceso a Gestión del Nodo</h3>
+      <p class="text-xs text-stone-500 mt-1 mb-4 leading-snug">
+        Ingresá el PIN de autorización reservado para el equipo organizador del nodo (Gonza, Agus, Rami, Cris, Ro).
+      </p>
+
+      <form onsubmit="handleAdminPinSubmit(event)" class="space-y-3">
+        <div>
+          <input 
+            type="password" 
+            id="admin-pin-input" 
+            inputmode="numeric" 
+            maxlength="8" 
+            placeholder="••••" 
+            class="w-full text-center tracking-widest text-2xl font-black py-2.5 bg-stone-50 border border-stone-300 rounded-2xl focus:outline-none focus:border-amber-500 focus:bg-white transition-all"
+            required
+            autofocus
+          />
+          <p id="admin-pin-error" class="text-[11px] font-bold text-red-600 mt-1.5 hidden"></p>
+        </div>
+
+        <div class="pt-1 flex gap-2">
+          <button type="button" onclick="closeAdminPinModal()" class="flex-1 py-2.5 rounded-xl border border-stone-200 text-stone-600 font-bold text-xs hover:bg-stone-50">
+            Cancelar
+          </button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs">
+            Ingresar como Gestor
+          </button>
+        </div>
+      </form>
+
+      <p class="text-[10px] text-stone-400 mt-3">
+        PIN de equipo: <strong class="text-stone-600 font-semibold">3450</strong> (Rawson 3450)
+      </p>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: SELECCIÓN DE NODO COMUNITARIO (LA LUCILA / LOMA VERDE) -->
+  <!-- ========================================================================= -->
+  <div id="modal-node-selector" class="modal-backdrop hidden" onclick="if(event.target === this) closeNodeSelectorModal()">
+    <div class="modal-content p-6 max-w-md mx-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📍</span>
+          <div>
+            <h3 class="font-black text-lg text-stone-900 leading-none">Nodos Comunitarios</h3>
+            <p class="text-[11px] text-stone-500 mt-0.5">Elegí tu punto de retiro o tu red de círculos</p>
+          </div>
+        </div>
+        <button onclick="closeNodeSelectorModal()" class="text-stone-400 hover:text-stone-700 text-lg font-bold w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="space-y-3" id="nodes-modal-list">
+        <!-- Inyectado dinámicamente por JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: CREAR CÍRCULO DE COMPRA COLECTIVA (VRDE CLUB) -->
+  <!-- ========================================================================= -->
+  <div id="modal-create-circulo" class="modal-backdrop hidden" onclick="if(event.target === this) closeCreateCirculoModal()">
+    <div class="modal-content p-6 max-w-lg mx-auto max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🌀</span>
+          <div>
+            <h3 class="font-black text-lg text-stone-900 leading-none">Crear Círculo de Compra</h3>
+            <p class="text-[11px] text-stone-500 mt-0.5">Autogestión vecinal: comprá junto a tu cuadra o comunidad</p>
+          </div>
+        </div>
+        <button onclick="closeCreateCirculoModal()" class="text-stone-400 hover:text-stone-700 text-lg font-bold w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center">✕</button>
+      </div>
+
+      <form onsubmit="handleCreateCirculoSubmit(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Nombre del Círculo *</label>
+          <input type="text" id="circulo-nombre" required placeholder="Ej: Círculo Los Robles, Círculo Calle Roma..." class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Coordinador/a del Círculo *</label>
+            <input type="text" id="circulo-coordinador" required placeholder="Tu nombre" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">WhatsApp de Coordinación *</label>
+            <input type="tel" id="circulo-telefono" required placeholder="54911..." class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Punto de Entrega / Retiro de Vecinos *</label>
+          <input type="text" id="circulo-direccion" required placeholder="Ej: Los Robles 450, Loma Verde / Roma y Rawson, La Lucila" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Nodo Asociado</label>
+            <select id="circulo-nodo" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600">
+              <option value="nodo-lomaverde">Nodo Loma Verde (Escobar)</option>
+              <option value="nodo-lucila">Nodo La Lucila (Rawson 3450)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Frecuencia de Compra</label>
+            <select id="circulo-frecuencia" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600">
+              <option value="Semanal (Miércoles)">Semanal (Cosecha fresca)</option>
+              <option value="Lunar / Mensual">Lunar (A granel al costo)</option>
+              <option value="Quincenal">Quincenal</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Descripción / Mensaje para los vecinos</label>
+          <textarea id="circulo-descripcion" rows="2" placeholder="Ej: Grupo de familias de la zona coordinando bolsones agroecológicos y compras directas..." class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600"></textarea>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <button type="button" onclick="closeCreateCirculoModal()" class="flex-1 py-2.5 rounded-xl border border-stone-200 text-stone-600 font-bold text-xs hover:bg-stone-50">
+            Cancelar
+          </button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm">
+            Crear Círculo & Activar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+id="modal-initial-login" class="fixed inset-0 z-[10010] bg-stone-900/75 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-stone-200 text-center animate-scale-up my-auto">
       
       <!-- Logo Central -->

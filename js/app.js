@@ -269,10 +269,28 @@ const AppState = {
   userCode: 'CSC-2026-0482',
 
   init() {
-    // Cargar nodo activo, modo y rol
-    this.catalogMode = localStorage.getItem('elementales_catalog_mode') || 'local';
-    this.activeNodeId = localStorage.getItem('elementales_active_node') || 'nodo-central';
-    this.userRole = localStorage.getItem('elementales_user_role') || 'visitante';
+    // Detección automática de Nodo Loma Verde por URL / subdominio / parámetro
+    const host = (window.location.hostname || '').toLowerCase();
+    const search = (window.location.search || '').toLowerCase();
+    const hash = (window.location.hash || '').toLowerCase();
+    if (host.includes('lomaverde') || search.includes('lomaverde') || hash.includes('lomaverde')) {
+      this.activeNodeId = 'nodo-lomaverde';
+      localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+    } else {
+      this.activeNodeId = localStorage.getItem('elementales_active_node') || 'nodo-lucila';
+    }
+
+    // Seguridad estricta: Gestor sólo activo si tiene sesión autenticada con PIN
+    const savedRole = localStorage.getItem('elementales_user_role') || 'visitante';
+    const isGestorAuth = sessionStorage.getItem('elementales_gestor_auth') === 'true';
+    if (savedRole === 'gestor' && !isGestorAuth) {
+      this.userRole = 'visitante';
+      localStorage.setItem('elementales_user_role', 'visitante');
+    } else {
+      this.userRole = savedRole;
+    }
+
+    this.catalogMode = localStorage.getItem('elementales_catalog_mode') || (this.userRole === 'socio' || this.userRole === 'gestor' ? 'semanal' : 'local');
     this.userPlan = localStorage.getItem('elementales_user_plan') || 'plan-raices';
     this.userName = localStorage.getItem('elementales_user_name') || 'Lucía Gómez';
     this.userCode = localStorage.getItem('elementales_user_code') || 'CSC-2026-0482';
@@ -566,6 +584,8 @@ function navigateTo(viewName) {
   // Renderizar contenido según la vista
   if (viewName === 'barrio') {
     renderBarrioFeed();
+  } else if (viewName === 'circulos') {
+    renderCirculosView();
   } else if (viewName === 'tierra') {
     switchTierraTab('tienda');
     renderOrderCatalog();
@@ -915,6 +935,15 @@ function submitOrder(e) {
   const notes = document.getElementById('checkout-client-notes').value.trim();
   const cashGiven = parseFloat(document.getElementById('checkout-cash-amount').value) || 0;
 
+  // Facultad de Círculo: Detección de entrega individual vs Círculo
+  const deliveryTypeEl = document.querySelector('input[name="checkout-delivery-type"]:checked');
+  const deliveryType = deliveryTypeEl ? deliveryTypeEl.value : 'nodo';
+  const selectedCirculoId = document.getElementById('checkout-selected-circulo')?.value;
+  let circuloObj = null;
+  if (deliveryType === 'circulo' && selectedCirculoId && typeof CirculosManager !== 'undefined') {
+    circuloObj = CirculosManager.getCircle(selectedCirculoId);
+  }
+
   const orderNumber = AppState.orders.length + 1;
   const orderId = 'ORD-' + String(orderNumber).padStart(3, '0');
   const dateObj = new Date();
@@ -934,8 +963,22 @@ function submitOrder(e) {
     totalItems: summary.totalItems,
     notes,
     cashGiven: paymentMethod === 'Efectivo' && cashGiven > 0 ? cashGiven : null,
-    cashChange: paymentMethod === 'Efectivo' && cashGiven > summary.subtotal ? cashGiven - summary.subtotal : 0
+    cashChange: paymentMethod === 'Efectivo' && cashGiven > summary.subtotal ? cashGiven - summary.subtotal : 0,
+    deliveryType,
+    circuloId: circuloObj ? circuloObj.id : null,
+    circuloNombre: circuloObj ? circuloObj.nombre : null,
+    nodoId: AppState.activeNodeId
   };
+
+  // Sumar automáticamente al Círculo si corresponde (Autogestión de pedido)
+  if (circuloObj && typeof CirculosManager !== 'undefined') {
+    const itemsSummary = summary.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+    CirculosManager.addOrderToCircle(circuloObj.id, {
+      clientName,
+      itemsSummary,
+      totalAmount: summary.subtotal
+    });
+  }
 
   AppState.orders.unshift(newOrder);
   AppState.saveOrders();
@@ -2111,7 +2154,7 @@ function updateRoleUI() {
     if (role === 'gestor') {
       badge.className = 'flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs border bg-amber-100 border-amber-400 text-amber-950 hover:bg-amber-200';
       dot.className = 'w-2 h-2 rounded-full bg-amber-600 animate-pulse';
-      text.textContent = '👑 Gestor Nodo';
+      text.innerHTML = '👑 Gestor <span class="text-[9px] bg-amber-200/80 px-1.5 py-0.5 rounded-full ml-0.5 hover:bg-amber-300" onclick="event.stopPropagation(); logoutGestor();" title="Cerrar sesión de gestor">Salir</span>';
     } else if (role === 'socio') {
       badge.className = 'flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs border bg-blue-50 border-blue-300 text-blue-900 hover:bg-blue-100';
       dot.className = 'w-2 h-2 rounded-full bg-blue-600';
@@ -2120,6 +2163,32 @@ function updateRoleUI() {
       badge.className = 'flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs border bg-stone-100 border-stone-300 text-stone-700 hover:bg-stone-200';
       dot.className = 'w-2 h-2 rounded-full bg-stone-400';
       text.textContent = '👤 No Miembro';
+    }
+
+    // Actualizar botón de Gestión en Éter según permiso
+    const btnGestion = document.getElementById('eter-tab-btn-gestion');
+    if (btnGestion) {
+      if (role === 'gestor') {
+        btnGestion.innerHTML = '👑 Gestión del Nodo (Operativo)';
+        btnGestion.classList.remove('opacity-60', 'opacity-80');
+      } else {
+        btnGestion.innerHTML = '🔒 Gestión del Nodo (Equipo)';
+        btnGestion.classList.add('opacity-80');
+      }
+    }
+
+    // Actualizar estado del círculo en Mi CRM
+    const circleStatusEl = document.getElementById('micrm-circle-status');
+    if (circleStatusEl && typeof CirculosManager !== 'undefined') {
+      const activeCId = CirculosManager.getActiveCircleId();
+      const circleObj = activeCId ? CirculosManager.getCircle(activeCId) : null;
+      if (circleObj) {
+        circleStatusEl.textContent = '✓ ' + circleObj.nombre;
+        circleStatusEl.className = 'text-xs text-emerald-800 font-bold mt-0.5';
+      } else {
+        circleStatusEl.textContent = 'Sin Círculo Activo';
+        circleStatusEl.className = 'text-xs text-stone-500 font-semibold mt-0.5';
+      }
     }
   }
 
@@ -2611,6 +2680,10 @@ function switchEterMainTab(tabName) {
     if (modulesGrid) modulesGrid.classList.remove('hidden');
     showEterModule('centro');
   } else if (tabName === 'gestion') {
+    if (AppState.userRole !== 'gestor' || sessionStorage.getItem('elementales_gestor_auth') !== 'true') {
+      requestGestorAccess(() => switchEterMainTab('gestion'));
+      return;
+    }
     if (modulesGrid) modulesGrid.classList.remove('hidden');
     showEterModule('elementos');
   } else {
@@ -3730,4 +3803,463 @@ async function exportProducerToVRDE(producerId) {
   } catch (err) {
     alert('Error al transferir productor a VRDE Club: ' + err.message);
   }
+}
+
+
+// =========================================================================
+// SEGURIDAD & AUTENTICACIÓN PIN DE GESTOR DEL NODO
+// =========================================================================
+const GESTOR_ALLOWED_PINS = ['3450', '1234', 'elementales'];
+let pendingGestorCallback = null;
+
+function requestGestorAccess(onSuccess) {
+  if (AppState.userRole === 'gestor' && sessionStorage.getItem('elementales_gestor_auth') === 'true') {
+    if (typeof onSuccess === 'function') onSuccess();
+    return;
+  }
+  pendingGestorCallback = onSuccess;
+  sounds.playPop();
+  const modal = document.getElementById('modal-admin-pin-auth');
+  const input = document.getElementById('admin-pin-input');
+  const err = document.getElementById('admin-pin-error');
+  if (err) err.classList.add('hidden');
+  if (input) input.value = '';
+  if (modal) modal.classList.remove('hidden');
+  setTimeout(() => { if (input) input.focus(); }, 150);
+}
+
+function closeAdminPinModal() {
+  const modal = document.getElementById('modal-admin-pin-auth');
+  if (modal) modal.classList.add('hidden');
+  pendingGestorCallback = null;
+}
+
+function handleAdminPinSubmit(e) {
+  e.preventDefault();
+  const input = document.getElementById('admin-pin-input');
+  const err = document.getElementById('admin-pin-error');
+  const val = (input?.value || '').trim();
+
+  if (GESTOR_ALLOWED_PINS.includes(val)) {
+    sessionStorage.setItem('elementales_gestor_auth', 'true');
+    AppState.userRole = 'gestor';
+    localStorage.setItem('elementales_user_role', 'gestor');
+    AppState.catalogMode = 'semanal';
+    localStorage.setItem('elementales_catalog_mode', 'semanal');
+    closeAdminPinModal();
+    closeRoleSwitcherModal();
+    sounds.playSuccess();
+    updateRoleUI();
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 35, spread: 60, origin: { y: 0.6 } });
+    }
+    if (typeof pendingGestorCallback === 'function') {
+      const cb = pendingGestorCallback;
+      pendingGestorCallback = null;
+      cb();
+    } else {
+      navigateTo('eter');
+      switchEterMainTab('gestion');
+      showEterModule('elementos');
+    }
+  } else {
+    sounds.playPop();
+    if (err) {
+      err.textContent = '❌ PIN incorrecto. Acceso reservado para el equipo del nodo.';
+      err.classList.remove('hidden');
+    }
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+  }
+}
+
+function logoutGestor() {
+  sounds.playPop();
+  sessionStorage.removeItem('elementales_gestor_auth');
+  AppState.userRole = 'visitante';
+  localStorage.setItem('elementales_user_role', 'visitante');
+  AppState.catalogMode = 'local';
+  localStorage.setItem('elementales_catalog_mode', 'local');
+  updateRoleUI();
+  navigateTo('barrio');
+}
+
+function handleGestionNodoClick() {
+  if (AppState.userRole === 'gestor' && sessionStorage.getItem('elementales_gestor_auth') === 'true') {
+    switchEterMainTab('gestion');
+  } else {
+    requestGestorAccess(() => switchEterMainTab('gestion'));
+  }
+}
+
+function handleRoleModalGestorClick() {
+  closeRoleSwitcherModal();
+  requestGestorAccess(() => {
+    updateRoleUI();
+  });
+}
+
+// =========================================================================
+// SELECTOR DE NODO COMUNITARIO (LA LUCILA / LOMA VERDE)
+// =========================================================================
+function openNodeSelectorModal() {
+  sounds.playPop();
+  renderNodesModalList();
+  const modal = document.getElementById('modal-node-selector');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeNodeSelectorModal() {
+  const modal = document.getElementById('modal-node-selector');
+  if (modal) modal.classList.add('hidden');
+}
+
+function renderNodesModalList() {
+  const container = document.getElementById('nodes-modal-list');
+  if (!container) return;
+
+  const currentId = AppState.activeNodeId || 'nodo-lucila';
+  container.innerHTML = NODOS_COMUNIDAD.map(node => {
+    const isSelected = node.id === currentId;
+    return `
+      <div 
+        onclick="selectNode('${node.id}')"
+        class="p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between ${
+          isSelected 
+            ? 'border-emerald-500 bg-emerald-50/50 shadow-xs' 
+            : 'border-stone-200 hover:border-stone-400 bg-white'
+        }"
+      >
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">${node.id === 'nodo-lomaverde' ? '🌿' : '🏡'}</span>
+          <div>
+            <div class="flex items-center gap-2">
+              <h4 class="font-black text-sm text-stone-900">${escapeHtml(node.name)}</h4>
+              ${isSelected ? '<span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">Activo</span>' : ''}
+            </div>
+            <p class="text-xs text-stone-500 mt-0.5">${escapeHtml(node.address)}</p>
+            <p class="text-[11px] text-stone-400 mt-1">${escapeHtml(node.desc)}</p>
+          </div>
+        </div>
+        <span class="text-xs font-bold text-stone-400">→</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectNode(nodeId) {
+  AppState.activeNodeId = nodeId;
+  localStorage.setItem('elementales_active_node', nodeId);
+  closeNodeSelectorModal();
+  sounds.playSuccess();
+  updateNodeUI();
+  if (AppState.currentView === 'barrio') renderBarrioFeed();
+  if (AppState.currentView === 'tierra') renderOrderCatalog();
+  if (AppState.currentView === 'circulos') renderCirculosView();
+}
+
+function updateNodeUI() {
+  const node = NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) || NODOS_COMUNIDAD[0];
+  const nameEl = document.getElementById('header-node-name');
+  if (nameEl) {
+    nameEl.textContent = node.id === 'nodo-lomaverde' ? 'Loma Verde' : 'La Lucila';
+  }
+
+  const badgeEl = document.getElementById('header-node-badge');
+  if (badgeEl) {
+    if (node.id === 'nodo-lomaverde') {
+      badgeEl.className = 'flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-emerald-100 text-emerald-950 border-emerald-400 hover:bg-emerald-200';
+    } else {
+      badgeEl.className = 'flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-800 border-stone-300 hover:bg-stone-200';
+    }
+  }
+
+  // Banner Loma Verde en view-barrio
+  const bannerLV = document.getElementById('banner-nodo-lomaverde');
+  if (bannerLV) {
+    bannerLV.classList.toggle('hidden', AppState.activeNodeId !== 'nodo-lomaverde');
+  }
+
+  populateCheckoutCirculos();
+}
+
+// =========================================================================
+// FACULTAD DE CÍRCULOS (VRDE CLUB & RED ELEMENTALES)
+// =========================================================================
+let currentCirculosFilter = 'todos';
+
+function renderCirculosView() {
+  const grid = document.getElementById('circulos-cards-grid');
+  const activeContainer = document.getElementById('circulos-my-active-circle-container');
+  const countIndicator = document.getElementById('circulos-count-indicator');
+  const nodeBadge = document.getElementById('circulos-node-badge');
+  if (!grid || typeof CirculosManager === 'undefined') return;
+
+  const activeNode = NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) || NODOS_COMUNIDAD[0];
+  if (nodeBadge) {
+    nodeBadge.textContent = activeNode.name;
+  }
+
+  // Obtener círculos
+  let circles = CirculosManager.getAllCircles();
+  if (currentCirculosFilter !== 'todos') {
+    circles = circles.filter(c => c.nodoId === currentCirculosFilter);
+  }
+
+  if (countIndicator) {
+    countIndicator.textContent = `${circles.length} círculos disponibles`;
+  }
+
+  // 1. Renderizar Círculo Activo del Usuario
+  const activeCircleId = CirculosManager.getActiveCircleId();
+  const activeCircle = activeCircleId ? CirculosManager.getCircle(activeCircleId) : null;
+
+  if (activeContainer) {
+    if (activeCircle) {
+      const pedidos = activeCircle.pedidos || [];
+      const totalPedidos = pedidos.reduce((acc, p) => acc + (p.total || 0), 0);
+
+      activeContainer.innerHTML = `
+        <div class="p-6 rounded-3xl bg-gradient-to-br from-emerald-50 via-white to-teal-50 border-2 border-emerald-500/40 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-emerald-200/60">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xl">🌀</span>
+                <span class="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">Tu Círculo Activo</span>
+              </div>
+              <h3 class="font-black text-xl text-stone-900 mt-1">${escapeHtml(activeCircle.nombre)}</h3>
+              <p class="text-xs text-stone-600 mt-0.5">
+                📍 <strong>Punto de Retiro:</strong> ${escapeHtml(activeCircle.direccion)} · 👤 Coordina: ${escapeHtml(activeCircle.coordinador)}
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="shareCircleWhatsApp('${activeCircle.id}')" class="btn-spotify !py-2 !px-3 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1 shadow-xs">
+                <span>📲</span> Compartir Círculo
+              </button>
+            </div>
+          </div>
+
+          <!-- PEDIDOS CONSOLIDADOS DEL CÍRCULO -->
+          <div class="bg-white/90 p-4 rounded-2xl border border-emerald-200 mb-4">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-black text-xs uppercase tracking-wider text-stone-700 flex items-center gap-1.5">
+                <span>📦</span> Pedidos de Vecinos para esta semana (${pedidos.length})
+              </h4>
+              <span class="font-black text-sm text-emerald-800">Total: $${totalPedidos.toLocaleString('es-AR')}</span>
+            </div>
+            
+            ${pedidos.length > 0 ? `
+              <div class="divide-y divide-stone-100 text-xs text-stone-700 max-h-40 overflow-y-auto pr-1">
+                ${pedidos.map(p => `
+                  <div class="py-2 flex items-center justify-between">
+                    <div>
+                      <span class="font-bold text-stone-900">${escapeHtml(p.vecino)}</span>
+                      <span class="text-stone-500 block text-[11px]">${escapeHtml(p.items)}</span>
+                    </div>
+                    <span class="font-bold text-stone-800 shrink-0">$${(p.total || 0).toLocaleString('es-AR')}</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : `
+              <p class="text-xs text-stone-400 italic py-2">Aún no hay pedidos sumados a este círculo esta semana. ¡Compartí el link para armar la compra grupal!</p>
+            `}
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
+            <p class="text-stone-500 text-[11px]">
+              La gestión del retiro y la entrega queda a cargo del círculo, reduciendo costos logísticos.
+            </p>
+            <div class="flex items-center gap-2">
+              <button onclick="sendCircleOrderToWhatsApp('${activeCircle.id}')" class="btn-spotify !py-2 !px-3 text-xs font-bold bg-stone-900 hover:bg-stone-800 text-white flex items-center gap-1 shadow-xs">
+                <span>📦</span> Enviar Consolidado al Nodo
+              </button>
+              <button onclick="CirculosManager.setActiveCircleId(null); renderCirculosView(); sounds.playPop();" class="text-xs text-stone-400 hover:text-stone-600 underline">
+                Cambiar de círculo
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      activeContainer.innerHTML = '';
+    }
+  }
+
+  // 2. Renderizar Grid de Círculos
+  if (circles.length === 0) {
+    grid.innerHTML = `
+      <div class="col-span-full text-center py-12 text-stone-400">
+        <p class="text-4xl mb-2">🌀</p>
+        <p class="font-bold text-stone-700 text-base">No hay círculos registrados en este nodo aún</p>
+        <p class="text-xs text-stone-500 mt-1">Sé el primero en crear un Círculo en tu barrio para comprar juntos con tus vecinos.</p>
+        <button onclick="openCreateCirculoModal()" class="btn-spotify !py-2 !px-4 text-xs font-bold bg-emerald-600 text-white mt-4 shadow-sm">
+          + Crear Círculo de Compra
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = circles.map(c => {
+    const isMyCircle = c.id === activeCircleId;
+    const pedidosCount = (c.pedidos || []).length;
+    const miembrosCount = (c.miembros || []).length;
+    const nodeName = c.nodoId === 'nodo-lomaverde' ? 'Loma Verde' : 'La Lucila';
+
+    return `
+      <div class="bg-white rounded-3xl border-2 transition-all p-5 shadow-2xs hover:shadow-md flex flex-col justify-between ${
+        isMyCircle ? 'border-emerald-500 bg-emerald-50/20' : 'border-stone-200'
+      }">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
+              📍 ${nodeName}
+            </span>
+            ${isMyCircle ? '<span class="text-xs font-black text-emerald-600">✓ Tu Círculo</span>' : ''}
+          </div>
+
+          <h3 class="font-black text-base text-stone-900 leading-snug">${escapeHtml(c.nombre)}</h3>
+          <p class="text-xs text-stone-500 mt-1 line-clamp-2 leading-relaxed">${escapeHtml(c.descripcion || 'Círculo de compra comunitaria.')}</p>
+
+          <div class="mt-3.5 space-y-1 text-xs text-stone-600">
+            <p>📍 <strong>Retiro:</strong> ${escapeHtml(c.direccion)}</p>
+            <p>👤 <strong>Coordina:</strong> ${escapeHtml(c.coordinador)}</p>
+            <p>📅 <strong>Frecuencia:</strong> ${escapeHtml(c.frecuencia || 'Semanal')}</p>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+          <span class="text-[11px] font-bold text-stone-400">
+            👥 ${miembrosCount} miembros · ${pedidosCount} pedidos
+          </span>
+          <button 
+            type="button" 
+            onclick="joinCircle('${c.id}')" 
+            class="btn-spotify !py-1.5 !px-3 text-xs font-bold ${
+              isMyCircle 
+                ? 'bg-stone-100 text-stone-700 hover:bg-stone-200' 
+                : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs'
+            }">
+            ${isMyCircle ? 'Seleccionado' : 'Unirme'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterCirculosByNode(nodeFilter) {
+  currentCirculosFilter = nodeFilter;
+  sounds.playPop();
+
+  document.querySelectorAll('#circulos-node-filter-tabs .element-subtab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  const tabId = nodeFilter === 'todos' ? 'circulos-filter-todos' : (nodeFilter === 'nodo-lomaverde' ? 'circulos-filter-lomaverde' : 'circulos-filter-lucila');
+  const activeBtn = document.getElementById(tabId);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  renderCirculosView();
+}
+
+function openCreateCirculoModal() {
+  sounds.playPop();
+  const modal = document.getElementById('modal-create-circulo');
+  if (modal) {
+    const nodoSelect = document.getElementById('circulo-nodo');
+    if (nodoSelect) nodoSelect.value = AppState.activeNodeId || 'nodo-lomaverde';
+    modal.classList.remove('hidden');
+  }
+}
+
+function closeCreateCirculoModal() {
+  const modal = document.getElementById('modal-create-circulo');
+  if (modal) modal.classList.add('hidden');
+}
+
+function handleCreateCirculoSubmit(e) {
+  e.preventDefault();
+  if (typeof CirculosManager === 'undefined') return;
+
+  const nombre = document.getElementById('circulo-nombre')?.value.trim();
+  const coordinador = document.getElementById('circulo-coordinador')?.value.trim();
+  const telefono = document.getElementById('circulo-telefono')?.value.trim();
+  const direccion = document.getElementById('circulo-direccion')?.value.trim();
+  const nodoId = document.getElementById('circulo-nodo')?.value;
+  const frecuencia = document.getElementById('circulo-frecuencia')?.value;
+  const descripcion = document.getElementById('circulo-descripcion')?.value.trim();
+
+  const newCirculo = CirculosManager.createCircle({
+    nombre,
+    coordinador,
+    telefono,
+    direccion,
+    nodoId,
+    frecuencia,
+    descripcion
+  });
+
+  closeCreateCirculoModal();
+  sounds.playSuccess();
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 30, spread: 60, origin: { y: 0.6 } });
+  }
+
+  renderCirculosView();
+  updateRoleUI();
+  populateCheckoutCirculos();
+  e.target.reset();
+}
+
+function joinCircle(circleId) {
+  if (typeof CirculosManager === 'undefined') return;
+  sounds.playSuccess();
+  CirculosManager.joinCircle(circleId, AppState.userName);
+  renderCirculosView();
+  updateRoleUI();
+  populateCheckoutCirculos();
+}
+
+function shareCircleWhatsApp(circleId) {
+  if (typeof CirculosManager === 'undefined') return;
+  sounds.playPop();
+  const text = CirculosManager.generateShareText(circleId);
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function sendCircleOrderToWhatsApp(circleId) {
+  if (typeof CirculosManager === 'undefined') return;
+  sounds.playSuccess();
+  const text = CirculosManager.generateWhatsAppOrder(circleId);
+  window.open(`https://wa.me/5491123456789?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function toggleCheckoutCirculoSelect(isCirculo) {
+  const container = document.getElementById('checkout-circulo-container');
+  if (container) {
+    container.classList.toggle('hidden', !isCirculo);
+    if (isCirculo) populateCheckoutCirculos();
+  }
+}
+
+function populateCheckoutCirculos() {
+  const select = document.getElementById('checkout-selected-circulo');
+  if (!select || typeof CirculosManager === 'undefined') return;
+
+  const circles = CirculosManager.getCirclesByNode(AppState.activeNodeId);
+  const activeCId = CirculosManager.getActiveCircleId();
+
+  if (circles.length === 0) {
+    select.innerHTML = '<option value="">No hay círculos en este nodo (crear uno)</option>';
+    return;
+  }
+
+  select.innerHTML = circles.map(c => `
+    <option value="${c.id}" ${c.id === activeCId ? 'selected' : ''}>
+      ${escapeHtml(c.nombre)} (Punto: ${escapeHtml(c.direccion)})
+    </option>
+  `).join('');
 }

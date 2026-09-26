@@ -19,7 +19,20 @@ const NODOS_COMUNIDAD = [
     guardian: 'Gonza, Agus, Rami, Cris & Ro',
     phone: '5491123456789',
     desc: 'Oficina Barrial de la Nueva Era: gestión comunitaria, recepción de proyectos, financiamiento y feria activa.',
-    cover: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200&h=400'
+    cover: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200&h=400',
+    slug: 'lucila'
+  },
+  {
+    id: 'nodo-lomaverde',
+    name: 'Nodo Loma Verde (Escobar)',
+    address: 'Loma Verde, Partido de Escobar, Zona Norte',
+    time: 'Pedidos semanales autogestionados por Círculos de Vecinos',
+    guardian: 'Coordinación de Círculos Loma Verde & VRDE Club',
+    phone: '5491133445566',
+    desc: 'Nodo autogestionado por Círculos de Compra Colectiva: las familias se agrupan en Círculos para pedir juntos y autogestionar el retiro barrial.',
+    cover: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1200&h=400',
+    slug: 'lomaverde',
+    circulosEnabled: true
   },
   {
     id: 'nodo-central',
