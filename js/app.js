@@ -269,11 +269,12 @@ const AppState = {
   userCode: 'CSC-2026-0482',
 
   init() {
-    // Detección automática de Nodo Loma Verde por URL / subdominio / parámetro
+    // Detección automática de Nodo Loma Verde por URL / subdominio / parámetro / ruta
     const host = (window.location.hostname || '').toLowerCase();
     const search = (window.location.search || '').toLowerCase();
     const hash = (window.location.hash || '').toLowerCase();
-    if (host.includes('lomaverde') || search.includes('lomaverde') || hash.includes('lomaverde')) {
+    const path = (window.location.pathname || '').toLowerCase();
+    if (host.includes('lomaverde') || search.includes('lomaverde') || hash.includes('lomaverde') || path.includes('lomaverde')) {
       this.activeNodeId = 'nodo-lomaverde';
       localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
     } else {

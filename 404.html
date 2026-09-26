@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elementales | Red Comunitaria</title>
+  <script>
+    // Enrutador inteligente para GitHub Pages
+    var path = (window.location.pathname || '').toLowerCase();
+    var search = window.location.search || '';
+    var hash = window.location.hash || '';
+
+    if (path.includes('lomaverde')) {
+      localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+      window.location.replace('/?nodo=lomaverde' + (hash ? hash : ''));
+    } else {
+      window.location.replace('/' + search + hash);
+    }
+  </script>
+</head>
+<body style="font-family: system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #fdfaf8; color: #1c1917; text-align: center;">
+  <div>
+    <p style="font-size: 1.125rem; font-weight: 700; color: #57534e;">Redirigiendo a Elementales...</p>
+    <a href="/" style="font-size: 0.875rem; color: #c0826d; font-weight: 600;">Ir al inicio</a>
+  </div>
+</body>
+</html>
