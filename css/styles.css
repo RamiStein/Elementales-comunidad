@@ -290,22 +290,22 @@ body {
   }
 }
 
-/* Floating bottom bar */
+/* Floating bottom bar (Carrito Flotante - Posicionado por encima de la barra de navegación Spotify) */
 .bottom-floating-bar {
   position: fixed;
-  bottom: 1.25rem;
+  bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 0.75rem);
   left: 50%;
   transform: translateX(-50%);
-  width: calc(100% - 2rem);
+  width: calc(100% - 1.5rem);
   max-width: 600px;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(231, 229, 228, 0.9);
+  border: 1.5px solid rgba(220, 215, 210, 0.95);
   border-radius: var(--radius-pill);
   padding: 0.75rem 1.25rem;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(192, 130, 109, 0.08);
-  z-index: 50;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18), 0 4px 14px rgba(192, 130, 109, 0.12);
+  z-index: 950;
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
