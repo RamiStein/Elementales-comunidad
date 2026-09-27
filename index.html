@@ -143,6 +143,41 @@
       Oficinas barriales de la nueva era, compras de huerta agroecológica al costo campesino, oficios de confianza y saberes compartidos.
     </p>
 
+    <!-- ACCESO DIRECTO: PILOTO CÍRCULOS DE CAJONES CHASQUI -->
+    <div class="mb-7 p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-emerald-950 via-teal-900 to-stone-900 text-white shadow-xl border-2 border-emerald-500/60 text-left relative overflow-hidden animate-fade-in">
+      <div class="absolute -right-6 -bottom-6 text-7xl opacity-10 pointer-events-none select-none">📦</div>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-[10px] font-black uppercase tracking-widest text-emerald-300 bg-emerald-800/80 px-2.5 py-0.5 rounded-full border border-emerald-400/40">
+          🚀 PILOTO ACTIVO HOY
+        </span>
+        <span class="text-[10px] font-bold text-teal-200">Compras Colectivas de Cajones</span>
+      </div>
+      <h3 class="text-base sm:text-lg font-black text-white leading-snug">
+        Círculos Elementales · Central Cooperativa Chasqui
+      </h3>
+      <p class="text-xs text-emerald-100/90 mt-1 mb-4 leading-relaxed">
+        Ingresá al sistema de Círculos para ver los 30 cajones agroecológicos de quinta al costo directo de productor. Sumate a un círculo de tu zona o abrí uno nuevo y compartí el link directo para que tus vecinos sumen sus cajones.
+      </p>
+      <div class="flex flex-wrap items-center gap-2">
+        <button 
+          type="button"
+          onclick="openCirculosPilotView()" 
+          class="px-4 py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-black text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer"
+        >
+          <span>📦</span>
+          <span>Ingresar a Círculos de Cajones</span>
+        </button>
+        <button 
+          type="button"
+          onclick="enterCircleStore('circulo-chasqui-piloto')" 
+          class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 border border-white/20 transition-all cursor-pointer"
+        >
+          <span>🛒</span>
+          <span>Ver Tienda Chasqui</span>
+        </button>
+      </div>
+    </div>
+
     <!-- 1. PASO: SELECCIÓN DE NODO -->
     <div class="mb-7 text-left">
       <label class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-2.5 flex items-center justify-between">
@@ -511,6 +546,21 @@
                 <span id="circulo-banner-host">👑 Anfitrión/a: Vecino Coordinador</span>
                 <span class="text-emerald-500">•</span>
                 <span id="circulo-banner-node">📍 Retiro en: Nodo</span>
+              </div>
+              <div class="mt-2 flex items-center gap-2">
+                <span class="text-[11px] font-mono text-emerald-200 bg-emerald-950/80 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1.5">
+                  <span>🔗</span>
+                  <span id="circulo-banner-short-url">?c=circulo</span>
+                </span>
+                <button 
+                  type="button" 
+                  onclick="copyActiveCircleShareUrl()" 
+                  id="btn-banner-copy-url"
+                  class="text-[11px] font-bold text-white bg-emerald-700/80 hover:bg-emerald-600 px-2.5 py-1 rounded-lg border border-emerald-400/40 transition-all flex items-center gap-1 cursor-pointer"
+                  title="Copiar enlace para sumar vecinos"
+                >
+                  <span>📋</span> Copiar
+                </button>
               </div>
             </div>
           </div>
@@ -3494,6 +3544,14 @@
       </div>
 
       <div class="space-y-2.5">
+        <!-- Botón para avisar al Círculo por WhatsApp (+ Link corto) -->
+        <button 
+          id="btn-notify-circulo-whatsapp"
+          type="button"
+          class="hidden btn-spotify w-full text-sm font-black flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-md hover:brightness-105 transition-all cursor-pointer">
+          <span>📢 Avisar al Círculo por WhatsApp (+ Link)</span>
+        </button>
+
         <button 
           id="btn-send-whatsapp-ticket"
           class="btn-spotify btn-spotify-green w-full text-sm font-black flex items-center justify-center gap-2">
@@ -4496,6 +4554,9 @@
       <div class="flex items-center gap-2 overflow-x-auto pb-1" id="circulos-node-filter-tabs">
         <button onclick="filterCirculosByNode('todos')" id="circulos-filter-todos" class="element-subtab-btn active shrink-0">
           Todos los Nodos
+        </button>
+        <button onclick="filterCirculosByNode('nodo-cooperativa')" id="circulos-filter-cooperativa" class="element-subtab-btn shrink-0">
+          📦 Central Chasqui (Mayorista)
         </button>
         <button onclick="filterCirculosByNode('nodo-lomaverde')" id="circulos-filter-lomaverde" class="element-subtab-btn shrink-0">
           📍 Nodo Loma Verde (Escobar)

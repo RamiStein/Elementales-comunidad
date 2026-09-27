@@ -2,20 +2,21 @@
 // FACULTAD DE CÍRCULOS (VRDE CLUB & RED ELEMENTALES)
 // =========================================================================
 // Este módulo implementa la "Facultad de Círculo" para autogestión de compras colectivas.
-// Permite que familias y vecinos se organicen en Círculos barriales para pedir juntos,
-// dejando la gestión del pedido y la entrega a cargo de quien pide (el coordinador del círculo),
-// aliviando la logística del nodo y fortaleciendo la economía de confianza barrial.
+// Permite que familias y vecinos se organicen en Círculos barriales para pedir juntos
+// cajones agroecológicos de Central Cooperativa Chasqui al costo directo de productor campesino,
+// dejando la gestión del pedido y la entrega a cargo de quien pide (el coordinador del círculo).
 
 const INITIAL_CIRCULOS = [
   // Círculos de Nodo Loma Verde (Escobar)
   {
     id: 'circulo-lv-losrobles',
+    slug: 'los-robles',
     nodoId: 'nodo-lomaverde',
     nombre: 'Círculo Los Robles (Loma Verde Norte)',
     coordinador: 'Mariana Robles',
     telefono: '5491155443322',
     direccion: 'Calle Los Robles 450, Loma Verde',
-    descripcion: 'Familias de Los Robles que compran juntas en VRDE Club. El pedido llega consolidado y se retira en el punto de encuentro.',
+    descripcion: 'Familias de Los Robles que compran juntas cajones mayoristas de Chasqui. El pedido llega consolidado y se reparte en el punto barrial.',
     frecuencia: 'Semanal (Miércoles)',
     miembros: [
       { nombre: 'Mariana Robles (Coordinadora)', rol: 'coordinador' },
@@ -24,61 +25,98 @@ const INITIAL_CIRCULOS = [
       { nombre: 'Martín Huerta', rol: 'miembro' }
     ],
     pedidos: [
-      { id: 'ped-circ-01', vecino: 'Familia Rossi', items: '1x Bolsón Huerta, 1x Huevos Pastoriles', total: 12700, estado: 'Listo para consolidar' },
-      { id: 'ped-circ-02', vecino: 'Carlos & Ana', items: '1x Miel Pura 1kg, 2x Pan Masa Madre', total: 11900, estado: 'Listo para consolidar' },
-      { id: 'ped-circ-03', vecino: 'Mariana Robles', items: '1x Bolsón Huerta, 1x Aceite Oliva', total: 16300, estado: 'Listo para consolidar' }
+      { id: 'ped-circ-01', vecino: 'Familia Rossi', items: '1x Cajón Frutillas 5kg (compartido 2.5kg)', total: 10450, fecha: 'Hoy', estado: 'Listo para consolidar' },
+      { id: 'ped-circ-02', vecino: 'Carlos & Ana', items: '1x Cajón Manzana Cripps 20kg (entero)', total: 43840, fecha: 'Hoy', estado: 'Listo para consolidar' },
+      { id: 'ped-circ-03', vecino: 'Mariana Robles', items: '1x Cajón Naranjas Salustiana 15kg (fraccionado 5kg)', total: 3853, fecha: 'Hoy', estado: 'Listo para consolidar' }
     ]
   },
   {
     id: 'circulo-lv-biohuerta',
+    slug: 'biohuerta',
     nodoId: 'nodo-lomaverde',
     nombre: 'Círculo Bio Huerta Loma Verde (Centro)',
     coordinador: 'Julián Eco',
     telefono: '5491144221199',
     direccion: 'Las Encinas 120, Loma Verde Centro',
-    descripcion: 'Vecinos de la zona centro de Loma Verde coordinando compras comunitarias de alimentos agroecológicos de huerta.',
-    frecuencia: 'Semanal y Lunar',
+    descripcion: 'Vecinos de la zona centro de Loma Verde coordinando compras comunitarias de cajones de verdura y huerta agroecológica.',
+    frecuencia: 'Semanal',
     miembros: [
       { nombre: 'Julián Eco (Coordinador)', rol: 'coordinador' },
       { nombre: 'Clara del Solar', rol: 'miembro' },
       { nombre: 'Esteban B.', rol: 'miembro' }
     ],
     pedidos: [
-      { id: 'ped-circ-04', vecino: 'Clara del Solar', items: '2x Bolsón Huerta, 1x Queso Campo', total: 23200, estado: 'Listo para consolidar' }
+      { id: 'ped-circ-04', vecino: 'Clara del Solar', items: '1x Cajón Tomates Redondos 15kg', total: 21600, fecha: 'Hoy', estado: 'Listo para consolidar' }
     ]
   },
   // Círculos de Nodo La Lucila (Vicente López)
   {
     id: 'circulo-lucila-debenedetti',
+    slug: 'debenedetti',
     nodoId: 'nodo-lucila',
     nombre: 'Círculo Debenedetti (La Lucila)',
     coordinador: 'Patricia Solís',
     telefono: '5491166778811',
     direccion: 'Calle Debenedetti 1420, La Lucila',
-    descripcion: 'Vecinos de Debenedetti y Roma coordinando compras colectivas agroecológicas con entrega barrial.',
+    descripcion: 'Vecinos de Debenedetti y Roma coordinando compras colectivas de cajones de Central Cooperativa Chasqui con retiro barrial.',
     frecuencia: 'Semanal',
     miembros: [
       { nombre: 'Patricia Solís (Coordinadora)', rol: 'coordinador' },
       { nombre: 'Lucía Gómez', rol: 'miembro' }
     ],
     pedidos: [
-      { id: 'ped-circ-05', vecino: 'Lucía Gómez', items: '1x Bolsón Huerta, 1x Miel Pura 1kg', total: 14700, estado: 'Listo para consolidar' }
+      { id: 'ped-circ-05', vecino: 'Lucía Gómez', items: '1x Cajón Zapallitos 15kg (fraccionado 5kg)', total: 16790, fecha: 'Hoy', estado: 'Listo para consolidar' }
     ]
+  },
+  // Círculo Piloto Central Cooperativa Chasqui
+  {
+    id: 'circulo-chasqui-piloto',
+    slug: 'central-chasqui',
+    nodoId: 'nodo-cooperativa',
+    nombre: 'Círculo Piloto Central Cooperativa Chasqui',
+    coordinador: 'Coordinación Chasqui ESSP',
+    telefono: '5491123456789',
+    direccion: 'Central Mayorista Chasqui & Quintas Asociadas',
+    descripcion: 'Círculo piloto abierto para compras colectivas de los 30 cajones de quinta. Pedí el cajón completo o dividilo en círculo al costo directo.',
+    frecuencia: 'Semanal',
+    miembros: [
+      { nombre: 'Coordinación Chasqui (Coordinador)', rol: 'coordinador' },
+      { nombre: 'Vecinos Red', rol: 'miembro' }
+    ],
+    pedidos: []
   }
 ];
 
 const CirculosManager = {
   getAllCircles() {
     const saved = localStorage.getItem('elementales_circulos');
+    let list = [...INITIAL_CIRCULOS];
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          list = parsed;
+          // Asegurar que exista el círculo piloto chasqui
+          if (!list.some(c => c.id === 'circulo-chasqui-piloto' || c.slug === 'central-chasqui')) {
+            const chasquiPilot = INITIAL_CIRCULOS.find(c => c.id === 'circulo-chasqui-piloto');
+            if (chasquiPilot) list.push(chasquiPilot);
+          }
+        }
       } catch (e) {
         console.error('Error parseando círculos:', e);
       }
     }
-    return [...INITIAL_CIRCULOS];
+    // Asegurar slugs en todos los círculos
+    list.forEach(c => {
+      if (!c.slug) {
+        c.slug = (c.nombre || c.id)
+          .toLowerCase()
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+      }
+    });
+    return list;
   },
 
   saveCircles(circles) {
@@ -87,12 +125,19 @@ const CirculosManager = {
 
   getCirclesByNode(nodeId) {
     const all = this.getAllCircles();
+    if (!nodeId || nodeId === 'todos') return all;
     return all.filter(c => c.nodoId === nodeId || (!c.nodoId && nodeId === 'nodo-lucila'));
   },
 
-  getCircle(id) {
+  getCircle(idOrSlug) {
+    if (!idOrSlug) return null;
     const all = this.getAllCircles();
-    return all.find(c => c.id === id);
+    const query = String(idOrSlug).toLowerCase().trim();
+    return all.find(c => 
+      c.id.toLowerCase() === query || 
+      (c.slug && c.slug.toLowerCase() === query) ||
+      c.nombre.toLowerCase().includes(query)
+    );
   },
 
   getActiveCircleId() {
@@ -107,17 +152,36 @@ const CirculosManager = {
     }
   },
 
+  getShareUrl(circleId) {
+    const circle = this.getCircle(circleId);
+    if (!circle) return window.location.href;
+    let base = window.location.origin + window.location.pathname;
+    if (!window.location.origin || window.location.origin === 'null') {
+      base = window.location.href.split('?')[0].split('#')[0];
+    }
+    const param = circle.slug || circle.id;
+    return `${base}?c=${param}`;
+  },
+
   createCircle(data) {
     const all = this.getAllCircles();
-    const newId = 'circulo-' + (data.nodoId === 'nodo-lomaverde' ? 'lv-' : 'lucila-') + Date.now().toString(36);
+    const slugBase = (data.nombre || 'circulo')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+    const newId = 'circulo-' + Date.now().toString(36);
+    const slug = slugBase || newId;
+
     const newCircle = {
       id: newId,
-      nodoId: data.nodoId || 'nodo-lomaverde',
+      slug: slug,
+      nodoId: data.nodoId || 'nodo-cooperativa',
       nombre: data.nombre,
       coordinador: data.coordinador,
       telefono: data.telefono || '',
       direccion: data.direccion,
-      descripcion: data.descripcion || '',
+      descripcion: data.descripcion || 'Círculo de compra colectiva de cajones Chasqui.',
       frecuencia: data.frecuencia || 'Semanal',
       miembros: [
         { nombre: `${data.coordinador} (Coordinador/a)`, rol: 'coordinador' }
@@ -132,30 +196,30 @@ const CirculosManager = {
 
   joinCircle(circleId, memberName) {
     const all = this.getAllCircles();
-    const circle = all.find(c => c.id === circleId);
+    const circle = this.getCircle(circleId);
     if (!circle) return false;
 
-    const name = memberName || AppState.userName || 'Vecino/a';
+    const name = memberName || (typeof AppState !== 'undefined' && AppState.userName) || 'Vecino/a';
     const exists = (circle.miembros || []).some(m => m.nombre === name);
     if (!exists) {
       if (!circle.miembros) circle.miembros = [];
       circle.miembros.push({ nombre: name, rol: 'miembro' });
       this.saveCircles(all);
     }
-    this.setActiveCircleId(circleId);
+    this.setActiveCircleId(circle.id);
     return true;
   },
 
   addOrderToCircle(circleId, orderData) {
     const all = this.getAllCircles();
-    const circle = all.find(c => c.id === circleId);
+    const circle = all.find(c => c.id === circleId || c.slug === circleId);
     if (!circle) return false;
 
     if (!circle.pedidos) circle.pedidos = [];
     const newOrder = {
       id: 'ped-circ-' + Date.now().toString(36),
-      vecino: orderData.clientName || AppState.userName || 'Vecino/a',
-      items: orderData.itemsSummary || 'Varios productos',
+      vecino: orderData.clientName || (typeof AppState !== 'undefined' && AppState.userName) || 'Vecino/a',
+      items: orderData.itemsSummary || 'Cajón Chasqui',
       total: orderData.totalAmount || 0,
       fecha: new Date().toLocaleDateString('es-AR'),
       estado: 'Listo para consolidar'
@@ -172,12 +236,12 @@ const CirculosManager = {
     const pedidos = circle.pedidos || [];
     const totalGral = pedidos.reduce((acc, p) => acc + (p.total || 0), 0);
 
-    let text = `🌿 *PEDIDO CONSOLIDADO CÍRCULO: ${circle.nombre.toUpperCase()}*\n`;
-    text += `📍 *Punto de Entrega:* ${circle.direccion}\n`;
+    let text = `📦 *PEDIDO CONSOLIDADO CÍRCULO: ${circle.nombre.toUpperCase()}*\n`;
+    text += `📍 *Punto de Retiro:* ${circle.direccion}\n`;
     text += `👤 *Coordinador/a:* ${circle.coordinador} (${circle.telefono})\n`;
     text += `📅 *Frecuencia:* ${circle.frecuencia}\n`;
     text += `------------------------------------\n`;
-    text += `👥 *DESGLOSE DE VECINOS (${pedidos.length} pedidos):*\n\n`;
+    text += `👥 *DESGLOSE DE VECINOS (${pedidos.length} pedidos sumados):*\n\n`;
 
     pedidos.forEach((p, idx) => {
       text += `*${idx + 1}. ${p.vecino}* ($${p.total.toLocaleString('es-AR')}):\n`;
@@ -185,8 +249,8 @@ const CirculosManager = {
     });
 
     text += `------------------------------------\n`;
-    text += `💰 *TOTAL A ABONAR A LA RED / NODO:* $${totalGral.toLocaleString('es-AR')}\n\n`;
-    text += `_La gestión del retiro y reparto interno queda a cargo del Círculo ${circle.nombre}._`;
+    text += `💰 *TOTAL A CONSOLIDAR CON CHASQUI:* $${totalGral.toLocaleString('es-AR')}\n\n`;
+    text += `_Pedido coordinado desde la plataforma Elementales & Central Cooperativa Chasqui._`;
 
     return text;
   },
@@ -194,14 +258,28 @@ const CirculosManager = {
   generateShareText(circleId) {
     const circle = this.getCircle(circleId);
     if (!circle) return '';
-    const origin = window.location.origin;
-    const url = `${origin}/?nodo=${circle.nodoId === 'nodo-lomaverde' ? 'lomaverde' : 'lucila'}&circulo=${circle.id}`;
+    const url = this.getShareUrl(circle.id);
 
-    let text = `🌱 *¡Sumate a nuestro Círculo de Compra Colectiva en Elementales / VRDE Club!* 🌱\n\n`;
-    text += `Estamos pidiendo juntos en el *${circle.nombre}* para recibir bolsones agroecológicos y compras comunitarias al costo en:\n`;
-    text += `📍 *${circle.direccion}*\n\n`;
-    text += `👉 Entrá acá para armar tu pedido y sumarlo a nuestro círculo:\n${url}\n\n`;
-    text += `_La gestión del pedido y retiro queda a cargo de nuestro grupo de vecinos._`;
+    let text = `📦 *¡Sumate al pedido de cajones de ${circle.nombre}!* 🌿\n\n`;
+    text += `Estamos pidiendo juntos cajones agroecológicos de *Central Cooperativa Chasqui* al costo directo de productor campesino.\n\n`;
+    text += `📍 *Retiro en:* ${circle.direccion}\n`;
+    text += `👤 *Coordina:* ${circle.coordinador}\n\n`;
+    text += `👉 *Entrá acá a la tienda de nuestro Círculo para sumar tu cajón o tus kilos:*\n${url}\n\n`;
+    text += `_Pedí cajón entero o dividilo con nosotros. ¡Avisale a más vecinos para cerrar los cajones!_`;
+    return text;
+  },
+
+  generateNotifyOrderText(circleId, order) {
+    const circle = this.getCircle(circleId);
+    if (!circle) return '';
+    const url = this.getShareUrl(circle.id);
+
+    let text = `🎉 *¡Hola! Ya sumé mi pedido al Círculo ${circle.nombre}!*\n\n`;
+    text += `👤 *Vecino/a:* ${order.clientName}\n`;
+    text += `📦 *Detalle:* ${order.items.map(i => `${i.qty}x ${i.name}`).join(', ')}\n`;
+    text += `💰 *Total:* $${(order.total || 0).toLocaleString('es-AR')}\n`;
+    text += `📍 *Retiro acordado:* ${circle.direccion}\n\n`;
+    text += `👉 *Si querés sumarte a pedir en nuestro Círculo, entrá acá:*\n${url}`;
     return text;
   }
 };
