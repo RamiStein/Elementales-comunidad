@@ -5125,6 +5125,14 @@ function enterCircleStore(circleId) {
   AppState.catalogMode = 'semanal'; // En círculos no se usa modo local
   sessionStorage.setItem('elementales_authenticated', 'true');
   
+  // Actualizar la URL en la barra de direcciones del navegador
+  try {
+    const shareUrl = CirculosManager.getShareUrl(circle.id);
+    if (window.history && window.history.pushState) {
+      window.history.pushState({ circuloId: circle.id }, '', shareUrl);
+    }
+  } catch (e) {}
+
   updateNodeUI();
   updateRoleUI();
   navigateTo('tierra');
@@ -5137,10 +5145,15 @@ function renderCirculoStoreBanner() {
   const banner = document.getElementById('banner-circulo-activo');
   const headerIndicator = document.getElementById('header-circulo-indicator');
   const headerName = document.getElementById('header-circulo-name');
+  const headerSlug = document.getElementById('header-circulo-slug-preview');
+  const genericHeader = document.getElementById('tierra-generic-header');
+  const subnavTabs = document.getElementById('tierra-subnav-tabs');
   
   if (typeof CirculosManager === 'undefined') {
     if (banner) banner.classList.add('hidden');
     if (headerIndicator) headerIndicator.classList.add('hidden');
+    if (genericHeader) genericHeader.classList.remove('hidden');
+    if (subnavTabs) subnavTabs.classList.remove('hidden');
     return;
   }
 
@@ -5170,13 +5183,19 @@ function renderCirculoStoreBanner() {
       }
     }
 
+    if (genericHeader) genericHeader.classList.add('hidden');
+    if (subnavTabs) subnavTabs.classList.add('hidden');
+
     if (headerIndicator && headerName) {
       headerIndicator.classList.remove('hidden');
       headerName.textContent = circle.nombre;
+      if (headerSlug) headerSlug.textContent = `?c=${circle.slug || circle.id}`;
     }
   } else {
     if (banner) banner.classList.add('hidden');
     if (headerIndicator) headerIndicator.classList.add('hidden');
+    if (genericHeader) genericHeader.classList.remove('hidden');
+    if (subnavTabs) subnavTabs.classList.remove('hidden');
   }
 }
 
@@ -5184,6 +5203,12 @@ function exitCircleMode() {
   if (typeof CirculosManager !== 'undefined') {
     CirculosManager.setActiveCircleId(null);
   }
+  try {
+    if (window.history && window.history.replaceState) {
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
+    }
+  } catch (e) {}
   renderCirculoStoreBanner();
   populateCheckoutCirculos();
   renderOrderCatalog();
@@ -5365,6 +5390,13 @@ function saveCustomCircleSlug() {
   // Actualizar el input del link principal
   const mainInput = document.getElementById('share-circulo-link-input');
   if (mainInput) mainInput.value = res.url;
+
+  // Actualizar la URL en la barra de direcciones del navegador
+  try {
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({ circuloId: res.circle.id }, '', res.url);
+    }
+  } catch (e) {}
 
   // Actualizar feedback
   if (feedback) {
