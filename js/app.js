@@ -638,6 +638,37 @@ function navigateTo(viewName) {
 
   AppState.currentView = viewName;
 
+  // Sincronizar URL limpia en la barra del navegador según la vista activa
+  try {
+    localStorage.setItem('elementales_current_view', viewName);
+    if (window.history && window.history.replaceState) {
+      const nodeSlug = (AppState.activeNodeId || 'nodo-lucila').replace(/^nodo-/, '');
+      if (viewName === 'landing') {
+        window.history.replaceState({}, '', '/');
+      } else if (viewName === 'barrio') {
+        // En el Home del nodo, la URL es siempre la del nodo (/lomaverde, /lucila, /cooperativa)
+        // y se limpia cualquier círculo de la barra para que no quede pegado
+        if (typeof CirculosManager !== 'undefined') {
+          CirculosManager.setActiveCircleId(null);
+        }
+        window.history.replaceState({ nodeId: AppState.activeNodeId }, '', '/' + nodeSlug);
+        renderCirculoStoreBanner();
+      } else if (viewName === 'circulos') {
+        window.history.replaceState({ view: 'circulos' }, '', '/' + nodeSlug + '?seccion=circulos');
+      } else if (viewName === 'tierra') {
+        const activeCId = typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null;
+        const activeC = activeCId ? CirculosManager.getCircle(activeCId) : null;
+        if (activeC) {
+          window.history.replaceState({ circuloId: activeC.id }, '', '/' + (activeC.slug || activeC.id));
+        } else {
+          window.history.replaceState({ nodeId: AppState.activeNodeId }, '', '/' + nodeSlug);
+        }
+      } else {
+        window.history.replaceState({ nodeId: AppState.activeNodeId }, '', '/' + nodeSlug);
+      }
+    }
+  } catch (e) {}
+
   // Actualizar estado de las pestañas en la barra Google Subnav
   document.querySelectorAll('.google-tab-btn').forEach(btn => {
     btn.classList.remove('active');
@@ -2342,16 +2373,46 @@ function selectLandingNode(nodeId) {
   AppState.selectedLandingNode = nodeId;
   sounds.playPop();
 
+  const nodeShortName = nodeId === 'nodo-lomaverde' ? 'Loma Verde' : (nodeId === 'nodo-cooperativa' ? 'Central Chasqui' : 'La Lucila');
+
+  // Actualizar título dinámico de Paso 2
+  const step2Title = document.getElementById('landing-step2-node-name');
+  if (step2Title) {
+    step2Title.textContent = nodeShortName;
+  }
+
+  // Actualizar textos de botones con el nombre del nodo
+  const btnVisitante = document.getElementById('landing-btn-visitante-text');
+  if (btnVisitante) {
+    btnVisitante.textContent = `Ingresar a ${nodeShortName} →`;
+  }
+  const btnSocio = document.getElementById('landing-btn-socio-text');
+  if (btnSocio) {
+    btnSocio.textContent = `Ingresar como Socio a ${nodeShortName} →`;
+  }
+
+  // Actualizar selección visual de tarjetas y checkmarks
   ['nodo-lucila', 'nodo-lomaverde', 'nodo-cooperativa'].forEach(id => {
     const el = document.getElementById(`landing-node-${id}`);
+    const checkEl = document.getElementById(`landing-node-check-${id}`);
     if (el) {
       if (id === nodeId) {
-        el.className = 'p-3.5 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 cursor-pointer transition-all flex items-start gap-2.5 shadow-xs ring-2 ring-emerald-500/20';
+        el.className = 'p-3.5 rounded-2xl border-2 border-emerald-600 bg-emerald-50/60 cursor-pointer transition-all flex items-start gap-2.5 shadow-sm ring-2 ring-emerald-500/20 relative';
+        if (checkEl) checkEl.classList.remove('hidden');
       } else {
-        el.className = 'p-3.5 rounded-2xl border-2 border-stone-200 hover:border-emerald-500 bg-white cursor-pointer transition-all flex items-start gap-2.5 shadow-xs';
+        el.className = 'p-3.5 rounded-2xl border-2 border-stone-200 hover:border-emerald-500 bg-white cursor-pointer transition-all flex items-start gap-2.5 shadow-xs relative';
+        if (checkEl) checkEl.classList.add('hidden');
       }
     }
   });
+
+  // Sincronizar URL para reflejar el nodo elegido sin recargar
+  try {
+    const nodeSlug = nodeId.replace(/^nodo-/, '');
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({ nodeId: nodeId }, '', '/' + nodeSlug);
+    }
+  } catch (e) {}
 }
 
 function loginFromLanding(role) {
@@ -2370,16 +2431,23 @@ function loginFromLanding(role) {
   }
   localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
 
+  // Asegurar que al ingresar al nodo no quede ningún círculo viejo como activo
+  if (typeof CirculosManager !== 'undefined') {
+    CirculosManager.setActiveCircleId(null);
+  }
+
   sounds.playSuccess();
   updateRoleUI();
   updateNodeUI();
 
+  // Sincronizar URL limpia del nodo
+  const nodeSlug = targetNode.replace(/^nodo-/, '');
   try {
-    const nodeSlug = targetNode.replace(/^nodo-/, '');
     if (window.history && window.history.replaceState) {
       window.history.replaceState({ nodeId: targetNode }, '', '/' + nodeSlug);
     }
   } catch (e) {}
+
   navigateTo('barrio');
 }
 
@@ -2389,8 +2457,22 @@ function openAdminPinModal() {
     AppState.activeNodeId = targetNode;
     localStorage.setItem('elementales_active_node', targetNode);
     sessionStorage.setItem('elementales_authenticated', 'true');
+
+    if (typeof CirculosManager !== 'undefined') {
+      CirculosManager.setActiveCircleId(null);
+    }
+
+    sounds.playSuccess();
     updateRoleUI();
     updateNodeUI();
+
+    const nodeSlug = targetNode.replace(/^nodo-/, '');
+    try {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({ nodeId: targetNode }, '', '/' + nodeSlug);
+      }
+    } catch (e) {}
+
     navigateTo('barrio');
   });
 }
@@ -2398,6 +2480,17 @@ function openAdminPinModal() {
 function goToLanding() {
   sounds.playPop();
   sessionStorage.removeItem('elementales_authenticated');
+  
+  if (typeof CirculosManager !== 'undefined') {
+    CirculosManager.setActiveCircleId(null);
+  }
+
+  try {
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, '', '/');
+    }
+  } catch (e) {}
+
   AppState.selectedLandingNode = AppState.activeNodeId || 'nodo-lucila';
   navigateTo('landing');
   selectLandingNode(AppState.selectedLandingNode);
@@ -4108,9 +4201,15 @@ document.addEventListener('DOMContentLoaded', () => {
     updateNodeUI();
     navigateTo('barrio');
   } else if (!isAuth) {
+    if (typeof CirculosManager !== 'undefined') {
+      CirculosManager.setActiveCircleId(null);
+    }
     navigateTo('landing');
     selectLandingNode(AppState.activeNodeId || 'nodo-lucila');
   } else {
+    if (typeof CirculosManager !== 'undefined' && !circuloParam) {
+      CirculosManager.setActiveCircleId(null);
+    }
     navigateTo('barrio');
     renderCirculoStoreBanner();
   }
