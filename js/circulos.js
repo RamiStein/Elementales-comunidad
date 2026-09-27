@@ -68,7 +68,7 @@ const INITIAL_CIRCULOS = [
       { id: 'ped-circ-05', vecino: 'Lucía Gómez', items: '1x Cajón Zapallitos 15kg (fraccionado 5kg)', total: 16790, fecha: 'Hoy', estado: 'Listo para consolidar' }
     ]
   },
-  // Círculo Piloto Central Cooperativa Chasqui
+  // Círculos de Central Cooperativa Chasqui (Mayorista)
   {
     id: 'circulo-chasqui-piloto',
     slug: 'central-chasqui',
@@ -84,6 +84,55 @@ const INITIAL_CIRCULOS = [
       { nombre: 'Vecinos Red', rol: 'miembro' }
     ],
     pedidos: []
+  },
+  {
+    id: 'circulo-chasqui-oeste',
+    slug: 'moreno-quintas',
+    nodoId: 'nodo-cooperativa',
+    nombre: 'Círculo Mayorista Moreno & Quintas Oeste',
+    coordinador: 'Martín Quintas',
+    telefono: '5491122334455',
+    direccion: 'Ruta 24 km 45, Moreno (Galpón Mayorista)',
+    descripcion: 'Familias y almacenes autogestionando compras de cajones agroecológicos directos de quinta Chasqui.',
+    frecuencia: 'Semanal (Jueves)',
+    miembros: [
+      { nombre: 'Martín Quintas (Coordinador)', rol: 'coordinador' },
+      { nombre: 'Cooperativa Unión', rol: 'miembro' }
+    ],
+    pedidos: []
+  },
+  {
+    id: 'circulo-chasqui-sur',
+    slug: 'chasqui-sur',
+    nodoId: 'nodo-cooperativa',
+    nombre: 'Círculo Fraccionamiento Chasqui Sur',
+    coordinador: 'Camila Huerta',
+    telefono: '5491199887766',
+    direccion: 'Punto de Distribución Sur Chasqui',
+    descripcion: 'Círculo de compra mayorista de cajones de cítricos y verduras pesadas.',
+    frecuencia: 'Semanal',
+    miembros: [
+      { nombre: 'Camila Huerta (Coordinadora)', rol: 'coordinador' },
+      { nombre: 'Red Vecinal Sur', rol: 'miembro' }
+    ],
+    pedidos: []
+  },
+  // Círculo Adicional de Nodo La Lucila
+  {
+    id: 'circulo-lucila-rawson',
+    slug: 'vecinos-rawson',
+    nodoId: 'nodo-lucila',
+    nombre: 'Círculo Vecinos Rawson & Roma (La Lucila)',
+    coordinador: 'Santiago M.',
+    telefono: '5491144332211',
+    direccion: 'Rawson 3450, La Lucila',
+    descripcion: 'Vecinos de la cuadra coordinando compras de cajones con entrega en el Centro Comunitario.',
+    frecuencia: 'Semanal (Viernes)',
+    miembros: [
+      { nombre: 'Santiago M. (Coordinador)', rol: 'coordinador' },
+      { nombre: 'Laura V.', rol: 'miembro' }
+    ],
+    pedidos: []
   }
 ];
 
@@ -96,18 +145,27 @@ const CirculosManager = {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
           list = parsed;
-          // Asegurar que exista el círculo piloto chasqui
-          if (!list.some(c => c.id === 'circulo-chasqui-piloto' || c.slug === 'central-chasqui')) {
-            const chasquiPilot = INITIAL_CIRCULOS.find(c => c.id === 'circulo-chasqui-piloto');
-            if (chasquiPilot) list.push(chasquiPilot);
-          }
+          // Asegurar que todos los círculos predeterminados estén presentes y con su nodoId correcto
+          INITIAL_CIRCULOS.forEach(initC => {
+            const existing = list.find(c => c.id === initC.id || c.slug === initC.slug);
+            if (!existing) {
+              list.push(initC);
+            } else {
+              if (existing.nodoId !== initC.nodoId) {
+                existing.nodoId = initC.nodoId;
+              }
+            }
+          });
         }
       } catch (e) {
         console.error('Error parseando círculos:', e);
       }
     }
-    // Asegurar slugs en todos los círculos
+    // Asegurar nodoId y slugs en todos los círculos
     list.forEach(c => {
+      if (!c.nodoId) {
+        c.nodoId = 'nodo-lomaverde';
+      }
       if (!c.slug) {
         c.slug = (c.nombre || c.id)
           .toLowerCase()
@@ -165,14 +223,14 @@ const CirculosManager = {
     base = base.replace(/\/+$/, '');
     const slug = circle.slug || circle.id;
 
-    // Si es un círculo predeterminado del sistema, URL 100% limpia sin signos: https://elementales.store/los-robles
+    // URL estructurada con prefijo /circulo/ para compartir claramente
     const isInitial = INITIAL_CIRCULOS.some(c => c.id === circle.id || c.slug === circle.slug);
     if (isInitial) {
-      return `${base}/${slug}`;
+      return `${base}/circulo/${slug}`;
     }
 
     // Para círculos autogestionados por usuarios:
-    // La URL base es limpia (ej: https://elementales.store/mibarrio) y le adjuntamos metadatos de coordinación para WhatsApp
+    // La URL base es con prefijo /circulo/: (ej: https://elementales.store/circulo/mibarrio) y le adjuntamos metadatos de coordinación para WhatsApp
     const params = new URLSearchParams();
     if (circle.nombre) params.set('n', circle.nombre);
     if (circle.coordinador) params.set('coord', circle.coordinador);
@@ -181,7 +239,7 @@ const CirculosManager = {
     if (circle.nodoId) params.set('nodo', circle.nodoId);
 
     const query = params.toString();
-    return query ? `${base}/${slug}?${query}` : `${base}/${slug}`;
+    return query ? `${base}/circulo/${slug}?${query}` : `${base}/circulo/${slug}`;
   },
 
   registerCircleFromParams(urlParams) {
@@ -290,9 +348,9 @@ const CirculosManager = {
 
     if (!cleanSlug) return { success: false, error: 'El nombre de enlace sólo puede contener letras, números y guiones.' };
 
-    const RESERVED = ['lomaverde', 'lucila', 'cooperativa', 'chasqui', 'nodo-lomaverde', 'nodo-lucila', 'nodo-cooperativa', 'admin', 'api', 'index', 'css', 'js', 'public'];
+    const RESERVED = ['nodo', 'circulo', 'lomaverde', 'lucila', 'cooperativa', 'chasqui', 'nodo-lomaverde', 'nodo-lucila', 'nodo-cooperativa', 'admin', 'api', 'index', 'css', 'js', 'public'];
     if (RESERVED.includes(cleanSlug)) {
-      return { success: false, error: `El enlace "/${cleanSlug}" está reservado para la navegación del sistema. Elegí otro nombre.` };
+      return { success: false, error: `El enlace "/circulo/${cleanSlug}" está reservado para la navegación del sistema. Elegí otro nombre.` };
     }
 
     const duplicate = all.find(c => c.slug === cleanSlug && c.id !== circle.id);

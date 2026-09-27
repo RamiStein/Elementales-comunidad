@@ -403,18 +403,18 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
       
       <!-- Tarjeta 1: Tienda & Cosecha Semanal -->
-      <div onclick="navigateTo('tierra')" class="p-5 rounded-3xl bg-white border border-stone-200 hover:border-[#8ca15d] shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+      <div id="barrio-card-tierra" onclick="navigateTo('tierra')" class="p-5 rounded-3xl bg-white border border-stone-200 hover:border-[#8ca15d] shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between gap-2 mb-2">
-            <span class="text-xs font-black uppercase tracking-wider text-[#8ca15d] bg-[#f4f6ef] px-2.5 py-0.5 rounded-full border border-[#c2d49e]/40">
+            <span id="barrio-card-tierra-badge" class="text-xs font-black uppercase tracking-wider text-[#8ca15d] bg-[#f4f6ef] px-2.5 py-0.5 rounded-full border border-[#c2d49e]/40">
               🌱 Elemento Tierra
             </span>
             <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Pedidos Abiertos</span>
           </div>
-          <h3 class="font-black text-base text-stone-900 group-hover:text-[#8ca15d] transition-colors">
+          <h3 id="barrio-card-tierra-title" class="font-black text-base text-stone-900 group-hover:text-[#8ca15d] transition-colors">
             Tienda Comunitaria & Cosecha Fresca
           </h3>
-          <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+          <p id="barrio-card-tierra-desc" class="text-xs text-stone-500 mt-1 leading-relaxed">
             Bolsones de verduras agroecológicas, panadería de masa madre, quesos de campo y almacén de cooperativas.
           </p>
         </div>
@@ -425,18 +425,18 @@
       </div>
 
       <!-- Tarjeta 2: Círculos o Comunidad -->
-      <div onclick="navigateTo('circulos')" class="p-5 rounded-3xl bg-white border border-stone-200 hover:border-emerald-500 shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+      <div id="barrio-card-circulos" onclick="navigateTo('circulos')" class="p-5 rounded-3xl bg-white border border-stone-200 hover:border-emerald-500 shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between gap-2 mb-2">
-            <span class="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
+            <span id="barrio-card-circulos-badge" class="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
               🌀 Círculos VRDE
             </span>
             <span class="text-xs font-bold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">Autogestión</span>
           </div>
-          <h3 class="font-black text-base text-stone-900 group-hover:text-emerald-700 transition-colors">
+          <h3 id="barrio-card-circulos-title" class="font-black text-base text-stone-900 group-hover:text-emerald-700 transition-colors">
             Círculos de Compra Colectiva
           </h3>
-          <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+          <p id="barrio-card-circulos-desc" class="text-xs text-stone-500 mt-1 leading-relaxed">
             Comprá junto a familias y amigos de tu cuadra para autogestionar el retiro barrial al costo directo de productor.
           </p>
         </div>
@@ -449,27 +449,27 @@
     </div>
 
     <!-- Acceso rápido a los otros 4 elementos (Mini Grid Limpio) -->
-    <div class="mt-8 pt-6 border-t border-stone-200">
+    <div id="barrio-dimensiones-section" class="mt-8 pt-6 border-t border-stone-200">
       <h3 class="font-black text-xs uppercase tracking-wider text-stone-500 mb-3">
         Explorar Dimensiones del Nodo
       </h3>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-        <button onclick="navigateTo('agua')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#7ca1b5] text-left transition-all group shadow-2xs">
+        <button id="barrio-btn-agua" onclick="navigateTo('agua')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#7ca1b5] text-left transition-all group shadow-2xs">
           <span class="text-xl block mb-1">💧</span>
           <span class="font-black text-xs text-stone-900 group-hover:text-[#7ca1b5] block">Agua</span>
           <span class="text-[10px] text-stone-500">Oficios & LinkedIn</span>
         </button>
-        <button onclick="navigateTo('fuego')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#d97757] text-left transition-all group shadow-2xs">
+        <button id="barrio-btn-fuego" onclick="navigateTo('fuego')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#d97757] text-left transition-all group shadow-2xs">
           <span class="text-xl block mb-1">🔥</span>
           <span class="font-black text-xs text-stone-900 group-hover:text-[#d97757] block">Fuego</span>
           <span class="text-[10px] text-stone-500">E-Learning & Saberes</span>
         </button>
-        <button onclick="navigateTo('aire')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#aab091] text-left transition-all group shadow-2xs">
+        <button id="barrio-btn-aire" onclick="navigateTo('aire')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#aab091] text-left transition-all group shadow-2xs">
           <span class="text-xl block mb-1">💨</span>
           <span class="font-black text-xs text-stone-900 group-hover:text-stone-700 block">Aire</span>
           <span class="text-[10px] text-stone-500">Red Social & Podcasts</span>
         </button>
-        <button onclick="navigateTo('eter')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#c0826d] text-left transition-all group shadow-2xs">
+        <button id="barrio-btn-eter" onclick="navigateTo('eter')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#c0826d] text-left transition-all group shadow-2xs">
           <span class="text-xl block mb-1">✨</span>
           <span class="font-black text-xs text-stone-900 group-hover:text-[#a6634f] block">Éter</span>
           <span class="text-[10px] text-stone-500">Mi Portal & Gestión</span>
@@ -708,7 +708,7 @@
             🏪 Local / Feria
           </span>
         </div>
-        <div class="grid grid-cols-3 gap-2">
+        <div id="catalog-modes-grid" class="grid grid-cols-3 gap-2">
           <button onclick="setCatalogMode('local')" id="btn-mode-local" class="mode-btn active">
             <span class="text-lg">🏪</span>
             <span class="font-extrabold text-xs">Local</span>
@@ -4595,17 +4595,17 @@
     <!-- FILTRO POR NODO -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
       <div class="flex items-center gap-2 overflow-x-auto pb-1" id="circulos-node-filter-tabs">
-        <button onclick="filterCirculosByNode('todos')" id="circulos-filter-todos" class="element-subtab-btn active shrink-0">
-          Todos los Nodos
-        </button>
         <button onclick="filterCirculosByNode('nodo-cooperativa')" id="circulos-filter-cooperativa" class="element-subtab-btn shrink-0">
           📦 Central Chasqui (Mayorista)
         </button>
         <button onclick="filterCirculosByNode('nodo-lomaverde')" id="circulos-filter-lomaverde" class="element-subtab-btn shrink-0">
-          📍 Nodo Loma Verde (Escobar)
+          📍 Loma Verde (Escobar)
         </button>
         <button onclick="filterCirculosByNode('nodo-lucila')" id="circulos-filter-lucila" class="element-subtab-btn shrink-0">
-          📍 Nodo La Lucila (Vicente López)
+          📍 La Lucila (Vicente López)
+        </button>
+        <button onclick="filterCirculosByNode('todos')" id="circulos-filter-todos" class="element-subtab-btn shrink-0">
+          🌐 Toda la Red
         </button>
       </div>
 

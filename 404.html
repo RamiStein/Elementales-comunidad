@@ -6,27 +6,55 @@
   <title>Elementales | Red Comunitaria</title>
   <script>
     (function() {
-      // Enrutador inteligente instantáneo para GitHub Pages y URLs limpias (/lomaverde, /lucila, /los-robles, etc.)
+      // Enrutador inteligente instantáneo para GitHub Pages y URLs limpias (/nodo/..., /circulo/..., /lomaverde, etc.)
       var fullPath = (window.location.pathname || '').replace(/^\/+|\/+$/g, '');
       var search = window.location.search || '';
       var hash = window.location.hash || '';
 
-      // Tomar el segmento principal de la ruta
-      var segment = fullPath.split('/')[0].toLowerCase();
+      var parts = fullPath.split('/');
+      var first = (parts[0] || '').toLowerCase();
+      var second = (parts[1] || '').toLowerCase();
 
-      if (segment === 'lomaverde' || segment === 'nodo-lomaverde') {
-        localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
-        window.location.replace('/?nodo=lomaverde' + (hash || ''));
-      } else if (segment === 'lucila' || segment === 'nodo-lucila') {
-        localStorage.setItem('elementales_active_node', 'nodo-lucila');
-        window.location.replace('/?nodo=lucila' + (hash || ''));
-      } else if (segment === 'cooperativa' || segment === 'chasqui' || segment === 'nodo-cooperativa') {
-        localStorage.setItem('elementales_active_node', 'nodo-cooperativa');
-        window.location.replace('/?nodo=cooperativa' + (hash || ''));
-      } else if (segment && !segment.includes('.')) {
-        // Es un Círculo comunitario (ej: /los-robles, /biohuerta, /mibarrio, /ramiro)
+      // Rutas con prefijo /nodo/{slug}
+      if (first === 'nodo' && second) {
         var queryJoin = search ? '&' + search.replace(/^\?/, '') : '';
-        window.location.replace('/?c=' + encodeURIComponent(segment) + queryJoin + (hash || ''));
+        if (second === 'lomaverde' || second === 'nodo-lomaverde') {
+          localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+          window.location.replace('/?nodo=lomaverde' + queryJoin + (hash || ''));
+        } else if (second === 'lucila' || second === 'nodo-lucila') {
+          localStorage.setItem('elementales_active_node', 'nodo-lucila');
+          window.location.replace('/?nodo=lucila' + queryJoin + (hash || ''));
+        } else if (second === 'cooperativa' || second === 'chasqui' || second === 'nodo-cooperativa') {
+          localStorage.setItem('elementales_active_node', 'nodo-cooperativa');
+          window.location.replace('/?nodo=cooperativa' + queryJoin + (hash || ''));
+        } else {
+          localStorage.setItem('elementales_active_node', 'nodo-' + second);
+          window.location.replace('/?nodo=' + encodeURIComponent(second) + queryJoin + (hash || ''));
+        }
+        return;
+      }
+
+      // Rutas con prefijo /circulo/{slug}
+      if (first === 'circulo' && second) {
+        var queryJoin = search ? '&' + search.replace(/^\?/, '') : '';
+        window.location.replace('/?c=' + encodeURIComponent(second) + queryJoin + (hash || ''));
+        return;
+      }
+
+      // Compatibilidad con rutas legacy sin prefijo (/lomaverde, /lucila, /cooperativa)
+      if (first === 'lomaverde' || first === 'nodo-lomaverde') {
+        localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+        window.location.replace('/?nodo=lomaverde' + (search ? '&' + search.replace(/^\?/, '') : '') + (hash || ''));
+      } else if (first === 'lucila' || first === 'nodo-lucila') {
+        localStorage.setItem('elementales_active_node', 'nodo-lucila');
+        window.location.replace('/?nodo=lucila' + (search ? '&' + search.replace(/^\?/, '') : '') + (hash || ''));
+      } else if (first === 'cooperativa' || first === 'chasqui' || first === 'nodo-cooperativa') {
+        localStorage.setItem('elementales_active_node', 'nodo-cooperativa');
+        window.location.replace('/?nodo=cooperativa' + (search ? '&' + search.replace(/^\?/, '') : '') + (hash || ''));
+      } else if (first && !first.includes('.')) {
+        // Círculo legacy (ej: /los-robles)
+        var queryJoin = search ? '&' + search.replace(/^\?/, '') : '';
+        window.location.replace('/?c=' + encodeURIComponent(first) + queryJoin + (hash || ''));
       } else {
         window.location.replace('/' + search + hash);
       }

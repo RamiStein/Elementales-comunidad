@@ -653,7 +653,7 @@ function navigateTo(viewName, updateHistory = true) {
     localStorage.setItem('elementales_current_view', viewName);
     if (window.history) {
       const nodeSlug = (AppState.activeNodeId || 'nodo-lucila').replace(/^nodo-/, '');
-      let targetPath = '/' + nodeSlug;
+      let targetPath = '/nodo/' + nodeSlug;
       let stateObj = { view: viewName, nodeId: AppState.activeNodeId, circuloId: null };
 
       if (viewName === 'landing') {
@@ -663,25 +663,25 @@ function navigateTo(viewName, updateHistory = true) {
         if (typeof CirculosManager !== 'undefined') {
           CirculosManager.setActiveCircleId(null);
         }
-        targetPath = '/' + nodeSlug;
+        targetPath = '/nodo/' + nodeSlug;
         stateObj = { view: 'barrio', nodeId: AppState.activeNodeId, circuloId: null };
         renderCirculoStoreBanner();
       } else if (viewName === 'circulos') {
-        targetPath = '/' + nodeSlug + '?seccion=circulos';
+        targetPath = '/nodo/' + nodeSlug + '?seccion=circulos';
         stateObj = { view: 'circulos', nodeId: AppState.activeNodeId, circuloId: null };
       } else if (viewName === 'tierra') {
         const activeCId = typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null;
         const activeC = activeCId ? CirculosManager.getCircle(activeCId) : null;
         if (activeC) {
           const cSlug = activeC.slug || activeC.id;
-          targetPath = '/' + cSlug;
+          targetPath = '/circulo/' + cSlug;
           stateObj = { view: 'tierra', nodeId: AppState.activeNodeId, circuloId: activeC.id };
         } else {
-          targetPath = '/' + nodeSlug;
+          targetPath = '/nodo/' + nodeSlug;
           stateObj = { view: 'tierra', nodeId: AppState.activeNodeId, circuloId: null };
         }
       } else {
-        targetPath = '/' + nodeSlug;
+        targetPath = '/nodo/' + nodeSlug;
         stateObj = { view: viewName, nodeId: AppState.activeNodeId, circuloId: null };
       }
 
@@ -788,21 +788,59 @@ function renderOrderCatalog() {
 
   const activeCircleId = typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null;
   const isCirculoMode = !!activeCircleId;
+  const activeNode = NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) || NODOS_COMUNIDAD[0];
+  const feats = activeNode.features || { showLocal: true, showSemanal: true, showLunar: true, showCirculos: true };
 
   // Actualizar estado visual de los botones de modo (Local, Semanal, Lunar)
   const modeBadge = document.getElementById('catalog-mode-badge');
   const modeDesc = document.getElementById('catalog-mode-description');
   const btnLocal = document.getElementById('btn-mode-local');
+  const btnSemanal = document.getElementById('btn-mode-semanal');
+  const btnLunar = document.getElementById('btn-mode-lunar');
+  const modesGrid = document.getElementById('catalog-modes-grid');
 
   if (btnLocal) {
-    if (isCirculoMode) {
+    if (isCirculoMode || feats.showLocal === false) {
       btnLocal.classList.add('hidden');
-      if (AppState.catalogMode === 'local') {
-        AppState.catalogMode = 'semanal';
-      }
     } else {
       btnLocal.classList.remove('hidden');
     }
+  }
+
+  if (btnLunar) {
+    if (isCirculoMode || feats.showLunar === false) {
+      btnLunar.classList.add('hidden');
+    } else {
+      btnLunar.classList.remove('hidden');
+    }
+  }
+
+  if (btnSemanal) {
+    if (feats.showSemanal === false) {
+      btnSemanal.classList.add('hidden');
+    } else {
+      btnSemanal.classList.remove('hidden');
+    }
+  }
+
+  // Ajustar columnas de la grilla de modos
+  if (modesGrid) {
+    let visibleModes = 0;
+    if (feats.showLocal !== false && !isCirculoMode) visibleModes++;
+    if (feats.showSemanal !== false) visibleModes++;
+    if (feats.showLunar !== false && !isCirculoMode) visibleModes++;
+    if (visibleModes <= 1) modesGrid.className = 'grid grid-cols-1 gap-2';
+    else if (visibleModes === 2) modesGrid.className = 'grid grid-cols-2 gap-2';
+    else modesGrid.className = 'grid grid-cols-3 gap-2';
+  }
+
+  // Si el modo actual quedó oculto por el nodo, ajustar al modo disponible
+  if (AppState.catalogMode === 'local' && (isCirculoMode || feats.showLocal === false)) {
+    AppState.catalogMode = feats.showSemanal !== false ? 'semanal' : (feats.showLunar !== false ? 'lunar' : 'semanal');
+  } else if (AppState.catalogMode === 'lunar' && (isCirculoMode || feats.showLunar === false)) {
+    AppState.catalogMode = feats.showSemanal !== false ? 'semanal' : (feats.showLocal !== false ? 'local' : 'semanal');
+  } else if (AppState.catalogMode === 'semanal' && feats.showSemanal === false) {
+    AppState.catalogMode = feats.showLocal !== false ? 'local' : (feats.showLunar !== false ? 'lunar' : 'local');
   }
 
   ['local', 'semanal', 'lunar'].forEach(m => {
@@ -817,15 +855,19 @@ function renderOrderCatalog() {
       const circle = CirculosManager.getCircle(activeCircleId);
       modeBadge.textContent = '🤝 ' + (circle ? circle.nombre : 'Círculo Comunitario');
       modeBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300';
-      modeDesc.innerHTML = '📦 <strong>30 Cajones Central Cooperativa Chasqui:</strong> Pedido colectivo al costo directo de productor campesino.';
+      modeDesc.innerHTML = '📦 <strong>Círculo de Compra Colectiva:</strong> Pedido colectivo al costo directo de productor campesino.';
     } else if (AppState.activeNodeId === 'nodo-cooperativa') {
       modeBadge.textContent = '📦 Mayorista Directo Quinta';
       modeBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300';
       modeDesc.innerHTML = '✨ <strong>Central Cooperativa (Chasqui):</strong> Precios directos por cajón cerrado o cuota compartida.';
+    } else if (AppState.activeNodeId === 'nodo-lomaverde') {
+      modeBadge.textContent = '🥬 Semanal VRDE Club';
+      modeBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200';
+      modeDesc.innerHTML = '✨ <strong>Cosecha Semanal de Huerta:</strong> Precios directos con retiro barrial o en Círculos.';
     } else if (AppState.catalogMode === 'local') {
       modeBadge.textContent = '🏪 Local / Feria';
       modeBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-800 border border-stone-200';
-      modeDesc.innerHTML = 'Precios regulares de feria para público visitante.';
+      modeDesc.innerHTML = 'Precios regulares de feria para público visitante en Rawson 3450.';
     } else if (AppState.catalogMode === 'semanal') {
       modeBadge.textContent = '🥬 Semanal (-10% Socio CsC)';
       modeBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200';
@@ -1060,9 +1102,22 @@ function renderOrderCatalog() {
 
 function setCatalogMode(mode) {
   const activeCircleId = typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null;
+  const node = NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) || NODOS_COMUNIDAD[0];
+  const feats = node.features || {};
+
   if (activeCircleId && mode === 'local') {
     mode = 'semanal'; // Los círculos no son locales
   }
+  if (mode === 'local' && feats.showLocal === false) {
+    mode = feats.showSemanal !== false ? 'semanal' : (feats.showLunar !== false ? 'lunar' : 'semanal');
+  }
+  if (mode === 'lunar' && feats.showLunar === false) {
+    mode = feats.showSemanal !== false ? 'semanal' : (feats.showLocal !== false ? 'local' : 'semanal');
+  }
+  if (mode === 'semanal' && feats.showSemanal === false) {
+    mode = feats.showLocal !== false ? 'local' : (feats.showLunar !== false ? 'lunar' : 'local');
+  }
+
   AppState.catalogMode = mode;
   localStorage.setItem('elementales_catalog_mode', mode);
   sounds.playPop();
@@ -2447,12 +2502,18 @@ function loginFromLanding(role) {
   const targetNode = AppState.selectedLandingNode || AppState.activeNodeId || 'nodo-lucila';
   AppState.activeNodeId = targetNode;
   localStorage.setItem('elementales_active_node', targetNode);
+  currentCirculosFilter = targetNode;
 
   AppState.userRole = role;
   localStorage.setItem('elementales_user_role', role);
   sessionStorage.setItem('elementales_authenticated', 'true');
 
-  if (role === 'socio') {
+  const nodeObj = NODOS_COMUNIDAD.find(n => n.id === targetNode);
+  const feats = nodeObj ? (nodeObj.features || {}) : {};
+
+  if (feats.showLocal === false) {
+    AppState.catalogMode = 'semanal';
+  } else if (role === 'socio') {
     AppState.catalogMode = 'semanal';
   } else {
     AppState.catalogMode = 'local';
@@ -2476,6 +2537,7 @@ function openAdminPinModal() {
     const targetNode = AppState.selectedLandingNode || AppState.activeNodeId || 'nodo-lucila';
     AppState.activeNodeId = targetNode;
     localStorage.setItem('elementales_active_node', targetNode);
+    currentCirculosFilter = targetNode;
     sessionStorage.setItem('elementales_authenticated', 'true');
 
     if (typeof CirculosManager !== 'undefined') {
@@ -4144,17 +4206,33 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ta) ta.value = notasGuardadas;
   }
   
-  // Detección de autenticación inicial / hash de admin directo / Círculo compartido (?c=slug o ?circulos o ruta limpia)
+  // Detección de autenticación inicial / hash de admin directo / Círculo compartido (?c=slug o ?circulos o ruta /circulo/... o /nodo/...)
   const urlParams = new URLSearchParams(window.location.search);
-  const circuloParam = urlParams.get('c') || urlParams.get('circulo') || (window.location.hash.includes('c=') ? window.location.hash.split('c=')[1] : null) || (window.location.hash.includes('circulo=') ? window.location.hash.split('circulo=')[1] : null);
-  const isCirculosPilot = urlParams.has('circulos') || window.location.hash === '#circulos';
-  const nodoParam = urlParams.get('nodo');
+  const pathParts = (window.location.pathname || '').replace(/^\/+|\/+$/g, '').split('/');
+  let pathNodo = null;
+  let pathCirculo = null;
+
+  if (pathParts[0] === 'nodo' && pathParts[1]) {
+    pathNodo = pathParts[1];
+  } else if (pathParts[0] === 'circulo' && pathParts[1]) {
+    pathCirculo = pathParts[1];
+  } else if (['lomaverde', 'lucila', 'cooperativa', 'chasqui', 'nodo-lomaverde', 'nodo-lucila', 'nodo-cooperativa'].includes(pathParts[0])) {
+    pathNodo = pathParts[0];
+  } else if (pathParts[0] && !pathParts[0].includes('.')) {
+    pathCirculo = pathParts[0];
+  }
+
+  const circuloParam = urlParams.get('c') || urlParams.get('circulo') || pathCirculo || (window.location.hash.includes('c=') ? window.location.hash.split('c=')[1] : null) || (window.location.hash.includes('circulo=') ? window.location.hash.split('circulo=')[1] : null);
+  const isCirculosPilot = urlParams.has('circulos') || urlParams.get('seccion') === 'circulos' || window.location.hash === '#circulos';
+  const nodoParam = urlParams.get('nodo') || pathNodo;
 
   if (nodoParam) {
     if (nodoParam === 'lomaverde' || nodoParam === 'nodo-lomaverde') AppState.activeNodeId = 'nodo-lomaverde';
-    else if (nodoParam === 'cooperativa' || nodoParam === 'nodo-cooperativa') AppState.activeNodeId = 'nodo-cooperativa';
+    else if (nodoParam === 'cooperativa' || nodoParam === 'chasqui' || nodoParam === 'nodo-cooperativa') AppState.activeNodeId = 'nodo-cooperativa';
     else if (nodoParam === 'lucila' || nodoParam === 'nodo-lucila') AppState.activeNodeId = 'nodo-lucila';
+    else AppState.activeNodeId = nodoParam.startsWith('nodo-') ? nodoParam : 'nodo-' + nodoParam;
     localStorage.setItem('elementales_active_node', AppState.activeNodeId);
+    currentCirculosFilter = AppState.activeNodeId;
   }
 
   if (circuloParam && typeof CirculosManager !== 'undefined') {
@@ -4165,14 +4243,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (found) {
       CirculosManager.setActiveCircleId(found.id);
       AppState.activeNodeId = found.nodoId;
+      currentCirculosFilter = found.nodoId;
       AppState.catalogMode = 'semanal'; // En círculos no se usa modo local
       sessionStorage.setItem('elementales_authenticated', 'true');
 
-      // Limpiar la barra del navegador dejando la ruta ultra limpia: /nombre-circulo
+      // Limpiar la barra del navegador dejando la ruta /circulo/nombre-circulo
       const cleanSlug = found.slug || found.id;
       try {
         if (window.history && window.history.replaceState) {
-          window.history.replaceState({ view: 'tierra', circuloId: found.id, nodeId: found.nodoId }, '', '/' + cleanSlug);
+          window.history.replaceState({ view: 'tierra', circuloId: found.id, nodeId: found.nodoId }, '', '/circulo/' + cleanSlug);
         }
       } catch (e) {}
 
@@ -4255,9 +4334,50 @@ window.addEventListener('popstate', (e) => {
     return;
   }
 
+  const parts = path.split('/');
+
+  // Rutas con prefijo /nodo/...
+  if (parts[0] === 'nodo' && parts[1]) {
+    const nSlug = parts[1];
+    let matchedId = 'nodo-lucila';
+    if (nSlug === 'lomaverde' || nSlug === 'nodo-lomaverde') matchedId = 'nodo-lomaverde';
+    else if (nSlug === 'cooperativa' || nSlug === 'chasqui' || nSlug === 'nodo-cooperativa') matchedId = 'nodo-cooperativa';
+    else if (nSlug === 'lucila' || nSlug === 'nodo-lucila') matchedId = 'nodo-lucila';
+    else matchedId = nSlug.startsWith('nodo-') ? nSlug : 'nodo-' + nSlug;
+
+    AppState.activeNodeId = matchedId;
+    localStorage.setItem('elementales_active_node', matchedId);
+    currentCirculosFilter = matchedId;
+    if (typeof CirculosManager !== 'undefined') CirculosManager.setActiveCircleId(null);
+    updateNodeUI();
+    if (searchParams.get('seccion') === 'circulos') {
+      navigateTo('circulos', false);
+    } else {
+      navigateTo('barrio', false);
+    }
+    return;
+  }
+
+  // Rutas con prefijo /circulo/...
+  if (parts[0] === 'circulo' && parts[1] && typeof CirculosManager !== 'undefined') {
+    const circle = CirculosManager.getCircle(parts[1]);
+    if (circle) {
+      CirculosManager.setActiveCircleId(circle.id);
+      AppState.activeNodeId = circle.nodoId;
+      currentCirculosFilter = circle.nodoId;
+      updateNodeUI();
+      navigateTo('tierra', false);
+      renderCirculoStoreBanner();
+      renderOrderCatalog();
+      return;
+    }
+  }
+
+  // Compatibilidad con rutas legacy sin prefijo (/lomaverde, /lucila, /cooperativa)
   if (path === 'lomaverde' || path === 'nodo-lomaverde') {
     AppState.activeNodeId = 'nodo-lomaverde';
     localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+    currentCirculosFilter = 'nodo-lomaverde';
     if (typeof CirculosManager !== 'undefined') CirculosManager.setActiveCircleId(null);
     updateNodeUI();
     if (searchParams.get('seccion') === 'circulos') {
@@ -4271,6 +4391,7 @@ window.addEventListener('popstate', (e) => {
   if (path === 'lucila' || path === 'nodo-lucila') {
     AppState.activeNodeId = 'nodo-lucila';
     localStorage.setItem('elementales_active_node', 'nodo-lucila');
+    currentCirculosFilter = 'nodo-lucila';
     if (typeof CirculosManager !== 'undefined') CirculosManager.setActiveCircleId(null);
     updateNodeUI();
     if (searchParams.get('seccion') === 'circulos') {
@@ -4284,6 +4405,7 @@ window.addEventListener('popstate', (e) => {
   if (path === 'cooperativa' || path === 'chasqui' || path === 'nodo-cooperativa') {
     AppState.activeNodeId = 'nodo-cooperativa';
     localStorage.setItem('elementales_active_node', 'nodo-cooperativa');
+    currentCirculosFilter = 'nodo-cooperativa';
     if (typeof CirculosManager !== 'undefined') CirculosManager.setActiveCircleId(null);
     updateNodeUI();
     if (searchParams.get('seccion') === 'circulos') {
@@ -4299,6 +4421,7 @@ window.addEventListener('popstate', (e) => {
     if (circle) {
       CirculosManager.setActiveCircleId(circle.id);
       AppState.activeNodeId = circle.nodoId;
+      currentCirculosFilter = circle.nodoId;
       updateNodeUI();
       navigateTo('tierra', false);
       renderCirculoStoreBanner();
@@ -4866,15 +4989,16 @@ function renderNodesModalList() {
 function selectNode(nodeId) {
   AppState.activeNodeId = nodeId;
   localStorage.setItem('elementales_active_node', nodeId);
+  currentCirculosFilter = nodeId;
   if (typeof CirculosManager !== 'undefined') {
     CirculosManager.setActiveCircleId(null);
   }
   const nodeSlug = nodeId.replace(/^nodo-/, '');
   try {
     if (window.history && window.history.pushState) {
-      window.history.pushState({ view: AppState.currentView, nodeId: nodeId, circuloId: null }, '', '/' + nodeSlug);
+      window.history.pushState({ view: AppState.currentView, nodeId: nodeId, circuloId: null }, '', '/nodo/' + nodeSlug);
     } else if (window.history && window.history.replaceState) {
-      window.history.replaceState({ view: AppState.currentView, nodeId: nodeId, circuloId: null }, '', '/' + nodeSlug);
+      window.history.replaceState({ view: AppState.currentView, nodeId: nodeId, circuloId: null }, '', '/nodo/' + nodeSlug);
     }
   } catch (e) {}
   closeNodeSelectorModal();
@@ -4984,6 +5108,122 @@ function updateNodeUI() {
     }
   }
 
+  // 3. Control Modular de Funcionalidades y Modalidades según Node.features
+  const feats = node.features || {
+    showTienda: true,
+    showLocal: true,
+    showSemanal: true,
+    showLunar: true,
+    showCirculos: true,
+    showAgua: true,
+    showFuego: true,
+    showAire: true,
+    showEter: true
+  };
+
+  // Control de modalidades activas en catálogo
+  if (feats.showLocal === false && AppState.catalogMode === 'local') {
+    AppState.catalogMode = feats.showSemanal !== false ? 'semanal' : (feats.showLunar !== false ? 'lunar' : 'semanal');
+    localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
+  }
+  if (feats.showLunar === false && AppState.catalogMode === 'lunar') {
+    AppState.catalogMode = feats.showSemanal !== false ? 'semanal' : (feats.showLocal !== false ? 'local' : 'semanal');
+    localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
+  }
+  if (feats.showSemanal === false && AppState.catalogMode === 'semanal') {
+    AppState.catalogMode = feats.showLocal !== false ? 'local' : (feats.showLunar !== false ? 'lunar' : 'local');
+    localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
+  }
+
+  // Ocultar o mostrar botones de modo en catálogo
+  const btnLocal = document.getElementById('btn-mode-local');
+  const btnSemanal = document.getElementById('btn-mode-semanal');
+  const btnLunar = document.getElementById('btn-mode-lunar');
+  const modesGrid = document.getElementById('catalog-modes-grid');
+
+  if (btnLocal) btnLocal.classList.toggle('hidden', feats.showLocal === false);
+  if (btnSemanal) btnSemanal.classList.toggle('hidden', feats.showSemanal === false);
+  if (btnLunar) btnLunar.classList.toggle('hidden', feats.showLunar === false);
+
+  if (modesGrid) {
+    let visibleModes = 0;
+    if (feats.showLocal !== false) visibleModes++;
+    if (feats.showSemanal !== false) visibleModes++;
+    if (feats.showLunar !== false) visibleModes++;
+    if (visibleModes <= 1) modesGrid.className = 'grid grid-cols-1 gap-2';
+    else if (visibleModes === 2) modesGrid.className = 'grid grid-cols-2 gap-2';
+    else modesGrid.className = 'grid grid-cols-3 gap-2';
+  }
+
+  // Toggling de módulos en la barra inferior Spotify
+  const navTierra = document.getElementById('spotify-nav-tierra');
+  const navAgua = document.getElementById('spotify-nav-agua');
+  const navFuego = document.getElementById('spotify-nav-fuego');
+  const navAire = document.getElementById('spotify-nav-aire');
+  const navEter = document.getElementById('spotify-nav-eter');
+
+  if (navTierra) navTierra.classList.toggle('hidden', feats.showTienda === false);
+  if (navAgua) navAgua.classList.toggle('hidden', feats.showAgua === false);
+  if (navFuego) navFuego.classList.toggle('hidden', feats.showFuego === false);
+  if (navAire) navAire.classList.toggle('hidden', feats.showAire === false);
+  if (navEter) navEter.classList.toggle('hidden', feats.showEter === false);
+
+  // Toggling en la portada del Nodo (view-barrio)
+  const cardTierra = document.getElementById('barrio-card-tierra');
+  const cardCirculos = document.getElementById('barrio-card-circulos');
+  const dimSection = document.getElementById('barrio-dimensiones-section');
+  const btnAgua = document.getElementById('barrio-btn-agua');
+  const btnFuego = document.getElementById('barrio-btn-fuego');
+  const btnAire = document.getElementById('barrio-btn-aire');
+  const btnEter = document.getElementById('barrio-btn-eter');
+
+  if (cardTierra) cardTierra.classList.toggle('hidden', feats.showTienda === false);
+  if (cardCirculos) cardCirculos.classList.toggle('hidden', feats.showCirculos === false);
+  if (btnAgua) btnAgua.classList.toggle('hidden', feats.showAgua === false);
+  if (btnFuego) btnFuego.classList.toggle('hidden', feats.showFuego === false);
+  if (btnAire) btnAire.classList.toggle('hidden', feats.showAire === false);
+  if (btnEter) btnEter.classList.toggle('hidden', feats.showEter === false);
+
+  if (dimSection) {
+    const hasAnyDim = (feats.showAgua !== false) || (feats.showFuego !== false) || (feats.showAire !== false) || (feats.showEter !== false);
+    dimSection.classList.toggle('hidden', !hasAnyDim);
+  }
+
+  // Textos adaptados para cada nodo en view-barrio
+  const titleTierra = document.getElementById('barrio-card-tierra-title');
+  const descTierra = document.getElementById('barrio-card-tierra-desc');
+  const badgeTierra = document.getElementById('barrio-card-tierra-badge');
+
+  const titleCirculos = document.getElementById('barrio-card-circulos-title');
+  const descCirculos = document.getElementById('barrio-card-circulos-desc');
+  const badgeCirculos = document.getElementById('barrio-card-circulos-badge');
+
+  if (isCoop) {
+    if (titleTierra) titleTierra.textContent = 'Cajones Agroecológicos Directo Quinta';
+    if (descTierra) descTierra.textContent = 'Cajones cerrados de 15kg, 20kg y 10kg directos de quintas campesinas Chasqui al costo directo.';
+    if (badgeTierra) badgeTierra.textContent = '📦 Mayorista Directo';
+
+    if (titleCirculos) titleCirculos.textContent = 'Círculos de Fraccionamiento Mayorista';
+    if (descCirculos) descCirculos.textContent = 'Unite o armá un círculo para dividir cajones con vecinos y familias al costo directo.';
+    if (badgeCirculos) badgeCirculos.textContent = '🌀 Fraccionamiento';
+  } else if (isLoma) {
+    if (titleTierra) titleTierra.textContent = 'Cosecha Semanal de Huerta & Cooperativas';
+    if (descTierra) descTierra.textContent = 'Bolsones agroecológicos, panadería de masa madre y almacén cooperativo con despacho semanal.';
+    if (badgeTierra) badgeTierra.textContent = '🥬 Cosecha Semanal';
+
+    if (titleCirculos) titleCirculos.textContent = 'Círculos Barriales VRDE Club';
+    if (descCirculos) descCirculos.textContent = 'Familias autogestionando compras colectivas barriales con retiro barrial coordinado.';
+    if (badgeCirculos) badgeCirculos.textContent = '🌀 Círculos VRDE';
+  } else {
+    if (titleTierra) titleTierra.textContent = 'Tienda Comunitaria & Cosecha Fresca';
+    if (descTierra) descTierra.textContent = 'Bolsones de verduras agroecológicas, panadería de masa madre, quesos de campo y almacén.';
+    if (badgeTierra) badgeTierra.textContent = '🌱 Elemento Tierra';
+
+    if (titleCirculos) titleCirculos.textContent = 'Círculos de Compra Colectiva';
+    if (descCirculos) descCirculos.textContent = 'Comprá junto a familias y amigos de tu cuadra para autogestionar el retiro barrial al costo directo.';
+    if (badgeCirculos) badgeCirculos.textContent = '🌀 Círculos Barriales';
+  }
+
   // Banner específico de Central Cooperativa en Tierra
   const bannerCoop = document.getElementById('banner-nodo-cooperativa');
   if (bannerCoop) {
@@ -5000,7 +5240,7 @@ function updateNodeUI() {
 // =========================================================================
 // FACULTAD DE CÍRCULOS (VRDE CLUB & RED ELEMENTALES)
 // =========================================================================
-let currentCirculosFilter = 'todos';
+let currentCirculosFilter = null;
 
 function renderCirculosView() {
   const grid = document.getElementById('circulos-cards-grid');
@@ -5014,14 +5254,35 @@ function renderCirculosView() {
     nodeBadge.textContent = activeNode.name;
   }
 
-  // Obtener círculos
+  // Aislamiento por nodo: por defecto mostrar sólo los círculos del nodo activo
+  if (!currentCirculosFilter) {
+    currentCirculosFilter = AppState.activeNodeId || 'nodo-lucila';
+  }
+
+  // Sincronizar pestañas de filtro en la vista
+  document.querySelectorAll('#circulos-node-filter-tabs .element-subtab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const tabId = currentCirculosFilter === 'todos' 
+    ? 'circulos-filter-todos' 
+    : (currentCirculosFilter === 'nodo-lomaverde' 
+      ? 'circulos-filter-lomaverde' 
+      : (currentCirculosFilter === 'nodo-cooperativa' 
+        ? 'circulos-filter-cooperativa' 
+        : 'circulos-filter-lucila'));
+  const activeTabBtn = document.getElementById(tabId);
+  if (activeTabBtn) activeTabBtn.classList.add('active');
+
+  // Obtener círculos filtrados
   let circles = CirculosManager.getAllCircles();
   if (currentCirculosFilter !== 'todos') {
     circles = circles.filter(c => c.nodoId === currentCirculosFilter);
   }
 
   if (countIndicator) {
-    countIndicator.textContent = `${circles.length} círculos disponibles`;
+    const fNode = NODOS_COMUNIDAD.find(n => n.id === currentCirculosFilter);
+    const fName = currentCirculosFilter === 'todos' ? 'Toda la Red' : (fNode ? fNode.name : 'este Nodo');
+    countIndicator.textContent = `${circles.length} círculos en ${fName}`;
   }
 
   // 1. Renderizar Círculo Activo del Usuario
@@ -5222,7 +5483,7 @@ function openCreateCirculoModal() {
       slugInput.dataset.manual = 'false';
     }
     const preview = document.getElementById('circulo-slug-preview');
-    if (preview) preview.textContent = 'elementales.store/mi-circulo';
+    if (preview) preview.textContent = 'elementales.store/circulo/mi-circulo';
     modal.classList.remove('hidden');
   }
 }
@@ -5242,7 +5503,7 @@ function handleCirculoNombreInput(input) {
     .replace(/[^a-z0-9_-]+/g, '-')
     .replace(/(^-|-$)/g, '');
   slugInput.value = val;
-  if (preview) preview.textContent = `elementales.store/${val || 'mi-circulo'}`;
+  if (preview) preview.textContent = `elementales.store/circulo/${val || 'mi-circulo'}`;
 }
 
 function handleSlugInput(input) {
@@ -5254,7 +5515,7 @@ function handleSlugInput(input) {
     .replace(/^[-_]+/, '');
   input.value = val;
   const preview = document.getElementById('circulo-slug-preview');
-  if (preview) preview.textContent = `elementales.store/${val || 'mi-circulo'}`;
+  if (preview) preview.textContent = `elementales.store/circulo/${val || 'mi-circulo'}`;
 }
 
 function handleCreateCirculoSubmit(e) {
@@ -5402,7 +5663,7 @@ function renderCirculoStoreBanner() {
 
       const linkBadgeEl = document.getElementById('circulo-banner-short-url');
       if (linkBadgeEl) {
-        linkBadgeEl.textContent = `/${circle.slug || circle.id}`;
+        linkBadgeEl.textContent = `/circulo/${circle.slug || circle.id}`;
       }
 
       // Solo el creador / coordinador o gestor ve el botón de personalizar URL
@@ -5423,7 +5684,7 @@ function renderCirculoStoreBanner() {
     if (headerIndicator && headerName) {
       headerIndicator.classList.remove('hidden');
       headerName.textContent = circle.nombre;
-      if (headerSlug) headerSlug.textContent = `/${circle.slug || circle.id}`;
+      if (headerSlug) headerSlug.textContent = `/circulo/${circle.slug || circle.id}`;
     }
   } else {
     if (banner) banner.classList.add('hidden');
@@ -5440,9 +5701,9 @@ function exitCircleMode() {
   const nodeSlug = (AppState.activeNodeId || 'nodo-lucila').replace(/^nodo-/, '');
   try {
     if (window.history && window.history.pushState) {
-      window.history.pushState({ view: 'tierra', nodeId: AppState.activeNodeId, circuloId: null }, '', '/' + nodeSlug);
+      window.history.pushState({ view: 'tierra', nodeId: AppState.activeNodeId, circuloId: null }, '', '/nodo/' + nodeSlug);
     } else if (window.history && window.history.replaceState) {
-      window.history.replaceState({ view: 'tierra', nodeId: AppState.activeNodeId, circuloId: null }, '', '/' + nodeSlug);
+      window.history.replaceState({ view: 'tierra', nodeId: AppState.activeNodeId, circuloId: null }, '', '/nodo/' + nodeSlug);
     }
   } catch (e) {}
   renderCirculoStoreBanner();
@@ -5658,7 +5919,7 @@ function saveCustomCircleSlug() {
 
   // Actualizar feedback
   if (feedback) {
-    feedback.textContent = `✓ ¡Enlace actualizado con éxito a: /${res.slug}!`;
+    feedback.textContent = `✓ ¡Enlace actualizado con éxito a: /circulo/${res.slug}!`;
     feedback.className = 'text-[11px] text-emerald-700 mt-1.5 block font-bold';
     feedback.classList.remove('hidden');
     setTimeout(() => { feedback.classList.add('hidden'); }, 3000);

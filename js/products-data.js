@@ -20,7 +20,19 @@ const NODOS_COMUNIDAD = [
     phone: '5491123456789',
     desc: 'Oficina Barrial de la Nueva Era: gestión comunitaria, recepción de proyectos, financiamiento y feria activa.',
     cover: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200&h=400',
-    slug: 'lucila'
+    slug: 'lucila',
+    modalidades: ['local', 'semanal', 'lunar'],
+    features: {
+      showTienda: true,
+      showLocal: true,        // Feria presencial en Rawson 3450
+      showSemanal: true,      // Cosecha semanal de huerta
+      showLunar: true,        // Compra comunitaria mensual por ciclo lunar
+      showCirculos: true,     // Círculos comunitarios
+      showAgua: true,         // Comunidad & Oficios
+      showFuego: true,        // Talleres
+      showAire: true,         // Podcasts & Noticias
+      showEter: true          // Gestión del nodo
+    }
   },
   {
     id: 'nodo-lomaverde',
@@ -32,20 +44,45 @@ const NODOS_COMUNIDAD = [
     desc: 'Nodo autogestionado por Círculos de Compra Colectiva: las familias se agrupan en Círculos para pedir juntos y autogestionar el retiro barrial.',
     cover: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1200&h=400',
     slug: 'lomaverde',
-    circulosEnabled: true
+    circulosEnabled: true,
+    modalidades: ['semanal'],
+    features: {
+      showTienda: true,
+      showLocal: false,       // En Loma Verde NO hay feria física
+      showSemanal: true,      // Compra semanal de huerta y cooperativa
+      showLunar: false,       // No hay compra lunar física
+      showCirculos: true,     // Círculos vecinales VRDE Club
+      showAgua: true,
+      showFuego: true,
+      showAire: true,
+      showEter: true
+    }
   },
   {
     id: 'nodo-cooperativa',
-    name: 'Nodo Central Cooperativa (Cajones Chasqui)',
+    name: 'Central Cooperativa Chasqui (Mayorista)',
     address: 'Quintas de Productores & Central Mayorista Chasqui',
     time: 'Pedidos y fraccionamiento de cajones semanales',
     guardian: 'Central Cooperativa & Red Chasqui ESSP',
     phone: '5491123456789',
-    desc: 'Nodo de prueba de compra y división colectiva de cajones enteros (15kg, 20kg, 10kg, 5kg). Pedí el cajón completo o dividilo con vecinos al costo directo de productor.',
+    desc: 'Central mayorista de cajones directos de quintas campesinas. Venta exclusiva de cajones completos o fraccionados en Círculos.',
     cover: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=1200&h=400',
     slug: 'cooperativa',
     circulosEnabled: true,
-    cajonesMode: true
+    cajonesMode: true,
+    modalidades: ['semanal'],
+    features: {
+      showTienda: true,       // Catálogo de cajones de quintas
+      showLocal: false,       // No es tienda física minorista
+      showSemanal: true,      // Despacho semanal mayorista
+      showLunar: false,       // No hay compra lunar
+      showCirculos: true,     // Círculos de fraccionamiento mayorista
+      soloCirculos: true,     // Especializado en compras colectivas
+      showAgua: false,        // Nodo enfocado exclusivamente en logística
+      showFuego: false,
+      showAire: false,
+      showEter: true
+    }
   },
 
   {
