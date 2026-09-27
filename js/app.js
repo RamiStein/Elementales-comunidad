@@ -598,6 +598,16 @@ function navigateTo(viewName, updateHistory = true) {
     if (bBtn) bBtn.classList.add('active');
   }
 
+  // Actualizar estado del botón Inicio en el header
+  const headerHomeBtn = document.getElementById('header-home-btn');
+  if (headerHomeBtn) {
+    if (viewName === 'barrio') {
+      headerHomeBtn.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs border bg-emerald-600 text-white border-emerald-600';
+    } else {
+      headerHomeBtn.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-emerald-50 text-emerald-900 border-emerald-300 hover:bg-emerald-100';
+    }
+  }
+
   // Mapeo de alias retrocompatibles hacia la arquitectura de 5 Elementos
   if (viewName === 'oficios') {
     navigateTo('agua', updateHistory);
