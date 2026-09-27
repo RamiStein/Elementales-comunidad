@@ -572,7 +572,7 @@ const AppState = {
 // --- NAVEGACIÓN Y VISTAS ---
 // --- NAVEGACIÓN Y VISTAS ---
 // --- NAVEGACIÓN Y VISTAS ---
-function navigateTo(viewName) {
+function navigateTo(viewName, updateHistory = true) {
   sounds.playPop();
 
   // Control de Header y Barra de Navegación Inferior (Ocultos en view-landing)
@@ -600,37 +600,37 @@ function navigateTo(viewName) {
 
   // Mapeo de alias retrocompatibles hacia la arquitectura de 5 Elementos
   if (viewName === 'oficios') {
-    navigateTo('agua');
+    navigateTo('agua', updateHistory);
     switchAguaTab('oficios');
     return;
   }
   if (viewName === 'talleres') {
-    navigateTo('fuego');
+    navigateTo('fuego', updateHistory);
     switchFuegoTab('talleres');
     return;
   }
   if (viewName === 'financiamiento') {
-    navigateTo('fuego');
+    navigateTo('fuego', updateHistory);
     switchFuegoTab('fondo');
     return;
   }
   if (viewName === 'noticias') {
-    navigateTo('aire');
+    navigateTo('aire', updateHistory);
     switchAireTab('noticias');
     return;
   }
   if (viewName === 'hub' || viewName === 'new-order') {
-    navigateTo('tierra');
+    navigateTo('tierra', updateHistory);
     switchTierraTab('tienda');
     return;
   }
   if (viewName === 'whatsapp') {
-    navigateTo('agua');
+    navigateTo('agua', updateHistory);
     switchAguaTab('whatsapp');
     return;
   }
   if (viewName === 'centro-lucila') {
-    navigateTo('eter');
+    navigateTo('eter', updateHistory);
     switchEterMainTab('centro');
     showEterModule('centro');
     return;
@@ -641,30 +641,49 @@ function navigateTo(viewName) {
   // Sincronizar URL limpia en la barra del navegador según la vista activa
   try {
     localStorage.setItem('elementales_current_view', viewName);
-    if (window.history && window.history.replaceState) {
+    if (window.history) {
       const nodeSlug = (AppState.activeNodeId || 'nodo-lucila').replace(/^nodo-/, '');
+      let targetPath = '/' + nodeSlug;
+      let stateObj = { view: viewName, nodeId: AppState.activeNodeId, circuloId: null };
+
       if (viewName === 'landing') {
-        window.history.replaceState({}, '', '/');
+        targetPath = '/';
+        stateObj = { view: 'landing', nodeId: AppState.activeNodeId, circuloId: null };
       } else if (viewName === 'barrio') {
-        // En el Home del nodo, la URL es siempre la del nodo (/lomaverde, /lucila, /cooperativa)
-        // y se limpia cualquier círculo de la barra para que no quede pegado
         if (typeof CirculosManager !== 'undefined') {
           CirculosManager.setActiveCircleId(null);
         }
-        window.history.replaceState({ nodeId: AppState.activeNodeId }, '', '/' + nodeSlug);
+        targetPath = '/' + nodeSlug;
+        stateObj = { view: 'barrio', nodeId: AppState.activeNodeId, circuloId: null };
         renderCirculoStoreBanner();
       } else if (viewName === 'circulos') {
-        window.history.replaceState({ view: 'circulos' }, '', '/' + nodeSlug + '?seccion=circulos');
+        targetPath = '/' + nodeSlug + '?seccion=circulos';
+        stateObj = { view: 'circulos', nodeId: AppState.activeNodeId, circuloId: null };
       } else if (viewName === 'tierra') {
         const activeCId = typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null;
         const activeC = activeCId ? CirculosManager.getCircle(activeCId) : null;
         if (activeC) {
-          window.history.replaceState({ circuloId: activeC.id }, '', '/' + (activeC.slug || activeC.id));
+          const cSlug = activeC.slug || activeC.id;
+          targetPath = '/' + cSlug;
+          stateObj = { view: 'tierra', nodeId: AppState.activeNodeId, circuloId: activeC.id };
         } else {
-          window.history.replaceState({ nodeId: AppState.activeNodeId }, '', '/' + nodeSlug);
+          targetPath = '/' + nodeSlug;
+          stateObj = { view: 'tierra', nodeId: AppState.activeNodeId, circuloId: null };
         }
       } else {
-        window.history.replaceState({ nodeId: AppState.activeNodeId }, '', '/' + nodeSlug);
+        targetPath = '/' + nodeSlug;
+        stateObj = { view: viewName, nodeId: AppState.activeNodeId, circuloId: null };
+      }
+
+      const currentFullPath = (window.location.pathname || '') + (window.location.search || '');
+      if (updateHistory && window.history.pushState) {
+        if (currentFullPath !== targetPath) {
+          window.history.pushState(stateObj, '', targetPath);
+        } else {
+          window.history.replaceState(stateObj, '', targetPath);
+        }
+      } else if (window.history.replaceState) {
+        window.history.replaceState(stateObj, '', targetPath);
       }
     }
   } catch (e) {}
@@ -2406,11 +2425,10 @@ function selectLandingNode(nodeId) {
     }
   });
 
-  // Sincronizar URL para reflejar el nodo elegido sin recargar
+  // En la landing mantenemos la URL raíz mientras se selecciona el nodo
   try {
-    const nodeSlug = nodeId.replace(/^nodo-/, '');
     if (window.history && window.history.replaceState) {
-      window.history.replaceState({ nodeId: nodeId }, '', '/' + nodeSlug);
+      window.history.replaceState({ view: 'landing', nodeId: nodeId }, '', '/');
     }
   } catch (e) {}
 }
@@ -2440,15 +2458,7 @@ function loginFromLanding(role) {
   updateRoleUI();
   updateNodeUI();
 
-  // Sincronizar URL limpia del nodo
-  const nodeSlug = targetNode.replace(/^nodo-/, '');
-  try {
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({ nodeId: targetNode }, '', '/' + nodeSlug);
-    }
-  } catch (e) {}
-
-  navigateTo('barrio');
+  navigateTo('barrio', true);
 }
 
 function openAdminPinModal() {
@@ -2466,14 +2476,7 @@ function openAdminPinModal() {
     updateRoleUI();
     updateNodeUI();
 
-    const nodeSlug = targetNode.replace(/^nodo-/, '');
-    try {
-      if (window.history && window.history.replaceState) {
-        window.history.replaceState({ nodeId: targetNode }, '', '/' + nodeSlug);
-      }
-    } catch (e) {}
-
-    navigateTo('barrio');
+    navigateTo('barrio', true);
   });
 }
 
@@ -2485,14 +2488,8 @@ function goToLanding() {
     CirculosManager.setActiveCircleId(null);
   }
 
-  try {
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, '', '/');
-    }
-  } catch (e) {}
-
   AppState.selectedLandingNode = AppState.activeNodeId || 'nodo-lucila';
-  navigateTo('landing');
+  navigateTo('landing', true);
   selectLandingNode(AppState.selectedLandingNode);
 }
 
@@ -4147,12 +4144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nodoParam === 'lomaverde' || nodoParam === 'nodo-lomaverde') AppState.activeNodeId = 'nodo-lomaverde';
     else if (nodoParam === 'cooperativa' || nodoParam === 'nodo-cooperativa') AppState.activeNodeId = 'nodo-cooperativa';
     else if (nodoParam === 'lucila' || nodoParam === 'nodo-lucila') AppState.activeNodeId = 'nodo-lucila';
-    try {
-      const nodeSlug = AppState.activeNodeId.replace(/^nodo-/, '');
-      if (window.history && window.history.replaceState && !circuloParam) {
-        window.history.replaceState({ nodeId: AppState.activeNodeId }, '', '/' + nodeSlug);
-      }
-    } catch (e) {}
+    localStorage.setItem('elementales_active_node', AppState.activeNodeId);
   }
 
   if (circuloParam && typeof CirculosManager !== 'undefined') {
@@ -4167,16 +4159,16 @@ document.addEventListener('DOMContentLoaded', () => {
       sessionStorage.setItem('elementales_authenticated', 'true');
 
       // Limpiar la barra del navegador dejando la ruta ultra limpia: /nombre-circulo
+      const cleanSlug = found.slug || found.id;
       try {
-        const cleanSlug = found.slug || found.id;
         if (window.history && window.history.replaceState) {
-          window.history.replaceState({ circuloId: found.id }, '', '/' + cleanSlug);
+          window.history.replaceState({ view: 'tierra', circuloId: found.id, nodeId: found.nodoId }, '', '/' + cleanSlug);
         }
       } catch (e) {}
 
       updateRoleUI();
       updateNodeUI();
-      navigateTo('tierra');
+      navigateTo('tierra', false);
       renderCirculoStoreBanner();
       renderOrderCatalog();
       return;
@@ -4187,32 +4179,125 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionStorage.setItem('elementales_authenticated', 'true');
     updateRoleUI();
     updateNodeUI();
-    navigateTo('circulos');
+    navigateTo('circulos', false);
     renderCirculosView();
     return;
   }
 
-  const isAuth = sessionStorage.getItem('elementales_authenticated');
+  const isAuth = sessionStorage.getItem('elementales_authenticated') === 'true';
   if (window.location.hash === '#admin') {
     AppState.userRole = 'gestor';
     sessionStorage.setItem('elementales_authenticated', 'true');
     sessionStorage.setItem('elementales_gestor_auth', 'true');
     updateRoleUI();
     updateNodeUI();
-    navigateTo('barrio');
+    navigateTo('barrio', false);
   } else if (!isAuth) {
     if (typeof CirculosManager !== 'undefined') {
       CirculosManager.setActiveCircleId(null);
     }
-    navigateTo('landing');
+    navigateTo('landing', false);
     selectLandingNode(AppState.activeNodeId || 'nodo-lucila');
   } else {
     if (typeof CirculosManager !== 'undefined' && !circuloParam) {
       CirculosManager.setActiveCircleId(null);
     }
-    navigateTo('barrio');
+    navigateTo('barrio', false);
     renderCirculoStoreBanner();
   }
+});
+
+// --- MANEJO DE NAVEGACIÓN ATRÁS / ADELANTE DEL NAVEGADOR (SPA SIN RECARGA) ---
+window.addEventListener('popstate', (e) => {
+  const state = e.state;
+  const path = (window.location.pathname || '').replace(/^\/+|\/+$/g, '').toLowerCase();
+  const searchParams = new URLSearchParams(window.location.search);
+
+  if (state && state.view) {
+    if (state.nodeId && state.nodeId !== AppState.activeNodeId) {
+      AppState.activeNodeId = state.nodeId;
+      localStorage.setItem('elementales_active_node', state.nodeId);
+      updateNodeUI();
+    }
+    if (state.circuloId) {
+      if (typeof CirculosManager !== 'undefined') {
+        CirculosManager.setActiveCircleId(state.circuloId);
+      }
+    } else {
+      if (typeof CirculosManager !== 'undefined') {
+        CirculosManager.setActiveCircleId(null);
+      }
+    }
+    navigateTo(state.view, false);
+    if (state.view === 'landing') {
+      selectLandingNode(AppState.activeNodeId || 'nodo-lucila');
+    }
+    return;
+  }
+
+  // Fallback si el usuario navegó a una URL directa o sin state previo
+  if (!path || path === '') {
+    if (typeof CirculosManager !== 'undefined') {
+      CirculosManager.setActiveCircleId(null);
+    }
+    navigateTo('landing', false);
+    selectLandingNode(AppState.activeNodeId || 'nodo-lucila');
+    return;
+  }
+
+  if (path === 'lomaverde' || path === 'nodo-lomaverde') {
+    AppState.activeNodeId = 'nodo-lomaverde';
+    localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+    if (typeof CirculosManager !== 'undefined') CirculosManager.setActiveCircleId(null);
+    updateNodeUI();
+    if (searchParams.get('seccion') === 'circulos') {
+      navigateTo('circulos', false);
+    } else {
+      navigateTo('barrio', false);
+    }
+    return;
+  }
+
+  if (path === 'lucila' || path === 'nodo-lucila') {
+    AppState.activeNodeId = 'nodo-lucila';
+    localStorage.setItem('elementales_active_node', 'nodo-lucila');
+    if (typeof CirculosManager !== 'undefined') CirculosManager.setActiveCircleId(null);
+    updateNodeUI();
+    if (searchParams.get('seccion') === 'circulos') {
+      navigateTo('circulos', false);
+    } else {
+      navigateTo('barrio', false);
+    }
+    return;
+  }
+
+  if (path === 'cooperativa' || path === 'chasqui' || path === 'nodo-cooperativa') {
+    AppState.activeNodeId = 'nodo-cooperativa';
+    localStorage.setItem('elementales_active_node', 'nodo-cooperativa');
+    if (typeof CirculosManager !== 'undefined') CirculosManager.setActiveCircleId(null);
+    updateNodeUI();
+    if (searchParams.get('seccion') === 'circulos') {
+      navigateTo('circulos', false);
+    } else {
+      navigateTo('barrio', false);
+    }
+    return;
+  }
+
+  if (typeof CirculosManager !== 'undefined') {
+    const circle = CirculosManager.getCircle(path);
+    if (circle) {
+      CirculosManager.setActiveCircleId(circle.id);
+      AppState.activeNodeId = circle.nodoId;
+      updateNodeUI();
+      navigateTo('tierra', false);
+      renderCirculoStoreBanner();
+      renderOrderCatalog();
+      return;
+    }
+  }
+
+  navigateTo('barrio', false);
 });
 
 
@@ -4771,15 +4856,21 @@ function renderNodesModalList() {
 function selectNode(nodeId) {
   AppState.activeNodeId = nodeId;
   localStorage.setItem('elementales_active_node', nodeId);
+  if (typeof CirculosManager !== 'undefined') {
+    CirculosManager.setActiveCircleId(null);
+  }
+  const nodeSlug = nodeId.replace(/^nodo-/, '');
   try {
-    const nodeSlug = nodeId.replace(/^nodo-/, '');
-    if (window.history && window.history.replaceState && (typeof CirculosManager === 'undefined' || !CirculosManager.getActiveCircleId())) {
-      window.history.replaceState({ nodeId: nodeId }, '', '/' + nodeSlug);
+    if (window.history && window.history.pushState) {
+      window.history.pushState({ view: AppState.currentView, nodeId: nodeId, circuloId: null }, '', '/' + nodeSlug);
+    } else if (window.history && window.history.replaceState) {
+      window.history.replaceState({ view: AppState.currentView, nodeId: nodeId, circuloId: null }, '', '/' + nodeSlug);
     }
   } catch (e) {}
   closeNodeSelectorModal();
   sounds.playSuccess();
   updateNodeUI();
+  renderCirculoStoreBanner();
   if (AppState.currentView === 'barrio') renderBarrioFeed();
   if (AppState.currentView === 'tierra') renderOrderCatalog();
   if (AppState.currentView === 'circulos') renderCirculosView();
@@ -5255,18 +5346,10 @@ function enterCircleStore(circleId) {
   AppState.activeNodeId = circle.nodoId;
   AppState.catalogMode = 'semanal'; // En círculos no se usa modo local
   sessionStorage.setItem('elementales_authenticated', 'true');
-  
-  // Actualizar la URL en la barra de direcciones del navegador
-  try {
-    const slug = circle.slug || circle.id;
-    if (window.history && window.history.pushState) {
-      window.history.pushState({ circuloId: circle.id }, '', '/' + slug);
-    }
-  } catch (e) {}
 
   updateNodeUI();
   updateRoleUI();
-  navigateTo('tierra');
+  navigateTo('tierra', true);
   renderCirculoStoreBanner();
   renderOrderCatalog();
   sounds.playSuccess();
@@ -5344,10 +5427,12 @@ function exitCircleMode() {
   if (typeof CirculosManager !== 'undefined') {
     CirculosManager.setActiveCircleId(null);
   }
+  const nodeSlug = (AppState.activeNodeId || 'nodo-lucila').replace(/^nodo-/, '');
   try {
-    if (window.history && window.history.replaceState) {
-      const nodeSlug = (AppState.activeNodeId || 'nodo-lucila').replace(/^nodo-/, '');
-      window.history.replaceState({}, '', '/' + nodeSlug);
+    if (window.history && window.history.pushState) {
+      window.history.pushState({ view: 'tierra', nodeId: AppState.activeNodeId, circuloId: null }, '', '/' + nodeSlug);
+    } else if (window.history && window.history.replaceState) {
+      window.history.replaceState({ view: 'tierra', nodeId: AppState.activeNodeId, circuloId: null }, '', '/' + nodeSlug);
     }
   } catch (e) {}
   renderCirculoStoreBanner();
