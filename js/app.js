@@ -267,6 +267,34 @@ const AppState = {
   userPlan: 'plan-raices',
   userName: 'Lucía Gómez',
   userCode: 'CSC-2026-0482',
+  cajonSharesInCart: [],
+
+  getActiveProducts() {
+    if (this.activeNodeId === 'nodo-cooperativa' && typeof CAJONES_CENTRAL_COOPERATIVA !== 'undefined') {
+      return CAJONES_CENTRAL_COOPERATIVA;
+    }
+    return this.products || (typeof INITIAL_PRODUCTS !== 'undefined' ? INITIAL_PRODUCTS : []);
+  },
+
+  addCajonShareToCart(shareItem) {
+    if (!this.cajonSharesInCart) this.cajonSharesInCart = [];
+    this.cajonSharesInCart.push(shareItem);
+    try {
+      localStorage.setItem('elementales_cajon_shares_cart', JSON.stringify(this.cajonSharesInCart));
+    } catch (e) {}
+    renderFloatingCart();
+    if (typeof sounds !== 'undefined') sounds.playAdd();
+  },
+
+  removeCajonShareFromCart(shareId) {
+    if (!this.cajonSharesInCart) return;
+    this.cajonSharesInCart = this.cajonSharesInCart.filter(s => s.id !== shareId);
+    try {
+      localStorage.setItem('elementales_cajon_shares_cart', JSON.stringify(this.cajonSharesInCart));
+    } catch (e) {}
+    renderFloatingCart();
+    if (typeof sounds !== 'undefined') sounds.playPop();
+  },
 
   init() {
     // Detección automática de Nodo Loma Verde por URL / subdominio / parámetro / ruta
@@ -277,6 +305,9 @@ const AppState = {
     if (host.includes('lomaverde') || search.includes('lomaverde') || hash.includes('lomaverde') || path.includes('lomaverde')) {
       this.activeNodeId = 'nodo-lomaverde';
       localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+    } else if (search.includes('cooperativa') || hash.includes('cooperativa') || path.includes('cooperativa') || search.includes('chasqui')) {
+      this.activeNodeId = 'nodo-cooperativa';
+      localStorage.setItem('elementales_active_node', 'nodo-cooperativa');
     } else {
       this.activeNodeId = localStorage.getItem('elementales_active_node') || 'nodo-lucila';
     }
@@ -467,8 +498,9 @@ const AppState = {
     let totalItems = 0;
 
     // Productos de catálogo
+    const allAvailableProds = this.getActiveProducts();
     for (const [prodId, qty] of Object.entries(this.cart)) {
-      const prod = this.products.find(p => p.id === prodId);
+      const prod = allAvailableProds.find(p => p.id === prodId) || this.products.find(p => p.id === prodId);
       if (prod && qty > 0) {
         const itemPrice = this.getProductPrice(prod);
         const itemRetail = this.getLocalRetailPrice(prod);
@@ -508,6 +540,27 @@ const AppState = {
       subtotal += itemTotal;
       retailTotal += itemTotal;
       totalItems += custom.qty;
+    }
+
+        // Cuotas de Cajones Compartidos en el Carrito
+    if (this.cajonSharesInCart && this.cajonSharesInCart.length > 0) {
+      for (const share of this.cajonSharesInCart) {
+        items.push({
+          id: share.id,
+          name: `${share.productName} (${share.kg} kg de ${share.totalKg} kg)`,
+          price: share.total,
+          retailPrice: share.total,
+          unit: `${share.kg} kg en cajón compartido`,
+          qty: 1,
+          total: share.total,
+          emoji: '👥',
+          isCajonShare: true,
+          shareData: share
+        });
+        subtotal += share.total;
+        retailTotal += share.total;
+        totalItems += 1;
+      }
     }
 
     const totalSavings = Math.max(0, retailTotal - subtotal);
@@ -682,7 +735,11 @@ function renderOrderCatalog() {
   });
 
   if (modeBadge && modeDesc) {
-    if (AppState.catalogMode === 'local') {
+    if (AppState.activeNodeId === 'nodo-cooperativa') {
+      modeBadge.textContent = '📦 Mayorista Directo Quinta';
+      modeBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300';
+      modeDesc.innerHTML = '✨ <strong>Central Cooperativa (Chasqui):</strong> Precios directos por cajón cerrado o cuota compartida.';
+    } else if (AppState.catalogMode === 'local') {
       modeBadge.textContent = '🏪 Local / Feria';
       modeBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-800 border border-stone-200';
       modeDesc.innerHTML = 'Precios regulares de feria para público visitante.';
@@ -697,30 +754,37 @@ function renderOrderCatalog() {
     }
   }
 
-  // Renderizar filtros de categorías (Tomadas dinámicamente de VRDE Club y configuradas por el gestor)
+  // Renderizar filtros de categorías
   if (categoriesContainer) {
-    const activeCategories = (typeof VRDEClubBridge !== 'undefined' && VRDEClubBridge.getCategories)
-      ? VRDEClubBridge.getCategories()
-      : (typeof CATEGORIES !== 'undefined' ? CATEGORIES : ['Todos', 'Verduras & Huerta', 'Granja & Lácteos', 'Almacén Agroecológico', 'Panadería & Masa Madre', 'Cosmética & Botiquín', 'Productorxs Vecinales']);
+    let activeCategories;
+    if (AppState.activeNodeId === 'nodo-cooperativa') {
+      activeCategories = ['Todos', 'Frutas Agroecológicas', 'Verduras & Huerta'];
+    } else {
+      activeCategories = (typeof VRDEClubBridge !== 'undefined' && VRDEClubBridge.getCategories)
+        ? VRDEClubBridge.getCategories()
+        : (typeof CATEGORIES !== 'undefined' ? CATEGORIES : ['Todos', 'Verduras & Huerta', 'Granja & Lácteos', 'Almacén Agroecológico', 'Panadería & Masa Madre', 'Cosmética & Botiquín', 'Productorxs Vecinales']);
+    }
 
     categoriesContainer.innerHTML = activeCategories.map(cat => `
       <button 
         onclick="setFilterCategory('${cat}')" 
         class="pill-filter ${AppState.activeCategory === cat ? 'active' : ''}">
-        ${cat === 'Productorxs Vecinales' ? '🌾 ' + cat : cat}
+        ${cat === 'Productorxs Vecinales' ? '🌾 ' + cat : (cat === 'Frutas Agroecológicas' ? '🍊 ' + cat : (cat === 'Verduras & Huerta' ? '🥬 ' + cat : cat))}
       </button>
     `).join('');
   }
 
-  // Filtrar productos con soporte para Productorxs Vecinales y búsqueda ampliada
+  // Filtrar productos según nodo activo
+  const allProds = AppState.getActiveProducts();
   const query = AppState.searchQuery.toLowerCase().trim();
-  const filtered = AppState.products.filter(prod => {
+  const filtered = allProds.filter(prod => {
     const cat = prod.categoria || prod.category;
     const isProductorMatch = AppState.activeCategory === 'Productorxs Vecinales' && (prod.productorVecinal || cat === 'Productorxs Vecinales');
     const matchesCategory = AppState.activeCategory === 'Todos' || cat === AppState.activeCategory || prod.category === AppState.activeCategory || isProductorMatch;
     const matchesSearch = !query || 
       prod.name.toLowerCase().includes(query) || 
       (cat && cat.toLowerCase().includes(query)) ||
+      (prod.producer && prod.producer.toLowerCase().includes(query)) ||
       (prod.productorNombre && prod.productorNombre.toLowerCase().includes(query));
     return matchesCategory && matchesSearch;
   });
@@ -747,6 +811,90 @@ function renderOrderCatalog() {
     const hasDiscount = AppState.catalogMode !== 'local' && activePrice < localPrice;
     const discountPercent = hasDiscount ? Math.round(((localPrice - activePrice) / localPrice) * 100) : 0;
     const elementColor = prod.elemento === 'agua' ? '#7ca1b5' : (prod.elemento === 'tierra' ? '#8ca15d' : (prod.elemento === 'fuego' ? '#d97757' : '#aab091'));
+
+    // RENDERIZADO ESPECIAL PARA CAJONES ENTEROS (CENTRAL COOPERATIVA / CHASQUI)
+    if (prod.esCajon) {
+      const activeShare = (typeof CajonesManager !== 'undefined') ? CajonesManager.getShareForProduct(prod.id) : null;
+      return `
+        <div class="spotify-card flex flex-col justify-between relative overflow-hidden transition-all ${isSelected ? 'border-amber-500 bg-amber-50/20 ring-2 ring-amber-400/40 shadow-md' : 'border-stone-200'}">
+          ${isSelected ? `<div class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse z-10"></div>` : ''}
+          
+          <!-- Foto del Cajón -->
+          <div class="h-36 w-full relative overflow-hidden bg-stone-100">
+            ${prod.img ? `
+              <img src="${prod.img}" class="w-full h-full object-cover" alt="${escapeHtml(prod.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="w-full h-full hidden items-center justify-center text-4xl bg-stone-50">${prod.emoji || '📦'}</div>
+            ` : `
+              <div class="w-full h-full flex items-center justify-center text-4xl bg-stone-50">${prod.emoji || '📦'}</div>
+            `}
+            <div class="absolute top-2 left-2 flex flex-col gap-1">
+              <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
+                📦 Cajón ${prod.cajonKg} kg
+              </span>
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-white/95 text-stone-700 shadow-2xs">
+                ${escapeHtml(prod.producer || 'Central Cooperativa')}
+              </span>
+            </div>
+            ${activeShare ? `
+              <div class="absolute bottom-2 left-2 right-2 bg-black/75 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center justify-between">
+                <span>👥 En curso: ${activeShare.percent}%</span>
+                <span class="text-amber-300">Faltan ${activeShare.remainingKg} kg</span>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="p-3.5 flex flex-col flex-1 justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-stone-900 leading-snug mb-1">
+                ${escapeHtml(prod.name)}
+              </h3>
+              <div class="flex items-center gap-1.5 text-xs text-stone-500 mb-2">
+                <span>Total: <strong>${prod.cajonKg} kg</strong></span>
+                <span>•</span>
+                <span class="text-emerald-700 font-bold">$${formatMoney(prod.precioPerKg)} / kg</span>
+              </div>
+            </div>
+
+            <!-- Precio y Acciones Duales (Entero o Compartido) -->
+            <div class="pt-2 border-t border-stone-100 mt-auto">
+              <div class="flex items-baseline justify-between mb-2.5">
+                <div>
+                  <span class="text-[10px] text-stone-400 font-bold block uppercase leading-tight">Cajón Entero</span>
+                  <span class="text-base font-black text-stone-900">$${formatMoney(prod.precioCajon)}</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[10px] text-amber-800 font-bold block uppercase leading-tight">Por Kilo Mayorista</span>
+                  <span class="text-xs font-black text-amber-900">$${formatMoney(prod.precioPerKg)}</span>
+                </div>
+              </div>
+
+              <!-- Botones: Pedir Cajón Completo O Dividir -->
+              <div class="grid grid-cols-2 gap-1.5">
+                <button 
+                  type="button" 
+                  onclick="AppState.addToCart('${prod.id}', 1)" 
+                  class="py-2 px-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-[11px] flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-all"
+                  title="Comprar el cajón cerrado completo (${prod.cajonKg} kg)"
+                >
+                  <span>📦</span>
+                  <span>${qty > 0 ? `(${qty}) Entero` : 'Entero'}</span>
+                </button>
+
+                <button 
+                  type="button" 
+                  onclick="openFraccionarCajonModal('${prod.id}')" 
+                  class="py-2 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px] flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-all"
+                  title="Dividir este cajón entre varios vecinos (ej: 1/2, 1/3, 1/4)"
+                >
+                  <span>👥</span>
+                  <span>Dividir</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
 
     return `
       <div class="spotify-card flex flex-col justify-between relative overflow-hidden transition-all ${isSelected ? 'border-[#c0826d] bg-[#fdfaf8] ring-2 ring-[#c0826d]/30 shadow-md' : 'border-stone-200' }">
@@ -2143,24 +2291,16 @@ function selectLandingNode(nodeId) {
   AppState.selectedLandingNode = nodeId;
   sounds.playPop();
 
-  const elLucila = document.getElementById('landing-node-nodo-lucila');
-  const elLoma = document.getElementById('landing-node-nodo-lomaverde');
-
-  if (nodeId === 'nodo-lomaverde') {
-    if (elLoma) {
-      elLoma.className = 'p-4 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 cursor-pointer transition-all flex items-start gap-3 shadow-xs';
+  ['nodo-lucila', 'nodo-lomaverde', 'nodo-cooperativa'].forEach(id => {
+    const el = document.getElementById(`landing-node-${id}`);
+    if (el) {
+      if (id === nodeId) {
+        el.className = 'p-3.5 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 cursor-pointer transition-all flex items-start gap-2.5 shadow-xs ring-2 ring-emerald-500/20';
+      } else {
+        el.className = 'p-3.5 rounded-2xl border-2 border-stone-200 hover:border-emerald-500 bg-white cursor-pointer transition-all flex items-start gap-2.5 shadow-xs';
+      }
     }
-    if (elLucila) {
-      elLucila.className = 'p-4 rounded-2xl border-2 border-stone-200 hover:border-emerald-500 bg-white cursor-pointer transition-all flex items-start gap-3 shadow-xs';
-    }
-  } else {
-    if (elLucila) {
-      elLucila.className = 'p-4 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 cursor-pointer transition-all flex items-start gap-3 shadow-xs';
-    }
-    if (elLoma) {
-      elLoma.className = 'p-4 rounded-2xl border-2 border-stone-200 hover:border-emerald-500 bg-white cursor-pointer transition-all flex items-start gap-3 shadow-xs';
-    }
-  }
+  });
 }
 
 function loginFromLanding(role) {
@@ -2835,6 +2975,374 @@ function selectInitialRole(role) {
   loginFromLanding(role);
 }
 
+// =========================================================================
+// CONTROLADOR DE CAJONES MAYORISTAS Y FRACCIONAMIENTO (CHASQUI / CENTRAL COOP)
+// =========================================================================
+let currentCajonViewTab = 'catalogo';
+let currentModalCajonProduct = null;
+let currentModalRequestedKg = 5;
+
+function switchCajonesViewTab(tab) {
+  currentCajonViewTab = tab;
+  sounds.playPop();
+
+  const btnCat = document.getElementById('btn-cajones-tab-catalogo');
+  const btnComp = document.getElementById('btn-cajones-tab-compartidos');
+  const contComp = document.getElementById('container-cajones-compartidos');
+  const catList = document.getElementById('catalog-products-list');
+  const catBars = document.getElementById('catalog-categories-bar');
+
+  if (tab === 'compartidos') {
+    if (btnCat) {
+      btnCat.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold transition-all bg-white text-stone-700 border border-stone-200 hover:bg-stone-100';
+    }
+    if (btnComp) {
+      btnComp.className = 'px-3.5 py-1.5 rounded-full text-xs font-black transition-all bg-amber-600 text-white shadow-xs';
+    }
+    if (contComp) contComp.classList.remove('hidden');
+    if (catList) catList.classList.add('hidden');
+    if (catBars) catBars.classList.add('hidden');
+    renderCajonesSharesGrid();
+  } else {
+    if (btnCat) {
+      btnCat.className = 'px-3.5 py-1.5 rounded-full text-xs font-black transition-all bg-amber-600 text-white shadow-xs';
+    }
+    if (btnComp) {
+      btnComp.className = 'px-3.5 py-1.5 rounded-full text-xs font-bold transition-all bg-white text-stone-700 border border-stone-200 hover:bg-stone-100';
+    }
+    if (contComp) contComp.classList.add('hidden');
+    if (catList) catList.classList.remove('hidden');
+    if (catBars) catBars.classList.remove('hidden');
+  }
+}
+
+function renderCajonesSharesGrid() {
+  const grid = document.getElementById('cajones-shares-grid');
+  if (!grid || typeof CajonesManager === 'undefined') return;
+
+  const shares = CajonesManager.getAllShares();
+  if (shares.length === 0) {
+    grid.innerHTML = `
+      <div class="col-span-full p-8 text-center bg-stone-50 rounded-2xl border border-stone-200">
+        <p class="text-3xl mb-2">🧺</p>
+        <p class="font-bold text-sm text-stone-800">No hay cajones en proceso de llenado en este momento</p>
+        <p class="text-xs text-stone-500 mt-1">Elegí cualquier cajón del catálogo y hacé clic en "Dividir" para ser el primero en abrirlo.</p>
+        <button onclick="switchCajonesViewTab('catalogo')" class="mt-4 px-4 py-2 rounded-full bg-amber-600 text-white font-bold text-xs">
+          Ver Catálogo de Cajones →
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = shares.map(share => {
+    const isCompleted = share.status === 'completo' || share.remainingKg <= 0;
+    return `
+      <div class="p-4 sm:p-5 rounded-3xl bg-white border ${isCompleted ? 'border-emerald-300 bg-emerald-50/20' : 'border-amber-200'} shadow-xs flex flex-col justify-between">
+        <div>
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 overflow-hidden flex items-center justify-center shrink-0">
+                ${share.image ? `<img src="${share.image}" class="w-full h-full object-cover" onerror="this.remove()" />` : '📦'}
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${isCompleted ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                    ${isCompleted ? '✓ Cajón Completo' : 'En Llenado'}
+                  </span>
+                  <span class="text-[9px] font-bold text-stone-500">Cajón ${share.totalKg} kg</span>
+                </div>
+                <h4 class="font-black text-sm text-stone-900 leading-tight mt-0.5">${escapeHtml(share.productName)}</h4>
+                <p class="text-[11px] text-stone-500">${escapeHtml(share.producer)}</p>
+              </div>
+            </div>
+            <span class="text-xs font-black text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg shrink-0">
+              $${formatMoney(share.pricePerKg)}/kg
+            </span>
+          </div>
+
+          <!-- Barra de Progreso -->
+          <div class="mb-3 bg-stone-50 p-3 rounded-2xl border border-stone-200">
+            <div class="flex items-center justify-between text-xs font-bold mb-1">
+              <span class="text-stone-700">Llenado: ${share.coveredKg} de ${share.totalKg} kg</span>
+              <span class="${isCompleted ? 'text-emerald-700' : 'text-amber-800'} font-black">${share.percent}%</span>
+            </div>
+            <div class="w-full h-3 bg-stone-200 rounded-full overflow-hidden p-0.5">
+              <div class="h-full ${isCompleted ? 'bg-emerald-500' : 'bg-gradient-to-r from-amber-500 to-emerald-500'} rounded-full transition-all duration-300" style="width: ${Math.min(100, share.percent)}%;"></div>
+            </div>
+            <p class="text-[11px] mt-1.5 ${isCompleted ? 'text-emerald-700 font-bold' : 'text-amber-800 font-semibold'}">
+              ${isCompleted ? '🎉 ¡Cajón 100% completo! Despachado por quintas.' : `¡Faltan solo ${share.remainingKg} kg para cerrar el cajón!`}
+            </p>
+          </div>
+
+          <!-- Participantes -->
+          <div class="mb-3">
+            <span class="text-[10px] font-black uppercase text-stone-400 block mb-1">Vecinos en este cajón:</span>
+            <div class="flex flex-wrap gap-1.5">
+              ${share.participantes.map(p => `
+                <span class="inline-flex items-center gap-1 bg-stone-100 px-2 py-1 rounded-xl text-[11px] font-semibold text-stone-700 border border-stone-200">
+                  <span>${p.avatar || '👤'}</span>
+                  <span>${escapeHtml(p.name)}: <strong>${p.kg} kg</strong></span>
+                </span>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="pt-2 border-t border-stone-100 flex items-center gap-2 mt-auto">
+          ${!isCompleted ? `
+            <button 
+              type="button" 
+              onclick="openFraccionarCajonModal('${share.productId}')" 
+              class="flex-1 py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs transition-transform active:scale-95"
+            >
+              <span>➕</span> Sumarme con Kilos
+            </button>
+          ` : `
+            <span class="flex-1 py-2 text-center text-xs font-bold text-emerald-800 bg-emerald-100 rounded-xl">
+              ✓ Cajón Cerrado
+            </span>
+          `}
+          
+          <button 
+            type="button" 
+            onclick="shareCajonWhatsAppFromCard('${share.id}')" 
+            class="py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs flex items-center justify-center gap-1 transition-colors"
+            title="Compartir en WhatsApp"
+          >
+            <span>💬</span> WhatsApp
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openFraccionarCajonModal(productId) {
+  if (typeof CAJONES_CENTRAL_COOPERATIVA === 'undefined') return;
+  const prod = CAJONES_CENTRAL_COOPERATIVA.find(p => p.id === productId);
+  if (!prod) return;
+
+  currentModalCajonProduct = prod;
+  sounds.playPop();
+
+  // Determinar kg iniciales sugeridos (aprox 1/3 o 1/4)
+  currentModalRequestedKg = Math.max(1, Math.round(prod.cajonKg / 3));
+
+  // Actualizar datos del modal
+  const titleEl = document.getElementById('modal-cajon-title');
+  const prodEl = document.getElementById('modal-cajon-producer');
+  const kgBadgeEl = document.getElementById('modal-cajon-kg-badge');
+  const priceTotEl = document.getElementById('modal-cajon-price-total');
+  const priceKgEl = document.getElementById('modal-cajon-price-kg');
+  const imgEl = document.getElementById('modal-cajon-img');
+  const emojiEl = document.getElementById('modal-cajon-emoji');
+
+  if (titleEl) titleEl.textContent = prod.name;
+  if (prodEl) prodEl.textContent = 'Quinta / Productor: ' + (prod.producer || 'Central Cooperativa');
+  if (kgBadgeEl) kgBadgeEl.textContent = `Cajón ${prod.cajonKg} kg`;
+  if (priceTotEl) priceTotEl.textContent = `$${formatMoney(prod.precioCajon)}`;
+  if (priceKgEl) priceKgEl.textContent = `$${formatMoney(prod.precioPerKg)} / kg`;
+
+  if (imgEl && emojiEl) {
+    if (prod.img) {
+      imgEl.src = prod.img;
+      imgEl.classList.remove('hidden');
+      emojiEl.classList.add('hidden');
+    } else {
+      imgEl.classList.add('hidden');
+      emojiEl.classList.remove('hidden');
+      emojiEl.textContent = prod.emoji || '📦';
+    }
+  }
+
+  // Generar botones de fracciones rápidas según el tamaño del cajón
+  const quickContainer = document.getElementById('modal-cajon-quick-buttons');
+  if (quickContainer) {
+    const total = prod.cajonKg;
+    const f1 = Math.round((total * 0.25) * 10) / 10;
+    const f2 = Math.round((total / 3) * 10) / 10;
+    const f3 = Math.round((total * 0.5) * 10) / 10;
+
+    quickContainer.innerHTML = `
+      <button type="button" onclick="setModalCajonQuickKg(${f1})" class="p-2 rounded-xl border border-stone-300 hover:border-amber-500 bg-white font-bold text-xs text-stone-800 transition-colors">
+        1/4 Cajón (${f1} kg)
+      </button>
+      <button type="button" onclick="setModalCajonQuickKg(${f2})" class="p-2 rounded-xl border border-stone-300 hover:border-amber-500 bg-white font-bold text-xs text-stone-800 transition-colors">
+        1/3 Cajón (${f2} kg)
+      </button>
+      <button type="button" onclick="setModalCajonQuickKg(${f3})" class="p-2 rounded-xl border border-stone-300 hover:border-amber-500 bg-white font-bold text-xs text-stone-800 transition-colors">
+        1/2 Cajón (${f3} kg)
+      </button>
+    `;
+  }
+
+  updateCajonModalPreview();
+
+  const modal = document.getElementById('modal-fraccionar-cajon');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeFraccionarCajonModal() {
+  const modal = document.getElementById('modal-fraccionar-cajon');
+  if (modal) modal.classList.add('hidden');
+  currentModalCajonProduct = null;
+}
+
+function setModalCajonQuickKg(kg) {
+  if (!currentModalCajonProduct) return;
+  currentModalRequestedKg = Math.max(1, Math.min(currentModalCajonProduct.cajonKg, kg));
+  sounds.playPop();
+  updateCajonModalPreview();
+}
+
+function adjustCajonModalKg(delta) {
+  if (!currentModalCajonProduct) return;
+  currentModalRequestedKg = Math.max(1, Math.min(currentModalCajonProduct.cajonKg, currentModalRequestedKg + delta));
+  sounds.playPop();
+  updateCajonModalPreview();
+}
+
+function updateCajonModalPreview() {
+  if (!currentModalCajonProduct) return;
+  const prod = currentModalCajonProduct;
+  const cost = Math.round(currentModalRequestedKg * prod.precioPerKg);
+  const percentShare = Math.round((currentModalRequestedKg / prod.cajonKg) * 100);
+
+  // Contador de kilos
+  const counterEl = document.getElementById('modal-cajon-kg-counter');
+  if (counterEl) counterEl.textContent = `${currentModalRequestedKg} kg`;
+
+  // Cuadro proporcional
+  const shareTextEl = document.getElementById('modal-cajon-my-share-text');
+  if (shareTextEl) {
+    shareTextEl.textContent = `${currentModalRequestedKg} kg de ${prod.cajonKg} kg (${percentShare}% del cajón cerrado)`;
+  }
+  const sharePriceEl = document.getElementById('modal-cajon-my-share-price');
+  if (sharePriceEl) {
+    sharePriceEl.textContent = `$${formatMoney(cost)}`;
+  }
+
+  // Estado del cajón compartido (existente o nuevo)
+  const existingShare = (typeof CajonesManager !== 'undefined') ? CajonesManager.getShareForProduct(prod.id) : null;
+  const alreadyCovered = existingShare ? existingShare.coveredKg : 0;
+  const newTotalCovered = Math.min(prod.cajonKg, alreadyCovered + currentModalRequestedKg);
+  const newPercent = Math.min(100, Math.round((newTotalCovered / prod.cajonKg) * 100));
+  const remaining = Math.max(0, Math.round((prod.cajonKg - newTotalCovered) * 10) / 10);
+
+  const pBar = document.getElementById('modal-cajon-progress-bar');
+  const pPercent = document.getElementById('modal-cajon-progress-percent');
+  const coveredText = document.getElementById('modal-cajon-covered-text');
+  const remText = document.getElementById('modal-cajon-remaining-text');
+
+  if (pBar) pBar.style.width = `${newPercent}%`;
+  if (pPercent) pPercent.textContent = `${newPercent}%`;
+  if (coveredText) coveredText.textContent = `${newTotalCovered} kg cubiertos (${prod.cajonKg} kg total)`;
+  if (remText) {
+    if (remaining <= 0) {
+      remText.className = 'font-bold text-emerald-700';
+      remText.textContent = '🎉 ¡Completás el cajón al 100%! Listo para pedir.';
+    } else {
+      remText.className = 'font-bold text-amber-900';
+      remText.textContent = `¡Faltarían ${remaining} kg para cerrarlo!`;
+    }
+  }
+
+  // Lista de participantes si ya existe
+  const partList = document.getElementById('modal-cajon-participants-list');
+  if (partList) {
+    if (existingShare && existingShare.participantes.length > 0) {
+      partList.innerHTML = `
+        <span class="text-[10px] font-bold text-stone-500 block mb-1">Vecinos ya sumados a este cajón:</span>
+        <div class="flex flex-wrap gap-1">
+          ${existingShare.participantes.map(p => `
+            <span class="text-[10px] bg-white border border-stone-200 px-2 py-0.5 rounded-lg text-stone-700">
+              ${p.avatar || '👤'} ${escapeHtml(p.name)} (${p.kg} kg)
+            </span>
+          `).join('')}
+        </div>
+      `;
+    } else {
+      partList.innerHTML = `
+        <span class="text-[10px] text-stone-500 italic">
+          💡 Serás el primer vecino en abrir este cajón compartido. Luego invitás a amigos o vecinos para completarlo.
+        </span>
+      `;
+    }
+  }
+
+  // Texto del botón de confirmación
+  const btnConfirmText = document.getElementById('modal-cajon-confirm-btn-text');
+  if (btnConfirmText) {
+    btnConfirmText.textContent = `Confirmar mi parte (${currentModalRequestedKg} kg · $${formatMoney(cost)}) y Sumar al Carrito`;
+  }
+}
+
+function confirmCajonShare() {
+  if (!currentModalCajonProduct || typeof CajonesManager === 'undefined') return;
+  const prod = currentModalCajonProduct;
+  const kg = currentModalRequestedKg;
+  const cost = Math.round(kg * prod.precioPerKg);
+
+  const share = CajonesManager.createOrJoinShare(prod.id, kg, AppState.userName);
+  if (!share) return;
+
+  AppState.addCajonShareToCart({
+    id: 'cart-share-' + Date.now(),
+    shareId: share.id,
+    productId: prod.id,
+    productName: prod.name,
+    kg: kg,
+    totalKg: prod.cajonKg,
+    pricePerKg: prod.precioPerKg,
+    total: cost,
+    percent: share.percent,
+    image: prod.img
+  });
+
+  closeFraccionarCajonModal();
+  sounds.playSuccess();
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
+  }
+
+  // Si estamos en Tierra, refrescar las vistas
+  renderOrderCatalog();
+  if (currentCajonViewTab === 'compartidos') {
+    renderCajonesSharesGrid();
+  }
+  const badgeCount = document.getElementById('count-cajones-compartidos-badge');
+  if (badgeCount) {
+    badgeCount.textContent = CajonesManager.getAllShares().filter(s => s.status === 'abierto').length;
+  }
+}
+
+function shareCajonWhatsAppFromModal() {
+  if (!currentModalCajonProduct) return;
+  const prod = currentModalCajonProduct;
+  const kg = currentModalRequestedKg;
+  const remaining = Math.max(0, prod.cajonKg - kg);
+
+  const text = `¡Hola vecinos! 👋 Abrí un Cajón Compartido de *${prod.name}* (${prod.cajonKg} kg a $${formatMoney(prod.precioPerKg)}/kg) directo de quinta agroecológica (${prod.producer}).
+Puse ${kg} kg y quedan ${remaining} kg para cerrarlo a precio mayorista. ¿Quién se suma con unos kilos?
+Sumate directamente acá: https://elementales.store/?nodo=cooperativa&cajon=${prod.id}`;
+
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function shareCajonWhatsAppFromCard(shareId) {
+  if (typeof CajonesManager === 'undefined') return;
+  const share = CajonesManager.getAllShares().find(s => s.id === shareId);
+  if (!share) return;
+
+  const text = `¡Hola vecinos! 👋 En el nodo tenemos un Cajón Compartido de *${share.productName}* (${share.totalKg} kg a $${formatMoney(share.pricePerKg)}/kg) al *${share.percent}% lleno*.
+Faltan solo *${share.remainingKg} kg* para completarlo y despacharlo. ¿Quién se suma?
+Sumate acá: https://elementales.store/?nodo=cooperativa&share=${share.id}`;
+
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
 // Interceptar rueda del ratón para scroll horizontal fluido en la subnavegación de escritorio
 function initSubnavHorizontalScroll() {
   const subnav = document.querySelector('.google-subnav');
@@ -3459,6 +3967,14 @@ function openElementInfoModal(elementId) {
 // --- INICIALIZACIÓN ---
 document.addEventListener('DOMContentLoaded', () => {
   AppState.init();
+  try {
+    const savedCajonShares = localStorage.getItem('elementales_cajon_shares_cart');
+    if (savedCajonShares) {
+      AppState.cajonSharesInCart = JSON.parse(savedCajonShares);
+    }
+  } catch (e) {
+    AppState.cajonSharesInCart = [];
+  }
   updateRoleUI();
   updateNodeUI();
   document.body.addEventListener('click', () => sounds.init(), { once: true });
@@ -4054,16 +4570,17 @@ function selectNode(nodeId) {
 function updateNodeUI() {
   const node = NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) || NODOS_COMUNIDAD[0];
   const isLoma = node.id === 'nodo-lomaverde';
+  const isCoop = node.id === 'nodo-cooperativa';
 
   // 1. Cabecera Minimalista
   const nameEl = document.getElementById('header-node-name');
   if (nameEl) {
-    nameEl.textContent = isLoma ? 'Loma Verde' : 'La Lucila';
+    nameEl.textContent = isCoop ? 'Central Coop' : (isLoma ? 'Loma Verde' : 'La Lucila');
   }
 
   const indicatorEl = document.getElementById('header-node-indicator');
   if (indicatorEl) {
-    indicatorEl.textContent = isLoma ? 'Loma Verde · Escobar' : 'La Lucila · Vicente López';
+    indicatorEl.textContent = isCoop ? 'Central Cooperativa · Chasqui' : (isLoma ? 'Loma Verde · Escobar' : 'La Lucila · Vicente López');
   }
 
   const badgeEl = document.getElementById('header-node-badge');
@@ -4085,7 +4602,7 @@ function updateNodeUI() {
 
   const cityEl = document.getElementById('node-header-city');
   if (cityEl) {
-    cityEl.textContent = isLoma ? 'Loma Verde' : 'La Lucila';
+    cityEl.textContent = isCoop ? 'Central Cooperativa' : (isLoma ? 'Loma Verde' : 'La Lucila');
   }
 
   const avatarEl = document.getElementById('node-avatar-image');
@@ -4095,12 +4612,12 @@ function updateNodeUI() {
 
   const categoryTag = document.getElementById('node-category-tag');
   if (categoryTag) {
-    categoryTag.textContent = node.circulosEnabled ? 'Círculos VRDE' : 'Sede Central';
+    categoryTag.textContent = isCoop ? 'Prueba Cajones Chasqui' : (node.circulosEnabled ? 'Círculos VRDE' : 'Sede Central');
   }
 
   const statusText = document.getElementById('node-status-text');
   if (statusText) {
-    statusText.textContent = isLoma ? '🌿 Círculos Abiertos' : '🟢 Abierto Hoy';
+    statusText.textContent = isCoop ? '📦 Pedidos de Cajón Abiertos' : (isLoma ? '🌿 Círculos Abiertos' : '🟢 Abierto Hoy');
   }
 
   const mainTitle = document.getElementById('node-main-title');
@@ -4146,6 +4663,16 @@ function updateNodeUI() {
       currentRoleBadge.innerHTML = '👤 Visitante';
       currentRoleBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-white/90 text-stone-900 border border-stone-200 shadow-sm';
     }
+  }
+
+  // Banner específico de Central Cooperativa en Tierra
+  const bannerCoop = document.getElementById('banner-nodo-cooperativa');
+  if (bannerCoop) {
+    bannerCoop.classList.toggle('hidden', AppState.activeNodeId !== 'nodo-cooperativa');
+  }
+  const badgeSharesCount = document.getElementById('count-cajones-compartidos-badge');
+  if (badgeSharesCount && typeof CajonesManager !== 'undefined') {
+    badgeSharesCount.textContent = CajonesManager.getAllShares().filter(s => s.status === 'abierto').length;
   }
 
   populateCheckoutCirculos();
