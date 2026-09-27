@@ -1293,467 +1293,551 @@
     </div>
   </div>
 <!-- ========================================================================= -->
+  <!-- ========================================================================= -->
+  <!-- 5. VISTA: ÉTER (MI PORTAL PERSONAL & GESTIÓN SEGREGADA DEL NODO) -->
+  <!-- ========================================================================= -->
   <div id="view-eter" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-24">
 
-    <!-- HEADER ÉTER CRM -->
-    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#1c1917] via-[#292524] to-[#1a1614] border border-[#c0826d]/30 mb-6 shadow-lg relative overflow-hidden">
+    <!-- HEADER ÉTER COMUNITARIO -->
+    <div class="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#1c1917] via-[#292524] to-[#1a1614] border border-[#c0826d]/30 mb-6 shadow-lg relative overflow-hidden">
       <!-- Fondo decorativo -->
       <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute w-80 h-80 bg-[#c0826d]/8 rounded-full blur-3xl top-0 right-0"></div>
-        <div class="absolute w-60 h-60 bg-[#8ca15d]/6 rounded-full blur-3xl bottom-0 left-0"></div>
+        <div class="absolute w-80 h-80 bg-[#c0826d]/10 rounded-full blur-3xl top-0 right-0"></div>
+        <div class="absolute w-60 h-60 bg-[#8ca15d]/8 rounded-full blur-3xl bottom-0 left-0"></div>
       </div>
+      
       <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div class="flex items-center gap-3 mb-2">
-            <div class="w-10 h-10 rounded-xl bg-[#c0826d]/20 border border-[#c0826d]/40 flex items-center justify-center">
-              <img src="public/assets/brand/eter_logo.jpg" class="w-7 h-7 object-contain" alt="Éter" />
+            <div class="w-10 h-10 rounded-2xl bg-[#c0826d]/20 border border-[#c0826d]/40 flex items-center justify-center text-xl shadow-xs">
+              ✨
             </div>
             <div>
-              <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight">Panel Éter · CRM del Nodo</h1>
-              <span class="text-[11px] font-bold text-[#d99a86] uppercase tracking-widest">Uso interno del equipo · La Lucila</span>
+              <h1 id="eter-main-title" class="text-xl sm:text-2xl font-black text-white tracking-tight">
+                Éter · Mi Portal Comunitario
+              </h1>
+              <span id="eter-subtitle" class="text-[11px] font-bold text-[#d99a86] uppercase tracking-widest">
+                Identidad personal, gobernanza, labor barrial y círculos
+              </span>
             </div>
           </div>
-          <p class="text-stone-400 text-xs sm:text-sm max-w-lg">
-            Gestión centralizada de la economía, membresía, equipo, horas de labor y seguridad del nodo Elementales La Lucila.
+          <p id="eter-desc" class="text-stone-400 text-xs sm:text-sm max-w-xl leading-relaxed">
+            Tu espacio personal en la Red Elemental: tus datos de contacto, historial de pedidos, círculos de compra, acuerdos firmados y reputación de tus trabajos en la comunidad.
           </p>
         </div>
-        <div class="flex items-center gap-2">
-          <span class="flex items-center gap-1.5 text-[11px] font-bold bg-emerald-900/50 text-emerald-400 border border-emerald-700/50 px-3 py-1.5 rounded-full">
+
+        <div class="flex items-center gap-2 self-start sm:self-auto">
+          <span class="flex items-center gap-1.5 text-[11px] font-bold bg-white/10 text-stone-200 border border-white/20 px-3 py-1.5 rounded-full backdrop-blur-md">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            Nodo Activo
+            <span id="eter-header-node-name">Nodo La Lucila</span>
           </span>
         </div>
       </div>
-    </div>
 
-    <!-- BANNER DE ACCESO / PERSPECTIVA EN ÉTER CRM -->
-    <div id="eter-role-access-card" class="mb-6 p-4 rounded-2xl border transition-all">
-      <!-- Se puebla dinámicamente con updateRoleUI() -->
-    </div>
-
-    <!-- TABS PRINCIPALES DE ÉTER (DEMOCRACIA, MI CRM, OFICINA, Y GESTIÓN INTERNA) -->
-    <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-stone-200/70" id="eter-main-subnav-tabs">
-      <button onclick="switchEterMainTab('democracia')" id="eter-tab-btn-democracia" class="element-subtab-btn active-eter shrink-0">
-        🗳️ Democracia del Nodo (Votaciones Abiertas)
-      </button>
-      <button onclick="switchEterMainTab('micrm')" id="eter-tab-btn-micrm" class="element-subtab-btn shrink-0">
-        📋 Mi CRM Personal & Mis Pedidos
-      </button>
-      <button onclick="switchEterMainTab('centro')" id="eter-tab-btn-centro" class="element-subtab-btn shrink-0">
-        🏡 Oficina Barrial Rawson 3450
-      </button>
-      <button onclick="handleGestionNodoClick()" id="eter-tab-btn-gestion" class="element-subtab-btn shrink-0 opacity-80">
-        🔒 Gestión del Nodo (Equipo)
-      </button>
-    </div>
-
-    <!-- PANEL DEMOCRACIA Y VOTACIONES ABIERTAS -->
-    <div id="eter-panel-democracia" class="eter-main-panel mb-8">
-      <div class="p-6 rounded-3xl bg-gradient-to-br from-white to-[#fcf5f1] border border-[#c0826d]/30 mb-6 shadow-xs">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-2.5 py-0.5 rounded-full">
-            Gobernanza Vecinal
+      <!-- Barra de Modo Gestor (SOLO VISIBLE SI ES GESTOR AUTENTICADO) -->
+      <div id="eter-gestor-mode-bar" class="hidden mt-5 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-amber-300 flex items-center gap-1">
+            <span>👑</span> Modo Administrador del Nodo
           </span>
-          <span class="text-xs font-bold text-stone-500">1 Miembro = 1 Voto</span>
+          <span class="text-[10px] bg-amber-400/20 text-amber-200 px-2 py-0.5 rounded-full border border-amber-300/30">PIN Verificado</span>
         </div>
-        <h2 class="text-xl sm:text-2xl font-black text-stone-900 mt-1">
-          Democracia Participativa del Nodo
-        </h2>
-        <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-xl">
-          En Elementales las decisiones económicas y operativas se debaten y votan en comunidad. Participá de las votaciones activas:
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <!-- Votación 1 -->
-        <div class="bg-white rounded-3xl border border-stone-200 p-6 shadow-xs flex flex-col justify-between" id="vote-card-1">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
-                Votación Abierta • Cierra en 4 días
-              </span>
-              <span class="text-xs font-bold text-stone-500" id="vote-total-1">78 votos</span>
-            </div>
-            <h3 class="font-black text-base text-stone-900">
-              ¿En qué invertimos el 25% del Fondo Barrial este mes?
-            </h3>
-            <p class="text-xs text-stone-600 mt-1 mb-4">
-              Monto disponible para asignación: <strong>$80.000</strong> generado por el aporte de membresías y feria.
-            </p>
-
-            <div class="space-y-2.5 mb-5">
-              <button onclick="castVote(1, 'A')" class="w-full text-left p-3 rounded-2xl border border-stone-200 hover:border-emerald-500 bg-stone-50 hover:bg-emerald-50/40 transition-all flex items-center justify-between text-xs group">
-                <span class="font-semibold text-stone-800 group-hover:text-emerald-900">🌿 Ampliación de bancales y riego por goteo</span>
-                <span class="font-black text-emerald-700 bg-white px-2 py-0.5 rounded-lg border border-emerald-200" id="vote-count-1-A">54% (42)</span>
-              </button>
-              <button onclick="castVote(1, 'B')" class="w-full text-left p-3 rounded-2xl border border-stone-200 hover:border-emerald-500 bg-stone-50 hover:bg-emerald-50/40 transition-all flex items-center justify-between text-xs group">
-                <span class="font-semibold text-stone-800 group-hover:text-emerald-900">🛠️ Herramientas compartidas para oficios (taladro, amoladora)</span>
-                <span class="font-black text-stone-600 bg-white px-2 py-0.5 rounded-lg border border-stone-200" id="vote-count-1-B">32% (25)</span>
-              </button>
-              <button onclick="castVote(1, 'C')" class="w-full text-left p-3 rounded-2xl border border-stone-200 hover:border-emerald-500 bg-stone-50 hover:bg-emerald-50/40 transition-all flex items-center justify-between text-xs group">
-                <span class="font-semibold text-stone-800 group-hover:text-emerald-900">💡 Iluminación solar para el patio del centro</span>
-                <span class="font-black text-stone-600 bg-white px-2 py-0.5 rounded-lg border border-stone-200" id="vote-count-1-C">14% (11)</span>
-              </button>
-            </div>
-          </div>
-          <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-500">
-            <span>Resultados vinculantes para asamblea</span>
-            <span class="font-bold text-emerald-700">✓ Voto seguro</span>
-          </div>
-        </div>
-
-        <!-- Votación 2 -->
-        <div class="bg-white rounded-3xl border border-stone-200 p-6 shadow-xs flex flex-col justify-between" id="vote-card-2">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-[10px] font-black uppercase tracking-wider text-blue-800 bg-blue-100 px-2.5 py-0.5 rounded-full">
-                Votación Abierta • Cierra en 6 días
-              </span>
-              <span class="text-xs font-bold text-stone-500" id="vote-total-2">61 votos</span>
-            </div>
-            <h3 class="font-black text-base text-stone-900">
-              Horario de la Feria Agroecológica de Verano
-            </h3>
-            <p class="text-xs text-stone-600 mt-1 mb-4">
-              Para evitar las horas de calor, ¿qué franja horaria preferís para el retiro de pedidos y puestos en la vereda?
-            </p>
-
-            <div class="space-y-2.5 mb-5">
-              <button onclick="castVote(2, 'A')" class="w-full text-left p-3 rounded-2xl border border-stone-200 hover:border-blue-500 bg-stone-50 hover:bg-blue-50/40 transition-all flex items-center justify-between text-xs group">
-                <span class="font-semibold text-stone-800 group-hover:text-blue-900">🌅 Viernes al atardecer (17:30 a 21:30 hs)</span>
-                <span class="font-black text-blue-700 bg-white px-2 py-0.5 rounded-lg border border-blue-200" id="vote-count-2-A">68% (42)</span>
-              </button>
-              <button onclick="castVote(2, 'B')" class="w-full text-left p-3 rounded-2xl border border-stone-200 hover:border-blue-500 bg-stone-50 hover:bg-blue-50/40 transition-all flex items-center justify-between text-xs group">
-                <span class="font-semibold text-stone-800 group-hover:text-blue-900">☀️ Sábados por la mañana (09:00 a 13:00 hs)</span>
-                <span class="font-black text-stone-600 bg-white px-2 py-0.5 rounded-lg border border-stone-200" id="vote-count-2-B">32% (19)</span>
-              </button>
-            </div>
-          </div>
-          <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-500">
-            <span>Se aplicará a partir de Noviembre</span>
-            <span class="font-bold text-blue-700">✓ Voto seguro</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PANEL MI CRM PERSONAL -->
-    <div id="eter-panel-micrm" class="eter-main-panel hidden mb-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <!-- Tarjeta de Membresía y Carnet -->
-        <div class="bg-gradient-to-br from-blue-50/80 via-white to-indigo-50/40 p-6 rounded-3xl border border-blue-200 shadow-xs flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-2xl">🪪</span>
-              <span class="text-[10px] font-black uppercase tracking-wider text-blue-800 bg-blue-100 px-2.5 py-0.5 rounded-full">
-                Socio Activo
-              </span>
-            </div>
-            <h3 class="font-black text-lg text-blue-950">Lucía Gómez</h3>
-            <p class="text-xs text-blue-800/80 font-mono mt-0.5">#CSC-2026-0482</p>
-            <p class="text-xs text-stone-600 mt-3 leading-relaxed">
-              Membresía CsC al día en el Nodo La Lucila. Acceso a compras al costo, prioridad en talleres y asambleas.
-            </p>
-          </div>
-          <button onclick="navigateTo('profile')" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-full shadow-xs transition-transform active:scale-95">
-            Ver Mi Carnet Digital con QR →
+        <div class="flex items-center gap-2 bg-black/40 p-1 rounded-2xl border border-white/10">
+          <button 
+            type="button"
+            onclick="switchEterViewMode('personal')" 
+            id="eter-btn-mode-personal"
+            class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-xs"
+          >
+            👤 Mi Espacio Personal
+          </button>
+          <button 
+            type="button"
+            onclick="switchEterViewMode('gestion')" 
+            id="eter-btn-mode-gestion"
+            class="px-3 py-1.5 rounded-xl text-xs font-bold text-stone-300 hover:text-white transition-all"
+          >
+            🔐 Gestión Operativa del Nodo
           </button>
         </div>
+      </div>
+    </div>
 
-        <!-- Seguimiento de Pedidos Activos -->
-        <div class="md:col-span-2 bg-white p-6 rounded-3xl border border-stone-200 shadow-xs flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="font-black text-base text-stone-900">Mis Pedidos Recientes</h3>
-              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">1 en preparación</span>
+    <!-- ========================================================================= -->
+    <!-- CONTENEDOR 1: PORTAL PERSONAL DEL USUARIO (SOCIOS & INVITADOS) -->
+    <!-- ========================================================================= -->
+    <div id="eter-personal-portal-container">
+
+      <!-- TARJETA DE PERFIL & DATOS PERSONALES DEL USUARIO -->
+      <div id="eter-personal-profile-card" class="mb-6 p-5 sm:p-6 rounded-3xl bg-white border border-stone-200 shadow-xs relative overflow-hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-stone-100">
+          <div class="flex items-start sm:items-center gap-4">
+            <!-- Avatar con inicial o foto -->
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-[#c0826d] to-[#e6a895] text-white font-black text-2xl sm:text-3xl flex items-center justify-center shadow-md shrink-0 border-2 border-white ring-2 ring-[#c0826d]/20" id="eter-profile-avatar">
+              LG
             </div>
-
-            <!-- Pedido Activo -->
-            <div class="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/30 mb-3">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                <div>
-                  <span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Pedido #2026-0891 • Modo Semanal</span>
-                  <h4 class="font-black text-sm text-stone-900">Canasta Agroecológica + Pan de Masa Madre</h4>
-                </div>
-                <span class="text-xs font-black text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full self-start sm:self-auto">
-                  🟢 Listo para Retirar
+            <div>
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <h2 id="eter-user-name-display" class="font-black text-xl sm:text-2xl text-stone-900 leading-tight">
+                  Lucía Gómez
+                </h2>
+                <span id="eter-user-role-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-900 border border-blue-200">
+                  💧 Socio CsC #CSC-2026-0482
                 </span>
               </div>
-              <p class="text-xs text-stone-600">
-                Punto de retiro: <strong>Rawson 3450, La Lucila</strong>. Guardia de hoy: Gonza & Ro (09:30 a 19:30 hs).
+              <p id="eter-user-trade-preview" class="text-xs sm:text-sm font-semibold text-[#a6634f]">
+                🌿 Diseñadora Textil & Cerámica Botánica
+              </p>
+              <p class="text-xs text-stone-500 mt-1 flex items-center gap-1">
+                <span>📍</span> Retiro habitual en <strong id="eter-user-node-display" class="text-stone-700">Nodo La Lucila · Rawson 3450</strong>
+              </p>
+            </div>
+          </div>
+
+          <!-- Botones de Acción sobre Perfil -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button 
+              type="button"
+              onclick="openEditProfileModal()" 
+              class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer border border-stone-200"
+            >
+              <span>✏️</span> Editar Mis Datos
+            </button>
+            <button 
+              type="button"
+              onclick="navigateTo('profile')" 
+              class="px-3.5 py-2 rounded-xl bg-[#c0826d] hover:bg-[#a6634f] text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer"
+            >
+              <span>🪪</span> Carnet Digital
+            </button>
+          </div>
+        </div>
+
+        <!-- Fila de Datos de Contacto y Envío -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-4 text-xs">
+          <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200/80">
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-0.5">Correo Electrónico</span>
+            <span id="eter-user-email-display" class="font-bold text-stone-800 break-all">lucia.gomez@comunidad.org</span>
+          </div>
+          <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200/80">
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-0.5">Teléfono / WhatsApp</span>
+            <span id="eter-user-phone-display" class="font-bold text-stone-800">+54 9 11 5566-7788</span>
+          </div>
+          <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200/80">
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-0.5">Dirección de Envío</span>
+            <span id="eter-user-address-display" class="font-bold text-stone-800">Av. Maipú 2140, Olivos, Vicente López</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑAS DEL PORTAL PERSONAL EN ÉTER -->
+      <div id="eter-personal-subnav-tabs" class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-stone-200/70">
+        <button onclick="switchEterPersonalTab('labor')" id="eter-tab-btn-labor" class="element-subtab-btn active-eter shrink-0">
+          🌿 Mi Labor & Reviews
+        </button>
+        <button onclick="switchEterPersonalTab('pedidos')" id="eter-tab-btn-pedidos" class="element-subtab-btn shrink-0">
+          📦 Mis Pedidos (<span id="eter-my-orders-count">3</span>)
+        </button>
+        <button onclick="switchEterPersonalTab('circulos')" id="eter-tab-btn-circulos" class="element-subtab-btn shrink-0">
+          🌀 Mis Círculos
+        </button>
+        <button onclick="switchEterPersonalTab('votos')" id="eter-tab-btn-votos" class="element-subtab-btn shrink-0">
+          🗳️ Mis Votos & Democracia
+        </button>
+        <button onclick="switchEterPersonalTab('firmas')" id="eter-tab-btn-firmas" class="element-subtab-btn shrink-0">
+          📜 Mis Firmas Digitales
+        </button>
+      </div>
+
+      <!-- SUBPANEL 1: MI LABOR & REVIEWS -->
+      <div id="eter-subpanel-labor" class="eter-personal-subpanel space-y-6">
+        
+        <!-- Tarjeta: Mi Labor Comunitaria ("A qué me dedico") -->
+        <div class="p-6 rounded-3xl bg-white border border-stone-200 shadow-xs">
+          <div class="flex items-center justify-between pb-3 border-b border-stone-100 mb-4">
+            <div class="flex items-center gap-2.5">
+              <span class="text-2xl">🌿</span>
+              <div>
+                <h3 class="font-black text-base text-stone-900 leading-tight">Mi Labor — ¿A qué me dedico?</h3>
+                <p class="text-[11px] text-stone-500">Tus saberes, oficio o productos compartidos con la comunidad del nodo</p>
+              </div>
+            </div>
+            <button onclick="openEditProfileModal()" class="text-xs font-bold text-[#c0826d] hover:text-[#a6634f] bg-[#fcf4f0] px-3 py-1.5 rounded-xl border border-[#c0826d]/20 transition-colors">
+              ✏️ Modificar
+            </button>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Oficio o Actividad Principal</span>
+              <h4 id="eter-labor-title" class="font-black text-lg text-stone-900">
+                Diseñadora Textil & Cerámica Botánica
+              </h4>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Descripción de Saberes & Servicios</span>
+              <p id="eter-labor-desc" class="text-xs sm:text-sm text-stone-700 leading-relaxed bg-stone-50 p-4 rounded-2xl border border-stone-200/80">
+                Confección de prendas en tintes naturales, vajilla artesanal para fermentos y talleres comunitarios de arcilla viva.
               </p>
             </div>
 
-            <!-- Pedido Anterior -->
-            <div class="p-3.5 rounded-2xl border border-stone-200 bg-stone-50 text-xs flex items-center justify-between">
-              <div>
-                <span class="font-bold text-stone-800">Pedido #2026-0742 (Modo Lunar)</span>
-                <p class="text-[11px] text-stone-500">Miel pura 1kg + Aceite de oliva 1L</p>
+            <div class="pt-2">
+              <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Disponibilidad & Días de Atención</span>
+              <p id="eter-labor-avail" class="text-xs font-semibold text-stone-600 mt-0.5">
+                ⏰ Sábados de 10:00 a 14:00 hs en Rawson 3450 o por encargo previo
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta: Reviews & Valoraciones sobre mis trabajos -->
+        <div class="p-6 rounded-3xl bg-white border border-stone-200 shadow-xs">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-100 mb-4">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-xl">⭐</span>
+                <h3 class="font-black text-base text-stone-900">Reviews & Reputación de mis Trabajos</h3>
               </div>
-              <span class="font-bold text-stone-500">Entregado ✓</span>
+              <p class="text-[11px] text-stone-500">Valoraciones verificadas de vecinas y miembros de la comunidad que contrataron o compraron tu labor</p>
+            </div>
+            <div class="flex items-center gap-2 self-start sm:self-auto bg-amber-50 px-3 py-1.5 rounded-2xl border border-amber-200">
+              <span class="text-amber-500 text-sm">⭐⭐⭐⭐⭐</span>
+              <span class="font-black text-xs text-amber-950">5.0 · 3 Reseñas</span>
             </div>
           </div>
 
-          <div class="pt-4 border-t border-stone-100 flex items-center justify-between">
-            <button onclick="navigateTo('tierra')" class="text-xs font-bold text-[#a6634f] hover:underline">
-              + Hacer Nuevo Pedido en la Tienda →
+          <!-- Listado de Reseñas -->
+          <div id="eter-reviews-list" class="space-y-3">
+            <!-- Inyectado dinámicamente por JS -->
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
+            <span>Tu reputación es visible en la Vidriera Barrial de Oficios</span>
+            <button onclick="copyShareLaborLink()" class="text-xs font-bold text-[#c0826d] hover:underline flex items-center gap-1">
+              <span>🔗</span> Compartir mi ficha de labor
             </button>
-            <span class="text-xs text-stone-400">Total acumulado: $38.400</span>
           </div>
         </div>
-      
-        <!-- Tarjeta: Mis Círculos de Compra Colectiva (VRDE Club) -->
-        <div class="bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/40 p-6 rounded-3xl border border-emerald-200 shadow-xs flex flex-col justify-between">
+
+      </div>
+
+      <!-- SUBPANEL 2: MIS PEDIDOS (SOLO COMPRAS PROPIAS) -->
+      <div id="eter-subpanel-pedidos" class="eter-personal-subpanel hidden space-y-4">
+        
+        <div class="p-5 rounded-3xl bg-gradient-to-r from-emerald-50/60 to-white border border-emerald-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-2xl">🌀</span>
-              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
-                Facultad de Círculo
-              </span>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xl">📦</span>
+              <h3 class="font-black text-base text-stone-900">Mis Compras Personales</h3>
             </div>
-            <h3 class="font-black text-lg text-emerald-950">Compras en Círculos</h3>
-            <p id="micrm-circle-status" class="text-xs text-emerald-800/90 font-semibold mt-0.5">
-              Sin Círculo Activo
-            </p>
-            <p class="text-xs text-stone-600 mt-3 leading-relaxed">
-              Autogestión de compras colectivas entre vecinos para recibir pedidos consolidados y coordinar el retiro barrial.
+            <p class="text-xs text-stone-600">
+              Historial y estado de entrega de los pedidos realizados exclusivamente por tu cuenta.
             </p>
           </div>
-          <button onclick="navigateTo('circulos')" class="w-full mt-4 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold py-2.5 rounded-full shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-1.5">
-            <span>🌀</span> Ver y Gestionar Círculos
+          <button onclick="navigateTo('tierra')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs shrink-0 flex items-center gap-1.5 self-start sm:self-auto">
+            <span>🌱</span> Ir a la Tienda
           </button>
         </div>
-      </div>
-    </div>
 
-
-    <!-- ACCESO RÁPIDO — MÓDULOS DEL CRM -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6" id="eter-modules-grid">
-      
-      <button onclick="showEterModule('centro')" class="eter-module-btn bg-white border border-stone-200 hover:border-[#c0826d] p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group col-span-2 sm:col-span-3" data-module="centro">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🏡</span>
-            <div>
-              <h3 class="font-black text-sm text-stone-900 group-hover:text-[#a6634f]">Oficina Barrial Rawson 3450 (Centro de la Nueva Era)</h3>
-              <p class="text-[11px] text-stone-500 mt-0.5">Espacio físico, atención vecinal por Gonza, Agus, Rami, Cris y Ro, consultas y mate</p>
-            </div>
-          </div>
-          <span class="text-xs font-bold text-[#a6634f] bg-[#fcf4f0] border border-[#c0826d]/30 px-2.5 py-1 rounded-full hidden sm:inline-block">Atención Abierta</span>
-        </div>
-      </button>
-
-      <button onclick="showEterModule('vrde')" class="eter-module-btn bg-white border border-stone-200 hover:border-emerald-600 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group col-span-2 sm:col-span-3" data-module="vrde">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🌿</span>
-            <div>
-              <h3 class="font-black text-sm text-stone-900 group-hover:text-emerald-700">Categorías & Co-Creación VRDE Club</h3>
-              <p class="text-[11px] text-stone-500 mt-0.5">Sincronización de categorías de alimentos y transferencia de Productores Barriales a la red mayor</p>
-            </div>
-          </div>
-          <span id="vrde-sync-badge-crm" class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-full hidden sm:inline-block">🟢 Red VRDE Conectada</span>
-        </div>
-      </button>
-
-      <button onclick="showEterModule('elementos')" class="eter-module-btn bg-white border border-stone-200 hover:border-emerald-500 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group col-span-2 sm:col-span-3" data-module="elementos">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🌀</span>
-            <div>
-              <h3 class="font-black text-sm text-stone-900 group-hover:text-emerald-700">Gestión de los 5 Elementos</h3>
-              <p class="text-[11px] text-stone-500 mt-0.5">Control y supervisión de Tierra, Agua, Fuego, Aire y Éter del nodo</p>
-            </div>
-          </div>
-          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full hidden sm:inline-block">5 Activos</span>
-        </div>
-      </button>
-
-      <button onclick="showEterModule('economia')" class="eter-module-btn bg-white border border-stone-200 hover:border-amber-400 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="economia">
-        <span class="text-2xl mb-2 block">💰</span>
-        <h3 class="font-black text-sm text-stone-900 group-hover:text-amber-700">Economía del Nodo</h3>
-        <p class="text-[11px] text-stone-500 mt-0.5">Ingresos, egresos y balance</p>
-      </button>
-
-      <button onclick="showEterModule('membresia')" class="eter-module-btn bg-white border border-stone-200 hover:border-blue-400 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="membresia">
-        <span class="text-2xl mb-2 block">💧</span>
-        <h3 class="font-black text-sm text-stone-900 group-hover:text-blue-700">Membresías CsC</h3>
-        <p class="text-[11px] text-stone-500 mt-0.5">Socios activos y renovaciones</p>
-      </button>
-
-      <button onclick="showEterModule('equipo')" class="eter-module-btn bg-white border border-stone-200 hover:border-[#c0826d] p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="equipo">
-        <span class="text-2xl mb-2 block">🌿</span>
-        <h3 class="font-black text-sm text-stone-900 group-hover:text-[#a6634f]">Equipo & Guardianes</h3>
-        <p class="text-[11px] text-stone-500 mt-0.5">Perfiles y roles del nodo</p>
-      </button>
-
-      <button onclick="showEterModule('horas')" class="eter-module-btn bg-white border border-stone-200 hover:border-emerald-500 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="horas">
-        <span class="text-2xl mb-2 block">⏰</span>
-        <h3 class="font-black text-sm text-stone-900 group-hover:text-emerald-700">Horas & Labores</h3>
-        <p class="text-[11px] text-stone-500 mt-0.5">Turnos y tareas del nodo</p>
-      </button>
-
-      <button onclick="showEterModule('claves')" class="eter-module-btn bg-white border border-stone-200 hover:border-red-400 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="claves">
-        <span class="text-2xl mb-2 block">🔐</span>
-        <h3 class="font-black text-sm text-stone-900 group-hover:text-red-700">Claves & Accesos</h3>
-        <p class="text-[11px] text-stone-500 mt-0.5">Plataformas y credenciales</p>
-      </button>
-
-      <button onclick="showEterModule('info')" class="eter-module-btn bg-white border border-stone-200 hover:border-purple-400 p-4 rounded-2xl shadow-xs text-left transition-all active:scale-95 group" data-module="info">
-        <span class="text-2xl mb-2 block">📋</span>
-        <h3 class="font-black text-sm text-stone-900 group-hover:text-purple-700">Info del Nodo</h3>
-        <p class="text-[11px] text-stone-500 mt-0.5">Datos legales y contactos</p>
-      </button>
-
-    </div>
-
-    <!-- PANEL DE CONTENIDO DEL MÓDULO ACTIVO -->
-    <div id="eter-module-content" class="min-h-64">
-      
-      <!-- MÓDULO: CENTRO COMUNITARIO RAWSON 3450 -->
-      <div id="eter-panel-centro" class="eter-panel hidden">
-        <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#ffffff] via-[#fcf4f0] to-[#f5ebe6] border border-[#c0826d]/40 mb-6 shadow-sm">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-            <div class="flex items-center gap-3">
-              <span class="w-12 h-12 rounded-2xl bg-[#fcf4f0] border border-[#c0826d]/30 flex items-center justify-center text-2xl shadow-xs">🏡</span>
-              <div>
-                <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-2.5 py-0.5 rounded-full">Sede Física & Oficina Barrial</span>
-                <h2 class="text-xl sm:text-2xl font-black text-stone-900 mt-0.5">Centro Comunitario Elementales · Rawson 3450</h2>
-              </div>
-            </div>
-            <div class="text-xs text-stone-600 bg-white/90 px-3.5 py-1.5 rounded-full border border-stone-200 shadow-2xs font-semibold">
-              ⏰ Lun-Sáb 09:30 a 19:30 hs
-            </div>
-          </div>
-          <p class="text-xs sm:text-sm text-stone-700 leading-relaxed max-w-3xl mb-4">
-            Esta es la oficina de la nueva era para la gestión comunitaria de La Lucila. Un espacio abierto de encuentro donde atienden <strong>Gonza, Agus, Rami, Cris y Ro</strong> para charlar, sacarse dudas, coordinar compras colectivas a precio de costo, registrar oficios o solicitar financiamiento para proyectos barriales.
-          </p>
-          <div class="flex flex-wrap gap-2">
-            <a 
-              href="https://wa.me/5491123456789?text=Hola%20Gonza,%20Agus,%20Rami,%20Cris%20y%20Ro!%20Me%20comunico%20desde%20el%20portal%20barrial..."
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bg-[#25D366] hover:bg-[#1ebc59] text-white text-xs font-bold px-4 py-2 rounded-full shadow-xs inline-flex items-center gap-1.5"
-            >
-              <span>💬</span>
-              <span>Escribir al WhatsApp de la Oficina</span>
-            </a>
-            <a 
-              href="https://www.google.com/maps/search/Rawson+3450+La+Lucila+Vicente+Lopez"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 text-xs font-bold px-4 py-2 rounded-full shadow-xs inline-flex items-center gap-1.5"
-            >
-              <span>📍</span>
-              <span>Abrir en Google Maps ↗</span>
-            </a>
-          </div>
+        <div class="p-3 bg-stone-100/70 border border-stone-200 rounded-2xl text-[11px] text-stone-600 flex items-center gap-2">
+          <span>🔒</span>
+          <span><strong>Privacidad garantizada:</strong> Desde este usuario no ves los pedidos de otros vecinos ni la caja global del nodo. Solo tenés acceso a tus compras personales.</span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="guardianes-lucila-grid">
-          <!-- Se puebla dinámicamente con renderCentroLucila() -->
+        <!-- Listado de Pedidos Personales -->
+        <div id="eter-personal-orders-list" class="space-y-3">
+          <!-- Inyectado dinámicamente por renderEterPersonalPedidos() -->
         </div>
+
       </div>
 
-      <!-- MÓDULO: GESTIÓN DE TODOS LOS ELEMENTOS -->
-      <div id="eter-panel-elementos" class="eter-panel hidden">
-        <div class="flex items-center justify-between gap-2 mb-4">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">🌀</span>
-            <h2 class="text-lg font-black text-stone-900">Gestión de los 5 Elementos en La Lucila</h2>
-          </div>
-          <span class="text-xs font-bold text-stone-500 bg-stone-100 px-3 py-1 rounded-full">Nodo Activo</span>
-        </div>
+      <!-- SUBPANEL 3: MIS CÍRCULOS DE COMPRA -->
+      <div id="eter-subpanel-circulos" class="eter-personal-subpanel hidden space-y-4">
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- 1. TIERRA -->
-          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs">
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center text-base">🌱</span>
-                <h3 class="font-black text-sm text-stone-900">Elemento Tierra</h3>
-              </div>
-              <span class="text-[10px] font-bold text-[#8ca15d] bg-[#f4f6ef] px-2 py-0.5 rounded-full">6 Oficios Activos</span>
+        <div class="p-5 rounded-3xl bg-gradient-to-r from-teal-50/60 to-white border border-teal-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xl">🌀</span>
+              <h3 class="font-black text-base text-stone-900">Mis Círculos Barriales</h3>
             </div>
-            <p class="text-xs text-stone-600 mb-3">Vidriera de oficios de confianza, red de huerta y compostaje comunitario.</p>
-            <div class="flex gap-2">
-              <button onclick="navigateTo('oficios')" class="text-xs font-bold text-[#8ca15d] bg-[#f4f6ef] border border-[#c2d49e]/50 px-3 py-1.5 rounded-xl hover:bg-[#e6edd5] transition-colors">Ver Vidriera →</button>
-              <button onclick="openModalSumarAlBarrio('oficio')" class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl hover:bg-stone-200 transition-colors">+ Sumar Oficio</button>
+            <p class="text-xs text-stone-600">
+              Círculos a los que pertenecés para coordinar compras comunitarias al costo de productor.
+            </p>
+          </div>
+          <button onclick="openCreateCirculoModal()" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-all shadow-xs shrink-0 flex items-center gap-1.5 self-start sm:self-auto">
+            <span>+</span> Crear Nuevo Círculo
+          </button>
+        </div>
+
+        <!-- Listado de Círculos del Usuario -->
+        <div id="eter-personal-circulos-list" class="space-y-3">
+          <!-- Inyectado dinámicamente por renderEterPersonalCirculos() -->
+        </div>
+
+      </div>
+
+      <!-- SUBPANEL 4: MIS VOTOS & DEMOCRACIA PARTICIPATIVA -->
+      <div id="eter-subpanel-votos" class="eter-personal-subpanel hidden space-y-6">
+        
+        <!-- Tarjeta: Votos Emitidos -->
+        <div class="p-6 rounded-3xl bg-white border border-stone-200 shadow-xs">
+          <div class="flex items-center gap-2.5 pb-3 border-b border-stone-100 mb-4">
+            <span class="text-xl">🗳️</span>
+            <div>
+              <h3 class="font-black text-base text-stone-900 leading-tight">Mis Votos Emitidos en el Nodo</h3>
+              <p class="text-[11px] text-stone-500">Historial de decisiones barriales vinculantes en las que participaste</p>
             </div>
           </div>
 
-          <!-- 2. AGUA -->
-          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs">
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center text-base">💧</span>
-                <h3 class="font-black text-sm text-stone-900">Elemento Agua</h3>
-              </div>
-              <span class="text-[10px] font-bold text-[#52778c] bg-[#f2f6f9] px-2 py-0.5 rounded-full">4 Grupos WA</span>
+          <div id="eter-personal-votes-list" class="space-y-2.5">
+            <!-- Inyectado dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Tarjeta: Votaciones Abiertas de la Asamblea -->
+        <div class="p-6 rounded-3xl bg-gradient-to-br from-white to-[#fcf5f1] border border-[#c0826d]/30 shadow-xs">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">📢</span>
+              <h3 class="font-black text-base text-stone-900">Votaciones Abiertas en la Asamblea</h3>
             </div>
-            <p class="text-xs text-stone-600 mb-3">Vínculos vecinales, talleres prácticos y canal de alertas y avisos comunitarios.</p>
-            <div class="flex gap-2">
-              <button onclick="navigateTo('whatsapp')" class="text-xs font-bold text-[#52778c] bg-[#f2f6f9] border border-[#b4cfdf]/50 px-3 py-1.5 rounded-xl hover:bg-[#e0ecf3] transition-colors">Grupos WhatsApp →</button>
-              <button onclick="navigateTo('talleres')" class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl hover:bg-stone-200 transition-colors">Talleres</button>
+            <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-2.5 py-0.5 rounded-full">
+              1 Miembro = 1 Voto
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="eter-open-proposals-container">
+            <!-- Votación 1 -->
+            <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-2xs flex flex-col justify-between" id="vote-card-1">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                    Abierta • Cierra en 4 días
+                  </span>
+                  <span class="text-xs font-bold text-stone-500" id="vote-total-1">78 votos</span>
+                </div>
+                <h4 class="font-black text-sm text-stone-900">
+                  ¿En qué invertimos el 25% del Fondo Barrial este mes?
+                </h4>
+                <p class="text-xs text-stone-600 mt-1 mb-4">
+                  Monto disponible para asignación: <strong>$80.000</strong> generado por el aporte de membresías y feria.
+                </p>
+
+                <div class="space-y-2 mb-4">
+                  <button onclick="castVote(1, 'A')" class="w-full text-left p-2.5 rounded-xl border border-stone-200 hover:border-emerald-500 bg-stone-50 hover:bg-emerald-50/40 transition-all flex items-center justify-between text-xs group">
+                    <span class="font-semibold text-stone-800 group-hover:text-emerald-900">🌿 Ampliación de bancales y riego por goteo</span>
+                    <span class="font-black text-emerald-700 bg-white px-2 py-0.5 rounded-lg border border-emerald-200" id="vote-count-1-A">54% (42)</span>
+                  </button>
+                  <button onclick="castVote(1, 'B')" class="w-full text-left p-2.5 rounded-xl border border-stone-200 hover:border-emerald-500 bg-stone-50 hover:bg-emerald-50/40 transition-all flex items-center justify-between text-xs group">
+                    <span class="font-semibold text-stone-800 group-hover:text-emerald-900">🛠️ Herramientas compartidas para oficios</span>
+                    <span class="font-black text-stone-600 bg-white px-2 py-0.5 rounded-lg border border-stone-200" id="vote-count-1-B">32% (25)</span>
+                  </button>
+                  <button onclick="castVote(1, 'C')" class="w-full text-left p-2.5 rounded-xl border border-stone-200 hover:border-emerald-500 bg-stone-50 hover:bg-emerald-50/40 transition-all flex items-center justify-between text-xs group">
+                    <span class="font-semibold text-stone-800 group-hover:text-emerald-900">💡 Iluminación solar para el patio</span>
+                    <span class="font-black text-stone-600 bg-white px-2 py-0.5 rounded-lg border border-stone-200" id="vote-count-1-C">14% (11)</span>
+                  </button>
+                </div>
+              </div>
+              <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-500">
+                <span>Resultados vinculantes</span>
+                <span class="font-bold text-emerald-700">✓ Voto seguro</span>
+              </div>
+            </div>
+
+            <!-- Votación 2 -->
+            <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-2xs flex flex-col justify-between" id="vote-card-2">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-black uppercase tracking-wider text-blue-800 bg-blue-100 px-2 py-0.5 rounded-full">
+                    Abierta • Cierra en 6 días
+                  </span>
+                  <span class="text-xs font-bold text-stone-500" id="vote-total-2">61 votos</span>
+                </div>
+                <h4 class="font-black text-sm text-stone-900">
+                  Horario de la Feria Agroecológica de Verano
+                </h4>
+                <p class="text-xs text-stone-600 mt-1 mb-4">
+                  Para evitar el calor extremo, ¿qué franja horaria preferís para el retiro de pedidos y puestos en la vereda?
+                </p>
+
+                <div class="space-y-2 mb-4">
+                  <button onclick="castVote(2, 'A')" class="w-full text-left p-2.5 rounded-xl border border-stone-200 hover:border-blue-500 bg-stone-50 hover:bg-blue-50/40 transition-all flex items-center justify-between text-xs group">
+                    <span class="font-semibold text-stone-800 group-hover:text-blue-900">🌅 Viernes al atardecer (17:30 a 21:30 hs)</span>
+                    <span class="font-black text-blue-700 bg-white px-2 py-0.5 rounded-lg border border-blue-200" id="vote-count-2-A">68% (42)</span>
+                  </button>
+                  <button onclick="castVote(2, 'B')" class="w-full text-left p-2.5 rounded-xl border border-stone-200 hover:border-blue-500 bg-stone-50 hover:bg-blue-50/40 transition-all flex items-center justify-between text-xs group">
+                    <span class="font-semibold text-stone-800 group-hover:text-blue-900">☀️ Sábados por la mañana (09:00 a 13:00 hs)</span>
+                    <span class="font-black text-stone-600 bg-white px-2 py-0.5 rounded-lg border border-stone-200" id="vote-count-2-B">32% (19)</span>
+                  </button>
+                </div>
+              </div>
+              <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-500">
+                <span>Aplica desde Noviembre</span>
+                <span class="font-bold text-blue-700">✓ Voto seguro</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SUBPANEL 5: MIS FIRMAS DIGITALES -->
+      <div id="eter-subpanel-firmas" class="eter-personal-subpanel hidden space-y-4">
+        
+        <div class="p-5 rounded-3xl bg-gradient-to-r from-indigo-50/60 to-white border border-indigo-200 shadow-2xs flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">📜</span>
+            <div>
+              <h3 class="font-black text-base text-stone-900">Mis Firmas Digitales & Acuerdos</h3>
+              <p class="text-xs text-stone-600">Manifiestos y compromisos comunitarios que suscribiste con tu identidad digital verificada.</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-indigo-900 bg-indigo-100 px-3 py-1 rounded-full shrink-0 hidden sm:inline-block">
+            3 Activas
+          </span>
+        </div>
+
+        <div id="eter-personal-signatures-list" class="space-y-3">
+          <!-- Inyectado dinámicamente -->
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- CONTENEDOR 2: PANEL DE GESTIÓN OPERATIVA DEL NODO (SOLO GESTORES CON PIN) -->
+    <!-- ========================================================================= -->
+    <div id="eter-panel-gestion-nodo" class="hidden mb-8">
+      
+      <!-- Aviso de Exclusividad para el Equipo -->
+      <div class="p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 mb-6 flex items-start gap-3 shadow-xs">
+        <span class="text-2xl mt-0.5 shrink-0">🔐</span>
+        <div>
+          <h3 class="font-black text-sm text-amber-950">Centro de Mando Operativo del Nodo · Uso Exclusivo del Equipo</h3>
+          <p class="text-xs text-amber-900/90 leading-snug mt-0.5">
+            Acá podés visualizar los pedidos de todos los usuarios de la feria, la nómina completa de miembros, la caja chica del nodo, los turnos de guardia y las credenciales seguras. Este panel está totalmente oculto para vecinos y socios.
+          </p>
+        </div>
+      </div>
+
+      <!-- PESTAÑAS DE GESTIÓN DEL NODO -->
+      <div id="eter-gestion-subnav-tabs" class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-stone-200/70">
+        <button onclick="switchEterGestionTab('pedidos')" id="eter-gestion-tab-btn-pedidos" class="element-subtab-btn active-eter shrink-0">
+          📦 Pedidos de Todos los Usuarios
+        </button>
+        <button onclick="switchEterGestionTab('socios')" id="eter-gestion-tab-btn-socios" class="element-subtab-btn shrink-0">
+          👥 Directorio de Socios
+        </button>
+        <button onclick="switchEterGestionTab('economia')" id="eter-gestion-tab-btn-economia" class="element-subtab-btn shrink-0">
+          💰 Economía & Caja Chica
+        </button>
+        <button onclick="switchEterGestionTab('horas')" id="eter-gestion-tab-btn-horas" class="element-subtab-btn shrink-0">
+          ⏰ Horas & Turnos
+        </button>
+        <button onclick="switchEterGestionTab('claves')" id="eter-gestion-tab-btn-claves" class="element-subtab-btn shrink-0">
+          🔐 Claves & Accesos
+        </button>
+        <button onclick="switchEterGestionTab('centro')" id="eter-gestion-tab-btn-centro" class="element-subtab-btn shrink-0">
+          🏡 Espacio Rawson 3450
+        </button>
+      </div>
+
+      <!-- GESTIÓN SUBPANEL 1: PEDIDOS DE TODOS LOS USUARIOS -->
+      <div id="eter-gestion-panel-pedidos" class="eter-gestion-subpanel space-y-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+          <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Total Pedidos</span>
+            <span id="eter-admin-total-orders" class="text-xl font-black text-stone-900">0</span>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Total Recaudado</span>
+            <span id="eter-admin-total-revenue" class="text-xl font-black text-emerald-700">$0</span>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Efectivo</span>
+            <span id="eter-admin-total-cash" class="text-xl font-black text-stone-700">$0</span>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">Transferencias</span>
+            <span id="eter-admin-total-digital" class="text-xl font-black text-blue-700">$0</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-stone-200 p-5 shadow-xs">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-stone-100">
+            <div class="relative flex-1 max-w-sm">
+              <input 
+                type="text" 
+                id="eter-admin-order-search" 
+                oninput="filterEterGestionPedidos()" 
+                placeholder="Buscar por cliente, teléfono o nro..." 
+                class="w-full text-xs border border-stone-200 rounded-xl px-3 py-2 pl-8 outline-none focus:border-emerald-600 bg-stone-50"
+              />
+              <span class="absolute left-2.5 top-2.5 text-xs text-stone-400">🔍</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="eter-admin-status-filter" onchange="filterEterGestionPedidos()" class="text-xs border border-stone-200 rounded-xl px-3 py-2 outline-none bg-stone-50 font-bold text-stone-700">
+                <option value="Todos">Todos los estados</option>
+                <option value="Pendiente">Pendientes</option>
+                <option value="Pagado">Pagados</option>
+                <option value="Listo para Retirar">Listos para Retirar</option>
+                <option value="Entregado">Entregados</option>
+              </select>
             </div>
           </div>
 
-          <!-- 3. FUEGO -->
-          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs">
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl bg-[#fdf4f0] border border-[#f2b5a2]/50 flex items-center justify-center text-base">🔥</span>
-                <h3 class="font-black text-sm text-stone-900">Elemento Fuego</h3>
-              </div>
-              <span class="text-[10px] font-bold text-[#d97757] bg-[#fdf4f0] px-2 py-0.5 rounded-full">3 Proyectos</span>
-            </div>
-            <p class="text-xs text-stone-600 mb-3">Financiamiento de proyectos locales, incubadora barrial y motor de transformación.</p>
-            <div class="flex gap-2">
-              <button onclick="navigateTo('financiamiento')" class="text-xs font-bold text-[#d97757] bg-[#fdf4f0] border border-[#f2b5a2]/50 px-3 py-1.5 rounded-xl hover:bg-[#fae3da] transition-colors">Ver Proyectos →</button>
-              <button onclick="openModalSumarAlBarrio('proyecto')" class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl hover:bg-stone-200 transition-colors">+ Postular</button>
-            </div>
-          </div>
-
-          <!-- 4. AIRE -->
-          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs">
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl bg-[#f6f7f3] border border-[#d2d7c1]/50 flex items-center justify-center text-base">💨</span>
-                <h3 class="font-black text-sm text-stone-900">Elemento Aire</h3>
-              </div>
-              <span class="text-[10px] font-bold text-[#7d8560] bg-[#f6f7f3] px-2 py-0.5 rounded-full">Noticias Activas</span>
-            </div>
-            <p class="text-xs text-stone-600 mb-3">Google News de La Lucila, alertas de marea y clima, y comunicación oficial del nodo.</p>
-            <div class="flex gap-2">
-              <button onclick="navigateTo('noticias')" class="text-xs font-bold text-[#7d8560] bg-[#f6f7f3] border border-[#d2d7c1]/50 px-3 py-1.5 rounded-xl hover:bg-[#ebeee4] transition-colors">Noticias Locales →</button>
-            </div>
-          </div>
-
-          <!-- 5. ÉTER -->
-          <div class="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs md:col-span-2">
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl bg-[#fcf4f0] border border-[#dfc2b7]/50 flex items-center justify-center text-base">✨</span>
-                <h3 class="font-black text-sm text-stone-900">Elemento Éter (El Nodo Central)</h3>
-              </div>
-              <span class="text-[10px] font-bold text-[#a6634f] bg-[#fcf4f0] px-2 py-0.5 rounded-full">Oficina Rawson 3450</span>
-            </div>
-            <p class="text-xs text-stone-600 mb-3">Coordinación de los 5 guardianes, atención presencial en La Lucila, administración general de membresías y economía.</p>
-            <div class="flex gap-2">
-              <button onclick="navigateTo('centro-lucila')" class="text-xs font-bold text-[#a6634f] bg-[#fcf4f0] border border-[#c0826d]/30 px-3 py-1.5 rounded-xl hover:bg-[#fde9e1] transition-colors">Oficina Pública →</button>
-              <button onclick="showEterModule('economia')" class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl hover:bg-stone-200 transition-colors">Economía</button>
-              <button onclick="showEterModule('membresia')" class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl hover:bg-stone-200 transition-colors">Membresías</button>
-            </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs border-collapse min-w-[600px]">
+              <thead>
+                <tr class="border-b border-stone-100 text-stone-400 uppercase text-[10px] tracking-wider text-left">
+                  <th class="py-2.5 px-3">Nro</th>
+                  <th class="py-2.5 px-3">Fecha</th>
+                  <th class="py-2.5 px-3">Cliente</th>
+                  <th class="py-2.5 px-3">Items</th>
+                  <th class="py-2.5 px-3">Total</th>
+                  <th class="py-2.5 px-3">Estado</th>
+                  <th class="py-2.5 px-3 text-right">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="eter-admin-orders-tbody" class="divide-y divide-stone-100">
+                <!-- Se puebla con renderEterGestionPedidos() -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-      <!-- MÓDULO: ECONOMÍA -->
-      <div id="eter-panel-economia" class="eter-panel hidden">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="text-xl">💰</span>
-          <h2 class="text-lg font-black text-stone-900">Economía del Nodo</h2>
+
+      <!-- GESTIÓN SUBPANEL 2: DIRECTORIO DE TODOS LOS SOCIOS -->
+      <div id="eter-gestion-panel-socios" class="eter-gestion-subpanel hidden space-y-4">
+        <div class="bg-white rounded-3xl border border-stone-200 p-5 shadow-xs">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-stone-100">
+            <div>
+              <h3 class="font-black text-base text-stone-900">Directorio de Socios del Nodo</h3>
+              <p class="text-xs text-stone-500">Listado general de integrantes y estados de cuota mensual</p>
+            </div>
+            <div class="relative w-full sm:w-64">
+              <input 
+                type="text" 
+                id="eter-admin-socio-search" 
+                oninput="filterEterGestionSocios()" 
+                placeholder="Buscar socio..." 
+                class="w-full text-xs border border-stone-200 rounded-xl px-3 py-2 pl-8 outline-none focus:border-blue-600 bg-stone-50"
+              />
+              <span class="absolute left-2.5 top-2.5 text-xs text-stone-400">🔍</span>
+            </div>
+          </div>
+
+          <div id="eter-admin-socios-list" class="space-y-2.5">
+            <!-- Se puebla dinámicamente con renderEterGestionSocios() -->
+          </div>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+      </div>
+
+      <!-- GESTIÓN SUBPANEL 3: ECONOMÍA & CAJA CHICA -->
+      <div id="eter-gestion-panel-economia" class="eter-gestion-subpanel hidden space-y-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
           <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
             <p class="text-xs font-bold text-emerald-700 mb-1">Ingresos (mes)</p>
             <p class="text-xl font-black text-emerald-800" id="eco-ingresos">$0</p>
@@ -1771,11 +1855,13 @@
             <p class="text-xl font-black text-amber-800" id="eco-fondo">$0</p>
           </div>
         </div>
-        <!-- Registro de movimientos -->
-        <div class="bg-white rounded-2xl border border-stone-200 p-4">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="font-bold text-sm text-stone-900">Movimientos recientes</h3>
-            <button onclick="openEterMovimientoForm()" class="text-xs font-bold text-[#a6634f] bg-[#fcf4f0] border border-[#c0826d]/30 px-3 py-1 rounded-full hover:bg-[#fde9e1] transition-colors">+ Cargar</button>
+
+        <div class="bg-white rounded-3xl border border-stone-200 p-5 shadow-xs">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-stone-100">
+            <h3 class="font-bold text-sm text-stone-900">Libro de Movimientos de Caja</h3>
+            <button onclick="openEterMovimientoForm()" class="text-xs font-bold text-[#a6634f] bg-[#fcf4f0] border border-[#c0826d]/30 px-3 py-1.5 rounded-full hover:bg-[#fde9e1] transition-colors">
+              + Cargar Movimiento
+            </button>
           </div>
           <div id="eco-movimientos-list" class="space-y-2 text-xs">
             <p class="text-stone-400 text-center py-4">Sin movimientos cargados aún.</p>
@@ -1783,303 +1869,122 @@
         </div>
       </div>
 
-      <!-- MÓDULO: MEMBRESÍAS -->
-      <div id="eter-panel-membresia" class="eter-panel hidden">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="text-xl">💧</span>
-          <h2 class="text-lg font-black text-stone-900">Membresías CsC Activas</h2>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
-          <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-center">
-            <p class="text-xs font-bold text-blue-700 mb-1">Socios activos</p>
-            <p id="memb-activos" class="text-2xl font-black text-blue-800">0</p>
-          </div>
-          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
-            <p class="text-xs font-bold text-amber-700 mb-1">Vencen este mes</p>
-            <p id="memb-vencen" class="text-2xl font-black text-amber-800">0</p>
-          </div>
-          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center">
-            <p class="text-xs font-bold text-emerald-700 mb-1">Ingresos membresía</p>
-            <p id="memb-ingresos" class="text-2xl font-black text-emerald-800">$0</p>
-          </div>
-        </div>
-        <div class="bg-white rounded-2xl border border-stone-200 p-4">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="font-bold text-sm text-stone-900">Listado de socios</h3>
-            <button onclick="navigateTo('members-directory')" class="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full hover:bg-blue-100 transition-colors">Ver directorio completo →</button>
-          </div>
-          <div id="memb-socios-list" class="space-y-2 text-xs">
-            <p class="text-stone-400 text-center py-4">Cargando socios...</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- MÓDULO: EQUIPO -->
-      <div id="eter-panel-equipo" class="eter-panel hidden">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="text-xl">🌿</span>
-          <h2 class="text-lg font-black text-stone-900">Equipo & Guardianes del Nodo</h2>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="eter-equipo-grid">
-          <!-- Guardianes del nodo -->
-          <div class="bg-white border border-stone-200 rounded-2xl p-4 flex items-start gap-3">
-            <span class="w-10 h-10 rounded-full bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center text-xl shrink-0">🌿</span>
-            <div class="min-w-0">
-              <h3 class="font-black text-sm text-stone-900">Rami</h3>
-              <span class="text-[11px] font-bold text-[#8ca15d] bg-[#f4f6ef] px-2 py-0.5 rounded-full border border-[#c2d49e]/50">Coordinador & Tecnología Barrial</span>
-              <p class="text-xs text-stone-500 mt-1.5 leading-snug">Gestión del portal, GitHub, dominio, integraciones y estrategia digital del nodo.</p>
-            </div>
-          </div>
-          <div class="bg-white border border-stone-200 rounded-2xl p-4 flex items-start gap-3">
-            <span class="w-10 h-10 rounded-full bg-[#fdf4f0] border border-[#f2b5a2]/50 flex items-center justify-center text-xl shrink-0">🔥</span>
-            <div class="min-w-0">
-              <h3 class="font-black text-sm text-stone-900">Gonza</h3>
-              <span class="text-[11px] font-bold text-[#d97757] bg-[#fdf4f0] px-2 py-0.5 rounded-full border border-[#f2b5a2]/50">Guardián de la Energía Vital</span>
-              <p class="text-xs text-stone-500 mt-1.5 leading-snug">Motor del nodo, visión y acción comunitaria. Liderazgo de proyectos y talleres de fuego.</p>
-            </div>
-          </div>
-          <div class="bg-white border border-stone-200 rounded-2xl p-4 flex items-start gap-3">
-            <span class="w-10 h-10 rounded-full bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center text-xl shrink-0">💧</span>
-            <div class="min-w-0">
-              <h3 class="font-black text-sm text-stone-900">Agus</h3>
-              <span class="text-[11px] font-bold text-[#52778c] bg-[#f2f6f9] px-2 py-0.5 rounded-full border border-[#b4cfdf]/50">Vínculos & Bienvenida Vecinal</span>
-              <p class="text-xs text-stone-500 mt-1.5 leading-snug">Recibe a los vecinos, gestiona membresías, coordina la agenda y facilita los círculos comunitarios.</p>
-            </div>
-          </div>
-          <div class="bg-white border border-stone-200 rounded-2xl p-4 flex items-start gap-3">
-            <span class="w-10 h-10 rounded-full bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center text-xl shrink-0">🌱</span>
-            <div class="min-w-0">
-              <h3 class="font-black text-sm text-stone-900">Cris</h3>
-              <span class="text-[11px] font-bold text-[#8ca15d] bg-[#f4f6ef] px-2 py-0.5 rounded-full border border-[#c2d49e]/50">Guardián del Suelo Vivo</span>
-              <p class="text-xs text-stone-500 mt-1.5 leading-snug">Huerta regenerativa, compostaje, semillas y talleres de tierra. Gestión del espacio exterior.</p>
-            </div>
-          </div>
-          <div class="bg-white border border-stone-200 rounded-2xl p-4 flex items-start gap-3">
-            <span class="w-10 h-10 rounded-full bg-[#fcf4f0] border border-[#dfc2b7]/50 flex items-center justify-center text-xl shrink-0">✨</span>
-            <div class="min-w-0">
-              <h3 class="font-black text-sm text-stone-900">Ro</h3>
-              <span class="text-[11px] font-bold text-[#a6634f] bg-[#fcf4f0] px-2 py-0.5 rounded-full border border-[#dfc2b7]/50">Alquimista Natural & Salud</span>
-              <p class="text-xs text-stone-500 mt-1.5 leading-snug">Nutrición consciente, fermentos, cosmética artesanal. Coordina talleres de alquimia y el espacio de salud.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MÓDULO: HORAS & LABORES -->
-      <div id="eter-panel-horas" class="eter-panel hidden">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="text-xl">⏰</span>
-          <h2 class="text-lg font-black text-stone-900">Horas & Labores del Nodo</h2>
-        </div>
-        <!-- Guardias de la semana -->
-        <div class="bg-white rounded-2xl border border-stone-200 p-4 mb-4">
-          <h3 class="font-bold text-sm text-stone-900 mb-3">Turnos de atención — Semana actual</h3>
+      <!-- GESTIÓN SUBPANEL 4: HORAS & TURNOS DE GUARDIA -->
+      <div id="eter-gestion-panel-horas" class="eter-gestion-subpanel hidden space-y-4">
+        <div class="bg-white rounded-3xl border border-stone-200 p-5 shadow-xs mb-4">
+          <h3 class="font-bold text-sm text-stone-900 mb-3">Turnos de guardia de los 5 guardianes</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-xs border-collapse min-w-[400px]">
               <thead>
-                <tr class="border-b border-stone-100">
-                  <th class="text-left font-bold text-stone-600 pb-2 pr-3">Día</th>
-                  <th class="text-left font-bold text-stone-600 pb-2 pr-3">Guardián</th>
-                  <th class="text-left font-bold text-stone-600 pb-2 pr-3">Horario</th>
-                  <th class="text-left font-bold text-stone-600 pb-2">Estado</th>
+                <tr class="border-b border-stone-100 text-stone-400 uppercase text-[10px]">
+                  <th class="text-left font-bold pb-2 pr-3">Día</th>
+                  <th class="text-left font-bold pb-2 pr-3">Guardián</th>
+                  <th class="text-left font-bold pb-2 pr-3">Horario</th>
+                  <th class="text-left font-bold pb-2">Estado</th>
                 </tr>
               </thead>
-              <tbody id="horas-turnos-tbody" class="space-y-1">
-                <tr class="border-b border-stone-50">
-                  <td class="py-2 pr-3 font-bold text-stone-800">Lunes</td>
-                  <td class="py-2 pr-3 text-stone-600">Agus</td>
-                  <td class="py-2 pr-3 text-stone-500">09:30 – 14:00</td>
-                  <td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td>
-                </tr>
-                <tr class="border-b border-stone-50">
-                  <td class="py-2 pr-3 font-bold text-stone-800">Martes</td>
-                  <td class="py-2 pr-3 text-stone-600">Gonza</td>
-                  <td class="py-2 pr-3 text-stone-500">10:00 – 19:30</td>
-                  <td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td>
-                </tr>
-                <tr class="border-b border-stone-50">
-                  <td class="py-2 pr-3 font-bold text-stone-800">Miércoles</td>
-                  <td class="py-2 pr-3 text-stone-600">Rami + Cris</td>
-                  <td class="py-2 pr-3 text-stone-500">09:30 – 19:30</td>
-                  <td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td>
-                </tr>
-                <tr class="border-b border-stone-50">
-                  <td class="py-2 pr-3 font-bold text-stone-800">Jueves</td>
-                  <td class="py-2 pr-3 text-stone-600">Ro</td>
-                  <td class="py-2 pr-3 text-stone-500">14:00 – 19:30</td>
-                  <td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td>
-                </tr>
-                <tr class="border-b border-stone-50">
-                  <td class="py-2 pr-3 font-bold text-stone-800">Viernes</td>
-                  <td class="py-2 pr-3 text-stone-600 italic text-amber-600">Sin asignar</td>
-                  <td class="py-2 pr-3 text-stone-500">09:30 – 19:30</td>
-                  <td class="py-2"><span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-bold">⚠ Pendiente</span></td>
-                </tr>
-                <tr>
-                  <td class="py-2 pr-3 font-bold text-stone-800">Sábado</td>
-                  <td class="py-2 pr-3 text-stone-600">Gonza + Agus</td>
-                  <td class="py-2 pr-3 text-stone-500">10:00 – 16:00</td>
-                  <td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td>
-                </tr>
+              <tbody class="divide-y divide-stone-50">
+                <tr><td class="py-2 pr-3 font-bold text-stone-800">Lunes</td><td class="py-2 pr-3 text-stone-600">Agus</td><td class="py-2 pr-3 text-stone-500">09:30 – 14:00</td><td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td></tr>
+                <tr><td class="py-2 pr-3 font-bold text-stone-800">Martes</td><td class="py-2 pr-3 text-stone-600">Gonza</td><td class="py-2 pr-3 text-stone-500">10:00 – 19:30</td><td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td></tr>
+                <tr><td class="py-2 pr-3 font-bold text-stone-800">Miércoles</td><td class="py-2 pr-3 text-stone-600">Rami + Cris</td><td class="py-2 pr-3 text-stone-500">09:30 – 19:30</td><td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td></tr>
+                <tr><td class="py-2 pr-3 font-bold text-stone-800">Jueves</td><td class="py-2 pr-3 text-stone-600">Ro</td><td class="py-2 pr-3 text-stone-500">14:00 – 19:30</td><td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td></tr>
+                <tr><td class="py-2 pr-3 font-bold text-stone-800">Viernes</td><td class="py-2 pr-3 text-amber-600 font-bold">Equipo Rotativo</td><td class="py-2 pr-3 text-stone-500">09:30 – 19:30</td><td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td></tr>
+                <tr><td class="py-2 pr-3 font-bold text-stone-800">Sábado</td><td class="py-2 pr-3 text-stone-600">Gonza + Agus</td><td class="py-2 pr-3 text-stone-500">10:00 – 16:00</td><td class="py-2"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Cubierto</span></td></tr>
               </tbody>
             </table>
           </div>
         </div>
-        <!-- Tareas pendientes -->
-        <div class="bg-white rounded-2xl border border-stone-200 p-4">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="font-bold text-sm text-stone-900">Tareas y labores pendientes</h3>
+
+        <div class="bg-white rounded-3xl border border-stone-200 p-5 shadow-xs">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-stone-100">
+            <h3 class="font-bold text-sm text-stone-900">Labores del Centro Barrial</h3>
             <button onclick="openEterTareaForm()" class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full hover:bg-emerald-100 transition-colors">+ Agregar</button>
           </div>
-          <div id="horas-tareas-list" class="space-y-2">
+          <div class="space-y-2 text-xs text-stone-700">
             <label class="flex items-start gap-2 p-2 rounded-xl hover:bg-stone-50 cursor-pointer">
               <input type="checkbox" class="mt-0.5 rounded shrink-0" />
-              <span class="text-xs text-stone-700">Reponer papel higiénico y artículos de limpieza del local</span>
+              <span>Reponer papel y artículos de limpieza de la sede</span>
             </label>
             <label class="flex items-start gap-2 p-2 rounded-xl hover:bg-stone-50 cursor-pointer">
               <input type="checkbox" class="mt-0.5 rounded shrink-0" />
-              <span class="text-xs text-stone-700">Regar la huerta y revisar el compostador de balcón</span>
+              <span>Regar la huerta exterior y revisar el compostador</span>
             </label>
             <label class="flex items-start gap-2 p-2 rounded-xl hover:bg-stone-50 cursor-pointer">
-              <input type="checkbox" class="mt-0.5 rounded shrink-0" />
-              <span class="text-xs text-stone-700 font-bold text-amber-700">🔥 URGENTE: Preparar espacio para taller del Sábado 26/09 (10:30 hs)</span>
-            </label>
-            <label class="flex items-start gap-2 p-2 rounded-xl hover:bg-stone-50 cursor-pointer">
-              <input type="checkbox" class="mt-0.5 rounded shrink-0" />
-              <span class="text-xs text-stone-700">Actualizar el cartel de horarios de la puerta del local</span>
+              <input type="checkbox" class="mt-0.5 rounded shrink-0" checked />
+              <span class="line-through text-stone-400">Cartel de bienvenida de la entrada actualizado</span>
             </label>
           </div>
         </div>
       </div>
 
-      <!-- MÓDULO: CLAVES & ACCESOS -->
-      <div id="eter-panel-claves" class="eter-panel hidden">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="text-xl">🔐</span>
-          <h2 class="text-lg font-black text-stone-900">Claves & Accesos del Nodo</h2>
-        </div>
-        <div class="bg-amber-50 border border-amber-300 rounded-2xl p-3 mb-4 flex items-start gap-2">
+      <!-- GESTIÓN SUBPANEL 5: CLAVES & ACCESOS -->
+      <div id="eter-gestion-panel-claves" class="eter-gestion-subpanel hidden space-y-3">
+        <div class="bg-amber-50 border border-amber-300 rounded-2xl p-3 mb-2 flex items-start gap-2">
           <span class="text-amber-600 text-sm mt-0.5 shrink-0">⚠️</span>
-          <p class="text-xs text-amber-800 font-semibold">Esta sección es de uso exclusivo del equipo. No compartir pantalla ni acceso con vecinos. Las claves aquí son de referencia interna.</p>
+          <p class="text-xs text-amber-800 font-semibold">Exclusivo para los 5 guardianes. No compartir pantalla ni datos con vecinos.</p>
         </div>
-        <div class="space-y-3" id="claves-list">
-          <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-lg shrink-0">🌐</span>
-              <div class="min-w-0">
-                <p class="font-bold text-sm text-stone-900">Dominio: elementales.store</p>
-                <p class="text-xs text-stone-500">GoDaddy · Admin: Rami · Renueva: Mar 2026</p>
-              </div>
+
+        <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-lg shrink-0">🌐</span>
+            <div>
+              <p class="font-bold text-sm text-stone-900">Dominio: elementales.store</p>
+              <p class="text-xs text-stone-500">GoDaddy · Admin: Rami · Renueva: Mar 2026</p>
             </div>
-            <a href="https://www.godaddy.com" target="_blank" class="text-[11px] font-bold text-[#a6634f] bg-[#fcf4f0] px-2 py-1 rounded-full border border-[#c0826d]/30 shrink-0">Acceder →</a>
           </div>
-          <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-lg shrink-0">🐙</span>
-              <div class="min-w-0">
-                <p class="font-bold text-sm text-stone-900">GitHub: RamiStein / Elementales-comunidad</p>
-                <p class="text-xs text-stone-500">Repo principal · Admin: Rami · Rama: main</p>
-              </div>
+          <a href="https://www.godaddy.com" target="_blank" class="text-[11px] font-bold text-[#a6634f] bg-[#fcf4f0] px-3 py-1 rounded-full border border-[#c0826d]/30">Acceder ↗</a>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center text-lg shrink-0">🐙</span>
+            <div>
+              <p class="font-bold text-sm text-stone-900">GitHub: RamiStein / Elementales-comunidad</p>
+              <p class="text-xs text-stone-500">Repo principal · Rama: main</p>
             </div>
-            <a href="https://github.com/RamiStein/Elementales-comunidad" target="_blank" class="text-[11px] font-bold text-stone-700 bg-stone-100 px-2 py-1 rounded-full border border-stone-200 shrink-0">Acceder →</a>
           </div>
-          <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center text-lg shrink-0">📊</span>
-              <div class="min-w-0">
-                <p class="font-bold text-sm text-stone-900">Google Workspace / Drive del Nodo</p>
-                <p class="text-xs text-stone-500">Admin: Rami · Carpeta: Elementales La Lucila</p>
-              </div>
+          <a href="https://github.com/RamiStein/Elementales-comunidad" target="_blank" class="text-[11px] font-bold text-stone-700 bg-stone-100 px-3 py-1 rounded-full border border-stone-200">Acceder ↗</a>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-lg shrink-0">💬</span>
+            <div>
+              <p class="font-bold text-sm text-stone-900">WhatsApp Business de la Oficina</p>
+              <p class="text-xs text-stone-500">Atención oficial · Gonza & Agus</p>
             </div>
-            <a href="https://drive.google.com" target="_blank" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-200 shrink-0">Acceder →</a>
           </div>
-          <div class="bg-white rounded-2xl border border-stone-200 p-4 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center text-lg shrink-0">💬</span>
-              <div class="min-w-0">
-                <p class="font-bold text-sm text-stone-900">WhatsApp Business del Centro</p>
-                <p class="text-xs text-stone-500">Nro del local · Admin: Agus y Gonza</p>
-              </div>
-            </div>
-            <a href="https://business.whatsapp.com" target="_blank" class="text-[11px] font-bold text-green-700 bg-green-50 px-2 py-1 rounded-full border border-green-200 shrink-0">Acceder →</a>
-          </div>
-          <button onclick="openEterClaveForm()" class="w-full border-2 border-dashed border-stone-200 rounded-2xl py-4 text-xs font-bold text-stone-400 hover:border-[#c0826d] hover:text-[#a6634f] transition-colors">
-            + Agregar nueva clave o acceso
-          </button>
+          <a href="https://business.whatsapp.com" target="_blank" class="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Acceder ↗</a>
         </div>
       </div>
 
-      <!-- MÓDULO: INFORMACIÓN DEL NODO -->
-      <div id="eter-panel-info" class="eter-panel hidden">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="text-xl">📋</span>
-          <h2 class="text-lg font-black text-stone-900">Información del Nodo</h2>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="bg-white rounded-2xl border border-stone-200 p-4">
-            <h3 class="font-bold text-sm text-stone-900 mb-3 flex items-center gap-2"><span>🏡</span> Datos del Local</h3>
-            <div class="space-y-2 text-xs">
-              <div class="flex justify-between border-b border-stone-50 pb-1.5">
-                <span class="text-stone-500 font-semibold">Dirección</span>
-                <span class="text-stone-800 font-bold text-right">Rawson 3450, La Lucila</span>
-              </div>
-              <div class="flex justify-between border-b border-stone-50 pb-1.5">
-                <span class="text-stone-500 font-semibold">Partido</span>
-                <span class="text-stone-800 font-bold">Vicente López, PBA</span>
-              </div>
-              <div class="flex justify-between border-b border-stone-50 pb-1.5">
-                <span class="text-stone-500 font-semibold">Horario</span>
-                <span class="text-stone-800 font-bold">Lun-Sáb 09:30–19:30</span>
-              </div>
-              <div class="flex justify-between border-b border-stone-50 pb-1.5">
-                <span class="text-stone-500 font-semibold">Tipo de espacio</span>
-                <span class="text-stone-800 font-bold">Alquiler mensual</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-stone-500 font-semibold">Capacidad</span>
-                <span class="text-stone-800 font-bold">~20 personas</span>
-              </div>
+      <!-- GESTIÓN SUBPANEL 6: ESPACIO FÍSICO RAWSON 3450 -->
+      <div id="eter-gestion-panel-centro" class="eter-gestion-subpanel hidden space-y-4">
+        <div class="bg-white rounded-3xl border border-stone-200 p-5 shadow-xs">
+          <h3 class="font-bold text-sm text-stone-900 mb-2">Oficina Barrial La Lucila</h3>
+          <p class="text-xs text-stone-600 leading-relaxed mb-4">
+            Espacio físico en Calle Rawson 3450, La Lucila, Vicente López. Atendido de Lun a Sáb de 09:30 a 19:30 hs por Gonza, Agus, Rami, Cris y Ro.
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="bg-stone-50 p-3 rounded-xl border border-stone-200">
+              <span class="font-bold block text-stone-800">Capacidad</span>
+              <span class="text-stone-500">20 personas en asamblea</span>
+            </div>
+            <div class="bg-stone-50 p-3 rounded-xl border border-stone-200">
+              <span class="font-bold block text-stone-800">Servicios</span>
+              <span class="text-stone-500">WiFi, Impresora, Mate, Huerta</span>
             </div>
           </div>
-          <div class="bg-white rounded-2xl border border-stone-200 p-4">
-            <h3 class="font-bold text-sm text-stone-900 mb-3 flex items-center gap-2"><span>⚡</span> Servicios & Recursos</h3>
-            <div class="space-y-2 text-xs">
-              <div class="flex items-center justify-between border-b border-stone-50 pb-1.5">
-                <span class="text-stone-500 font-semibold">WiFi</span>
-                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Activo</span>
-              </div>
-              <div class="flex items-center justify-between border-b border-stone-50 pb-1.5">
-                <span class="text-stone-500 font-semibold">Impresora</span>
-                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Activa</span>
-              </div>
-              <div class="flex items-center justify-between border-b border-stone-50 pb-1.5">
-                <span class="text-stone-500 font-semibold">Proyector</span>
-                <span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-bold">⚠ Prestado</span>
-              </div>
-              <div class="flex items-center justify-between border-b border-stone-50 pb-1.5">
-                <span class="text-stone-500 font-semibold">Huerta exterior</span>
-                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Activa</span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-stone-500 font-semibold">Compostador</span>
-                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">✓ Activo</span>
-              </div>
-            </div>
-          </div>
-          <div class="bg-white rounded-2xl border border-stone-200 p-4 sm:col-span-2">
-            <h3 class="font-bold text-sm text-stone-900 mb-3 flex items-center gap-2"><span>📌</span> Notas internas del equipo</h3>
-            <textarea id="eter-notas-internas" class="w-full text-xs text-stone-700 bg-stone-50 rounded-xl border border-stone-200 p-3 resize-none outline-none focus:border-[#c0826d] transition-colors" rows="4" placeholder="Anotá acá cualquier cosa importante del nodo que el equipo deba recordar..."></textarea>
-            <button onclick="saveEterNotas()" class="mt-2 text-xs font-bold text-[#a6634f] bg-[#fcf4f0] border border-[#c0826d]/30 px-4 py-1.5 rounded-full hover:bg-[#fde9e1] transition-colors">Guardar nota</button>
+          <div class="mt-4 pt-3 border-t border-stone-100">
+            <label class="block text-xs font-bold text-stone-700 mb-1">Notas internas del equipo para la sede:</label>
+            <textarea id="eter-notas-internas" rows="3" class="w-full text-xs border border-stone-200 rounded-xl p-3 bg-stone-50 outline-none focus:border-[#c0826d] resize-none" placeholder="Anotá acá novedades operativas..."></textarea>
+            <button onclick="saveEterNotas()" class="mt-2 px-3 py-1.5 rounded-xl bg-stone-900 text-white text-xs font-bold">Guardar Nota</button>
           </div>
         </div>
       </div>
 
-      <!-- PLACEHOLDER si no hay módulo seleccionado -->
-      <div id="eter-panel-default" class="text-center py-10">
-        <span class="text-4xl block mb-3">✨</span>
-        <p class="text-stone-500 text-sm font-semibold">Seleccioná un módulo arriba para comenzar a gestionar el nodo.</p>
-      </div>
     </div>
+
   </div>
 
   <!-- ========================================================================= -->
@@ -4914,6 +4819,67 @@
       </div>
     </div>
   </div>
+  <!-- ========================================================================= -->
+  <!-- MODAL: EDITAR INFORMACIÓN PERSONAL Y LABOR COMUNITARIA (ÉTER) -->
+  <!-- ========================================================================= -->
+  <div id="modal-edit-profile" class="modal-backdrop hidden" onclick="if(event.target === this) closeEditProfileModal()">
+    <div class="modal-content p-6 max-w-lg mx-auto max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">✏️</span>
+          <div>
+            <h3 class="font-black text-lg text-stone-900 leading-none">Editar Mis Datos Personales</h3>
+            <p class="text-[11px] text-stone-500 mt-0.5">Actualizá tu información de contacto y tu labor comunitaria</p>
+          </div>
+        </div>
+        <button onclick="closeEditProfileModal()" class="text-stone-400 hover:text-stone-700 text-lg font-bold w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center">✕</button>
+      </div>
+
+      <form onsubmit="handleSaveProfileSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Nombre Completo / Titular *</label>
+          <input type="text" id="edit-profile-name" required class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-[#c0826d]" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Correo Electrónico *</label>
+            <input type="email" id="edit-profile-email" required class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-[#c0826d]" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
+            <input type="tel" id="edit-profile-phone" required class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-[#c0826d]" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Dirección de Envío / Entrega *</label>
+          <input type="text" id="edit-profile-address" required placeholder="Calle, número, localidad" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-[#c0826d]" />
+        </div>
+
+        <div class="pt-2 border-t border-stone-200">
+          <label class="block text-xs font-bold text-stone-900 mb-1">Mi Labor ("¿A qué me dedico?")</label>
+          <input type="text" id="edit-profile-trade" placeholder="Ej: Cerámica Artesanal, Clases de Yoga, Panadería..." class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-[#c0826d] mb-2" />
+          
+          <label class="block text-xs font-bold text-stone-700 mb-1">Descripción de mi labor / servicios</label>
+          <textarea id="edit-profile-tradedesc" rows="3" placeholder="Contale a la comunidad qué hacés, cómo producís o qué servicios brindás..." class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-[#c0826d] resize-none mb-2"></textarea>
+
+          <label class="block text-xs font-bold text-stone-700 mb-1">Disponibilidad / Horarios</label>
+          <input type="text" id="edit-profile-tradeavail" placeholder="Ej: Sábados de 10 a 14 hs o por encargo" class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-[#c0826d]" />
+        </div>
+
+        <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeEditProfileModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-stone-500 hover:text-stone-700 hover:bg-stone-100">
+            Cancelar
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-[#c0826d] hover:bg-[#a6634f] text-white shadow-xs">
+            💾 Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ========================================================================= -->
   <!-- BARRA DE NAVEGACIÓN INFERIOR ESTILO SPOTIFY (LOS 5 ELEMENTOS + NODO) -->
   <!-- ========================================================================= -->

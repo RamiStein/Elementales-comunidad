@@ -267,7 +267,135 @@ const AppState = {
   userPlan: 'plan-raices',
   userName: 'Lucía Gómez',
   userCode: 'CSC-2026-0482',
+  userEmail: 'lucia.gomez@comunidad.org',
+  userPhone: '+54 9 11 5566-7788',
+  userAddress: 'Av. Maipú 2140, Olivos, Vicente López',
+  userTrade: 'Diseñadora Textil & Cerámica Botánica',
+  userTradeDesc: 'Confección de prendas en tintes naturales, vajilla artesanal para fermentos y talleres comunitarios de arcilla viva.',
+  userTradeAvailability: 'Sábados de 10:00 a 14:00 hs en Rawson 3450 o por encargo',
   cajonSharesInCart: [],
+
+  saveUserProfile(profileData) {
+    if (profileData.userName !== undefined) {
+      this.userName = profileData.userName.trim();
+      localStorage.setItem('elementales_user_name', this.userName);
+    }
+    if (profileData.userEmail !== undefined) {
+      this.userEmail = profileData.userEmail.trim();
+      localStorage.setItem('elementales_user_email', this.userEmail);
+    }
+    if (profileData.userPhone !== undefined) {
+      this.userPhone = profileData.userPhone.trim();
+      localStorage.setItem('elementales_user_phone', this.userPhone);
+    }
+    if (profileData.userAddress !== undefined) {
+      this.userAddress = profileData.userAddress.trim();
+      localStorage.setItem('elementales_user_address', this.userAddress);
+    }
+    if (profileData.userTrade !== undefined) {
+      this.userTrade = profileData.userTrade.trim();
+      localStorage.setItem('elementales_user_trade', this.userTrade);
+    }
+    if (profileData.userTradeDesc !== undefined) {
+      this.userTradeDesc = profileData.userTradeDesc.trim();
+      localStorage.setItem('elementales_user_trade_desc', this.userTradeDesc);
+    }
+    if (profileData.userTradeAvailability !== undefined) {
+      this.userTradeAvailability = profileData.userTradeAvailability.trim();
+      localStorage.setItem('elementales_user_trade_avail', this.userTradeAvailability);
+    }
+  },
+
+  getUserOrders() {
+    const myName = (this.userName || '').toLowerCase().trim();
+    const all = this.orders || [];
+    const matched = all.filter(o => o.clientName && o.clientName.toLowerCase().trim() === myName);
+    if (matched.length > 0) return matched;
+    
+    // Historial demostrativo inicial del usuario si no hay pedidos guardados todavía con su nombre
+    return [
+      {
+        id: 'ORD-0891',
+        number: 891,
+        dateStr: '24/09/2026',
+        timeStr: '11:30',
+        items: [
+          { name: 'Canasta Agroecológica Familiar', qty: 1, price: 9500 },
+          { name: 'Pan de Masa Madre Orgánico', qty: 2, price: 2500 }
+        ],
+        total: 14500,
+        status: 'Listo para Retirar',
+        statusColor: 'emerald',
+        deliveryType: 'Retiro en Nodo',
+        nodoNombre: 'Nodo La Lucila · Rawson 3450'
+      },
+      {
+        id: 'ORD-0742',
+        number: 742,
+        dateStr: '10/09/2026',
+        timeStr: '16:45',
+        items: [
+          { name: 'Miel Pura de Pradera 1kg', qty: 1, price: 5400 },
+          { name: 'Aceite de Oliva Extra Virgen 1L', qty: 1, price: 6500 }
+        ],
+        total: 11900,
+        status: 'Entregado',
+        statusColor: 'stone',
+        deliveryType: 'Retiro en Nodo',
+        nodoNombre: 'Nodo La Lucila · Rawson 3450'
+      },
+      {
+        id: 'ORD-0610',
+        number: 610,
+        dateStr: '28/08/2026',
+        timeStr: '10:15',
+        items: [
+          { name: 'Bolsón de Cítricos y Frutales 5kg', qty: 1, price: 7200 },
+          { name: 'Queso de Campo Agroecológico 500g', qty: 1, price: 4800 }
+        ],
+        total: 12000,
+        status: 'Entregado',
+        statusColor: 'stone',
+        deliveryType: 'Retiro en Nodo',
+        nodoNombre: 'Nodo La Lucila · Rawson 3450'
+      }
+    ];
+  },
+
+  getUserReviews() {
+    const saved = localStorage.getItem('elementales_user_reviews');
+    if (saved) {
+      try { return JSON.parse(saved); } catch(e) {}
+    }
+    return [
+      { id: 'rev-1', author: 'Clara & Nico', tag: 'Nodo La Lucila', stars: 5, date: 'Hace 2 semanas', comment: 'Las piezas de cerámica para kombucha y masa madre son hermosas y súper resistentes. Trabajo impecable y entrega rápida.' },
+      { id: 'rev-2', author: 'Martín R.', tag: 'Círculo Los Aromos', stars: 5, date: 'El mes pasado', comment: 'Nos hizo los delantales de lino para el equipo de empaque del círculo. Gran calidad, durabilidad y calidez humana.' },
+      { id: 'rev-3', author: 'Valen Soler', tag: 'Vecina de Florida', stars: 5, date: 'Hace 2 meses', comment: 'Participé del taller de tintes botánicos en Rawson 3450. Hermosa transmisión de saberes y pasión por lo natural!' }
+    ];
+  },
+
+  getUserSignatures() {
+    const saved = localStorage.getItem('elementales_user_signatures');
+    if (saved) {
+      try { return JSON.parse(saved); } catch(e) {}
+    }
+    return [
+      { id: 'sig-1', title: 'Manifiesto de Soberanía Alimentaria y Precios Justos', category: 'Principios Fundacionales', date: '15/03/2026', hash: 'SHA256:7f8a9e102bc4...4b12', status: '🟢 Firmado & Vigente', cert: 'CERT-ALIM-2026-0482' },
+      { id: 'sig-2', title: 'Acuerdo de Convivencia y Cuidado del Espacio Rawson 3450', category: 'Gobernanza Física', date: '02/02/2026', hash: 'SHA256:a1c3d599f2e1...9e01', status: '🟢 Firmado & Vigente', cert: 'CERT-CONV-2026-0482' },
+      { id: 'sig-3', title: 'Compromiso Agroecológico y Residuo Cero en Nodos Barriales', category: 'Cuidado Ambiental', date: '10/01/2026', hash: 'SHA256:d4e6f801aa32...2a33', status: '🟢 Firmado & Vigente', cert: 'CERT-AGRO-2026-0482' }
+    ];
+  },
+
+  getUserVotes() {
+    const saved = localStorage.getItem('elementales_user_votes');
+    if (saved) {
+      try { return JSON.parse(saved); } catch(e) {}
+    }
+    return [
+      { id: 'v-1', propTitle: '¿En qué invertimos el 25% del Fondo Barrial este mes?', option: '🌿 Ampliación de bancales y riego por goteo', date: '22/09/2026', status: '✓ Voto Vinculante Registrado' },
+      { id: 'v-2', propTitle: 'Horario de la Feria Agroecológica de Verano', option: '🌅 Viernes al atardecer (17:30 a 21:30 hs)', date: '18/09/2026', status: '✓ Voto Vinculante Registrado' }
+    ];
+  },
 
   getActiveProducts() {
     const activeCircleId = typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null;
@@ -327,6 +455,12 @@ const AppState = {
     this.userPlan = localStorage.getItem('elementales_user_plan') || 'plan-raices';
     this.userName = localStorage.getItem('elementales_user_name') || 'Lucía Gómez';
     this.userCode = localStorage.getItem('elementales_user_code') || 'CSC-2026-0482';
+    this.userEmail = localStorage.getItem('elementales_user_email') || 'lucia.gomez@comunidad.org';
+    this.userPhone = localStorage.getItem('elementales_user_phone') || '+54 9 11 5566-7788';
+    this.userAddress = localStorage.getItem('elementales_user_address') || 'Av. Maipú 2140, Olivos, Vicente López';
+    this.userTrade = localStorage.getItem('elementales_user_trade') || 'Diseñadora Textil & Cerámica Botánica';
+    this.userTradeDesc = localStorage.getItem('elementales_user_trade_desc') || 'Confección de prendas en tintes naturales, vajilla artesanal para fermentos y talleres comunitarios de arcilla viva.';
+    this.userTradeAvailability = localStorage.getItem('elementales_user_trade_avail') || 'Sábados de 10:00 a 14:00 hs en Rawson 3450 o por encargo';
 
     // Cargar productos asegurando que contengan los precios escalonados
     const savedProducts = localStorage.getItem('elementales_products');
@@ -739,12 +873,7 @@ function navigateTo(viewName, updateHistory = true) {
     switchAireTab('podcasts');
     renderNoticias();
   } else if (viewName === 'eter') {
-    if (AppState.userRole === 'gestor' || window.location.hash === '#admin') {
-      switchEterMainTab('gestion');
-      showEterModule('elementos');
-    } else {
-      switchEterMainTab('democracia');
-    }
+    renderEterView();
   } else if (viewName === 'orders-dashboard') {
     renderOrdersDashboard();
   } else if (viewName === 'members-directory') {
@@ -2677,59 +2806,19 @@ function updateRoleUI() {
   const tabEter = document.getElementById('tab-btn-eter');
   if (tabEter) {
     if (role === 'gestor') {
-      tabEter.innerHTML = '<span>👑</span> Éter CRM';
+      tabEter.innerHTML = '<span>👑</span> Éter Admin';
       tabEter.title = 'Panel interno de gestión del nodo';
       tabEter.classList.add('border-b-2', 'border-amber-500');
     } else {
-      tabEter.innerHTML = '<span>✨</span> Éter CRM';
-      tabEter.title = 'Centro y gestión del nodo';
+      tabEter.innerHTML = '<span>✨</span> Éter';
+      tabEter.title = 'Mi portal comunitario';
       tabEter.classList.remove('border-b-2', 'border-amber-500');
     }
   }
 
-  // 4. Banner de acceso en Éter CRM
-  const eterRoleCard = document.getElementById('eter-role-access-card');
-  if (eterRoleCard) {
-    if (role === 'gestor') {
-      eterRoleCard.className = 'mb-6 p-4 rounded-2xl border bg-amber-50/90 border-amber-300 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs';
-      eterRoleCard.innerHTML = `
-        <div class="flex items-center gap-3">
-          <span class="text-2xl">👑</span>
-          <div>
-            <h4 class="font-black text-sm text-amber-950">Modo Gestor del Nodo Activo</h4>
-            <p class="text-xs text-amber-900/80">Acceso irrestricto: administración de caja chica, altas de socios, cuadrante de guardia y claves seguras.</p>
-          </div>
-        </div>
-        <span class="text-xs font-bold text-amber-800 bg-amber-200/80 px-3 py-1 rounded-full shrink-0">Permisos Totales</span>
-      `;
-    } else if (role === 'socio') {
-      eterRoleCard.className = 'mb-6 p-4 rounded-2xl border bg-blue-50/90 border-blue-200 text-blue-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs';
-      eterRoleCard.innerHTML = `
-        <div class="flex items-center gap-3">
-          <span class="text-2xl">💧</span>
-          <div>
-            <h4 class="font-black text-sm text-blue-950">Vista Comunitaria de Socia CsC</h4>
-            <p class="text-xs text-blue-800/80">Podes consultar los 5 Elementos, la agenda de talleres y notas del nodo. La caja interna y claves están reservadas para los 5 guardianes.</p>
-          </div>
-        </div>
-        <button onclick="openRoleSwitcherModal()" class="text-xs font-bold text-blue-800 bg-blue-100 hover:bg-blue-200 border border-blue-300 px-3 py-1.5 rounded-full shrink-0">Cambiar a Gestor ⇄</button>
-      `;
-    } else {
-      eterRoleCard.className = 'mb-6 p-4 rounded-2xl border bg-stone-100 border-stone-200 text-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs';
-      eterRoleCard.innerHTML = `
-        <div class="flex items-center gap-3">
-          <span class="text-2xl">👤</span>
-          <div>
-            <h4 class="font-black text-sm text-stone-900">Vista Institucional (Vecino No Miembro)</h4>
-            <p class="text-xs text-stone-600">Éter es el centro de mando del Nodo La Lucila. Para gestionar el nodo podés activar el Modo Gestor o sumarte como Socio CsC.</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <button onclick="toggleUserRole('gestor')" class="text-xs font-bold text-amber-900 bg-amber-100 hover:bg-amber-200 border border-amber-300 px-3 py-1.5 rounded-full">Activar Modo Gestor 👑</button>
-          <button onclick="navigateTo('membership')" class="text-xs font-bold text-white bg-[#c0826d] hover:bg-[#a6634f] px-3 py-1.5 rounded-full">Hacerme Socio 💧</button>
-        </div>
-      `;
-    }
+  // 4. Si la vista activa es Éter, refrescar el portal dinámicamente
+  if (AppState.currentView === 'eter') {
+    renderEterView();
   }
 
   // 5. Botones de simulación en view-profile
@@ -3113,36 +3202,679 @@ function switchAireTab(tabName) {
   if (tabName === 'noticias') renderNoticias();
 }
 
-function switchEterMainTab(tabName) {
+// =========================================================================
+// 5. CONTROLADOR ÉTER: PORTAL PERSONAL (SOCIOS/INVITADOS) & GESTIÓN NODO
+// =========================================================================
+let currentEterViewMode = 'personal'; // 'personal' | 'gestion'
+let currentEterPersonalTab = 'labor'; // 'labor' | 'pedidos' | 'circulos' | 'votos' | 'firmas'
+let currentEterGestionTab = 'pedidos'; // 'pedidos' | 'socios' | 'economia' | 'horas' | 'claves' | 'centro'
+
+function renderEterView() {
+  const isGestor = AppState.userRole === 'gestor' && sessionStorage.getItem('elementales_gestor_auth') === 'true';
+  const gestorBar = document.getElementById('eter-gestor-mode-bar');
+  if (gestorBar) {
+    gestorBar.classList.toggle('hidden', !isGestor);
+  }
+
+  // Si no es gestor autenticado, forzar modo personal siempre
+  if (!isGestor) {
+    currentEterViewMode = 'personal';
+  }
+
+  // Actualizar botones del conmutador de modo si existen
+  const btnPersonal = document.getElementById('eter-btn-mode-personal');
+  const btnGestion = document.getElementById('eter-btn-mode-gestion');
+  if (btnPersonal && btnGestion) {
+    if (currentEterViewMode === 'personal') {
+      btnPersonal.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-xs';
+      btnGestion.className = 'px-3 py-1.5 rounded-xl text-xs font-bold text-stone-300 hover:text-white transition-all';
+    } else {
+      btnPersonal.className = 'px-3 py-1.5 rounded-xl text-xs font-bold text-stone-300 hover:text-white transition-all';
+      btnGestion.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-amber-400 text-stone-900 shadow-xs';
+    }
+  }
+
+  // Encabezado dinámico
+  const mainTitle = document.getElementById('eter-main-title');
+  const subtitle = document.getElementById('eter-subtitle');
+  const desc = document.getElementById('eter-desc');
+  const nodeEl = document.getElementById('eter-header-node-name');
+  if (nodeEl) {
+    const nodeObj = typeof NODES_DATA !== 'undefined' ? NODES_DATA[AppState.activeNodeId] : null;
+    nodeEl.textContent = nodeObj ? nodeObj.name : 'Nodo La Lucila';
+  }
+
+  const personalCont = document.getElementById('eter-personal-portal-container');
+  const gestionCont = document.getElementById('eter-panel-gestion-nodo');
+
+  if (currentEterViewMode === 'personal') {
+    if (mainTitle) mainTitle.textContent = 'Éter · Mi Portal Comunitario';
+    if (subtitle) subtitle.textContent = 'Identidad personal, gobernanza, labor barrial y círculos';
+    if (desc) desc.textContent = 'Tu espacio personal en la Red Elemental: tus datos de contacto, historial de pedidos, círculos de compra, acuerdos firmados y reputación de tus trabajos en la comunidad.';
+    
+    if (personalCont) personalCont.classList.remove('hidden');
+    if (gestionCont) gestionCont.classList.add('hidden');
+
+    renderEterPersonalData();
+    switchEterPersonalTab(currentEterPersonalTab);
+  } else {
+    if (mainTitle) mainTitle.textContent = 'Éter · Gestión Operativa del Nodo';
+    if (subtitle) subtitle.textContent = 'Uso interno del equipo · Administración del nodo';
+    if (desc) desc.textContent = 'Gestión centralizada de pedidos de todos los usuarios, directorio de miembros, caja chica, cuadrante de guardias y credenciales seguras.';
+
+    if (personalCont) personalCont.classList.add('hidden');
+    if (gestionCont) gestionCont.classList.remove('hidden');
+
+    switchEterGestionTab(currentEterGestionTab);
+  }
+}
+
+function switchEterViewMode(mode) {
+  if (mode === 'gestion') {
+    if (AppState.userRole !== 'gestor' || sessionStorage.getItem('elementales_gestor_auth') !== 'true') {
+      requestGestorAccess(() => {
+        currentEterViewMode = 'gestion';
+        renderEterView();
+      });
+      return;
+    }
+    currentEterViewMode = 'gestion';
+  } else {
+    currentEterViewMode = 'personal';
+  }
   sounds.playPop();
-  document.querySelectorAll('#eter-main-subnav-tabs .element-subtab-btn').forEach(btn => {
+  renderEterView();
+}
+
+function renderEterPersonalData() {
+  const isSocio = AppState.userRole === 'socio';
+  const isGestor = AppState.userRole === 'gestor';
+
+  // Nombre
+  const nameEl = document.getElementById('eter-user-name-display');
+  if (nameEl) nameEl.textContent = AppState.userName || 'Usuario Comunitario';
+
+  // Avatar iniciales
+  const avatarEl = document.getElementById('eter-profile-avatar');
+  if (avatarEl) {
+    const rawName = (AppState.userName || 'U C').trim();
+    const parts = rawName.split(' ');
+    const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : rawName.slice(0, 2).toUpperCase();
+    avatarEl.textContent = initials;
+  }
+
+  // Rol badge
+  const roleBadge = document.getElementById('eter-user-role-badge');
+  if (roleBadge) {
+    if (isGestor) {
+      roleBadge.innerHTML = '👑 Gestor del Nodo';
+      roleBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300';
+    } else if (isSocio) {
+      roleBadge.innerHTML = `💧 Socio CsC <span class="font-mono text-[11px]">${AppState.userCode || '#CSC-2026-0482'}</span>`;
+      roleBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-900 border border-blue-200';
+    } else {
+      roleBadge.innerHTML = '👤 Vecino Invitado';
+      roleBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-300';
+    }
+  }
+
+  // Labor preview
+  const tradePreview = document.getElementById('eter-user-trade-preview');
+  if (tradePreview) {
+    tradePreview.textContent = `🌿 ${AppState.userTrade || 'Miembro Colaborador'}`;
+  }
+
+  // Nodo habitual
+  const nodeDisplay = document.getElementById('eter-user-node-display');
+  if (nodeDisplay) {
+    const nodeObj = typeof NODES_DATA !== 'undefined' ? NODES_DATA[AppState.activeNodeId] : null;
+    nodeDisplay.textContent = nodeObj ? `${nodeObj.name} · ${nodeObj.address || 'Sede Barrial'}` : 'Nodo La Lucila · Rawson 3450';
+  }
+
+  // Contacto & Envío
+  const emailEl = document.getElementById('eter-user-email-display');
+  if (emailEl) emailEl.textContent = AppState.userEmail || 'sin-correo@comunidad.org';
+
+  const phoneEl = document.getElementById('eter-user-phone-display');
+  if (phoneEl) phoneEl.textContent = AppState.userPhone || '+54 9 11 5566-7788';
+
+  const addressEl = document.getElementById('eter-user-address-display');
+  if (addressEl) addressEl.textContent = AppState.userAddress || 'Av. Maipú 2140, Olivos, Vicente López';
+}
+
+function switchEterPersonalTab(tabName) {
+  currentEterPersonalTab = tabName;
+  sounds.playPop();
+
+  document.querySelectorAll('#eter-personal-subnav-tabs .element-subtab-btn').forEach(btn => {
     btn.classList.remove('active-eter');
   });
   const activeBtn = document.getElementById(`eter-tab-btn-${tabName}`);
   if (activeBtn) activeBtn.classList.add('active-eter');
 
-  // Ocultar paneles principales de Éter
-  const panDemo = document.getElementById('eter-panel-democracia');
-  const panCrm = document.getElementById('eter-panel-micrm');
-  const modulesGrid = document.getElementById('eter-modules-grid');
-  
-  if (panDemo) panDemo.classList.toggle('hidden', tabName !== 'democracia');
-  if (panCrm) panCrm.classList.toggle('hidden', tabName !== 'micrm');
+  const subpanels = ['labor', 'pedidos', 'circulos', 'votos', 'firmas'];
+  subpanels.forEach(p => {
+    const el = document.getElementById(`eter-subpanel-${p}`);
+    if (el) el.classList.toggle('hidden', p !== tabName);
+  });
 
-  if (tabName === 'centro') {
-    if (modulesGrid) modulesGrid.classList.remove('hidden');
-    showEterModule('centro');
+  if (tabName === 'labor') renderEterPersonalLabor();
+  if (tabName === 'pedidos') renderEterPersonalPedidos();
+  if (tabName === 'circulos') renderEterPersonalCirculos();
+  if (tabName === 'votos') renderEterPersonalVotos();
+  if (tabName === 'firmas') renderEterPersonalFirmas();
+}
+
+function renderEterPersonalLabor() {
+  const tEl = document.getElementById('eter-labor-title');
+  if (tEl) tEl.textContent = AppState.userTrade || 'Oficio Artesanal & Producción Consciente';
+
+  const dEl = document.getElementById('eter-labor-desc');
+  if (dEl) dEl.textContent = AppState.userTradeDesc || 'Confección de productos sustentables y transmisión de saberes comunitarios en el nodo.';
+
+  const aEl = document.getElementById('eter-labor-avail');
+  if (aEl) aEl.textContent = `⏰ ${AppState.userTradeAvailability || 'Sábados de 10:00 a 14:00 hs en Rawson 3450 o por encargo'}`;
+
+  // Reviews
+  const reviewsContainer = document.getElementById('eter-reviews-list');
+  if (!reviewsContainer) return;
+  const reviews = AppState.getUserReviews();
+
+  reviewsContainer.innerHTML = reviews.map(r => `
+    <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200/80 text-xs">
+      <div class="flex items-center justify-between gap-2 mb-1.5">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-[#fcf4f0] border border-[#c0826d]/40 flex items-center justify-center font-bold text-[#a6634f] text-[10px]">
+            ${r.author.slice(0, 1)}
+          </span>
+          <span class="font-bold text-stone-900">${r.author}</span>
+          <span class="text-[10px] text-stone-400 font-medium">(${r.tag})</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="text-amber-500 font-bold text-xs">★ ${r.stars}.0</span>
+          <span class="text-[10px] text-stone-400">${r.date}</span>
+        </div>
+      </div>
+      <p class="text-stone-700 leading-relaxed italic pl-8">
+        "${r.comment}"
+      </p>
+    </div>
+  `).join('');
+}
+
+function renderEterPersonalPedidos() {
+  const orders = AppState.getUserOrders();
+  const countEl = document.getElementById('eter-my-orders-count');
+  if (countEl) countEl.textContent = orders.length;
+
+  const container = document.getElementById('eter-personal-orders-list');
+  if (!container) return;
+
+  if (orders.length === 0) {
+    container.innerHTML = `
+      <div class="p-8 text-center bg-white rounded-3xl border border-stone-200">
+        <span class="text-3xl block mb-2">🛍️</span>
+        <p class="font-bold text-sm text-stone-800">Aún no registraste pedidos con tu cuenta</p>
+        <p class="text-xs text-stone-500 mt-1">Explorá el catálogo de la feria barrial para hacer tu primera compra comunitaria.</p>
+        <button onclick="navigateTo('tierra')" class="mt-4 px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold">
+          Ver Catálogo y Precios →
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = orders.map(o => {
+    const isDone = o.status === 'Entregado';
+    const isReady = o.status === 'Listo para Retirar';
+    const badgeColor = isReady ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : (isDone ? 'bg-stone-100 text-stone-600 border-stone-200' : 'bg-amber-100 text-amber-800 border-amber-300');
+    
+    const itemsText = Array.isArray(o.items)
+      ? o.items.map(i => `${i.qty}x ${i.name}`).join(', ')
+      : (typeof o.items === 'string' ? o.items : 'Canasta de alimentos');
+
+    return `
+      <div class="p-4 sm:p-5 rounded-2xl bg-white border border-stone-200 shadow-2xs text-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100 mb-3">
+          <div>
+            <span class="text-[10px] font-mono font-bold text-stone-400 uppercase tracking-wider block">Pedido #${o.id || o.number} • ${o.dateStr}</span>
+            <h4 class="font-black text-sm text-stone-900 mt-0.5">${itemsText}</h4>
+          </div>
+          <div class="flex items-center gap-2 self-start sm:self-auto">
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-black border ${badgeColor}">
+              ${isReady ? '🟢 ' : (isDone ? '✓ ' : '⏳ ')}${o.status}
+            </span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 text-stone-600">
+          <div class="flex items-center gap-3">
+            <span>📍 <strong>Retiro:</strong> ${o.nodoNombre || 'Nodo La Lucila · Rawson 3450'}</span>
+            ${o.circuloNombre ? `<span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">🌀 Círculo: ${o.circuloNombre}</span>` : ''}
+          </div>
+          <div class="text-right">
+            <span class="text-stone-400 text-[11px] mr-1">Total abonado:</span>
+            <strong class="font-black text-stone-900 text-sm">$${(o.total || 0).toLocaleString('es-AR')}</strong>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderEterPersonalCirculos() {
+  const container = document.getElementById('eter-personal-circulos-list');
+  if (!container) return;
+
+  const allCircles = typeof CirculosManager !== 'undefined' ? CirculosManager.getAllCircles() : [];
+  const activeCircleId = typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null;
+  const myName = (AppState.userName || '').toLowerCase().trim();
+
+  // Filtrar círculos del nodo o donde el usuario esté involucrado
+  const myCircles = allCircles.filter(c => 
+    c.id === activeCircleId || 
+    (c.coordinador && c.coordinador.toLowerCase().includes(myName)) ||
+    (c.nodoId === AppState.activeNodeId)
+  );
+
+  if (myCircles.length === 0) {
+    container.innerHTML = `
+      <div class="p-8 text-center bg-white rounded-3xl border border-stone-200">
+        <span class="text-3xl block mb-2">🌀</span>
+        <p class="font-bold text-sm text-stone-800">No participás de un Círculo Barrial actualmente</p>
+        <p class="text-xs text-stone-500 mt-1">Podés sumarte a un círculo de compras de tu cuadra o crear el tuyo propio con amigos y vecinos.</p>
+        <div class="mt-4 flex justify-center gap-2">
+          <button onclick="navigateTo('circulos')" class="px-4 py-2 rounded-xl bg-emerald-700 text-white text-xs font-bold">
+            Explorar Círculos del Nodo →
+          </button>
+          <button onclick="openCreateCirculoModal()" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold border border-stone-200">
+            + Crear Círculo
+          </button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = myCircles.map(c => {
+    const isCoord = c.coordinador && c.coordinador.toLowerCase().includes(myName);
+    const shareUrl = typeof CirculosManager !== 'undefined' ? CirculosManager.getShareUrl(c.id) : window.location.href;
+    const membersCount = Array.isArray(c.miembros) ? c.miembros.length : (typeof c.miembros === 'number' ? c.miembros : 5);
+    const ordersCount = Array.isArray(c.orders) ? c.orders.length : 0;
+    const totalAmount = Array.isArray(c.orders) ? c.orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0) : 0;
+
+    return `
+      <div class="p-5 rounded-3xl bg-white border border-stone-200 shadow-2xs text-xs space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100">
+          <div class="flex items-center gap-3">
+            <span class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center justify-center font-black text-base shrink-0">
+              🌀
+            </span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="font-black text-sm sm:text-base text-stone-900">${c.nombre}</h4>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isCoord ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'}">
+                  ${isCoord ? '👑 Coordinador' : 'Miembro'}
+                </span>
+              </div>
+              <p class="text-stone-500 text-[11px] mt-0.5">Punto de retiro: ${c.barrio || c.direccion || 'Barrio'}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 self-start sm:self-auto">
+            <button onclick="selectCircleAndOpenCatalog('${c.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs">
+              Ver Catálogo del Círculo →
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 bg-stone-50 p-3 rounded-2xl border border-stone-200/80 text-center">
+          <div>
+            <span class="text-[10px] text-stone-400 block font-bold uppercase">Miembros</span>
+            <strong class="font-black text-stone-800 text-sm">${membersCount} vecinos</strong>
+          </div>
+          <div>
+            <span class="text-[10px] text-stone-400 block font-bold uppercase">Pedidos Ciclo</span>
+            <strong class="font-black text-emerald-700 text-sm">${ordersCount} pedidos</strong>
+          </div>
+          <div>
+            <span class="text-[10px] text-stone-400 block font-bold uppercase">Consolidado</span>
+            <strong class="font-black text-stone-900 text-sm">$${totalAmount.toLocaleString('es-AR')}</strong>
+          </div>
+        </div>
+
+        <!-- Enlace para compartir -->
+        <div class="flex items-center justify-between gap-2 pt-1 text-[11px]">
+          <span class="text-stone-500 font-mono truncate bg-stone-100 px-2.5 py-1 rounded-lg">
+            🔗 ${shareUrl}
+          </span>
+          <button onclick="navigator.clipboard.writeText('${shareUrl}'); sounds.playSuccess(); alert('¡Enlace del Círculo copiado al portapapeles!');" class="shrink-0 text-emerald-700 font-bold hover:underline">
+            Copiar Link
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderEterPersonalVotos() {
+  const container = document.getElementById('eter-personal-votes-list');
+  if (!container) return;
+
+  const votes = AppState.getUserVotes();
+  if (votes.length === 0) {
+    container.innerHTML = '<p class="text-stone-400 text-center py-4 text-xs">Aún no participaste de votaciones en el nodo.</p>';
+    return;
+  }
+
+  container.innerHTML = votes.map(v => `
+    <div class="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+      <div>
+        <span class="font-bold text-stone-900 block">${v.propTitle}</span>
+        <span class="text-stone-600 mt-0.5 block">Opción elegida: <strong class="text-emerald-800">${v.option}</strong></span>
+      </div>
+      <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
+        <span class="text-[10px] text-stone-400">${v.date}</span>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+          ${v.status}
+        </span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderEterPersonalFirmas() {
+  const container = document.getElementById('eter-personal-signatures-list');
+  if (!container) return;
+
+  const sigs = AppState.getUserSignatures();
+  container.innerHTML = sigs.map(s => `
+    <div class="p-4 sm:p-5 rounded-3xl bg-white border border-stone-200 shadow-2xs text-xs space-y-2.5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-stone-100">
+        <div>
+          <span class="text-[10px] font-bold text-indigo-700 uppercase tracking-wider block">${s.category}</span>
+          <h4 class="font-black text-sm text-stone-900 mt-0.5">${s.title}</h4>
+        </div>
+        <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200 self-start sm:self-auto">
+          ${s.status}
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-stone-600">
+        <div>
+          <span class="text-stone-400 block">Sello Digital SHA-256:</span>
+          <code class="font-mono text-stone-700 bg-stone-100 px-2 py-0.5 rounded">${s.hash}</code>
+        </div>
+        <div>
+          <span class="text-stone-400 block">Fecha y Certificado:</span>
+          <span class="font-bold text-stone-800">${s.date} · ${s.cert}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ✏️ MODAL EDITAR PERFIL
+function openEditProfileModal() {
+  sounds.playPop();
+  const nameInput = document.getElementById('edit-profile-name');
+  const emailInput = document.getElementById('edit-profile-email');
+  const phoneInput = document.getElementById('edit-profile-phone');
+  const addrInput = document.getElementById('edit-profile-address');
+  const tradeInput = document.getElementById('edit-profile-trade');
+  const tradeDescInput = document.getElementById('edit-profile-tradedesc');
+  const tradeAvailInput = document.getElementById('edit-profile-tradeavail');
+
+  if (nameInput) nameInput.value = AppState.userName || '';
+  if (emailInput) emailInput.value = AppState.userEmail || '';
+  if (phoneInput) phoneInput.value = AppState.userPhone || '';
+  if (addrInput) addrInput.value = AppState.userAddress || '';
+  if (tradeInput) tradeInput.value = AppState.userTrade || '';
+  if (tradeDescInput) tradeDescInput.value = AppState.userTradeDesc || '';
+  if (tradeAvailInput) tradeAvailInput.value = AppState.userTradeAvailability || '';
+
+  const modal = document.getElementById('modal-edit-profile');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeEditProfileModal() {
+  const modal = document.getElementById('modal-edit-profile');
+  if (modal) modal.classList.add('hidden');
+}
+
+function handleSaveProfileSubmit(event) {
+  event.preventDefault();
+  sounds.playSuccess();
+
+  const name = document.getElementById('edit-profile-name').value;
+  const email = document.getElementById('edit-profile-email').value;
+  const phone = document.getElementById('edit-profile-phone').value;
+  const address = document.getElementById('edit-profile-address').value;
+  const trade = document.getElementById('edit-profile-trade').value;
+  const tradeDesc = document.getElementById('edit-profile-tradedesc').value;
+  const tradeAvail = document.getElementById('edit-profile-tradeavail').value;
+
+  AppState.saveUserProfile({
+    userName: name,
+    userEmail: email,
+    userPhone: phone,
+    userAddress: address,
+    userTrade: trade,
+    userTradeDesc: tradeDesc,
+    userTradeAvailability: tradeAvail
+  });
+
+  closeEditProfileModal();
+  renderEterView();
+  if (typeof triggerCelebrationConfetti === 'function') triggerCelebrationConfetti();
+}
+
+function copyShareLaborLink() {
+  const url = `${window.location.origin}/nodo/${(AppState.activeNodeId || 'lucila').replace(/^nodo-/, '')}`;
+  navigator.clipboard.writeText(url);
+  sounds.playSuccess();
+  alert('¡Ficha de labor copiada al portapapeles!');
+}
+
+// 🔐 GESTIÓN OPERATIVA DEL NODO (SOLO GESTORES)
+function switchEterGestionTab(tabName) {
+  if (AppState.userRole !== 'gestor' || sessionStorage.getItem('elementales_gestor_auth') !== 'true') {
+    requestGestorAccess(() => {
+      currentEterViewMode = 'gestion';
+      renderEterView();
+    });
+    return;
+  }
+
+  currentEterGestionTab = tabName;
+  sounds.playPop();
+
+  document.querySelectorAll('#eter-gestion-subnav-tabs .element-subtab-btn').forEach(btn => {
+    btn.classList.remove('active-eter');
+  });
+  const activeBtn = document.getElementById(`eter-gestion-tab-btn-${tabName}`);
+  if (activeBtn) activeBtn.classList.add('active-eter');
+
+  const gPanels = ['pedidos', 'socios', 'economia', 'horas', 'claves', 'centro'];
+  gPanels.forEach(p => {
+    const el = document.getElementById(`eter-gestion-panel-${p}`);
+    if (el) el.classList.toggle('hidden', p !== tabName);
+  });
+
+  if (tabName === 'pedidos') renderEterGestionPedidos();
+  if (tabName === 'socios') renderEterGestionSocios();
+  if (tabName === 'economia') renderEterEconomia();
+  if (tabName === 'centro') renderCentroLucila();
+}
+
+function renderEterGestionPedidos() {
+  const orders = AppState.orders || [];
+  const tbody = document.getElementById('eter-admin-orders-tbody');
+  if (!tbody) return;
+
+  const totalRev = orders.reduce((s, o) => s + (o.total || 0), 0);
+  const totalCash = orders.filter(o => o.paymentMethod === 'Efectivo').reduce((s, o) => s + (o.total || 0), 0);
+  const totalDigital = orders.filter(o => (o.paymentMethod || '').includes('Transferencia') || (o.paymentMethod || '').includes('Mercado')).reduce((s, o) => s + (o.total || 0), 0);
+
+  const elTot = document.getElementById('eter-admin-total-orders');
+  const elRev = document.getElementById('eter-admin-total-revenue');
+  const elCash = document.getElementById('eter-admin-total-cash');
+  const elDig = document.getElementById('eter-admin-total-digital');
+
+  if (elTot) elTot.textContent = orders.length;
+  if (elRev) elRev.textContent = `$${totalRev.toLocaleString('es-AR')}`;
+  if (elCash) elCash.textContent = `$${totalCash.toLocaleString('es-AR')}`;
+  if (elDig) elDig.textContent = `$${totalDigital.toLocaleString('es-AR')}`;
+
+  filterEterGestionPedidos();
+}
+
+function filterEterGestionPedidos() {
+  const q = (document.getElementById('eter-admin-order-search')?.value || '').toLowerCase().trim();
+  const statusFilter = document.getElementById('eter-admin-status-filter')?.value || 'Todos';
+  const tbody = document.getElementById('eter-admin-orders-tbody');
+  if (!tbody) return;
+
+  let list = [...(AppState.orders || [])];
+
+  if (statusFilter !== 'Todos') {
+    list = list.filter(o => o.status === statusFilter);
+  }
+
+  if (q) {
+    list = list.filter(o => 
+      (o.clientName && o.clientName.toLowerCase().includes(q)) ||
+      (o.clientPhone && o.clientPhone.includes(q)) ||
+      (o.id && o.id.toLowerCase().includes(q)) ||
+      (String(o.number || '').includes(q))
+    );
+  }
+
+  if (list.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="text-center py-8 text-stone-400">
+          No se encontraron pedidos con los filtros aplicados.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = list.map(o => {
+    const isDone = o.status === 'Entregado';
+    const isReady = o.status === 'Listo para Retirar';
+    const badgeColor = isReady ? 'bg-emerald-100 text-emerald-800' : (isDone ? 'bg-stone-100 text-stone-600' : 'bg-amber-100 text-amber-800');
+    
+    const itemsSummary = Array.isArray(o.items)
+      ? o.items.map(i => `${i.qty}x ${i.name}`).join(', ')
+      : (typeof o.items === 'string' ? o.items : 'Items varios');
+
+    return `
+      <tr class="hover:bg-stone-50/70 transition-colors">
+        <td class="py-2.5 px-3 font-mono font-bold text-stone-800">#${o.id || o.number}</td>
+        <td class="py-2.5 px-3 text-stone-500 whitespace-nowrap">${o.dateStr}</td>
+        <td class="py-2.5 px-3">
+          <strong class="text-stone-900 block">${o.clientName || 'Cliente'}</strong>
+          <span class="text-[11px] text-stone-500">${o.clientPhone || 'Sin teléfono'}</span>
+        </td>
+        <td class="py-2.5 px-3 max-w-xs truncate text-stone-600" title="${itemsSummary}">${itemsSummary}</td>
+        <td class="py-2.5 px-3 font-bold text-stone-900 whitespace-nowrap">$${(o.total || 0).toLocaleString('es-AR')}</td>
+        <td class="py-2.5 px-3">
+          <select onchange="updateOrderStatusFromEter('${o.id}', this.value)" class="text-[11px] font-bold py-1 px-2 rounded-lg border border-stone-200 outline-none ${badgeColor}">
+            <option value="Pendiente" ${o.status === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+            <option value="Pagado" ${o.status === 'Pagado' ? 'selected' : ''}>💳 Pagado</option>
+            <option value="Listo para Retirar" ${o.status === 'Listo para Retirar' ? 'selected' : ''}>🟢 Listo para Retirar</option>
+            <option value="Entregado" ${o.status === 'Entregado' ? 'selected' : ''}>✓ Entregado</option>
+          </select>
+        </td>
+        <td class="py-2.5 px-3 text-right">
+          ${o.clientPhone ? `
+            <a href="https://wa.me/${o.clientPhone.replace(/\D/g, '')}?text=${encodeURIComponent('Hola ' + o.clientName + '! Te escribimos del Nodo Elementales sobre tu pedido #' + (o.id || o.number))}" target="_blank" class="text-emerald-700 hover:text-emerald-800 font-bold text-xs bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200">
+              WhatsApp ↗
+            </a>
+          ` : '<span class="text-stone-300">-</span>'}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function updateOrderStatusFromEter(orderId, newStatus) {
+  const o = AppState.orders.find(item => item.id === orderId);
+  if (o) {
+    o.status = newStatus;
+    AppState.saveOrders();
+    sounds.playSuccess();
+    renderEterGestionPedidos();
+  }
+}
+
+function renderEterGestionSocios() {
+  const container = document.getElementById('eter-admin-socios-list');
+  if (!container) return;
+  filterEterGestionSocios();
+}
+
+function filterEterGestionSocios() {
+  const q = (document.getElementById('eter-admin-socio-search')?.value || '').toLowerCase().trim();
+  const container = document.getElementById('eter-admin-socios-list');
+  if (!container) return;
+
+  const members = typeof AppState !== 'undefined' && AppState.members ? AppState.members : [];
+  let list = [...members];
+
+  if (q) {
+    list = list.filter(m => 
+      (m.name && m.name.toLowerCase().includes(q)) ||
+      (m.phone && m.phone.includes(q)) ||
+      (m.neighborhood && m.neighborhood.toLowerCase().includes(q)) ||
+      (m.communityRole && m.communityRole.toLowerCase().includes(q))
+    );
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = '<p class="text-stone-400 text-center py-6 text-xs">No se encontraron socios.</p>';
+    return;
+  }
+
+  container.innerHTML = list.map(m => `
+    <div class="p-3.5 rounded-2xl bg-stone-50 border border-stone-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 rounded-full bg-[#fcf4f0] border border-[#c0826d]/40 flex items-center justify-center font-bold text-[#a6634f]">
+          ${(m.name || '?').charAt(0).toUpperCase()}
+        </span>
+        <div>
+          <strong class="text-stone-900 block text-sm leading-tight">${m.name}</strong>
+          <span class="text-stone-500 text-[11px]">${m.neighborhood || 'Vicente López'} · ${m.communityRole || 'Socio CsC'}</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 self-start sm:self-auto">
+        <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+          ✓ Al Día
+        </span>
+        ${m.phone ? `
+          <a href="https://wa.me/${m.phone.replace(/\D/g, '')}" target="_blank" class="px-2.5 py-1 rounded-xl bg-emerald-600 text-white font-bold text-[11px]">
+            WhatsApp ↗
+          </a>
+        ` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Retrocompatibilidad
+function switchEterMainTab(tabName) {
+  if (tabName === 'democracia') switchEterPersonalTab('votos');
+  else if (tabName === 'micrm') switchEterPersonalTab('pedidos');
+  else if (tabName === 'centro') {
+    currentEterViewMode = 'gestion';
+    renderEterView();
+    switchEterGestionTab('centro');
   } else if (tabName === 'gestion') {
-    if (AppState.userRole !== 'gestor' || sessionStorage.getItem('elementales_gestor_auth') !== 'true') {
-      requestGestorAccess(() => switchEterMainTab('gestion'));
-      return;
-    }
-    if (modulesGrid) modulesGrid.classList.remove('hidden');
-    showEterModule('elementos');
+    switchEterViewMode('gestion');
   } else {
-    // En democracia o micrm, ocultar el grid de gestión interna para no saturar
-    if (modulesGrid) modulesGrid.classList.add('hidden');
-    document.querySelectorAll('.eter-panel').forEach(p => p.classList.add('hidden'));
+    switchEterPersonalTab('labor');
   }
 }
 
@@ -3157,6 +3889,43 @@ function castVote(proposalId, option) {
     el.classList.add('ring-2', 'ring-emerald-500', 'bg-emerald-100', 'text-emerald-950');
     el.innerHTML = '✓ Voto computado';
   }
+
+  // Registrar también en el historial de votos del usuario en Éter
+  const propTitles = {
+    1: '¿En qué invertimos el 25% del Fondo Barrial este mes?',
+    2: 'Horario de la Feria Agroecológica de Verano'
+  };
+  const optionNames = {
+    '1-A': '🌿 Ampliación de bancales y riego por goteo',
+    '1-B': '🛠️ Herramientas compartidas para oficios',
+    '1-C': '💡 Iluminación solar para el patio',
+    '2-A': '🌅 Viernes al atardecer (17:30 a 21:30 hs)',
+    '2-B': '☀️ Sábados por la mañana (09:00 a 13:00 hs)'
+  };
+
+  const currentVotes = AppState.getUserVotes();
+  const optName = optionNames[`${proposalId}-${option}`] || option;
+  const existingIdx = currentVotes.findIndex(v => v.id === `v-${proposalId}`);
+  const todayStr = new Date().toLocaleDateString('es-AR');
+
+  if (existingIdx >= 0) {
+    currentVotes[existingIdx].option = optName;
+    currentVotes[existingIdx].date = todayStr;
+  } else {
+    currentVotes.unshift({
+      id: `v-${proposalId}`,
+      propTitle: propTitles[proposalId] || `Votación #${proposalId}`,
+      option: optName,
+      date: todayStr,
+      status: '✓ Voto Vinculante Registrado'
+    });
+  }
+
+  try {
+    localStorage.setItem('elementales_user_votes', JSON.stringify(currentVotes));
+  } catch (e) {}
+
+  renderEterPersonalVotos();
 
   if (typeof confetti === 'function') {
     confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } });
