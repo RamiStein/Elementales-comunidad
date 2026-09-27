@@ -4984,6 +4984,13 @@ function openCreateCirculoModal() {
   if (modal) {
     const nodoSelect = document.getElementById('circulo-nodo');
     if (nodoSelect) nodoSelect.value = AppState.activeNodeId || 'nodo-lomaverde';
+    const slugInput = document.getElementById('circulo-slug');
+    if (slugInput) {
+      slugInput.value = '';
+      slugInput.dataset.manual = 'false';
+    }
+    const preview = document.getElementById('circulo-slug-preview');
+    if (preview) preview.textContent = '?c=mi-circulo';
     modal.classList.remove('hidden');
   }
 }
@@ -4993,11 +5000,37 @@ function closeCreateCirculoModal() {
   if (modal) modal.classList.add('hidden');
 }
 
+function handleCirculoNombreInput(input) {
+  const slugInput = document.getElementById('circulo-slug');
+  const preview = document.getElementById('circulo-slug-preview');
+  if (!slugInput || slugInput.dataset.manual === 'true') return;
+  const val = (input.value || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9_-]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  slugInput.value = val;
+  if (preview) preview.textContent = `?c=${val || 'mi-circulo'}`;
+}
+
+function handleSlugInput(input) {
+  input.dataset.manual = 'true';
+  const val = (input.value || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9_-]+/g, '-')
+    .replace(/^[-_]+/, '');
+  input.value = val;
+  const preview = document.getElementById('circulo-slug-preview');
+  if (preview) preview.textContent = `?c=${val || 'mi-circulo'}`;
+}
+
 function handleCreateCirculoSubmit(e) {
   e.preventDefault();
   if (typeof CirculosManager === 'undefined') return;
 
   const nombre = document.getElementById('circulo-nombre')?.value.trim();
+  const slug = document.getElementById('circulo-slug')?.value.trim();
   const coordinador = document.getElementById('circulo-coordinador')?.value.trim();
   const telefono = document.getElementById('circulo-telefono')?.value.trim();
   const direccion = document.getElementById('circulo-direccion')?.value.trim();
@@ -5007,6 +5040,7 @@ function handleCreateCirculoSubmit(e) {
 
   const newCirculo = CirculosManager.createCircle({
     nombre,
+    slug,
     coordinador,
     telefono,
     direccion,
@@ -5028,6 +5062,8 @@ function handleCreateCirculoSubmit(e) {
   }, 400);
 
   e.target.reset();
+  const slugInput = document.getElementById('circulo-slug');
+  if (slugInput) slugInput.dataset.manual = 'false';
 }
 
 function joinCircle(circleId) {
@@ -5270,6 +5306,14 @@ function openCirculoShareModal(circleId) {
   if (inputEl) inputEl.value = url;
   if (copyBtnText) copyBtnText.textContent = 'Copiar';
 
+  // Cargar slug editable
+  const editSlugInput = document.getElementById('edit-circulo-slug-input');
+  if (editSlugInput) {
+    editSlugInput.value = circle.slug || circle.id;
+  }
+  const feedback = document.getElementById('slug-feedback-msg');
+  if (feedback) feedback.classList.add('hidden');
+
   if (modal) modal.classList.remove('hidden');
 }
 
@@ -5293,6 +5337,46 @@ function copyCirculoLinkFromInput() {
     document.execCommand('copy');
     sounds.playSuccess();
   });
+}
+
+function saveCustomCircleSlug() {
+  const cId = window.activeShareCircleId || (typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null);
+  if (!cId || typeof CirculosManager === 'undefined') return;
+
+  const slugInput = document.getElementById('edit-circulo-slug-input');
+  const feedback = document.getElementById('slug-feedback-msg');
+  if (!slugInput) return;
+
+  const newSlug = slugInput.value.trim();
+  const res = CirculosManager.updateCircleSlug(cId, newSlug);
+
+  if (!res.success) {
+    if (feedback) {
+      feedback.textContent = res.error;
+      feedback.className = 'text-[11px] text-rose-600 mt-1.5 block font-semibold';
+      feedback.classList.remove('hidden');
+    }
+    return;
+  }
+
+  sounds.playSuccess();
+  slugInput.value = res.slug;
+  
+  // Actualizar el input del link principal
+  const mainInput = document.getElementById('share-circulo-link-input');
+  if (mainInput) mainInput.value = res.url;
+
+  // Actualizar feedback
+  if (feedback) {
+    feedback.textContent = `✓ ¡Enlace actualizado con éxito a: ?c=${res.slug}!`;
+    feedback.className = 'text-[11px] text-emerald-700 mt-1.5 block font-bold';
+    feedback.classList.remove('hidden');
+    setTimeout(() => { feedback.classList.add('hidden'); }, 3000);
+  }
+
+  // Actualizar banner y vista de círculos
+  renderCirculoStoreBanner();
+  renderCirculosView();
 }
 
 function copyCirculoLink() {

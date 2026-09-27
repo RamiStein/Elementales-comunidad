@@ -4662,7 +4662,27 @@
       <form onsubmit="handleCreateCirculoSubmit(event)" class="space-y-3.5">
         <div>
           <label class="block text-xs font-bold text-stone-700 mb-1">Nombre del Círculo *</label>
-          <input type="text" id="circulo-nombre" required placeholder="Ej: Círculo Los Robles, Círculo Calle Roma..." class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+          <input type="text" id="circulo-nombre" oninput="handleCirculoNombreInput(this)" required placeholder="Ej: Círculo Los Robles, Círculo Calle Roma..." class="w-full text-xs border border-stone-300 rounded-xl px-3 py-2 outline-none focus:border-emerald-600" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1 flex items-center justify-between">
+            <span>🔗 Personalizar enlace / URL corta (opcional)</span>
+            <span class="text-[10px] text-emerald-700 font-semibold">Podés editarlo</span>
+          </label>
+          <div class="flex items-center rounded-xl border border-stone-300 bg-stone-50 overflow-hidden focus-within:border-emerald-600 focus-within:bg-white">
+            <span class="pl-3 text-stone-500 font-mono text-xs select-none">?c=</span>
+            <input 
+              type="text" 
+              id="circulo-slug" 
+              placeholder="mi-circulo" 
+              oninput="handleSlugInput(this)"
+              class="w-full text-xs font-mono py-2 pr-3 bg-transparent outline-none text-stone-800" 
+            />
+          </div>
+          <p class="text-[10px] text-stone-400 mt-1 font-mono">
+            Vista previa: <span id="circulo-slug-preview" class="text-emerald-700 font-bold">?c=mi-circulo</span>
+          </p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -4796,7 +4816,7 @@
       </p>
 
       <!-- Caja de Enlace Copiable -->
-      <div class="mb-4 bg-stone-50 p-3 rounded-2xl border border-stone-200">
+      <div class="mb-3 bg-stone-50 p-3 rounded-2xl border border-stone-200">
         <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-1.5">
           Enlace exclusivo a la Tienda de tu Círculo:
         </label>
@@ -4817,6 +4837,37 @@
             <span id="btn-copy-circulo-text">Copiar</span>
           </button>
         </div>
+      </div>
+
+      <!-- Personalizar Enlace / Alias del Círculo -->
+      <div class="mb-4 bg-emerald-50/70 p-3.5 rounded-2xl border border-emerald-200 text-left">
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-emerald-950">
+            ✏️ Personalizar Link del Círculo:
+          </label>
+          <span class="text-[10px] text-emerald-700 font-semibold">Podés cambiar el nombre</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="flex items-center rounded-xl border border-emerald-300 bg-white overflow-hidden flex-1 focus-within:border-emerald-600 focus-within:ring-1 focus-within:ring-emerald-500">
+            <span class="pl-2.5 text-stone-500 font-mono text-xs select-none">?c=</span>
+            <input 
+              type="text" 
+              id="edit-circulo-slug-input" 
+              placeholder="mi-nombre-personalizado" 
+              class="w-full text-xs font-mono py-2 pr-2 bg-transparent outline-none text-stone-900"
+            />
+          </div>
+          <button 
+            type="button" 
+            onclick="saveCustomCircleSlug()" 
+            id="btn-save-circulo-slug"
+            class="shrink-0 bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1 cursor-pointer"
+          >
+            <span>💾</span>
+            <span id="btn-save-slug-text">Guardar</span>
+          </button>
+        </div>
+        <p id="slug-feedback-msg" class="text-[11px] mt-1.5 hidden"></p>
       </div>
 
       <!-- Botón directo de WhatsApp -->

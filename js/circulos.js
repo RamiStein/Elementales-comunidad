@@ -163,19 +163,60 @@ const CirculosManager = {
     return `${base}?c=${param}`;
   },
 
-  createCircle(data) {
+  updateCircleSlug(circleId, rawSlug) {
+    if (!circleId || !rawSlug) return { success: false, error: 'Por favor ingresá un nombre de enlace.' };
     const all = this.getAllCircles();
-    const slugBase = (data.nombre || 'circulo')
+    const circle = all.find(c => c.id === circleId || c.slug === circleId);
+    if (!circle) return { success: false, error: 'Círculo no encontrado' };
+
+    const cleanSlug = rawSlug.trim()
       .toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/[^a-z0-9_-]+/g, '-')
       .replace(/(^-|-$)/g, '');
+
+    if (!cleanSlug) return { success: false, error: 'El nombre de enlace sólo puede contener letras, números y guiones.' };
+
+    const duplicate = all.find(c => c.slug === cleanSlug && c.id !== circle.id);
+    if (duplicate) {
+      return { success: false, error: `El enlace "?c=${cleanSlug}" ya está en uso por "${duplicate.nombre}". Elegí otro nombre.` };
+    }
+
+    circle.slug = cleanSlug;
+    this.saveCircles(all);
+    return { success: true, slug: cleanSlug, circle, url: this.getShareUrl(circle.id) };
+  },
+
+  createCircle(data) {
+    const all = this.getAllCircles();
     const newId = 'circulo-' + Date.now().toString(36);
-    const slug = slugBase || newId;
+
+    let slug = '';
+    if (data.slug && data.slug.trim()) {
+      slug = data.slug.trim()
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9_-]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+    }
+    if (!slug) {
+      slug = (data.nombre || 'circulo')
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+    }
+    if (!slug) slug = newId;
+
+    let finalSlug = slug;
+    let counter = 2;
+    while (all.some(c => c.slug === finalSlug && c.id !== newId)) {
+      finalSlug = `${slug}-${counter++}`;
+    }
 
     const newCircle = {
       id: newId,
-      slug: slug,
+      slug: finalSlug,
       nodoId: data.nodoId || 'nodo-cooperativa',
       nombre: data.nombre,
       coordinador: data.coordinador,
