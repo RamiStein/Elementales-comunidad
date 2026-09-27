@@ -160,7 +160,54 @@ const CirculosManager = {
       base = window.location.href.split('?')[0].split('#')[0];
     }
     const param = circle.slug || circle.id;
-    return `${base}?c=${param}`;
+
+    // Si es un círculo predeterminado del sistema, basta con ?c=slug
+    const isInitial = INITIAL_CIRCULOS.some(c => c.id === circle.id || c.slug === circle.slug);
+    if (isInitial) {
+      return `${base}?c=${param}`;
+    }
+
+    // Para círculos creados por usuarios, incluimos datos para que cualquier vecino en otro celular lo reconozca al instante
+    const params = new URLSearchParams();
+    params.set('c', param);
+    if (circle.nombre) params.set('n', circle.nombre);
+    if (circle.coordinador) params.set('coord', circle.coordinador);
+    if (circle.direccion) params.set('dir', circle.direccion);
+    if (circle.telefono) params.set('tel', circle.telefono);
+    if (circle.nodoId) params.set('nodo', circle.nodoId);
+    return `${base}?${params.toString()}`;
+  },
+
+  registerCircleFromParams(urlParams) {
+    const slug = urlParams.get('c') || urlParams.get('circulo');
+    const nombre = urlParams.get('n');
+    if (!slug) return null;
+
+    let circle = this.getCircle(slug);
+    if (circle) return circle;
+
+    if (!nombre) return null;
+
+    const all = this.getAllCircles();
+    const newCircle = {
+      id: 'circulo-' + Date.now().toString(36),
+      slug: slug,
+      nombre: nombre,
+      coordinador: urlParams.get('coord') || 'Vecino/a Coordinador/a',
+      telefono: urlParams.get('tel') || '',
+      direccion: urlParams.get('dir') || 'Punto barrial acordado',
+      nodoId: urlParams.get('nodo') || 'nodo-cooperativa',
+      descripcion: 'Círculo de compra colectiva de cajones Chasqui.',
+      frecuencia: 'Semanal',
+      miembros: [
+        { nombre: `${urlParams.get('coord') || 'Coordinador/a'} (Coordinador/a)`, rol: 'coordinador' }
+      ],
+      pedidos: []
+    };
+
+    all.unshift(newCircle);
+    this.saveCircles(all);
+    return newCircle;
   },
 
   updateCircleSlug(circleId, rawSlug) {

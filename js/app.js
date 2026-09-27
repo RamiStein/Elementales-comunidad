@@ -4050,12 +4050,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (circuloParam && typeof CirculosManager !== 'undefined') {
-    const found = CirculosManager.getCircle(circuloParam);
+    let found = CirculosManager.getCircle(circuloParam);
+    if (!found) {
+      found = CirculosManager.registerCircleFromParams(urlParams);
+    }
     if (found) {
       CirculosManager.setActiveCircleId(found.id);
       AppState.activeNodeId = found.nodoId;
       AppState.catalogMode = 'semanal'; // En círculos no se usa modo local
       sessionStorage.setItem('elementales_authenticated', 'true');
+
+      // Limpiar parámetros extensos en la barra dejando ?c=slug limpio
+      try {
+        const cleanShareUrl = window.location.origin + window.location.pathname + `?c=${found.slug || found.id}`;
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState({ circuloId: found.id }, '', cleanShareUrl);
+        }
+      } catch (e) {}
+
       updateRoleUI();
       updateNodeUI();
       navigateTo('tierra');
