@@ -882,3 +882,92 @@ body {
   box-shadow: 0 4px 14px -2px rgba(192, 130, 109, 0.3) !important;
 }
 
+
+
+/* ========================================================================= */
+/* BARRA DE NAVEGACIÓN INFERIOR ESTILO SPOTIFY (5 ELEMENTOS + NODO) */
+/* ========================================================================= */
+.spotify-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  height: 62px;
+  background: rgba(28, 25, 23, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 0.5rem;
+}
+
+.spotify-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  height: 100%;
+  color: #a8a29e;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.spotify-nav-item:hover {
+  color: #ffffff;
+}
+
+.spotify-nav-item.active {
+  color: #c0826d !important;
+}
+
+.spotify-nav-item .spotify-nav-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  transition: transform 0.2s ease;
+}
+
+.spotify-nav-item.active .spotify-nav-icon {
+  transform: scale(1.15);
+}
+
+.spotify-nav-item .spotify-nav-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: #c0826d;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: all 0.2s ease;
+}
+
+.spotify-nav-item.active .spotify-nav-dot {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Compensar padding inferior en vistas para que el contenido no quede tapado por el footer */
+.app-view {
+  padding-bottom: 96px !important;
+}
+
+/* Ocultar barra superior redundante si existe */
+.google-subnav {
+  display: none !important;
+}

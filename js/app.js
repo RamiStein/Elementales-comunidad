@@ -521,6 +521,29 @@ const AppState = {
 function navigateTo(viewName) {
   sounds.playPop();
 
+  // Control de Header y Barra de Navegación Inferior (Ocultos en view-landing)
+  const mainHeader = document.getElementById('main-app-header');
+  const spotifyNav = document.getElementById('spotify-bottom-nav');
+  if (viewName === 'landing') {
+    if (mainHeader) mainHeader.classList.add('hidden');
+    if (spotifyNav) spotifyNav.classList.add('hidden');
+  } else {
+    if (mainHeader) mainHeader.classList.remove('hidden');
+    if (spotifyNav) spotifyNav.classList.remove('hidden');
+  }
+
+  // Actualizar estado activo en la barra inferior estilo Spotify
+  document.querySelectorAll('.spotify-nav-item').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const activeSpotifyBtn = document.getElementById(`spotify-nav-${viewName}`);
+  if (activeSpotifyBtn) {
+    activeSpotifyBtn.classList.add('active');
+  } else if (viewName === 'circulos') {
+    const bBtn = document.getElementById('spotify-nav-barrio');
+    if (bBtn) bBtn.classList.add('active');
+  }
+
   // Mapeo de alias retrocompatibles hacia la arquitectura de 5 Elementos
   if (viewName === 'oficios') {
     navigateTo('agua');
@@ -2113,6 +2136,75 @@ function toggleUserRole(forcedRole = null) {
   if (AppState.currentView === 'eter') showEterModule('elementos');
 }
 
+// =========================================================================
+// CONTROLADOR DE LANDING PREVIA & ELECCIÓN DE NODO (ESTILO MINIMALISTA)
+// =========================================================================
+function selectLandingNode(nodeId) {
+  AppState.selectedLandingNode = nodeId;
+  sounds.playPop();
+
+  const elLucila = document.getElementById('landing-node-nodo-lucila');
+  const elLoma = document.getElementById('landing-node-nodo-lomaverde');
+
+  if (nodeId === 'nodo-lomaverde') {
+    if (elLoma) {
+      elLoma.className = 'p-4 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 cursor-pointer transition-all flex items-start gap-3 shadow-xs';
+    }
+    if (elLucila) {
+      elLucila.className = 'p-4 rounded-2xl border-2 border-stone-200 hover:border-emerald-500 bg-white cursor-pointer transition-all flex items-start gap-3 shadow-xs';
+    }
+  } else {
+    if (elLucila) {
+      elLucila.className = 'p-4 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 cursor-pointer transition-all flex items-start gap-3 shadow-xs';
+    }
+    if (elLoma) {
+      elLoma.className = 'p-4 rounded-2xl border-2 border-stone-200 hover:border-emerald-500 bg-white cursor-pointer transition-all flex items-start gap-3 shadow-xs';
+    }
+  }
+}
+
+function loginFromLanding(role) {
+  const targetNode = AppState.selectedLandingNode || AppState.activeNodeId || 'nodo-lucila';
+  AppState.activeNodeId = targetNode;
+  localStorage.setItem('elementales_active_node', targetNode);
+
+  AppState.userRole = role;
+  localStorage.setItem('elementales_user_role', role);
+  sessionStorage.setItem('elementales_authenticated', 'true');
+
+  if (role === 'socio') {
+    AppState.catalogMode = 'semanal';
+  } else {
+    AppState.catalogMode = 'local';
+  }
+  localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
+
+  sounds.playSuccess();
+  updateRoleUI();
+  updateNodeUI();
+  navigateTo('barrio');
+}
+
+function openAdminPinModal() {
+  requestGestorAccess(() => {
+    const targetNode = AppState.selectedLandingNode || AppState.activeNodeId || 'nodo-lucila';
+    AppState.activeNodeId = targetNode;
+    localStorage.setItem('elementales_active_node', targetNode);
+    sessionStorage.setItem('elementales_authenticated', 'true');
+    updateRoleUI();
+    updateNodeUI();
+    navigateTo('barrio');
+  });
+}
+
+function goToLanding() {
+  sounds.playPop();
+  sessionStorage.removeItem('elementales_authenticated');
+  AppState.selectedLandingNode = AppState.activeNodeId || 'nodo-lucila';
+  navigateTo('landing');
+  selectLandingNode(AppState.selectedLandingNode);
+}
+
 // CONTROL DEL MODAL SELECTOR DE ROL
 function openRoleSwitcherModal() {
   sounds.playPop();
@@ -3384,6 +3476,7 @@ function openElementInfoModal(elementId) {
 document.addEventListener('DOMContentLoaded', () => {
   AppState.init();
   updateRoleUI();
+  updateNodeUI();
   document.body.addEventListener('click', () => sounds.init(), { once: true });
   
   // Cargar notas guardadas del nodo
@@ -3393,8 +3486,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ta) ta.value = notasGuardadas;
   }
   
-  // Iniciar en la vista del Portal Barrial
-  navigateTo('barrio');
+  // Detección de autenticación inicial / hash de admin directo
+  const isAuth = sessionStorage.getItem('elementales_authenticated');
+  if (window.location.hash === '#admin') {
+    AppState.userRole = 'gestor';
+    sessionStorage.setItem('elementales_authenticated', 'true');
+    sessionStorage.setItem('elementales_gestor_auth', 'true');
+    updateRoleUI();
+    updateNodeUI();
+    navigateTo('barrio');
+  } else if (!isAuth) {
+    navigateTo('landing');
+    selectLandingNode(AppState.activeNodeId || 'nodo-lucila');
+  } else {
+    navigateTo('barrio');
+  }
 });
 
 
@@ -3963,24 +4069,99 @@ function selectNode(nodeId) {
 
 function updateNodeUI() {
   const node = NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) || NODOS_COMUNIDAD[0];
+  const isLoma = node.id === 'nodo-lomaverde';
+
+  // 1. Cabecera Minimalista
   const nameEl = document.getElementById('header-node-name');
   if (nameEl) {
-    nameEl.textContent = node.id === 'nodo-lomaverde' ? 'Loma Verde' : 'La Lucila';
+    nameEl.textContent = isLoma ? 'Loma Verde' : 'La Lucila';
+  }
+
+  const indicatorEl = document.getElementById('header-node-indicator');
+  if (indicatorEl) {
+    indicatorEl.textContent = isLoma ? 'Loma Verde · Escobar' : 'La Lucila · Vicente López';
   }
 
   const badgeEl = document.getElementById('header-node-badge');
   if (badgeEl) {
-    if (node.id === 'nodo-lomaverde') {
+    if (isLoma) {
       badgeEl.className = 'flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-emerald-100 text-emerald-950 border-emerald-400 hover:bg-emerald-200';
     } else {
-      badgeEl.className = 'flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-800 border-stone-300 hover:bg-stone-200';
+      badgeEl.className = 'flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-800 border-stone-200 hover:bg-stone-200';
     }
   }
 
-  // Banner Loma Verde en view-barrio
-  const bannerLV = document.getElementById('banner-nodo-lomaverde');
-  if (bannerLV) {
-    bannerLV.classList.toggle('hidden', AppState.activeNodeId !== 'nodo-lomaverde');
+  // 2. Perfil Limpio del Nodo en view-barrio (Estilo Spotify)
+  const coverEl = document.getElementById('node-cover-image');
+  if (coverEl) {
+    coverEl.src = node.cover || (isLoma 
+      ? 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1200&h=400' 
+      : 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200&h=400');
+  }
+
+  const cityEl = document.getElementById('node-header-city');
+  if (cityEl) {
+    cityEl.textContent = isLoma ? 'Loma Verde' : 'La Lucila';
+  }
+
+  const avatarEl = document.getElementById('node-avatar-image');
+  if (avatarEl) {
+    avatarEl.src = isLoma ? 'public/assets/brand/tierra_clean.png' : 'public/assets/brand/comunidad_emblem_clean.png';
+  }
+
+  const categoryTag = document.getElementById('node-category-tag');
+  if (categoryTag) {
+    categoryTag.textContent = node.circulosEnabled ? 'Círculos VRDE' : 'Sede Central';
+  }
+
+  const statusText = document.getElementById('node-status-text');
+  if (statusText) {
+    statusText.textContent = isLoma ? '🌿 Círculos Abiertos' : '🟢 Abierto Hoy';
+  }
+
+  const mainTitle = document.getElementById('node-main-title');
+  if (mainTitle) {
+    mainTitle.textContent = node.name || 'Centro Comunitario Elementales';
+  }
+
+  const addressChip = document.getElementById('node-address-chip');
+  if (addressChip) {
+    addressChip.textContent = `📍 ${node.address || 'Rawson 3450'}`;
+  }
+
+  const hoursChip = document.getElementById('node-hours-chip');
+  if (hoursChip) {
+    hoursChip.textContent = `⏰ ${node.time || '09:30 a 19:30 hs'}`;
+  }
+
+  const guardiansChip = document.getElementById('node-guardians-chip');
+  if (guardiansChip) {
+    guardiansChip.textContent = `👥 Atienden: ${node.guardian || 'Equipo del Nodo'}`;
+  }
+
+  const descText = document.getElementById('node-description-text');
+  if (descText) {
+    descText.textContent = node.desc || '';
+  }
+
+  const waLink = document.getElementById('node-whatsapp-link');
+  if (waLink) {
+    waLink.href = `https://wa.me/${node.phone || '5491123456789'}?text=${encodeURIComponent('Hola! Me contacto con el ' + (node.name || 'Nodo Elementales'))}`;
+  }
+
+  const currentRoleBadge = document.getElementById('node-current-role-badge');
+  if (currentRoleBadge) {
+    const role = AppState.userRole || 'visitante';
+    if (role === 'gestor') {
+      currentRoleBadge.innerHTML = '👑 Gestor';
+      currentRoleBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300 shadow-sm';
+    } else if (role === 'socio') {
+      currentRoleBadge.innerHTML = '💧 Socio CsC';
+      currentRoleBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-900 border border-blue-300 shadow-sm';
+    } else {
+      currentRoleBadge.innerHTML = '👤 Visitante';
+      currentRoleBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-white/90 text-stone-900 border border-stone-200 shadow-sm';
+    }
   }
 
   populateCheckoutCirculos();

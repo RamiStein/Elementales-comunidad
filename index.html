@@ -54,294 +54,63 @@
   <!-- ========================================================================= -->
   <!-- BARRA DE NAVEGACIÓN FIJA ESTILO GOOGLE SUITE (PORTAL BARRIAL LA LUCILA) -->
   <!-- ========================================================================= -->
-  <header class="google-nav-fixed w-full">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-2.5">
+  <header id="main-app-header" class="google-nav-fixed w-full transition-all">
+    <div class="max-w-5xl mx-auto px-3.5 sm:px-6 py-2.5 flex items-center justify-between gap-3">
       
-      <!-- FILA PRINCIPAL: LOGO A LA IZQUIERDA, BUSCADOR AL CENTRO (EN DESKTOP), BOTONES A LA DERECHA -->
-      <div class="flex items-center justify-between gap-2 sm:gap-4">
+      <!-- LOGO ELEMENTALES & NODO ACTIVO -->
+      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="navigateTo('barrio')">
+        <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs" alt="Elementales" />
+        <div class="flex flex-col">
+          <span class="font-black text-sm sm:text-base text-stone-900 tracking-tight leading-none">
+            Elementales <span class="text-[#a6634f]">Comunidad</span>
+          </span>
+          <span class="text-[10px] font-bold text-emerald-700 flex items-center gap-1 leading-tight mt-0.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="header-node-indicator">La Lucila · Vicente López</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- BOTONES DE ACCIÓN: SELECTOR DE NODO, ROL Y SALIR -->
+      <div class="flex items-center gap-2 shrink-0">
         
-        <!-- LOGO ELEMENTALES & DISTINTIVO LA LUCILA -->
-        <div class="flex items-center gap-2 sm:gap-2.5 cursor-pointer shrink-0" onclick="navigateTo('barrio')">
-          <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-xs" alt="Elementales" />
-          <div class="flex flex-col">
-            <span class="font-black text-sm sm:text-lg text-stone-900 tracking-tight leading-none">
-              Elementales <span class="text-[#a6634f]">Barrio</span>
-            </span>
-            <span class="text-[9px] sm:text-[11px] font-bold text-[#8ca15d] flex items-center gap-1 leading-tight mt-0.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              La Lucila • Vicente López
-            </span>
-          </div>
-        </div>
+        <!-- Selector Rápido de Nodo -->
+        <button 
+          type="button" 
+          id="header-node-badge" 
+          onclick="openNodeSelectorModal()" 
+          class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-800 border-stone-200 hover:bg-stone-200"
+          title="Cambiar de Nodo (La Lucila / Loma Verde)"
+        >
+          <span class="text-xs">📍</span>
+          <span id="header-node-name">La Lucila</span>
+          <span class="text-[9px] opacity-60">▾</span>
+        </button>
 
-        <!-- BUSCADOR OMNIBAR EN DESKTOP (MD+) -->
-        <div class="google-omnibar-container hidden md:block flex-1 mx-2 lg:mx-4">
-          <div class="google-omnibar">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-stone-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input 
-              type="text" 
-              id="barrio-omnibar-input"
-              oninput="handleBarrioSearch(this.value)"
-              onkeydown="if(event.key === 'Enter') executeGoogleSearch(this.value)"
-              placeholder="Buscar en La Lucila: plomeros, talleres, avisos WhatsApp, noticias..."
-            />
-            <select 
-              id="barrio-omnibar-element"
-              onchange="handleBarrioElementChange(this.value)"
-              class="bg-stone-50 hover:bg-stone-100 text-[11px] font-bold text-stone-700 border border-stone-200 rounded-full px-2 py-1 outline-none cursor-pointer shrink-0 transition-colors"
-            >
-              <option value="todos">🌐 Todos los Elementos</option>
-              <option value="tierra">🌱 Tierra (Oficios & Huerta)</option>
-              <option value="agua">💧 Agua (Talleres & Vínculos)</option>
-              <option value="fuego">🔥 Fuego (Financiamiento & Proyectos)</option>
-              <option value="aire">💨 Aire (Noticias & WhatsApp)</option>
-              <option value="espiritu">✨ Éter (Centro La Lucila)</option>
-            </select>
-            <button 
-              type="button"
-              onclick="executeGoogleSearch(document.getElementById('barrio-omnibar-input').value)"
-              class="p-1.5 rounded-full hover:bg-stone-100 text-stone-500 hover:text-stone-800 transition-colors shrink-0"
-              title="Buscar en Google & Red Barrial"
-            >
-              <svg class="w-4 h-4" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
+        <!-- Indicador / Selector de Rol -->
+        <button 
+          type="button"
+          id="header-role-badge"
+          onclick="openRoleSwitcherModal()"
+          class="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-700 border-stone-200 hover:bg-stone-200"
+          title="Cambiar perspectiva: Vecino No Miembro, Socio CsC o Gestor"
+        >
+          <span id="header-role-dot" class="w-2 h-2 rounded-full bg-stone-400"></span>
+          <span id="header-role-text">Vecino</span>
+        </button>
 
-        <!-- BOTONES ACCIONES: WAFFLE 9 PUNTOS, + PUBLICAR, AVATAR -->
-        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          
-          <!-- Botón Waffle 9 Puntos (Google Apps Suite) -->
-          <div class="relative">
-            <button 
-              type="button"
-              id="btn-google-waffle"
-              onclick="toggleGoogleWaffle()"
-              class="google-waffle-btn"
-              title="Suite de los 5 Elementos"
-              aria-label="Abrir Suite de los 5 Elementos"
-            >
-              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                <circle cx="5" cy="5" r="2.2"></circle>
-                <circle cx="12" cy="5" r="2.2"></circle>
-                <circle cx="19" cy="5" r="2.2"></circle>
-                <circle cx="5" cy="12" r="2.2"></circle>
-                <circle cx="12" cy="12" r="2.2"></circle>
-                <circle cx="19" cy="12" r="2.2"></circle>
-                <circle cx="5" cy="19" r="2.2"></circle>
-                <circle cx="12" cy="19" r="2.2"></circle>
-                <circle cx="19" cy="19" r="2.2"></circle>
-              </svg>
-            </button>
-
-            <!-- MENÚ FLOTANTE WAFFLE (LOS 5 ELEMENTOS) -->
-            <div id="google-waffle-menu" class="google-waffle-menu hidden">
-              <!-- Indicador de arrastre táctil para celular -->
-              <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mb-3 sm:hidden"></div>
-
-              <div class="flex items-center justify-between pb-3 mb-3 border-b border-stone-100">
-                <div class="flex items-center gap-2">
-                  <span class="text-sm sm:text-base font-black text-stone-900">Suite Elemental</span>
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-[#a6634f] bg-[#fcf4f0] px-2 py-0.5 rounded-full">La Lucila</span>
-                </div>
-                <button type="button" onclick="closeGoogleWaffle()" class="sm:hidden text-stone-400 hover:text-stone-700 w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center font-bold text-xs">✕</button>
-                <span class="hidden sm:inline text-xs text-stone-400 font-semibold">5 Dimensiones</span>
-              </div>
-
-              <!-- GRID DE LOS 5 ELEMENTOS CON SELLOS OFICIALES -->
-              <div class="grid grid-cols-3 gap-2">
-                
-                <!-- 1. TIERRA (TIENDA & PEDIDOS) -->
-                <div class="waffle-item" onclick="navigateTo('tierra'); closeGoogleWaffle();">
-                  <div class="w-12 h-12 rounded-2xl bg-[#f4f6ef] border border-[#c2d49e]/50 flex items-center justify-center p-1 mb-1 shadow-xs overflow-hidden">
-                    <img src="public/assets/brand/tierra_logo.jpg" class="w-full h-full object-cover rounded-xl" alt="Tierra" />
-                  </div>
-                  <span class="text-xs font-bold text-stone-800">🌱 Tierra</span>
-                  <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Tienda & Pedidos</span>
-                </div>
-
-                <!-- 2. AGUA (LINKEDIN BARRIAL & COMUNIDAD) -->
-                <div class="waffle-item" onclick="navigateTo('agua'); closeGoogleWaffle();">
-                  <div class="w-12 h-12 rounded-2xl bg-[#f2f6f9] border border-[#b4cfdf]/50 flex items-center justify-center p-1 mb-1 shadow-xs overflow-hidden">
-                    <img src="public/assets/brand/agua_logo.jpg" class="w-full h-full object-cover rounded-xl" alt="Agua" />
-                  </div>
-                  <span class="text-xs font-bold text-stone-800">💧 Agua</span>
-                  <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Comunidad & Oficios</span>
-                </div>
-
-                <!-- 3. FUEGO (E-LEARNING & SABERES) -->
-                <div class="waffle-item" onclick="navigateTo('fuego'); closeGoogleWaffle();">
-                  <div class="w-12 h-12 rounded-2xl bg-[#fdf4f0] border border-[#f2b5a2]/50 flex items-center justify-center p-1 mb-1 shadow-xs overflow-hidden">
-                    <img src="public/assets/brand/fuego_logo.jpg" class="w-full h-full object-cover rounded-xl" alt="Fuego" />
-                  </div>
-                  <span class="text-xs font-bold text-stone-800">🔥 Fuego</span>
-                  <span class="text-[10px] text-stone-500 leading-tight mt-0.5">E-Learning & Talleres</span>
-                </div>
-
-                <!-- 4. AIRE (RED SOCIAL & PODCASTS) -->
-                <div class="waffle-item" onclick="navigateTo('aire'); closeGoogleWaffle();">
-                  <div class="w-12 h-12 rounded-2xl bg-[#f6f7f3] border border-[#d2d7c1]/50 flex items-center justify-center p-1 mb-1 shadow-xs overflow-hidden">
-                    <img src="public/assets/brand/aire_logo.jpg" class="w-full h-full object-cover rounded-xl" alt="Aire" />
-                  </div>
-                  <span class="text-xs font-bold text-stone-800">💨 Aire</span>
-                  <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Red Social & Podcasts</span>
-                </div>
-
-                <!-- 5. ÉTER (DEMOCRACIA & CRM) -->
-                <div class="waffle-item" onclick="navigateTo('eter'); closeGoogleWaffle();">
-                  <div class="w-12 h-12 rounded-2xl bg-[#fcf4f0] border border-[#dfc2b7]/50 flex items-center justify-center p-1 mb-1 shadow-xs overflow-hidden">
-                    <img src="public/assets/brand/eter_logo.jpg" class="w-full h-full object-cover rounded-xl" alt="Éter" />
-                  </div>
-                  <span class="text-xs font-bold text-stone-800">✨ Éter</span>
-                  <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Democracia & CRM</span>
-                </div>
-
-                <!-- 6. COSMOS / CONSTELACIÓN -->
-                <div class="waffle-item" onclick="navigateTo('welcome'); closeGoogleWaffle();">
-                  <div class="w-12 h-12 rounded-2xl bg-[#fff] border border-stone-200 flex items-center justify-center p-2 mb-1 shadow-xs">
-                    <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Comunidad" />
-                  </div>
-                  <span class="text-xs font-bold text-stone-800">🪐 Cosmos</span>
-                  <span class="text-[10px] text-stone-500 leading-tight mt-0.5">Constelación</span>
-                </div>
-              </div>
-
-              <!-- ENLACES DIRECTOS ADICIONALES EN EL WAFFLE -->
-              <div class="mt-3 pt-3 border-t border-stone-100 flex flex-col gap-1 text-xs">
-                <button type="button" onclick="navigateTo('tierra'); closeGoogleWaffle();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-stone-50 text-stone-700 font-semibold flex items-center justify-between">
-                  <span>🧺 Tienda Comunitaria & Pedidos</span>
-                  <span class="text-[11px] text-[#a6634f] font-bold">Local • Semanal • Lunar →</span>
-                </button>
-                <button type="button" onclick="navigateTo('membership'); closeGoogleWaffle();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-stone-50 text-stone-700 font-semibold flex items-center justify-between">
-                  <span>💧 Membresía CsC del Nodo</span>
-                  <span class="text-[11px] text-blue-600 font-bold">Beneficios Socio →</span>
-                </button>
-                <button type="button" onclick="openModalSumarAlBarrio('inquietud'); closeGoogleWaffle();" class="w-full text-left px-3 py-2 rounded-xl hover:bg-stone-50 text-stone-700 font-semibold flex items-center justify-between">
-                  <span>📢 Buzón de Inquietudes Barriales</span>
-                  <span class="text-[11px] text-emerald-600 font-bold">Sumar →</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Botón + Publicar / Sumar -->
-          <button 
-            type="button"
-            onclick="openModalSumarAlBarrio()"
-            class="bg-[#c0826d] hover:bg-[#a6634f] text-white text-xs sm:text-sm font-bold px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-xs flex items-center gap-1 transition-all transform active:scale-95 shrink-0"
-            title="Sumar producto a la venta, inquietud, oficio o proyecto"
-          >
-            <span class="text-sm sm:text-base font-black leading-none">+</span>
-            <span class="text-xs">Publicar</span>
-          </button>
-
-          <!-- Selector de Rol Visible en Cabecera (No Miembro / Socio CsC / Gestor) -->
-                    <!-- Selector de Nodo Activo (La Lucila / Loma Verde) -->
-          <button 
-            type="button" 
-            id="header-node-badge" 
-            onclick="openNodeSelectorModal()" 
-            class="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-800 border-stone-300 hover:bg-stone-200"
-            title="Cambiar de Nodo: La Lucila / Loma Verde"
-          >
-            <span class="text-xs">📍</span>
-            <span id="header-node-name">La Lucila</span>
-            <span class="text-[9px] opacity-60">▾</span>
-          </button>
-
-<button 
-            type="button"
-            id="header-role-badge"
-            onclick="openRoleSwitcherModal()"
-            class="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-700 border-stone-300 hover:bg-stone-200"
-            title="Cambiar perspectiva: Vecino No Miembro, Socio CsC o Gestor del Nodo"
-          >
-            <span id="header-role-dot" class="w-2 h-2 rounded-full bg-stone-400"></span>
-            <span id="header-role-text">Vecino</span>
-            <span class="text-[9px] opacity-60">▼</span>
-          </button>
-
-          <!-- Avatar Vecino / Carnet -->
-          <button 
-            type="button"
-            onclick="navigateTo('profile')" 
-            class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-[#d99a86] to-[#a6634f] text-white flex items-center justify-center font-bold text-xs shadow-xs border border-white hover:opacity-90 transition-opacity shrink-0"
-            title="Mi Carnet de Vecino"
-          >
-            <span>👤</span>
-          </button>
-
-        </div>
+        <!-- Botón Salir / Volver a la Landing -->
+        <button 
+          type="button"
+          onclick="goToLanding()" 
+          class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center font-bold text-xs transition-colors shrink-0"
+          title="Cambiar de usuario o salir a la pantalla de bienvenida"
+        >
+          ✕
+        </button>
 
       </div>
 
-      <!-- FILA DE BUSCADOR OMNIBAR EN MÓVIL (< MD): ANCHO COMPLETO 100% -->
-      <div class="block md:hidden mt-2">
-        <div class="google-omnibar w-full">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-stone-400 shrink-0 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input 
-            type="text" 
-            id="barrio-omnibar-input-mobile"
-            oninput="handleBarrioSearch(this.value)"
-            onkeydown="if(event.key === 'Enter') executeGoogleSearch(this.value)"
-            placeholder="Buscar plomeros, talleres, avisos..."
-            class="w-full text-xs"
-          />
-          <button 
-            type="button"
-            onclick="executeGoogleSearch(document.getElementById('barrio-omnibar-input-mobile').value)"
-            class="p-1 rounded-full text-stone-500 hover:text-stone-800 shrink-0"
-            title="Buscar en Google"
-          >
-            <svg class="w-4 h-4" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- TIRA DE SUB-NAVEGACIÓN ESTILO GOOGLE: LOS ELEMENTOS DEL NODO -->
-    <div class="google-subnav max-w-7xl mx-auto px-3 sm:px-6">
-      <button type="button" class="google-tab-btn active shrink-0" id="tab-btn-barrio" onclick="navigateTo('barrio')">
-        <span>🏠</span> Inicio
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-tierra" onclick="navigateTo('tierra')">
-        <span>🌱</span> Tierra (Tienda)
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-circulos" onclick="navigateTo('circulos')">
-        <span>🌀</span> Círculos
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-agua" onclick="navigateTo('agua')">
-        <span>💧</span> Agua (Comunidad)
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-fuego" onclick="navigateTo('fuego')">
-        <span>🔥</span> Fuego (E-Learning)
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-aire" onclick="navigateTo('aire')">
-        <span>💨</span> Aire (Red Social)
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-eter" onclick="navigateTo('eter')">
-        <span>✨</span> Éter (Espíritu)
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-membership" onclick="navigateTo('membership')">
-        <span>🎟️</span> Membresía (CsC)
-      </button>
-      <button type="button" class="google-tab-btn shrink-0" id="tab-btn-welcome" onclick="navigateTo('welcome')">
-        <span>🪐</span> Constelación
-      </button>
     </div>
   </header>
 
@@ -351,658 +120,308 @@
   <!-- ========================================================================= -->
   <!-- 0. VISTA: PORTAL & RED SOCIAL BARRIAL (TODO EL BARRIO - LA LUCILA) -->
   <!-- ========================================================================= -->
-  <div id="view-barrio" class="app-view max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-20">
+  <!-- 0.A VISTA: LANDING PREVIA DE ACCESO Y ELECCIÓN DE NODO -->
+  <!-- ========================================================================= -->
+  <div id="view-landing" class="app-view max-w-xl mx-auto px-4 sm:px-6 pt-8 pb-20 text-center animate-fade-in">
     
-        <!-- BANNER CONTEXTUAL PARA NODO LOMA VERDE (FACULTAD DE CÍRCULOS) -->
-    <div id="banner-nodo-lomaverde" class="mb-6 p-6 rounded-3xl bg-gradient-to-br from-emerald-950 via-stone-900 to-emerald-900 text-white border-2 border-emerald-500/40 shadow-xl relative overflow-hidden hidden">
-      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1.5">
-            <span class="text-xs font-black uppercase tracking-wider text-emerald-300 bg-emerald-900/80 px-2.5 py-0.5 rounded-full border border-emerald-400/30">
-              📍 Nodo Loma Verde · Escobar
-            </span>
-            <span class="text-xs font-bold text-amber-300 bg-amber-900/60 px-2.5 py-0.5 rounded-full border border-amber-400/30">
-              Facultad de Círculos VRDE
-            </span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Compras Comunitarias en Círculos
-          </h2>
-          <p class="text-xs sm:text-sm text-emerald-100/90 mt-1 max-w-xl leading-relaxed">
-            En Loma Verde la gestión del pedido y entrega queda a cargo de quien pide. Sumate a un Círculo barrial o creá uno con tus vecinos para pedir juntos a la red mayor sin recargar al nodo.
-          </p>
-        </div>
-        <div class="flex flex-wrap sm:flex-nowrap gap-2 shrink-0">
-          <button onclick="navigateTo('circulos')" class="btn-spotify !py-2.5 !px-4 text-xs font-bold bg-emerald-500 text-stone-950 hover:bg-emerald-400 flex items-center gap-1.5 shadow-md">
-            <span>🌀</span> Ver Círculos de Loma Verde
-          </button>
-          <button onclick="openCreateCirculoModal()" class="btn-spotify !py-2.5 !px-4 text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center gap-1.5">
-            <span>+</span> Crear Círculo
-          </button>
-        </div>
-      </div>
+    <!-- Emblema de la Red -->
+    <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-3xl bg-white border border-stone-200 p-3 shadow-md mb-4 flex items-center justify-center">
+      <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Elementales" />
     </div>
 
-<!-- SELECTOR RÁPIDO DE PERSPECTIVA BARRIAL (NO MIEMBRO / SOCIO CsC / GESTOR DEL NODO) -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/95 p-2.5 sm:px-4 sm:py-2.5 rounded-2xl border border-stone-200 shadow-2xs mb-4 gap-2.5">
-      <div class="flex items-center gap-2 text-xs font-bold text-stone-700">
-        <span class="text-base">🧭</span>
-        <span>Perspectiva Activa en la Plataforma:</span>
-        <span class="text-[11px] font-normal text-stone-400 hidden md:inline">• Elegí cómo querés experimentar la plataforma</span>
-      </div>
-      <div class="grid grid-cols-3 gap-1.5 w-full sm:w-auto" id="quick-role-switcher-bar">
-        <button type="button" onclick="toggleUserRole('visitante')" id="quick-role-btn-visitante" class="px-3 py-1.5 rounded-xl text-xs font-black transition-all text-center border">
-          👤 No Miembro
-        </button>
-        <button type="button" onclick="toggleUserRole('socio')" id="quick-role-btn-socio" class="px-3 py-1.5 rounded-xl text-xs font-black transition-all text-center border">
-          💧 Socio CsC
-        </button>
-        <button type="button" onclick="toggleUserRole('gestor')" id="quick-role-btn-gestor" class="px-3 py-1.5 rounded-xl text-xs font-black transition-all text-center border">
-          👑 Gestor Nodo
-        </button>
-      </div>
-    </div>
+    <span class="text-[10px] font-black uppercase tracking-widest text-[#a6634f] bg-[#fcf4f0] px-3.5 py-1 rounded-full border border-[#c0826d]/20">
+      Red Comunitaria de Nodos & Círculos
+    </span>
+    
+    <h1 class="text-3xl sm:text-4xl font-black text-stone-900 tracking-tight mt-2.5 mb-2">
+      Bienvenido a Elementales
+    </h1>
+    <p class="text-xs sm:text-sm text-stone-500 max-w-md mx-auto mb-7 leading-relaxed">
+      Oficinas barriales de la nueva era, compras de huerta agroecológica al costo campesino, oficios de confianza y saberes compartidos.
+    </p>
 
-    <!-- BANNER CONTEXTUAL POR ROL (NO MIEMBRO / SOCIO CsC / GESTOR DEL NODO) -->
-    <div id="role-context-banners-container" class="mb-5">
-      
-      <!-- 1. BANNER PARA USUARIO NO MIEMBRO -->
-      <div id="role-banner-visitante" class="bg-gradient-to-r from-stone-50 via-[#fcf6f2] to-amber-50/40 border border-[#c0826d]/30 rounded-2xl p-3.5 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div class="flex items-start sm:items-center gap-3">
-          <span class="w-10 h-10 rounded-2xl bg-[#fcf4f0] border border-[#c0826d]/30 flex items-center justify-center text-xl shrink-0 shadow-2xs">🌱</span>
-          <div>
-            <div class="flex flex-wrap items-center gap-2">
-              <h4 class="font-black text-sm text-stone-900">Estás explorando como Vecino No Miembro</h4>
-              <span class="text-[10px] font-bold bg-stone-200 text-stone-700 px-2 py-0.5 rounded-full">Acceso Abierto</span>
-            </div>
-            <p class="text-xs text-stone-600 mt-0.5 leading-snug">
-              Tenés acceso libre a noticias, oficios y grupos vecinales. Sumate a la Membresía CsC para acceder a compras comunitarias a precio de costo y cupos prioritarios.
-            </p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <button onclick="navigateTo('membership')" class="bg-[#c0826d] hover:bg-[#a6634f] text-white text-xs font-bold px-3.5 py-2 rounded-full shadow-xs transition-transform active:scale-95">
-            💧 Hacerte Socio CsC
-          </button>
-          <button onclick="openRoleSwitcherModal()" class="text-stone-600 hover:text-stone-900 text-xs font-bold px-2.5 py-1.5 rounded-full hover:bg-stone-200/50 border border-stone-300">
-            Cambiar rol ⇄
-          </button>
-        </div>
-      </div>
-
-      <!-- 2. BANNER PARA MIEMBRO / SOCIO CsC -->
-      <div id="role-banner-socio" class="hidden bg-gradient-to-r from-blue-50/90 via-sky-50/60 to-indigo-50/70 border border-blue-200 rounded-2xl p-3.5 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div class="flex items-start sm:items-center gap-3">
-          <span class="w-10 h-10 rounded-2xl bg-blue-100 border border-blue-300 flex items-center justify-center text-xl shrink-0 shadow-2xs">💧</span>
-          <div>
-            <div class="flex flex-wrap items-center gap-2">
-              <h4 class="font-black text-sm text-blue-950">¡Bienvenida Socia CsC! · Lucía Gómez</h4>
-              <span class="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-full">Socio Activo #CSC-0482</span>
-            </div>
-            <p class="text-xs text-blue-800/80 mt-0.5 leading-snug">
-              Tu membresía está activa en el Nodo La Lucila. Disfrutás de compras colectivas a precio de costo, prioridad en talleres y participación en asambleas.
-            </p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <button onclick="navigateTo('profile')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3.5 py-2 rounded-full shadow-xs transition-transform active:scale-95">
-            🪪 Mi Carnet Digital
-          </button>
-          <button onclick="openRoleSwitcherModal()" class="text-blue-800 hover:text-blue-950 text-xs font-bold px-2.5 py-1.5 rounded-full hover:bg-blue-100/50 border border-blue-300">
-            Cambiar rol ⇄
-          </button>
-        </div>
-      </div>
-
-      <!-- 3. BANNER PARA GESTOR DEL NODO -->
-      <div id="role-banner-gestor" class="hidden bg-gradient-to-r from-amber-50 via-orange-50/50 to-stone-100 border border-amber-300 rounded-2xl p-3.5 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div class="flex items-start sm:items-center gap-3">
-          <span class="w-10 h-10 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-xl shrink-0 shadow-2xs">👑</span>
-          <div>
-            <div class="flex flex-wrap items-center gap-2">
-              <h4 class="font-black text-sm text-amber-950">Modo Gestor del Nodo Activo</h4>
-              <span class="text-[10px] font-black bg-amber-600 text-white px-2 py-0.5 rounded-full">Equipo Rawson 3450</span>
-            </div>
-            <p class="text-xs text-amber-900/80 mt-0.5 leading-snug">
-              Tenés control administrativo: economía de caja, altas de membresía, cuadrante de turnos, claves del nodo y supervisión de los 5 Elementos.
-            </p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <button onclick="navigateTo('eter')" class="bg-gradient-to-r from-[#c0826d] to-[#a6634f] hover:opacity-95 text-white text-xs font-bold px-3.5 py-2 rounded-full shadow-xs transition-transform active:scale-95">
-            ✨ Abrir Éter CRM
-          </button>
-          <button onclick="openRoleSwitcherModal()" class="text-stone-700 hover:text-stone-900 text-xs font-bold px-2.5 py-1.5 rounded-full hover:bg-amber-100/50 border border-amber-300">
-            Cambiar rol ⇄
-          </button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- SECCIONES DE EXPERIENCIA ESPECÍFICA POR ROL (VISITANTE / SOCIO / GESTOR) -->
-    <!-- A. EXPERIENCIA DEDICADA PARA VECINO NO MIEMBRO -->
-    <div id="role-section-visitante" class="mb-6 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-amber-50/60 via-white to-stone-50 border border-[#c0826d]/30 shadow-xs">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
-        <div>
-          <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-2.5 py-0.5 rounded-full">Tu lugar en La Lucila</span>
-          <h3 class="text-lg sm:text-xl font-black text-stone-900 mt-1">¿Cómo participás hoy como Vecino vs. como Socio CsC?</h3>
-          <p class="text-xs text-stone-600">Comparamos de manera transparente lo que tenés abierto hoy y los beneficios directos que desbloqueás al asociarte:</p>
-        </div>
-        <button onclick="navigateTo('membership')" class="bg-[#c0826d] hover:bg-[#a6634f] text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xs shrink-0 inline-flex items-center gap-1.5">
-          <span>💧 Asociarme al Nodo</span>
-          <span>→</span>
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-        <div class="bg-white/90 p-4 rounded-2xl border border-stone-200">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-lg">👤</span>
-            <h4 class="font-bold text-stone-900 text-sm">Tu estado actual: Vecino No Miembro</h4>
-          </div>
-          <ul class="space-y-1.5 text-stone-600">
-            <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Vidriera de oficios barriales recomendados de confianza</li>
-            <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Acceso libre a grupos de WhatsApp y noticias barriales</li>
-            <li class="flex items-start gap-1.5"><span class="text-emerald-600 font-bold">✓</span> Compras de feria a precio de venta minorista al público</li>
-            <li class="flex items-start gap-1.5"><span class="text-amber-600 font-bold">ℹ</span> Consultas presenciales y mate en la oficina de Rawson 3450</li>
-          </ul>
-        </div>
-
-        <div class="bg-gradient-to-br from-blue-50/70 to-indigo-50/50 p-4 rounded-2xl border border-blue-200">
-          <div class="flex items-center justify-between gap-2 mb-2">
-            <div class="flex items-center gap-2">
-              <span class="text-lg">💧</span>
-              <h4 class="font-bold text-blue-950 text-sm">Beneficios de la Membresía CsC</h4>
-            </div>
-            <span class="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-full">Ahorro Activo</span>
-          </div>
-          <ul class="space-y-1.5 text-blue-900">
-            <li class="flex items-start gap-1.5"><span class="text-blue-600 font-bold">★</span> <strong>Compras a precio de costo de origen</strong> (Ahorro del 25% al 35% en huerta y almacén)</li>
-            <li class="flex items-start gap-1.5"><span class="text-blue-600 font-bold">★</span> <strong>Cupos y descuentos prioritarios</strong> en talleres vecinales</li>
-            <li class="flex items-start gap-1.5"><span class="text-blue-600 font-bold">★</span> <strong>Acceso al Fondo Barrial</strong> para recibir financiamiento de proyectos</li>
-            <li class="flex items-start gap-1.5"><span class="text-blue-600 font-bold">★</span> <strong>Voz y voto</strong> en las asambleas mensuales del nodo</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- B. EXPERIENCIA DEDICADA PARA SOCIO CsC -->
-    <div id="role-section-socio" class="hidden mb-6 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-blue-50/80 via-sky-50/40 to-white border border-blue-200 shadow-xs">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-        <div>
-          <span class="text-[10px] font-black uppercase tracking-wider text-blue-800 bg-blue-100 px-2.5 py-0.5 rounded-full">Panel Exclusivo de Socia</span>
-          <h3 class="text-lg sm:text-xl font-black text-blue-950 mt-1">💧 Tu Membresía CsC está Activa · Lucía Gómez</h3>
-          <p class="text-xs text-blue-800/80">Código: #CSC-2026-0482 · Plan Raíces ($2.500/mes) · Cuota al día</p>
-        </div>
-        <button onclick="navigateTo('profile')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-xs shrink-0 flex items-center gap-1.5">
-          <span>🪪 Ver Carnet Digital con QR</span>
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-        <div onclick="navigateTo('new-order')" class="bg-white p-3.5 rounded-2xl border border-blue-200 hover:border-blue-400 cursor-pointer transition-all shadow-2xs group">
-          <span class="text-xl block mb-1">🧺</span>
-          <h4 class="font-bold text-stone-900 group-hover:text-blue-700">Feria a Precio de Costo</h4>
-          <p class="text-[11px] text-stone-500 mt-0.5">Ahorro habilitado en catálogo semanal</p>
-          <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-2">30% Ahorro Activo</span>
-        </div>
-
-        <div onclick="navigateTo('talleres')" class="bg-white p-3.5 rounded-2xl border border-blue-200 hover:border-blue-400 cursor-pointer transition-all shadow-2xs group">
-          <span class="text-xl block mb-1">🎨</span>
-          <h4 class="font-bold text-stone-900 group-hover:text-blue-700">Talleres con Descuento</h4>
-          <p class="text-[11px] text-stone-500 mt-0.5">Cupo asegurado en saberes barriales</p>
-          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full inline-block mt-2">Pase Prioritario</span>
-        </div>
-
-        <div onclick="navigateTo('financiamiento')" class="bg-white p-3.5 rounded-2xl border border-blue-200 hover:border-blue-400 cursor-pointer transition-all shadow-2xs group">
-          <span class="text-xl block mb-1">💡</span>
-          <h4 class="font-bold text-stone-900 group-hover:text-blue-700">Fondo de Financiamiento</h4>
-          <p class="text-[11px] text-stone-500 mt-0.5">Presentá tu proyecto con prioridad</p>
-          <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block mt-2">Postulación Abierta</span>
-        </div>
-
-        <div onclick="navigateTo('whatsapp')" class="bg-white p-3.5 rounded-2xl border border-blue-200 hover:border-blue-400 cursor-pointer transition-all shadow-2xs group">
-          <span class="text-xl block mb-1">💬</span>
-          <h4 class="font-bold text-stone-900 group-hover:text-blue-700">Comunidad de Socios</h4>
-          <p class="text-[11px] text-stone-500 mt-0.5">Canal directo con el equipo del nodo</p>
-          <span class="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full inline-block mt-2">Chat Cerrado</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- C. EXPERIENCIA DEDICADA PARA GESTOR DEL NODO -->
-    <div id="role-section-gestor" class="hidden mb-6 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-amber-50 via-orange-50/40 to-white border border-amber-300 shadow-xs">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-        <div>
-          <span class="text-[10px] font-black uppercase tracking-wider text-amber-900 bg-amber-200 px-2.5 py-0.5 rounded-full">Consola de Guardia · Rawson 3450</span>
-          <h3 class="text-lg sm:text-xl font-black text-amber-950 mt-1">👑 Panel Rápido de Gestión del Nodo La Lucila</h3>
-          <p class="text-xs text-amber-900/80">Gestores: Gonza, Agus, Rami, Cris y Ro · Horario de atención activo: 09:30 a 19:30 hs</p>
-        </div>
-        <button onclick="navigateTo('eter')" class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white text-xs font-bold px-4 py-2 rounded-full shadow-xs shrink-0 flex items-center gap-1.5">
-          <span>✨ Abrir Éter CRM Completo</span>
-          <span>→</span>
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-        <div onclick="navigateTo('eter'); showEterModule('economia');" class="bg-white p-3.5 rounded-2xl border border-amber-200 hover:border-amber-400 cursor-pointer transition-all shadow-2xs group">
-          <span class="text-xl block mb-1">💰</span>
-          <h4 class="font-bold text-stone-900 group-hover:text-amber-800">Caja y Finanzas</h4>
-          <p class="text-[11px] text-stone-500 mt-0.5">$142.500 caja • $320.000 fondo</p>
-          <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-2">Equilibrado</span>
-        </div>
-
-        <div onclick="navigateTo('eter'); showEterModule('membresia');" class="bg-white p-3.5 rounded-2xl border border-amber-200 hover:border-amber-400 cursor-pointer transition-all shadow-2xs group">
-          <span class="text-xl block mb-1">👥</span>
-          <h4 class="font-bold text-stone-900 group-hover:text-amber-800">Directorio de Socios</h4>
-          <p class="text-[11px] text-stone-500 mt-0.5">3 solicitudes barriales pendientes</p>
-          <span class="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block mt-2">Revisar Altas</span>
-        </div>
-
-        <div onclick="navigateTo('eter'); showEterModule('horas');" class="bg-white p-3.5 rounded-2xl border border-amber-200 hover:border-amber-400 cursor-pointer transition-all shadow-2xs group">
-          <span class="text-xl block mb-1">⏰</span>
-          <h4 class="font-bold text-stone-900 group-hover:text-amber-800">Guardia Rawson 3450</h4>
-          <p class="text-[11px] text-stone-500 mt-0.5">Turno hoy: Gonza & Ro</p>
-          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full inline-block mt-2">Local Abierto</span>
-        </div>
-
-        <div onclick="navigateTo('eter'); showEterModule('claves');" class="bg-white p-3.5 rounded-2xl border border-amber-200 hover:border-amber-400 cursor-pointer transition-all shadow-2xs group">
-          <span class="text-xl block mb-1">🔐</span>
-          <h4 class="font-bold text-stone-900 group-hover:text-amber-800">Claves del Nodo</h4>
-          <p class="text-[11px] text-stone-500 mt-0.5">Wi-Fi, Mercado Pago y accesos</p>
-          <span class="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full inline-block mt-2">Bóveda Segura</span>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- BANNER DE BIENVENIDA AL NODO LA LUCILA -->
-    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#ffffff] via-[#fcf6f2] to-[#f5eee6] border border-[#c0826d]/30 mb-6 shadow-xs relative overflow-hidden">
-      <div class="relative z-10">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="text-xs font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-3 py-1 rounded-full border border-[#c0826d]/25 flex items-center gap-1.5 shrink-0">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-              Nodo Activo La Lucila
-            </span>
-            <span class="text-xs font-semibold text-stone-500 shrink-0">Vicente López • Red Barrial</span>
-          </div>
-
-          <!-- Mini widget de Estado del Tiempo / Marea -->
-          <div class="flex flex-wrap items-center gap-2 sm:gap-3 bg-white/95 px-3.5 py-1.5 rounded-2xl sm:rounded-full border border-stone-200 text-xs text-stone-700 shadow-xs self-start sm:self-auto">
-            <span title="Clima actual" class="whitespace-nowrap font-medium">☀️ 21°C</span>
-            <span class="text-stone-300">•</span>
-            <span title="Marea del Río de la Plata en La Lucila" class="whitespace-nowrap font-medium">🌊 Río: Normal</span>
-            <span class="text-stone-300">•</span>
-            <span title="Punto Verde" class="whitespace-nowrap font-medium"><a href="https://www.google.com/search?q=punto+verde+la+lucila" target="_blank" class="text-emerald-700 font-bold hover:underline">♻️ Punto Verde</a></span>
-          </div>
-        </div>
-
-        <h1 class="text-2xl sm:text-4xl font-black text-stone-900 tracking-tight mb-2">
-          Nodo Elementales La Lucila · <span class="text-[#a6634f]">Centro de la Nueva Era</span> 🌿
-        </h1>
-        <p class="text-stone-600 text-sm sm:text-base max-w-3xl leading-relaxed">
-          Espacio comunitario autogestionado en Rawson 3450 para la organización vecinal, soberanía alimentaria, oficios de confianza y financiamiento de proyectos locales.
-        </p>
-      </div>
-    </div>
-
-    <!-- ========================================================================= -->
-    <!-- 1. SECCIÓN PRIORIDAD MÁXIMA: TIENDA COMUNITARIA & PEDIDOS (ELEMENTO TIERRA) -->
-    <!-- ========================================================================= -->
-    <div class="mb-10 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-white via-[#fcf8f4] to-[#f6efe9] border-2 border-[#c0826d]/40 shadow-sm relative overflow-hidden">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
-        <div>
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-[10px] font-black uppercase tracking-wider text-white bg-[#c0826d] px-3 py-1 rounded-full shadow-2xs">
-              🌱 Prioridad Activa · Elemento Tierra
-            </span>
-            <span class="text-xs font-bold text-stone-500">Lo que hoy más nos une</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">
-            Tienda Comunitaria & Pedidos Colectivos
-          </h2>
-          <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl">
-            Alimentos agroecológicos sin intermediarios, panificados de masa madre, miel pura y producción artesanal local. Organizados en 3 modalidades según tu ritmo:
-          </p>
-        </div>
-
-        <button 
-          onclick="navigateTo('tierra')" 
-          class="bg-[#c0826d] hover:bg-[#a6634f] text-white text-xs sm:text-sm font-black px-5 py-3 rounded-full shadow-md hover:shadow-lg inline-flex items-center justify-center gap-2 transition-all transform active:scale-95 shrink-0"
+    <!-- 1. PASO: SELECCIÓN DE NODO -->
+    <div class="mb-7 text-left">
+      <label class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-2.5 flex items-center justify-between">
+        <span>1. Elegí a qué Nodo ingresar:</span>
+        <span class="text-[10px] font-bold text-emerald-700">Puntos Activos</span>
+      </label>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="landing-nodes-selector">
+        
+        <!-- Nodo La Lucila -->
+        <div 
+          onclick="selectLandingNode('nodo-lucila')" 
+          id="landing-node-nodo-lucila" 
+          class="p-4 rounded-2xl border-2 border-emerald-600 bg-emerald-50/50 cursor-pointer transition-all flex items-start gap-3 shadow-xs"
         >
-          <span>🧺 Abrir Tienda Completa & Pedir</span>
-          <span>→</span>
+          <span class="text-2xl shrink-0 mt-0.5">🏡</span>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h4 class="font-black text-sm text-stone-900">La Lucila</h4>
+              <span class="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-full">Sede Física</span>
+            </div>
+            <p class="text-[11px] text-stone-500 mt-0.5">Calle Rawson 3450, Vicente López</p>
+            <p class="text-[10px] text-stone-400 mt-1">Gonza, Agus, Rami, Cris & Ro</p>
+          </div>
+        </div>
+
+        <!-- Nodo Loma Verde -->
+        <div 
+          onclick="selectLandingNode('nodo-lomaverde')" 
+          id="landing-node-nodo-lomaverde" 
+          class="p-4 rounded-2xl border-2 border-stone-200 hover:border-emerald-500 bg-white cursor-pointer transition-all flex items-start gap-3 shadow-xs"
+        >
+          <span class="text-2xl shrink-0 mt-0.5">🌿</span>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h4 class="font-black text-sm text-stone-900">Loma Verde</h4>
+              <span class="text-[9px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full">Círculos</span>
+            </div>
+            <p class="text-[11px] text-stone-500 mt-0.5">Escobar, Zona Norte</p>
+            <p class="text-[10px] text-stone-400 mt-1">Autogestión en Círculos VRDE</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 2. PASO: ACCESOS DIFERENCIADOS POR PERFIL -->
+    <div class="space-y-3 text-left mb-6">
+      <label class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1">
+        2. Seleccioná tu perfil de ingreso:
+      </label>
+
+      <!-- Opción A: Visitante Esporádico -->
+      <div onclick="loginFromLanding('visitante')" class="p-4 rounded-2xl border-2 border-stone-200 hover:border-[#c0826d] bg-white hover:bg-[#fdfaf8] cursor-pointer transition-all flex items-center justify-between group shadow-xs">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-stone-100 border border-stone-200 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shrink-0">
+            👤
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-0.5">
+              <h3 class="font-black text-sm text-stone-900 group-hover:text-[#a6634f]">Visitante Esporádico</h3>
+              <span class="text-[10px] font-bold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">Acceso Libre</span>
+            </div>
+            <p class="text-xs text-stone-500 leading-snug">
+              Comprar en la feria a precio minorista, consultar oficios y ver talleres sin compromiso de cuota.
+            </p>
+          </div>
+        </div>
+        <span class="text-xs font-bold text-[#c0826d] shrink-0 ml-2 group-hover:translate-x-1 transition-transform">Ingresar →</span>
+      </div>
+
+      <!-- Opción B: Miembro / Socio CsC -->
+      <div onclick="loginFromLanding('socio')" class="p-4 rounded-2xl border-2 border-blue-200 hover:border-blue-500 bg-gradient-to-r from-blue-50/40 via-white to-sky-50/30 cursor-pointer transition-all flex items-center justify-between group shadow-xs">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-blue-100 border border-blue-200 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shrink-0">
+            💧
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-0.5">
+              <h3 class="font-black text-sm text-blue-950 group-hover:text-blue-700">Miembro / Socio CsC</h3>
+              <span class="text-[10px] font-black text-blue-800 bg-blue-100 px-2 py-0.5 rounded-full">-25% Costo Red</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-snug">
+              Acceso con carnet digital a compras de huerta al costo campesino, Círculos barriales y asambleas.
+            </p>
+          </div>
+        </div>
+        <span class="text-xs font-bold text-blue-600 shrink-0 ml-2 group-hover:translate-x-1 transition-transform">Ingresar →</span>
+      </div>
+
+      <!-- Opción C: Administrador / Gestor del Nodo -->
+      <div onclick="openAdminPinModal()" class="p-4 rounded-2xl border-2 border-amber-200 hover:border-amber-500 bg-gradient-to-r from-amber-50/40 via-white to-orange-50/30 cursor-pointer transition-all flex items-center justify-between group shadow-xs">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shrink-0">
+            🔐
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-0.5">
+              <h3 class="font-black text-sm text-amber-950 group-hover:text-amber-800">Administrador / Equipo del Nodo</h3>
+              <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">PIN Equipo</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-snug">
+              Gestión operativa del nodo: caja, llaves, turnos de guardia, catálogo y puente con VRDE Club.
+            </p>
+          </div>
+        </div>
+        <span class="text-xs font-bold text-amber-700 shrink-0 ml-2 group-hover:translate-x-1 transition-transform">Con PIN →</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 0.B VISTA: PERFIL Y PORTAL DEL NODO (SIMPLIFICADO ESTILO SPOTIFY) -->
+  <!-- ========================================================================= -->
+  <div id="view-barrio" class="app-view hidden max-w-4xl mx-auto px-4 sm:px-6 pt-4 pb-24">
+
+    <!-- 1. PORTADA DEL NODO (COVER BANNER) -->
+    <div class="relative w-full h-44 sm:h-60 rounded-3xl overflow-hidden shadow-lg border border-stone-200 bg-stone-900">
+      <img id="node-cover-image" src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200&h=400" class="w-full h-full object-cover opacity-85 transition-opacity" alt="Portada del Nodo" />
+      
+      <!-- Gradiente sutil para contraste -->
+      <div class="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-stone-950/20"></div>
+
+      <!-- Barra flotante en portada: Cambiar nodo & Badge de usuario -->
+      <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between">
+        <button 
+          onclick="openNodeSelectorModal()" 
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-black/50 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 shadow-sm transition-all"
+        >
+          <span>📍</span>
+          <span id="node-header-city">La Lucila</span>
+          <span class="text-[10px] opacity-70">▾ Cambiar</span>
         </button>
-      </div>
 
-      <!-- 3 MODALIDADES CLARAS DE COMPRA -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-        <div onclick="navigateTo('tierra'); setCatalogMode('local');" class="bg-white/90 hover:bg-white p-4 rounded-2xl border border-stone-200 hover:border-stone-400 cursor-pointer transition-all shadow-2xs group">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-2xl">🏪</span>
-            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-stone-100 text-stone-700">Inmediato</span>
-          </div>
-          <h4 class="font-bold text-sm text-stone-900 group-hover:text-[#a6634f]">1. Local Rawson 3450</h4>
-          <p class="text-xs text-stone-500 mt-1">Stock permanente en la sede para retirar hoy mismo. Abierto a vecinos y visitantes.</p>
-        </div>
-
-        <div onclick="navigateTo('tierra'); setCatalogMode('semanal');" class="bg-white/90 hover:bg-white p-4 rounded-2xl border border-emerald-200 hover:border-emerald-400 cursor-pointer transition-all shadow-2xs group">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-2xl">🥬</span>
-            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">-10% Socio CsC</span>
-          </div>
-          <h4 class="font-bold text-sm text-stone-900 group-hover:text-emerald-700">2. Cosecha Semanal</h4>
-          <p class="text-xs text-stone-500 mt-1">Bolsones de huerta fresca de estación. Cosecha de cada semana directo a tu mesa.</p>
-        </div>
-
-        <div onclick="navigateTo('tierra'); setCatalogMode('lunar');" class="bg-white/90 hover:bg-white p-4 rounded-2xl border border-[#c0826d]/30 hover:border-[#c0826d] cursor-pointer transition-all shadow-2xs group">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-2xl">🌕</span>
-            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#fcf4f0] text-[#a6634f] border border-[#c0826d]/30">-25% Costo Red</span>
-          </div>
-          <h4 class="font-bold text-sm text-stone-900 group-hover:text-[#a6634f]">3. Ciclo Lunar al Costo</h4>
-          <p class="text-xs text-stone-500 mt-1">Compras comunitarias a granel por luna al precio de origen de familias campesinas.</p>
-        </div>
-      </div>
-
-      <!-- PRODUCTOS DESTACADOS CON FOTOS Y PRECIOS -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <!-- Prod 1 -->
-        <div onclick="navigateTo('tierra')" class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
-          <div class="h-28 bg-stone-100 relative overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=500&auto=format&fit=crop&q=60" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="Huerta" />
-            <span class="absolute top-2 left-2 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/95 text-emerald-800 shadow-2xs">Semanal</span>
-          </div>
-          <div class="p-3">
-            <h5 class="font-bold text-xs text-stone-900 line-clamp-1">Canasta Huerta Agroecológica</h5>
-            <div class="flex items-center justify-between mt-2">
-              <div>
-                <span class="text-xs font-black text-stone-900">$12.500</span>
-                <span class="text-[10px] text-emerald-700 font-bold block">$9.800 Socio</span>
-              </div>
-              <span class="text-xs font-bold text-[#c0826d] bg-[#fcf4f0] px-2 py-1 rounded-lg">Pedir +</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Prod 2 -->
-        <div onclick="navigateTo('tierra')" class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
-          <div class="h-28 bg-stone-100 relative overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&auto=format&fit=crop&q=60" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="Pan" />
-            <span class="absolute top-2 left-2 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/95 text-amber-800 shadow-2xs">Artesanal</span>
-          </div>
-          <div class="p-3">
-            <h5 class="font-bold text-xs text-stone-900 line-clamp-1">Pan de Masa Madre Centeno</h5>
-            <div class="flex items-center justify-between mt-2">
-              <div>
-                <span class="text-xs font-black text-stone-900">$4.200</span>
-                <span class="text-[10px] text-emerald-700 font-bold block">$3.400 Socio</span>
-              </div>
-              <span class="text-xs font-bold text-[#c0826d] bg-[#fcf4f0] px-2 py-1 rounded-lg">Pedir +</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Prod 3 -->
-        <div onclick="navigateTo('tierra')" class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
-          <div class="h-28 bg-stone-100 relative overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500&auto=format&fit=crop&q=60" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="Miel" />
-            <span class="absolute top-2 left-2 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/95 text-amber-900 shadow-2xs">Puro</span>
-          </div>
-          <div class="p-3">
-            <h5 class="font-bold text-xs text-stone-900 line-clamp-1">Miel Pura de Monte 1kg</h5>
-            <div class="flex items-center justify-between mt-2">
-              <div>
-                <span class="text-xs font-black text-stone-900">$5.800</span>
-                <span class="text-[10px] text-emerald-700 font-bold block">$4.600 Socio</span>
-              </div>
-              <span class="text-xs font-bold text-[#c0826d] bg-[#fcf4f0] px-2 py-1 rounded-lg">Pedir +</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Prod 4 -->
-        <div onclick="navigateTo('tierra')" class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
-          <div class="h-28 bg-stone-100 relative overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&auto=format&fit=crop&q=60" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="Oliva" />
-            <span class="absolute top-2 left-2 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/95 text-emerald-900 shadow-2xs">Lunar</span>
-          </div>
-          <div class="p-3">
-            <h5 class="font-bold text-xs text-stone-900 line-clamp-1">Aceite de Oliva Extra Virgen 1L</h5>
-            <div class="flex items-center justify-between mt-2">
-              <div>
-                <span class="text-xs font-black text-stone-900">$9.500</span>
-                <span class="text-[10px] text-emerald-700 font-bold block">$7.600 Socio</span>
-              </div>
-              <span class="text-xs font-bold text-[#c0826d] bg-[#fcf4f0] px-2 py-1 rounded-lg">Pedir +</span>
-            </div>
-          </div>
+        <div class="flex items-center gap-2">
+          <span id="node-current-role-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-white/90 backdrop-blur-md text-stone-900 border border-white/40 shadow-sm">
+            👤 Visitante
+          </span>
+          <button onclick="goToLanding()" class="w-7 h-7 rounded-full bg-black/50 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 flex items-center justify-center text-xs font-bold transition-all" title="Salir a pantalla de acceso">
+            ✕
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- 2. LOS 5 ELEMENTOS: SECCIONES VISUALES CON CADA UNO SU LOGO OFICIAL -->
-    <!-- ========================================================================= -->
-    <div class="mb-10">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
-        <div>
-          <h2 class="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">Las 5 Dimensiones de Elementales La Lucila</h2>
-          <p class="text-xs sm:text-sm text-stone-500">Cada Elemento abre un mundo comunitario con identidad propia:</p>
+    <!-- 2. PERFIL DEL NODO: AVATAR FLOTANTE + IDENTIDAD -->
+    <div class="relative px-2 sm:px-4 -mt-12 sm:-mt-14 mb-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        
+        <!-- Avatar / Sello del Nodo -->
+        <div class="flex items-end gap-3.5">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white border-4 border-white shadow-xl overflow-hidden p-1.5 shrink-0 flex items-center justify-center relative">
+            <img id="node-avatar-image" src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Sello del Nodo" />
+            <div id="node-status-dot" class="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white ring-2 ring-emerald-400/40 animate-pulse"></div>
+          </div>
+
+          <div class="pb-1">
+            <div class="flex items-center gap-2">
+              <span id="node-category-tag" class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#fcf4f0] px-2.5 py-0.5 rounded-full border border-[#c0826d]/20">
+                Sede Central
+              </span>
+              <span id="node-status-text" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                🟢 Abierto Hoy
+              </span>
+            </div>
+            <h1 id="node-main-title" class="text-xl sm:text-2xl font-black text-stone-900 tracking-tight leading-tight mt-1">
+              Centro Comunitario Elementales - La Lucila
+            </h1>
+          </div>
         </div>
-        <span class="text-[11px] font-bold text-[#a6634f] bg-[#fcf4f0] px-3 py-1 rounded-full self-start sm:self-auto border border-[#c0826d]/20">
-          Suite Elemental 2026
+
+        <!-- Botones de Acción Inmediata -->
+        <div class="flex items-center gap-2 pt-2 sm:pt-0">
+          <button onclick="navigateTo('tierra')" class="btn-spotify !py-2.5 !px-5 text-xs font-bold bg-[#c0826d] hover:bg-[#a6634f] text-white flex items-center gap-1.5 shadow-md">
+            <span>🌱</span> Abrir Tienda
+          </button>
+          <a id="node-whatsapp-link" href="https://wa.me/5491123456789" target="_blank" class="btn-spotify !py-2.5 !px-4 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-sm">
+            <span>💬</span> WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Datos Esenciales del Nodo (Chips) -->
+      <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-stone-600">
+        <span id="node-address-chip" class="inline-flex items-center gap-1 bg-stone-100 px-3 py-1.5 rounded-full border border-stone-200">
+          📍 Calle Rawson 3450, La Lucila
+        </span>
+        <span id="node-hours-chip" class="inline-flex items-center gap-1 bg-stone-100 px-3 py-1.5 rounded-full border border-stone-200">
+          ⏰ Lun a Sáb 09:30 a 19:30 hs
+        </span>
+        <span id="node-guardians-chip" class="inline-flex items-center gap-1 bg-stone-100 px-3 py-1.5 rounded-full border border-stone-200">
+          👥 Atienden: Gonza, Agus, Rami, Cris & Ro
         </span>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        
-        <!-- 1. TIERRA (TIENDA & PEDIDOS) -->
-        <div onclick="navigateTo('tierra')" class="bg-white rounded-3xl border-2 border-stone-200 hover:border-[#8ca15d] p-5 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
-          <div>
-            <div class="w-full h-44 rounded-2xl bg-[#f4f6ef] border border-[#c2d49e]/40 overflow-hidden mb-4 relative flex items-center justify-center p-2">
-              <img src="public/assets/brand/tierra_logo.jpg" class="w-full h-full object-contain group-hover:scale-105 transition-transform" alt="Elemento Tierra" />
-              <div class="absolute top-2 right-2 bg-white/95 px-2.5 py-0.5 rounded-full text-[10px] font-black text-[#8ca15d] border border-[#8ca15d]/30 shadow-2xs">
-                🌱 Tierra
-              </div>
-            </div>
-            <h3 class="font-black text-lg text-stone-900 group-hover:text-[#8ca15d] transition-colors">
-              🌱 Elemento Tierra · La Tienda
-            </h3>
-            <p class="text-xs text-[#8ca15d] font-bold mt-0.5">Tienda & Pedidos (Local, Semanal, Lunar)</p>
-            <p class="text-xs text-stone-600 mt-2 leading-relaxed">
-              Alimentos agroecológicos sin agrotóxicos, compras comunitarias a precio de costo de origen campesino y huerta viva en Rawson 3450.
-            </p>
-          </div>
-          <div class="pt-4 mt-3 border-t border-stone-100 flex items-center justify-between text-xs font-black text-[#8ca15d]">
-            <span>Entrar a la Tienda</span>
-            <span class="group-hover:translate-x-1 transition-transform">→</span>
-          </div>
-        </div>
-
-        <!-- 2. AGUA (LINKEDIN BARRIAL & OFICIOS) -->
-        <div onclick="navigateTo('agua')" class="bg-white rounded-3xl border-2 border-stone-200 hover:border-[#7ca1b5] p-5 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
-          <div>
-            <div class="w-full h-44 rounded-2xl bg-[#f2f6f9] border border-[#b4cfdf]/40 overflow-hidden mb-4 relative flex items-center justify-center p-2">
-              <img src="public/assets/brand/agua_logo.jpg" class="w-full h-full object-contain group-hover:scale-105 transition-transform" alt="Elemento Agua" />
-              <div class="absolute top-2 right-2 bg-white/95 px-2.5 py-0.5 rounded-full text-[10px] font-black text-[#7ca1b5] border border-[#7ca1b5]/30 shadow-2xs">
-                💧 Agua
-              </div>
-            </div>
-            <h3 class="font-black text-lg text-stone-900 group-hover:text-[#7ca1b5] transition-colors">
-              💧 Elemento Agua · LinkedIn Barrial
-            </h3>
-            <p class="text-xs text-[#7ca1b5] font-bold mt-0.5">Comunidad & Oficios de Confianza</p>
-            <p class="text-xs text-stone-600 mt-2 leading-relaxed">
-              La comunidad se presenta: plomeros, electricistas, carpinteros, jardineros y profesionales de confianza con referencias directas de vecinos.
-            </p>
-          </div>
-          <div class="pt-4 mt-3 border-t border-stone-100 flex items-center justify-between text-xs font-black text-[#7ca1b5]">
-            <span>Ver Oficios & Perfiles</span>
-            <span class="group-hover:translate-x-1 transition-transform">→</span>
-          </div>
-        </div>
-
-        <!-- 3. FUEGO (E-LEARNING & SABERES) -->
-        <div onclick="navigateTo('fuego')" class="bg-white rounded-3xl border-2 border-stone-200 hover:border-[#d97757] p-5 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
-          <div>
-            <div class="w-full h-44 rounded-2xl bg-[#fdf4f0] border border-[#f2b5a2]/40 overflow-hidden mb-4 relative flex items-center justify-center p-2">
-              <img src="public/assets/brand/fuego_logo.jpg" class="w-full h-full object-contain group-hover:scale-105 transition-transform" alt="Elemento Fuego" />
-              <div class="absolute top-2 right-2 bg-white/95 px-2.5 py-0.5 rounded-full text-[10px] font-black text-[#d97757] border border-[#d97757]/30 shadow-2xs">
-                🔥 Fuego
-              </div>
-            </div>
-            <h3 class="font-black text-lg text-stone-900 group-hover:text-[#d97757] transition-colors">
-              🔥 Elemento Fuego · E-Learning
-            </h3>
-            <p class="text-xs text-[#d97757] font-bold mt-0.5">Talleres, Charlas & Saberes</p>
-            <p class="text-xs text-stone-600 mt-2 leading-relaxed">
-              Plataforma de e-learning barrial: cursos grabados online, talleres presenciales en Rawson 3450 y Fondo Barrial para financiar tus ideas.
-            </p>
-          </div>
-          <div class="pt-4 mt-3 border-t border-stone-100 flex items-center justify-between text-xs font-black text-[#d97757]">
-            <span>Explorar E-Learning</span>
-            <span class="group-hover:translate-x-1 transition-transform">→</span>
-          </div>
-        </div>
-
-        <!-- 4. AIRE (RED SOCIAL & PODCASTS) -->
-        <div onclick="navigateTo('aire')" class="bg-white rounded-3xl border-2 border-stone-200 hover:border-[#8b9173] p-5 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between">
-          <div>
-            <div class="w-full h-44 rounded-2xl bg-[#f6f7f3] border border-[#d2d7c1]/40 overflow-hidden mb-4 relative flex items-center justify-center p-2">
-              <img src="public/assets/brand/aire_logo.jpg" class="w-full h-full object-contain group-hover:scale-105 transition-transform" alt="Elemento Aire" />
-              <div class="absolute top-2 right-2 bg-white/95 px-2.5 py-0.5 rounded-full text-[10px] font-black text-[#7a8161] border border-[#7a8161]/30 shadow-2xs">
-                💨 Aire
-              </div>
-            </div>
-            <h3 class="font-black text-lg text-stone-900 group-hover:text-[#7a8161] transition-colors">
-              💨 Elemento Aire · Red Social
-            </h3>
-            <p class="text-xs text-[#7a8161] font-bold mt-0.5">Podcasts, Fotos & Creaciones</p>
-            <p class="text-xs text-stone-600 mt-2 leading-relaxed">
-              Red social del nodo para compartir creaciones artísticas, piezas audiovisuales, podcasts comunitarios grabados en el barrio y noticias en vivo.
-            </p>
-          </div>
-          <div class="pt-4 mt-3 border-t border-stone-100 flex items-center justify-between text-xs font-black text-[#7a8161]">
-            <span>Abrir Red Social</span>
-            <span class="group-hover:translate-x-1 transition-transform">→</span>
-          </div>
-        </div>
-
-        <!-- 5. ÉTER (DEMOCRACIA & CRM) -->
-        <div onclick="navigateTo('eter')" class="bg-white rounded-3xl border-2 border-stone-200 hover:border-[#c0826d] p-5 shadow-xs hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between sm:col-span-2 lg:col-span-2">
-          <div class="flex flex-col sm:flex-row gap-5 items-center">
-            <div class="w-full sm:w-48 h-44 rounded-2xl bg-[#fcf4f0] border border-[#dfc2b7]/40 overflow-hidden shrink-0 flex items-center justify-center p-2">
-              <img src="public/assets/brand/eter_logo.jpg" class="w-full h-full object-contain group-hover:scale-105 transition-transform" alt="Elemento Éter" />
-            </div>
-            <div class="flex-1">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#fcf4f0] px-2.5 py-0.5 rounded-full border border-[#c0826d]/20">
-                  ✨ Éter
-                </span>
-                <span class="text-[11px] font-bold text-stone-400">Democracia & CRM</span>
-              </div>
-              <h3 class="font-black text-xl text-stone-900 group-hover:text-[#a6634f] transition-colors">
-                ✨ Elemento Éter · Vida Comunitaria & CRM
-              </h3>
-              <p class="text-xs text-stone-600 mt-2 leading-relaxed">
-                Votaciones abiertas y decisiones participativas del barrio, seguimiento en tiempo real de tus pedidos en Rawson 3450, y consola interna de gestión para coordinadores.
-              </p>
-              <div class="grid grid-cols-2 gap-2 mt-3 text-xs">
-                <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100">
-                  <span class="font-bold text-stone-800">🗳️ Votaciones Abiertas</span>
-                  <p class="text-[11px] text-stone-500">Decisiones colectivas del nodo</p>
-                </div>
-                <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100">
-                  <span class="font-bold text-stone-800">📋 Mi CRM Personal</span>
-                  <p class="text-[11px] text-stone-500">Estado de pedidos y membresía</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="pt-4 mt-3 border-t border-stone-100 flex items-center justify-between text-xs font-black text-[#a6634f]">
-            <span>Entrar a Éter y Democracia</span>
-            <span class="group-hover:translate-x-1 transition-transform">→</span>
-          </div>
-        </div>
-
-      </div>
+      <!-- Descripción Clara y Contundente -->
+      <p id="node-description-text" class="text-xs sm:text-sm text-stone-600 mt-3.5 leading-relaxed bg-[#fdfaf8] p-4 rounded-2xl border border-stone-200">
+        Oficina barrial de la nueva era: gestión comunitaria, recepción de proyectos, compras de huerta agroecológica, oficios de confianza y saberes compartidos.
+      </p>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- 3. SEDE FÍSICA: OFICINA BARRIAL RAWSON 3450 (CENTRO DE LA NUEVA ERA) -->
-    <!-- ========================================================================= -->
-    <div class="mb-10 bg-gradient-to-br from-white via-[#fcf6f2] to-[#f9ede6] rounded-3xl border border-[#c0826d]/30 p-6 sm:p-8 shadow-xs">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div class="flex-1">
-          <div class="flex items-center gap-3 mb-2">
-            <span class="w-10 h-10 rounded-2xl bg-[#fcf4f0] border border-[#c0826d]/30 flex items-center justify-center text-xl shrink-0 shadow-2xs">🏡</span>
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#c0826d]/15 px-2.5 py-0.5 rounded-full">Sede Física & Atención Vecinal</span>
-              <h3 class="text-xl font-black text-stone-900 mt-0.5">Oficina Barrial de la Nueva Era · Rawson 3450</h3>
-            </div>
+    <!-- 3. PULSO ESENCIAL DEL NODO (SIN SATURACIÓN: SOLO 2 TARJETAS DIRECTAS) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+      
+      <!-- Tarjeta 1: Tienda & Cosecha Semanal -->
+      <div onclick="navigateTo('tierra')" class="p-5 rounded-3xl bg-white border border-stone-200 hover:border-[#8ca15d] shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-xs font-black uppercase tracking-wider text-[#8ca15d] bg-[#f4f6ef] px-2.5 py-0.5 rounded-full border border-[#c2d49e]/40">
+              🌱 Elemento Tierra
+            </span>
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Pedidos Abiertos</span>
           </div>
-          <p class="text-xs sm:text-sm text-stone-700 leading-relaxed mb-4">
-            En Rawson 3450 (La Lucila) atienden presencialmente <strong>Gonza, Agus, Rami, Cris y Ro</strong>. Vení a retirar tus pedidos de huerta, sacarte dudas, charlar sobre la comunidad o proponer proyectos para el barrio.
+          <h3 class="font-black text-base text-stone-900 group-hover:text-[#8ca15d] transition-colors">
+            Tienda Comunitaria & Cosecha Fresca
+          </h3>
+          <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+            Bolsones de verduras agroecológicas, panadería de masa madre, quesos de campo y almacén de cooperativas.
           </p>
-
-          <div class="flex flex-wrap items-center gap-4 text-xs text-stone-700 font-semibold mb-4">
-            <span class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-stone-200">
-              📍 Rawson 3450, La Lucila
-            </span>
-            <span class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-stone-200">
-              ⏰ Lunes a Sábados 09:30 a 19:30 hs
-            </span>
-            <span class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-stone-200">
-              👥 Gonza, Agus, Rami, Cris y Ro
-            </span>
-          </div>
-
-          <div class="flex flex-wrap items-center gap-3">
-            <a 
-              href="https://wa.me/5491123456789?text=Hola!%20Me%20contacto%20desde%20el%20portal%20del%20Nodo%20Elementales%20La%20Lucila..." 
-              target="_blank" 
-              rel="noopener noreferrer"
-              class="bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs sm:text-sm font-bold px-5 py-2.5 rounded-full shadow-xs inline-flex items-center gap-2 transition-transform active:scale-95"
-            >
-              <span>💬</span>
-              <span>WhatsApp de la Oficina</span>
-            </a>
-            <button 
-              onclick="navigateTo('eter'); showEterModule('centro');" 
-              class="bg-white hover:bg-stone-50 text-[#a6634f] border border-[#c0826d]/40 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs inline-flex items-center gap-1.5 transition-colors"
-            >
-              <span>✨</span>
-              <span>Conocer más sobre la Oficina →</span>
-            </button>
-          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#8ca15d]">
+          <span>Ver Catálogo y Precios →</span>
+          <span class="text-stone-400 group-hover:translate-x-1 transition-transform">→</span>
         </div>
       </div>
-    </div>
 
-    <!-- ========================================================================= -->
-    <!-- PULSO RECIENTE DEL BARRIO -->
-    <!-- ========================================================================= -->
-    <div class="mb-4 flex items-center justify-between gap-3">
-      <div>
-        <h2 class="text-lg sm:text-xl font-black text-stone-900">Pulso Barrial Reciente</h2>
-        <p class="text-xs text-stone-500">Últimos avisos, talleres y novedades compartidas en La Lucila</p>
+      <!-- Tarjeta 2: Círculos o Comunidad -->
+      <div onclick="navigateTo('circulos')" class="p-5 rounded-3xl bg-white border border-stone-200 hover:border-emerald-500 shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
+              🌀 Círculos VRDE
+            </span>
+            <span class="text-xs font-bold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">Autogestión</span>
+          </div>
+          <h3 class="font-black text-base text-stone-900 group-hover:text-emerald-700 transition-colors">
+            Círculos de Compra Colectiva
+          </h3>
+          <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+            Comprá junto a familias y amigos de tu cuadra para autogestionar el retiro barrial al costo directo de productor.
+          </p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-emerald-700">
+          <span>Ver Círculos Barriales →</span>
+          <span class="text-stone-400 group-hover:translate-x-1 transition-transform">→</span>
+        </div>
       </div>
-      <button onclick="openModalSumarAlBarrio()" class="text-xs font-bold text-[#a6634f] bg-[#fcf4f0] hover:bg-[#fde8df] px-3.5 py-1.5 rounded-full border border-[#c0826d]/30 transition-colors">
-        + Publicar Aviso
-      </button>
+
     </div>
 
-    <!-- FEED DINÁMICO UNIFICADO DEL BARRIO -->
-    <div id="barrio-feed-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <!-- Se puebla dinámicamente con renderBarrioFeed() -->
+    <!-- Acceso rápido a los otros 4 elementos (Mini Grid Limpio) -->
+    <div class="mt-8 pt-6 border-t border-stone-200">
+      <h3 class="font-black text-xs uppercase tracking-wider text-stone-500 mb-3">
+        Explorar Dimensiones del Nodo
+      </h3>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <button onclick="navigateTo('agua')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#7ca1b5] text-left transition-all group shadow-2xs">
+          <span class="text-xl block mb-1">💧</span>
+          <span class="font-black text-xs text-stone-900 group-hover:text-[#7ca1b5] block">Agua</span>
+          <span class="text-[10px] text-stone-500">Oficios & LinkedIn</span>
+        </button>
+        <button onclick="navigateTo('fuego')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#d97757] text-left transition-all group shadow-2xs">
+          <span class="text-xl block mb-1">🔥</span>
+          <span class="font-black text-xs text-stone-900 group-hover:text-[#d97757] block">Fuego</span>
+          <span class="text-[10px] text-stone-500">E-Learning & Saberes</span>
+        </button>
+        <button onclick="navigateTo('aire')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#aab091] text-left transition-all group shadow-2xs">
+          <span class="text-xl block mb-1">💨</span>
+          <span class="font-black text-xs text-stone-900 group-hover:text-stone-700 block">Aire</span>
+          <span class="text-[10px] text-stone-500">Red Social & Podcasts</span>
+        </button>
+        <button onclick="navigateTo('eter')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#c0826d] text-left transition-all group shadow-2xs">
+          <span class="text-xl block mb-1">✨</span>
+          <span class="font-black text-xs text-stone-900 group-hover:text-[#a6634f] block">Éter</span>
+          <span class="text-[10px] text-stone-500">Mi Portal & Gestión</span>
+        </button>
+      </div>
     </div>
+
   </div>
 
-    <!-- ========================================================================= -->
-  <!-- 0.B VISTA: ELEMENTO TIERRA (TIENDA COMUNITARIA & PEDIDOS COLECTIVOS) -->
   <!-- ========================================================================= -->
   <div id="view-tierra" class="app-view hidden max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-28">
     <!-- Header del Elemento Tierra con Logo Oficial -->
@@ -4958,7 +4377,6 @@
   </div>
 
 <!-- ========================================================================= -->
-  <div   <!-- ========================================================================= -->
   <!-- MODAL: AUTORIZACIÓN PIN DE GESTOR DEL NODO -->
   <!-- ========================================================================= -->
   <div id="modal-admin-pin-auth" class="modal-backdrop hidden" onclick="if(event.target === this) closeAdminPinModal()">
@@ -5161,5 +4579,54 @@ id="modal-initial-login" class="fixed inset-0 z-[10010] bg-stone-900/75 backdrop
 
     </div>
   </div>
+  <!-- ========================================================================= -->
+  <!-- BARRA DE NAVEGACIÓN INFERIOR ESTILO SPOTIFY (LOS 5 ELEMENTOS + NODO) -->
+  <!-- ========================================================================= -->
+  <nav id="spotify-bottom-nav" class="spotify-bottom-nav">
+    
+    <!-- 1. INICIO / NODO -->
+    <button onclick="navigateTo('barrio')" id="spotify-nav-barrio" class="spotify-nav-item active">
+      <div class="spotify-nav-icon">🏠</div>
+      <span>Nodo</span>
+      <div class="spotify-nav-dot"></div>
+    </button>
+
+    <!-- 2. TIERRA (TIENDA & HUERTA) -->
+    <button onclick="navigateTo('tierra')" id="spotify-nav-tierra" class="spotify-nav-item">
+      <div class="spotify-nav-icon">🌱</div>
+      <span>Tierra</span>
+      <div class="spotify-nav-dot"></div>
+    </button>
+
+    <!-- 3. AGUA (COMUNIDAD & OFICIOS) -->
+    <button onclick="navigateTo('agua')" id="spotify-nav-agua" class="spotify-nav-item">
+      <div class="spotify-nav-icon">💧</div>
+      <span>Agua</span>
+      <div class="spotify-nav-dot"></div>
+    </button>
+
+    <!-- 4. FUEGO (TALLERES & SABERES) -->
+    <button onclick="navigateTo('fuego')" id="spotify-nav-fuego" class="spotify-nav-item">
+      <div class="spotify-nav-icon">🔥</div>
+      <span>Fuego</span>
+      <div class="spotify-nav-dot"></div>
+    </button>
+
+    <!-- 5. AIRE (RED SOCIAL & PODCASTS) -->
+    <button onclick="navigateTo('aire')" id="spotify-nav-aire" class="spotify-nav-item">
+      <div class="spotify-nav-icon">💨</div>
+      <span>Aire</span>
+      <div class="spotify-nav-dot"></div>
+    </button>
+
+    <!-- 6. ÉTER (MI PORTAL & GESTIÓN) -->
+    <button onclick="navigateTo('eter')" id="spotify-nav-eter" class="spotify-nav-item">
+      <div class="spotify-nav-icon">✨</div>
+      <span>Éter</span>
+      <div class="spotify-nav-dot"></div>
+    </button>
+
+  </nav>
+
 </body>
 </html>
