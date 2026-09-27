@@ -667,6 +667,7 @@ function navigateTo(viewName) {
     switchTierraTab('tienda');
     renderOrderCatalog();
     renderFloatingCart();
+    renderCirculoStoreBanner();
   } else if (viewName === 'agua') {
     switchAguaTab('oficios');
     renderOficios();
@@ -3986,7 +3987,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ta) ta.value = notasGuardadas;
   }
   
-  // Detección de autenticación inicial / hash de admin directo
+  // Detección de autenticación inicial / hash de admin directo / Círculo compartido
+  const urlParams = new URLSearchParams(window.location.search);
+  const circuloParam = urlParams.get('circulo') || (window.location.hash.includes('circulo=') ? window.location.hash.split('circulo=')[1] : null);
+  const nodoParam = urlParams.get('nodo');
+
+  if (nodoParam) {
+    if (nodoParam === 'lomaverde' || nodoParam === 'nodo-lomaverde') AppState.activeNodeId = 'nodo-lomaverde';
+    else if (nodoParam === 'cooperativa' || nodoParam === 'nodo-cooperativa') AppState.activeNodeId = 'nodo-cooperativa';
+    else if (nodoParam === 'lucila' || nodoParam === 'nodo-lucila') AppState.activeNodeId = 'nodo-lucila';
+  }
+
+  if (circuloParam && typeof CirculosManager !== 'undefined') {
+    const allC = CirculosManager.getAllCircles();
+    const found = allC.find(c => c.id === circuloParam || c.nombre.toLowerCase().includes(circuloParam.toLowerCase()));
+    if (found) {
+      CirculosManager.setActiveCircleId(found.id);
+      AppState.activeNodeId = found.nodoId;
+      sessionStorage.setItem('elementales_authenticated', 'true');
+      updateRoleUI();
+      updateNodeUI();
+      navigateTo('tierra');
+      renderCirculoStoreBanner();
+      return;
+    }
+  }
+
   const isAuth = sessionStorage.getItem('elementales_authenticated');
   if (window.location.hash === '#admin') {
     AppState.userRole = 'gestor';
@@ -4000,6 +4026,7 @@ document.addEventListener('DOMContentLoaded', () => {
     selectLandingNode(AppState.activeNodeId || 'nodo-lucila');
   } else {
     navigateTo('barrio');
+    renderCirculoStoreBanner();
   }
 });
 
@@ -4727,9 +4754,15 @@ function renderCirculosView() {
                 📍 <strong>Punto de Retiro:</strong> ${escapeHtml(activeCircle.direccion)} · 👤 Coordina: ${escapeHtml(activeCircle.coordinador)}
               </p>
             </div>
-            <div class="flex items-center gap-2">
-              <button onclick="shareCircleWhatsApp('${activeCircle.id}')" class="btn-spotify !py-2 !px-3 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1 shadow-xs">
-                <span>📲</span> Compartir Círculo
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="enterCircleStore('${activeCircle.id}')" class="btn-spotify !py-2 !px-3.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-sm">
+                <span>🛍️</span> Tienda de mi Círculo
+              </button>
+              <button onclick="openCirculoShareModal('${activeCircle.id}')" class="btn-spotify !py-2 !px-3 text-xs font-bold bg-white text-stone-800 border border-emerald-300 hover:bg-emerald-50 flex items-center gap-1 shadow-2xs">
+                <span>💬</span> Invitar
+              </button>
+              <button onclick="openCirculoTableroModal('${activeCircle.id}')" class="btn-spotify !py-2 !px-3 text-xs font-bold bg-stone-900 text-white hover:bg-stone-800 flex items-center gap-1 shadow-2xs">
+                <span>📊</span> Tablero (${pedidos.length})
               </button>
             </div>
           </div>
@@ -4768,7 +4801,7 @@ function renderCirculosView() {
               <button onclick="sendCircleOrderToWhatsApp('${activeCircle.id}')" class="btn-spotify !py-2 !px-3 text-xs font-bold bg-stone-900 hover:bg-stone-800 text-white flex items-center gap-1 shadow-xs">
                 <span>📦</span> Enviar Consolidado al Nodo
               </button>
-              <button onclick="CirculosManager.setActiveCircleId(null); renderCirculosView(); sounds.playPop();" class="text-xs text-stone-400 hover:text-stone-600 underline">
+              <button onclick="CirculosManager.setActiveCircleId(null); renderCirculosView(); renderCirculoStoreBanner(); sounds.playPop();" class="text-xs text-stone-400 hover:text-stone-600 underline">
                 Cambiar de círculo
               </button>
             </div>
@@ -4823,20 +4856,33 @@ function renderCirculosView() {
           </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
-          <span class="text-[11px] font-bold text-stone-400">
-            👥 ${miembrosCount} miembros · ${pedidosCount} pedidos
-          </span>
-          <button 
-            type="button" 
-            onclick="joinCircle('${c.id}')" 
-            class="btn-spotify !py-1.5 !px-3 text-xs font-bold ${
-              isMyCircle 
-                ? 'bg-stone-100 text-stone-700 hover:bg-stone-200' 
-                : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs'
-            }">
-            ${isMyCircle ? 'Seleccionado' : 'Unirme'}
-          </button>
+        <div class="mt-4 pt-3 border-t border-stone-100 flex flex-col gap-2">
+          <div class="flex items-center justify-between text-[11px] font-bold text-stone-500">
+            <span>👥 ${miembrosCount} miembros</span>
+            <span class="text-emerald-700 font-black">📦 ${pedidosCount} pedidos</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button 
+              type="button" 
+              onclick="enterCircleStore('${c.id}')" 
+              class="flex-1 btn-spotify !py-2 !px-3 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs flex items-center justify-center gap-1">
+              <span>🛍️</span> Pedir en Círculo
+            </button>
+            <button 
+              type="button" 
+              onclick="openCirculoShareModal('${c.id}')" 
+              class="w-9 h-9 rounded-xl border border-stone-200 hover:border-emerald-500 flex items-center justify-center text-sm transition-all"
+              title="Compartir link del Círculo">
+              💬
+            </button>
+            <button 
+              type="button" 
+              onclick="openCirculoTableroModal('${c.id}')" 
+              class="w-9 h-9 rounded-xl border border-stone-200 hover:border-emerald-500 flex items-center justify-center text-sm transition-all"
+              title="Ver Tablero de Pedidos">
+              📊
+            </button>
+          </div>
         </div>
       </div>
     `;
@@ -4901,9 +4947,12 @@ function handleCreateCirculoSubmit(e) {
     confetti({ particleCount: 30, spread: 60, origin: { y: 0.6 } });
   }
 
-  renderCirculosView();
-  updateRoleUI();
-  populateCheckoutCirculos();
+  // Ingresar directamente a la tienda del círculo y abrir modal de invitar
+  enterCircleStore(newCirculo.id);
+  setTimeout(() => {
+    openCirculoShareModal(newCirculo.id);
+  }, 400);
+
   e.target.reset();
 }
 
@@ -4911,9 +4960,7 @@ function joinCircle(circleId) {
   if (typeof CirculosManager === 'undefined') return;
   sounds.playSuccess();
   CirculosManager.joinCircle(circleId, AppState.userName);
-  renderCirculosView();
-  updateRoleUI();
-  populateCheckoutCirculos();
+  enterCircleStore(circleId);
 }
 
 function shareCircleWhatsApp(circleId) {
@@ -4955,4 +5002,198 @@ function populateCheckoutCirculos() {
       ${escapeHtml(c.nombre)} (Punto: ${escapeHtml(c.direccion)})
     </option>
   `).join('');
+}
+
+// --- FUNCIONES DE TIENDA Y COMPARTIR EN CÍRCULOS (VRDE CLUB) ---
+function enterCircleStore(circleId) {
+  if (typeof CirculosManager === 'undefined') return;
+  const circle = CirculosManager.getCircle(circleId);
+  if (!circle) return;
+
+  CirculosManager.setActiveCircleId(circle.id);
+  AppState.activeNodeId = circle.nodoId;
+  sessionStorage.setItem('elementales_authenticated', 'true');
+  
+  updateNodeUI();
+  updateRoleUI();
+  navigateTo('tierra');
+  renderCirculoStoreBanner();
+  sounds.playSuccess();
+}
+
+function renderCirculoStoreBanner() {
+  const banner = document.getElementById('banner-circulo-activo');
+  const headerIndicator = document.getElementById('header-circulo-indicator');
+  const headerName = document.getElementById('header-circulo-name');
+  
+  if (typeof CirculosManager === 'undefined') {
+    if (banner) banner.classList.add('hidden');
+    if (headerIndicator) headerIndicator.classList.add('hidden');
+    return;
+  }
+
+  const activeCircleId = CirculosManager.getActiveCircleId();
+  const circle = activeCircleId ? CirculosManager.getCircle(activeCircleId) : null;
+
+  if (circle) {
+    if (banner) {
+      banner.classList.remove('hidden');
+      const nameEl = document.getElementById('circulo-banner-name');
+      if (nameEl) nameEl.textContent = circle.nombre;
+      
+      const hostEl = document.getElementById('circulo-banner-host');
+      if (hostEl) hostEl.textContent = `👑 Anfitrión/a: ${circle.coordinador}`;
+      
+      const nodeEl = document.getElementById('circulo-banner-node');
+      const nodeObj = NODOS_COMUNIDAD.find(n => n.id === circle.nodoId);
+      if (nodeEl) nodeEl.textContent = `📍 Retiro en: ${nodeObj ? nodeObj.name : 'Nodo Barrial'}`;
+      
+      const countEl = document.getElementById('circulo-banner-pedidos-count');
+      if (countEl) countEl.textContent = (circle.pedidos || []).length;
+    }
+
+    if (headerIndicator && headerName) {
+      headerIndicator.classList.remove('hidden');
+      headerName.textContent = circle.nombre;
+    }
+  } else {
+    if (banner) banner.classList.add('hidden');
+    if (headerIndicator) headerIndicator.classList.add('hidden');
+  }
+}
+
+function exitCircleMode() {
+  if (typeof CirculosManager !== 'undefined') {
+    CirculosManager.setActiveCircleId(null);
+  }
+  renderCirculoStoreBanner();
+  populateCheckoutCirculos();
+  sounds.playPop();
+  
+  const banner = document.getElementById('banner-circulo-activo');
+  if (banner) banner.classList.add('hidden');
+}
+
+function openCirculoTableroModal(circleId) {
+  if (typeof CirculosManager === 'undefined') return;
+  const cId = circleId || CirculosManager.getActiveCircleId();
+  const circle = CirculosManager.getCircle(cId);
+  if (!circle) return;
+
+  window.activeCirculoTableroId = circle.id;
+  sounds.playPop();
+
+  const modal = document.getElementById('modal-circulo-tablero');
+  const titleEl = document.getElementById('tablero-modal-title');
+  const subEl = document.getElementById('tablero-modal-subtitle');
+  const totalEl = document.getElementById('tablero-modal-total');
+  const countEl = document.getElementById('tablero-modal-count');
+  const listEl = document.getElementById('tablero-modal-list');
+
+  if (titleEl) titleEl.textContent = `Tablero: ${circle.nombre}`;
+  if (subEl) subEl.textContent = `📍 Retiro en: ${circle.direccion} · 👤 Coordina: ${circle.coordinador}`;
+
+  const pedidos = circle.pedidos || [];
+  const total = pedidos.reduce((acc, p) => acc + (p.total || 0), 0);
+
+  if (totalEl) totalEl.textContent = `$${total.toLocaleString('es-AR')}`;
+  if (countEl) countEl.textContent = `${pedidos.length} ${pedidos.length === 1 ? 'pedido' : 'pedidos'}`;
+
+  if (listEl) {
+    if (pedidos.length === 0) {
+      listEl.innerHTML = `
+        <div class="text-center py-6 text-stone-400 bg-stone-50 rounded-2xl border border-stone-200">
+          <p class="text-2xl mb-1">🧺</p>
+          <p class="text-xs font-bold text-stone-700">Aún no hay pedidos sumados a este Círculo</p>
+          <p class="text-[11px] text-stone-500 mt-0.5">Compartí el link del círculo con tus vecinos para que sumen sus compras.</p>
+        </div>
+      `;
+    } else {
+      listEl.innerHTML = pedidos.map((p, idx) => `
+        <div class="p-3 rounded-2xl bg-white border border-stone-200 flex items-center justify-between shadow-2xs">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-black text-xs text-stone-900">${idx + 1}. ${escapeHtml(p.vecino)}</span>
+              <span class="text-[9px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Listo</span>
+            </div>
+            <p class="text-[11px] text-stone-500 mt-0.5 leading-snug">${escapeHtml(p.items)}</p>
+          </div>
+          <span class="font-black text-xs text-emerald-900 shrink-0 ml-2">$${(p.total || 0).toLocaleString('es-AR')}</span>
+        </div>
+      `).join('');
+    }
+  }
+
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeCirculoTableroModal() {
+  document.getElementById('modal-circulo-tablero')?.classList.add('hidden');
+}
+
+function openCirculoShareModal(circleId) {
+  if (typeof CirculosManager === 'undefined') return;
+  const cId = circleId || CirculosManager.getActiveCircleId();
+  const circle = CirculosManager.getCircle(cId);
+  if (!circle) return;
+
+  window.activeShareCircleId = circle.id;
+  sounds.playPop();
+
+  const modal = document.getElementById('modal-circulo-invitar');
+  const nameEl = document.getElementById('share-modal-circulo-name');
+  const inputEl = document.getElementById('share-circulo-link-input');
+  const copyBtnText = document.getElementById('btn-copy-circulo-text');
+
+  if (nameEl) nameEl.textContent = `${circle.nombre} (Retiro: ${circle.direccion})`;
+  
+  // Generar link directo
+  const baseUrl = window.location.origin + window.location.pathname;
+  const url = `${baseUrl}?nodo=${circle.nodoId === 'nodo-lomaverde' ? 'lomaverde' : 'lucila'}&circulo=${circle.id}`;
+  
+  if (inputEl) inputEl.value = url;
+  if (copyBtnText) copyBtnText.textContent = 'Copiar';
+
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeCirculoShareModal() {
+  document.getElementById('modal-circulo-invitar')?.classList.add('hidden');
+}
+
+function copyCirculoLinkFromInput() {
+  const inputEl = document.getElementById('share-circulo-link-input');
+  if (!inputEl) return;
+
+  navigator.clipboard.writeText(inputEl.value).then(() => {
+    sounds.playSuccess();
+    const btnText = document.getElementById('btn-copy-circulo-text');
+    if (btnText) {
+      btnText.textContent = '¡Copiado! ✓';
+      setTimeout(() => { btnText.textContent = 'Copiar'; }, 2000);
+    }
+  }).catch(() => {
+    inputEl.select();
+    document.execCommand('copy');
+    sounds.playSuccess();
+  });
+}
+
+function copyCirculoLink() {
+  const activeCircleId = typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null;
+  if (activeCircleId) {
+    openCirculoShareModal(activeCircleId);
+  }
+}
+
+function shareCirculoDirectWhatsApp() {
+  const cId = window.activeShareCircleId || (typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null);
+  if (!cId) return;
+  shareCircleWhatsApp(cId);
+}
+
+function sendConsolidatedToWhatsApp() {
+  const cId = window.activeCirculoTableroId || (typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null);
+  if (!cId) return;
+  sendCircleOrderToWhatsApp(cId);
 }
