@@ -5,14 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Elementales | Red Comunitaria</title>
   <script>
-    // Enrutador inteligente para GitHub Pages
-    var path = (window.location.pathname || '').toLowerCase();
+    // Enrutador inteligente para GitHub Pages y URLs limpias (/lomaverde, /lucila, /los-robles, etc.)
+    var fullPath = (window.location.pathname || '').replace(/^\/+|\/+$/g, '');
     var search = window.location.search || '';
     var hash = window.location.hash || '';
 
-    if (path.includes('lomaverde')) {
+    // Tomar el segmento principal de la ruta
+    var segment = fullPath.split('/')[0].toLowerCase();
+
+    if (segment === 'lomaverde' || segment === 'nodo-lomaverde') {
       localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
-      window.location.replace('/?nodo=lomaverde' + (hash ? hash : ''));
+      window.location.replace('/?nodo=lomaverde' + (hash || ''));
+    } else if (segment === 'lucila' || segment === 'nodo-lucila') {
+      localStorage.setItem('elementales_active_node', 'nodo-lucila');
+      window.location.replace('/?nodo=lucila' + (hash || ''));
+    } else if (segment === 'cooperativa' || segment === 'chasqui' || segment === 'nodo-cooperativa') {
+      localStorage.setItem('elementales_active_node', 'nodo-cooperativa');
+      window.location.replace('/?nodo=cooperativa' + (hash || ''));
+    } else if (segment && !segment.includes('.')) {
+      // Es un Círculo comunitario (ej: /los-robles, /biohuerta, /mibarrio)
+      var queryJoin = search ? '&' + search.replace(/^\?/, '') : '';
+      window.location.replace('/?c=' + encodeURIComponent(segment) + queryJoin + (hash || ''));
     } else {
       window.location.replace('/' + search + hash);
     }
@@ -20,8 +33,8 @@
 </head>
 <body style="font-family: system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #fdfaf8; color: #1c1917; text-align: center;">
   <div>
-    <p style="font-size: 1.125rem; font-weight: 700; color: #57534e;">Redirigiendo a Elementales...</p>
-    <a href="/" style="font-size: 0.875rem; color: #c0826d; font-weight: 600;">Ir al inicio</a>
+    <p style="font-size: 1.125rem; font-weight: 700; color: #57534e;">Ingresando a Elementales...</p>
+    <a href="/" style="font-size: 0.875rem; color: #047857; font-weight: 600;">Hacé clic acá si no redirige</a>
   </div>
 </body>
 </html>

@@ -155,27 +155,33 @@ const CirculosManager = {
   getShareUrl(circleId) {
     const circle = this.getCircle(circleId);
     if (!circle) return window.location.href;
-    let base = window.location.origin + window.location.pathname;
-    if (!window.location.origin || window.location.origin === 'null') {
-      base = window.location.href.split('?')[0].split('#')[0];
-    }
-    const param = circle.slug || circle.id;
 
-    // Si es un círculo predeterminado del sistema, basta con ?c=slug
+    let base = window.location.origin;
+    if (!base || base === 'null' || window.location.protocol === 'file:') {
+      base = window.location.href.split('?')[0].split('#')[0];
+      return `${base}?c=${circle.slug || circle.id}`;
+    }
+
+    base = base.replace(/\/+$/, '');
+    const slug = circle.slug || circle.id;
+
+    // Si es un círculo predeterminado del sistema, URL 100% limpia sin signos: https://elementales.store/los-robles
     const isInitial = INITIAL_CIRCULOS.some(c => c.id === circle.id || c.slug === circle.slug);
     if (isInitial) {
-      return `${base}?c=${param}`;
+      return `${base}/${slug}`;
     }
 
-    // Para círculos creados por usuarios, incluimos datos para que cualquier vecino en otro celular lo reconozca al instante
+    // Para círculos autogestionados por usuarios:
+    // La URL base es limpia (ej: https://elementales.store/mibarrio) y le adjuntamos metadatos de coordinación para WhatsApp
     const params = new URLSearchParams();
-    params.set('c', param);
     if (circle.nombre) params.set('n', circle.nombre);
     if (circle.coordinador) params.set('coord', circle.coordinador);
     if (circle.direccion) params.set('dir', circle.direccion);
     if (circle.telefono) params.set('tel', circle.telefono);
     if (circle.nodoId) params.set('nodo', circle.nodoId);
-    return `${base}?${params.toString()}`;
+
+    const query = params.toString();
+    return query ? `${base}/${slug}?${query}` : `${base}/${slug}`;
   },
 
   registerCircleFromParams(urlParams) {
@@ -224,9 +230,14 @@ const CirculosManager = {
 
     if (!cleanSlug) return { success: false, error: 'El nombre de enlace sólo puede contener letras, números y guiones.' };
 
+    const RESERVED = ['lomaverde', 'lucila', 'cooperativa', 'chasqui', 'nodo-lomaverde', 'nodo-lucila', 'nodo-cooperativa', 'admin', 'api', 'index', 'css', 'js', 'public'];
+    if (RESERVED.includes(cleanSlug)) {
+      return { success: false, error: `El enlace "/${cleanSlug}" está reservado para la navegación del sistema. Elegí otro nombre.` };
+    }
+
     const duplicate = all.find(c => c.slug === cleanSlug && c.id !== circle.id);
     if (duplicate) {
-      return { success: false, error: `El enlace "?c=${cleanSlug}" ya está en uso por "${duplicate.nombre}". Elegí otro nombre.` };
+      return { success: false, error: `El enlace "/${cleanSlug}" ya está en uso por "${duplicate.nombre}". Elegí otro nombre.` };
     }
 
     circle.slug = cleanSlug;

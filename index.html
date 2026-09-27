@@ -70,7 +70,7 @@
           </span>
           <span id="header-circulo-indicator" class="hidden text-[9px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md mt-0.5 inline-flex items-center gap-1 cursor-pointer border border-emerald-300 shadow-2xs hover:bg-emerald-200 transition-colors" onclick="openCirculoShareModal()" title="Ver y personalizar enlace del Círculo">
             <span>👥</span> Círculo: <span id="header-circulo-name"></span>
-            <span class="text-[8px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-mono ml-0.5">🔗 <span id="header-circulo-slug-preview">?c=circulo</span></span>
+            <span class="text-[8px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-mono ml-0.5">🔗 <span id="header-circulo-slug-preview">/circulo</span></span>
           </span>
         </div>
       </div>
@@ -506,7 +506,7 @@
             <div class="mt-2 flex flex-wrap items-center gap-2">
               <span class="text-[11px] font-mono text-emerald-200 bg-emerald-950/80 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1.5">
                 <span>🔗</span>
-                <span id="circulo-banner-short-url">?c=circulo</span>
+                <span id="circulo-banner-short-url">/circulo</span>
               </span>
               <button 
                 type="button" 
@@ -4681,17 +4681,18 @@
             <span class="text-[10px] text-emerald-700 font-semibold">Podés editarlo</span>
           </label>
           <div class="flex items-center rounded-xl border border-stone-300 bg-stone-50 overflow-hidden focus-within:border-emerald-600 focus-within:bg-white">
-            <span class="pl-3 text-stone-500 font-mono text-xs select-none">?c=</span>
+            <span class="pl-3 pr-1 text-stone-400 font-mono text-xs select-none whitespace-nowrap shrink-0 hidden sm:inline">elementales.store/</span>
+            <span class="pl-3 pr-1 text-stone-500 font-bold text-xs select-none whitespace-nowrap shrink-0 sm:hidden">/</span>
             <input 
               type="text" 
               id="circulo-slug" 
               placeholder="mi-circulo" 
               oninput="handleSlugInput(this)"
-              class="w-full text-xs font-mono py-2 pr-3 bg-transparent outline-none text-stone-800" 
+              class="w-full text-xs font-mono py-2 pr-3 bg-transparent outline-none text-stone-800 min-w-0" 
             />
           </div>
-          <p class="text-[10px] text-stone-400 mt-1 font-mono">
-            Vista previa: <span id="circulo-slug-preview" class="text-emerald-700 font-bold">?c=mi-circulo</span>
+          <p class="text-[10px] text-stone-500 mt-1 font-mono">
+            Vista previa: <span id="circulo-slug-preview" class="text-emerald-700 font-bold">elementales.store/mi-circulo</span>
           </p>
         </div>
 
@@ -4853,18 +4854,19 @@
       <div class="mb-4 bg-emerald-50/70 p-3.5 rounded-2xl border border-emerald-200 text-left">
         <div class="flex items-center justify-between mb-1.5">
           <label class="block text-[11px] font-bold uppercase tracking-wider text-emerald-950">
-            ✏️ Personalizar Link del Círculo:
+            ✏️ Personalizar Enlace (URL directa):
           </label>
-          <span class="text-[10px] text-emerald-700 font-semibold">Podés cambiar el nombre</span>
+          <span class="text-[10px] text-emerald-700 font-semibold">Ej: /lomaverde o /mibarrio</span>
         </div>
         <div class="flex items-center gap-2">
           <div class="flex items-center rounded-xl border border-emerald-300 bg-white overflow-hidden flex-1 focus-within:border-emerald-600 focus-within:ring-1 focus-within:ring-emerald-500">
-            <span class="pl-2.5 text-stone-500 font-mono text-xs select-none">?c=</span>
+            <span class="pl-3 pr-1 text-stone-400 font-mono text-xs select-none whitespace-nowrap shrink-0 hidden sm:inline">elementales.store/</span>
+            <span class="pl-3 pr-1 text-stone-500 font-bold text-xs select-none whitespace-nowrap shrink-0 sm:hidden">/</span>
             <input 
               type="text" 
               id="edit-circulo-slug-input" 
-              placeholder="mi-nombre-personalizado" 
-              class="w-full text-xs font-mono py-2 pr-2 bg-transparent outline-none text-stone-900"
+              placeholder="nombre-del-circulo" 
+              class="w-full text-xs font-mono py-2 pr-2 bg-transparent outline-none text-stone-900 min-w-0"
             />
           </div>
           <button 

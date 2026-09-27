@@ -22,6 +22,26 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
         super().end_headers()
 
+    def do_GET(self):
+        # Soporte para URLs limpias (SPA): si no existe el archivo estático, redirigir internamente a index.html
+        path_without_query = self.path.split('?')[0].split('#')[0]
+        full_path = self.translate_path(path_without_query)
+        if not os.path.exists(full_path) and not '.' in os.path.basename(path_without_query):
+            # Guardar el segmento original en query si es necesario
+            clean_slug = path_without_query.strip('/')
+            query_part = self.path.split('?')[1] if '?' in self.path else ''
+            if clean_slug in ['lomaverde', 'nodo-lomaverde']:
+                self.path = f"/?nodo=lomaverde&{query_part}" if query_part else "/?nodo=lomaverde"
+            elif clean_slug in ['lucila', 'nodo-lucila']:
+                self.path = f"/?nodo=lucila&{query_part}" if query_part else "/?nodo=lucila"
+            elif clean_slug in ['cooperativa', 'chasqui', 'nodo-cooperativa']:
+                self.path = f"/?nodo=cooperativa&{query_part}" if query_part else "/?nodo=cooperativa"
+            elif clean_slug:
+                self.path = f"/?c={clean_slug}&{query_part}" if query_part else f"/?c={clean_slug}"
+            else:
+                self.path = '/index.html'
+        return super().do_GET()
+
 if __name__ == "__main__":
     web_dir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(web_dir)

@@ -2373,6 +2373,13 @@ function loginFromLanding(role) {
   sounds.playSuccess();
   updateRoleUI();
   updateNodeUI();
+
+  try {
+    const nodeSlug = targetNode.replace(/^nodo-/, '');
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({ nodeId: targetNode }, '', '/' + nodeSlug);
+    }
+  } catch (e) {}
   navigateTo('barrio');
 }
 
@@ -4037,7 +4044,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ta) ta.value = notasGuardadas;
   }
   
-  // Detección de autenticación inicial / hash de admin directo / Círculo compartido (?c=slug o ?circulos)
+  // Detección de autenticación inicial / hash de admin directo / Círculo compartido (?c=slug o ?circulos o ruta limpia)
   const urlParams = new URLSearchParams(window.location.search);
   const circuloParam = urlParams.get('c') || urlParams.get('circulo') || (window.location.hash.includes('c=') ? window.location.hash.split('c=')[1] : null) || (window.location.hash.includes('circulo=') ? window.location.hash.split('circulo=')[1] : null);
   const isCirculosPilot = urlParams.has('circulos') || window.location.hash === '#circulos';
@@ -4047,6 +4054,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nodoParam === 'lomaverde' || nodoParam === 'nodo-lomaverde') AppState.activeNodeId = 'nodo-lomaverde';
     else if (nodoParam === 'cooperativa' || nodoParam === 'nodo-cooperativa') AppState.activeNodeId = 'nodo-cooperativa';
     else if (nodoParam === 'lucila' || nodoParam === 'nodo-lucila') AppState.activeNodeId = 'nodo-lucila';
+    try {
+      const nodeSlug = AppState.activeNodeId.replace(/^nodo-/, '');
+      if (window.history && window.history.replaceState && !circuloParam) {
+        window.history.replaceState({ nodeId: AppState.activeNodeId }, '', '/' + nodeSlug);
+      }
+    } catch (e) {}
   }
 
   if (circuloParam && typeof CirculosManager !== 'undefined') {
@@ -4060,11 +4073,11 @@ document.addEventListener('DOMContentLoaded', () => {
       AppState.catalogMode = 'semanal'; // En círculos no se usa modo local
       sessionStorage.setItem('elementales_authenticated', 'true');
 
-      // Limpiar parámetros extensos en la barra dejando ?c=slug limpio
+      // Limpiar la barra del navegador dejando la ruta ultra limpia: /nombre-circulo
       try {
-        const cleanShareUrl = window.location.origin + window.location.pathname + `?c=${found.slug || found.id}`;
+        const cleanSlug = found.slug || found.id;
         if (window.history && window.history.replaceState) {
-          window.history.replaceState({ circuloId: found.id }, '', cleanShareUrl);
+          window.history.replaceState({ circuloId: found.id }, '', '/' + cleanSlug);
         }
       } catch (e) {}
 
@@ -4659,6 +4672,12 @@ function renderNodesModalList() {
 function selectNode(nodeId) {
   AppState.activeNodeId = nodeId;
   localStorage.setItem('elementales_active_node', nodeId);
+  try {
+    const nodeSlug = nodeId.replace(/^nodo-/, '');
+    if (window.history && window.history.replaceState && (typeof CirculosManager === 'undefined' || !CirculosManager.getActiveCircleId())) {
+      window.history.replaceState({ nodeId: nodeId }, '', '/' + nodeSlug);
+    }
+  } catch (e) {}
   closeNodeSelectorModal();
   sounds.playSuccess();
   updateNodeUI();
@@ -5002,7 +5021,7 @@ function openCreateCirculoModal() {
       slugInput.dataset.manual = 'false';
     }
     const preview = document.getElementById('circulo-slug-preview');
-    if (preview) preview.textContent = '?c=mi-circulo';
+    if (preview) preview.textContent = 'elementales.store/mi-circulo';
     modal.classList.remove('hidden');
   }
 }
@@ -5022,7 +5041,7 @@ function handleCirculoNombreInput(input) {
     .replace(/[^a-z0-9_-]+/g, '-')
     .replace(/(^-|-$)/g, '');
   slugInput.value = val;
-  if (preview) preview.textContent = `?c=${val || 'mi-circulo'}`;
+  if (preview) preview.textContent = `elementales.store/${val || 'mi-circulo'}`;
 }
 
 function handleSlugInput(input) {
@@ -5034,7 +5053,7 @@ function handleSlugInput(input) {
     .replace(/^[-_]+/, '');
   input.value = val;
   const preview = document.getElementById('circulo-slug-preview');
-  if (preview) preview.textContent = `?c=${val || 'mi-circulo'}`;
+  if (preview) preview.textContent = `elementales.store/${val || 'mi-circulo'}`;
 }
 
 function handleCreateCirculoSubmit(e) {
@@ -5139,9 +5158,9 @@ function enterCircleStore(circleId) {
   
   // Actualizar la URL en la barra de direcciones del navegador
   try {
-    const shareUrl = CirculosManager.getShareUrl(circle.id);
+    const slug = circle.slug || circle.id;
     if (window.history && window.history.pushState) {
-      window.history.pushState({ circuloId: circle.id }, '', shareUrl);
+      window.history.pushState({ circuloId: circle.id }, '', '/' + slug);
     }
   } catch (e) {}
 
@@ -5190,8 +5209,7 @@ function renderCirculoStoreBanner() {
 
       const linkBadgeEl = document.getElementById('circulo-banner-short-url');
       if (linkBadgeEl) {
-        const shortUrl = CirculosManager.getShareUrl(circle.id);
-        linkBadgeEl.textContent = shortUrl.replace(/^https?:\/\//, '');
+        linkBadgeEl.textContent = `/${circle.slug || circle.id}`;
       }
     }
 
@@ -5201,7 +5219,7 @@ function renderCirculoStoreBanner() {
     if (headerIndicator && headerName) {
       headerIndicator.classList.remove('hidden');
       headerName.textContent = circle.nombre;
-      if (headerSlug) headerSlug.textContent = `?c=${circle.slug || circle.id}`;
+      if (headerSlug) headerSlug.textContent = `/${circle.slug || circle.id}`;
     }
   } else {
     if (banner) banner.classList.add('hidden');
@@ -5217,8 +5235,8 @@ function exitCircleMode() {
   }
   try {
     if (window.history && window.history.replaceState) {
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, '', cleanUrl);
+      const nodeSlug = (AppState.activeNodeId || 'nodo-lucila').replace(/^nodo-/, '');
+      window.history.replaceState({}, '', '/' + nodeSlug);
     }
   } catch (e) {}
   renderCirculoStoreBanner();
@@ -5412,7 +5430,7 @@ function saveCustomCircleSlug() {
 
   // Actualizar feedback
   if (feedback) {
-    feedback.textContent = `✓ ¡Enlace actualizado con éxito a: ?c=${res.slug}!`;
+    feedback.textContent = `✓ ¡Enlace actualizado con éxito a: /${res.slug}!`;
     feedback.className = 'text-[11px] text-emerald-700 mt-1.5 block font-bold';
     feedback.classList.remove('hidden');
     setTimeout(() => { feedback.classList.add('hidden'); }, 3000);
