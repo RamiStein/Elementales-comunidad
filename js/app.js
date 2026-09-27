@@ -2803,52 +2803,36 @@ function castVote(proposalId, option) {
   }
 }
 
-// 🧭 CONTROL DEL MODAL DE LOGIN INICIAL & ACCESO #admin
+// 🧭 CONTROL DEL ACCESO INICIAL (LANDING PREVIA DE BIENVENIDA)
 function checkInitialLogin() {
   if (window.location.hash === '#admin') {
-    selectInitialRole('gestor');
+    AppState.userRole = 'gestor';
+    sessionStorage.setItem('elementales_authenticated', 'true');
+    sessionStorage.setItem('elementales_gestor_auth', 'true');
+    updateRoleUI();
+    updateNodeUI();
+    navigateTo('barrio');
     return;
   }
 
-  const chosen = sessionStorage.getItem('elementales_initial_role_chosen');
-  if (!chosen) {
-    openInitialLoginModal();
+  const isAuth = sessionStorage.getItem('elementales_authenticated');
+  if (!isAuth) {
+    goToLanding();
+  } else {
+    navigateTo('barrio');
   }
 }
 
 function openInitialLoginModal() {
-  const modal = document.getElementById('modal-initial-login');
-  if (modal) modal.classList.remove('hidden');
+  goToLanding();
 }
 
 function closeInitialLoginModal() {
-  const modal = document.getElementById('modal-initial-login');
-  if (modal) modal.classList.add('hidden');
+  // Sin modal emergente: la selección se hace en view-landing
 }
 
 function selectInitialRole(role) {
-  AppState.userRole = role;
-  localStorage.setItem('elementales_user_role', role);
-  sessionStorage.setItem('elementales_initial_role_chosen', 'true');
-
-  if (role === 'socio' || role === 'gestor') {
-    AppState.catalogMode = 'semanal';
-  } else {
-    AppState.catalogMode = 'local';
-  }
-  localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
-
-  closeInitialLoginModal();
-  updateRoleUI();
-  sounds.playPop();
-
-  if (role === 'gestor') {
-    navigateTo('eter');
-    switchEterMainTab('gestion');
-    showEterModule('elementos');
-  } else {
-    navigateTo('barrio');
-  }
+  loginFromLanding(role);
 }
 
 // Interceptar rueda del ratón para scroll horizontal fluido en la subnavegación de escritorio
