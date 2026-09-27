@@ -4921,21 +4921,22 @@ function renderCirculosView() {
   }
 
   grid.innerHTML = circles.map(c => {
-    const isMyCircle = c.id === activeCircleId;
+    const isCreator = typeof CirculosManager !== 'undefined' && CirculosManager.isCircleCreator(c.id);
+    const isActive = c.id === activeCircleId;
     const pedidosCount = (c.pedidos || []).length;
     const miembrosCount = (c.miembros || []).length;
     const nodeName = c.nodoId === 'nodo-lomaverde' ? 'Loma Verde' : (c.nodoId === 'nodo-cooperativa' ? 'Central Chasqui' : 'La Lucila');
 
     return `
       <div class="bg-white rounded-3xl border-2 transition-all p-5 shadow-2xs hover:shadow-md flex flex-col justify-between ${
-        isMyCircle ? 'border-emerald-500 bg-emerald-50/20' : 'border-stone-200'
+        isActive ? 'border-emerald-500 bg-emerald-50/20' : 'border-stone-200'
       }">
         <div>
           <div class="flex items-center justify-between gap-2 mb-2">
             <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
               📍 ${nodeName}
             </span>
-            ${isMyCircle ? '<span class="text-xs font-black text-emerald-600">✓ Tu Círculo</span>' : ''}
+            ${isCreator ? '<span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">👑 Tu Círculo (Coordinador)</span>' : (isActive ? '<span class="text-[10px] font-bold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">✓ Seleccionado</span>' : '')}
           </div>
 
           <h3 class="font-black text-base text-stone-900 leading-snug">${escapeHtml(c.nombre)}</h3>
@@ -4949,7 +4950,7 @@ function renderCirculosView() {
 
           <!-- Enlace corto para compartir -->
           <div class="mt-3 p-2 bg-stone-50 rounded-xl border border-stone-200/80 flex items-center justify-between gap-1 text-[11px]">
-            <span class="font-mono text-stone-600 truncate">?c=${c.slug || c.id}</span>
+            <span class="font-mono text-stone-600 truncate">/${c.slug || c.id}</span>
             <button 
               type="button" 
               onclick="copyDirectCircleUrl('${c.id}')" 
@@ -5211,6 +5212,17 @@ function renderCirculoStoreBanner() {
       if (linkBadgeEl) {
         linkBadgeEl.textContent = `/${circle.slug || circle.id}`;
       }
+
+      // Solo el creador / coordinador o gestor ve el botón de personalizar URL
+      const canEdit = CirculosManager.canEditCircle(circle.id);
+      const editBtn = document.getElementById('btn-banner-edit-url');
+      if (editBtn) {
+        if (canEdit) {
+          editBtn.classList.remove('hidden');
+        } else {
+          editBtn.classList.add('hidden');
+        }
+      }
     }
 
     if (genericHeader) genericHeader.classList.add('hidden');
@@ -5361,11 +5373,33 @@ function openCirculoShareModal(circleId) {
   if (inputEl) inputEl.value = url;
   if (copyBtnText) copyBtnText.textContent = 'Copiar';
 
-  // Cargar slug editable
-  const editSlugInput = document.getElementById('edit-circulo-slug-input');
-  if (editSlugInput) {
-    editSlugInput.value = circle.slug || circle.id;
+  // CONTROL ESTRICTO DE PERMISOS: Solo el creador / coordinador o gestor ve el formulario de editar link
+  const canEdit = CirculosManager.canEditCircle(circle.id);
+  const editSection = document.getElementById('section-personalizar-circulo-slug');
+  const coordInfoSection = document.getElementById('section-circulo-info-coordinador');
+  const coordNameEl = document.getElementById('info-circulo-coordinador-nombre');
+
+  if (editSection) {
+    if (canEdit) {
+      editSection.classList.remove('hidden');
+      const editSlugInput = document.getElementById('edit-circulo-slug-input');
+      if (editSlugInput) {
+        editSlugInput.value = circle.slug || circle.id;
+      }
+    } else {
+      editSection.classList.add('hidden');
+    }
   }
+
+  if (coordInfoSection) {
+    if (!canEdit) {
+      coordInfoSection.classList.remove('hidden');
+      if (coordNameEl) coordNameEl.textContent = `Coordinado por: ${circle.coordinador}`;
+    } else {
+      coordInfoSection.classList.add('hidden');
+    }
+  }
+
   const feedback = document.getElementById('slug-feedback-msg');
   if (feedback) feedback.classList.add('hidden');
 

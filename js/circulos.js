@@ -216,8 +216,68 @@ const CirculosManager = {
     return newCircle;
   },
 
+  getCreatedCircleIds() {
+    try {
+      const saved = localStorage.getItem('elementales_my_created_circles');
+      if (saved) return JSON.parse(saved);
+      // Fallback inicial: si no existía el registro previo, cualquier círculo que no sea del sistema se marca como propio
+      const all = this.getAllCircles();
+      const nonSystem = all.filter(c => !INITIAL_CIRCULOS.some(ic => ic.id === c.id || ic.slug === c.slug)).map(c => c.id);
+      if (nonSystem.length > 0) {
+        localStorage.setItem('elementales_my_created_circles', JSON.stringify(nonSystem));
+        return nonSystem;
+      }
+      return [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  addCreatedCircleId(id) {
+    if (!id) return;
+    const list = this.getCreatedCircleIds();
+    if (!list.includes(id)) {
+      list.push(id);
+      localStorage.setItem('elementales_my_created_circles', JSON.stringify(list));
+    }
+  },
+
+  isCircleCreator(circleId) {
+    if (!circleId) return false;
+    const circle = this.getCircle(circleId);
+    if (!circle) return false;
+
+    // Los círculos oficiales del sistema nunca son editables por usuarios normales
+    const isSystem = INITIAL_CIRCULOS.some(c => c.id === circle.id || c.slug === circle.slug);
+    if (isSystem) return false;
+
+    const myCreated = this.getCreatedCircleIds();
+    return myCreated.includes(circle.id);
+  },
+
+  canEditCircle(circleId) {
+    if (!circleId) return false;
+    // Administrador / Gestor del nodo con sesión autenticada con PIN
+    const isGestor = typeof AppState !== 'undefined' && 
+                     AppState.userRole === 'gestor' && 
+                     sessionStorage.getItem('elementales_gestor_auth') === 'true';
+    if (isGestor) return true;
+
+    // Solo el creador original en este dispositivo puede editarlo
+    return this.isCircleCreator(circleId);
+  },
+
   updateCircleSlug(circleId, rawSlug) {
     if (!circleId || !rawSlug) return { success: false, error: 'Por favor ingresá un nombre de enlace.' };
+    
+    // CONTROL ESTRICTO DE PERMISOS: Solo el creador o gestor puede editar
+    if (!this.canEditCircle(circleId)) {
+      return { 
+        success: false, 
+        error: '⛔ No tenés permisos para modificar este Círculo. Solo quien lo creó puede cambiar su nombre o enlace.' 
+      };
+    }
+
     const all = this.getAllCircles();
     const circle = all.find(c => c.id === circleId || c.slug === circleId);
     if (!circle) return { success: false, error: 'Círculo no encontrado' };
@@ -289,6 +349,7 @@ const CirculosManager = {
     };
     all.unshift(newCircle);
     this.saveCircles(all);
+    this.addCreatedCircleId(newId); // Registrar inmediatamente como creador de este círculo
     this.setActiveCircleId(newId);
     return newCircle;
   },
