@@ -57,17 +57,17 @@
   <header id="main-app-header" class="google-nav-fixed w-full transition-all">
     <div class="max-w-5xl mx-auto px-3.5 sm:px-6 py-2.5 flex items-center justify-between gap-3">
       
-      <!-- LOGO ELEMENTALES & NODO ACTIVO -->
+      <!-- LOGO ELEMENTALES -->
       <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="navigateTo('barrio')">
         <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs" alt="Elementales" />
         <div class="flex flex-col">
           <span class="font-black text-sm sm:text-base text-stone-900 tracking-tight leading-none">
             Elementales <span class="text-[#a6634f]">Comunidad</span>
           </span>
-          <span class="text-[10px] font-bold text-emerald-700 flex items-center gap-1 leading-tight mt-0.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span id="header-node-indicator">La Lucila · Vicente López</span>
+          <span class="text-[10px] font-bold text-stone-400 flex items-center gap-1 leading-tight mt-0.5">
+            Red de Nodos Barriales
           </span>
+          <span id="header-node-indicator" class="hidden"></span>
           <span id="header-circulo-indicator" class="hidden text-[9px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md mt-0.5 inline-flex items-center gap-1 cursor-pointer border border-emerald-300 shadow-2xs hover:bg-emerald-200 transition-colors" onclick="openCirculoShareModal()" title="Ver y personalizar enlace del Círculo">
             <span>👥</span> Círculo: <span id="header-circulo-name"></span>
             <span class="text-[8px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-mono ml-0.5">🔗 <span id="header-circulo-slug-preview">/circulo</span></span>
@@ -75,54 +75,32 @@
         </div>
       </div>
 
-      <!-- BOTONES DE ACCIÓN: SELECTOR DE NODO, ROL Y SALIR -->
+      <!-- BOTONES DE ACCIÓN PRINCIPALES: NODO ACTIVO E INICIO -->
       <div class="flex items-center gap-2 shrink-0">
         
-        <!-- Botón Volver al Home del Nodo -->
-        <button 
-          type="button" 
-          id="header-home-btn"
-          onclick="navigateTo('barrio')" 
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-emerald-50 text-emerald-900 border-emerald-300 hover:bg-emerald-100"
-          title="Volver al Home del Nodo"
-        >
-          <span class="text-xs">🏠</span>
-          <span class="font-extrabold text-xs">Inicio</span>
-        </button>
-
-        <!-- Selector Rápido de Nodo -->
+        <!-- Selector Rápido de Nodo Activo -->
         <button 
           type="button" 
           id="header-node-badge" 
           onclick="openNodeSelectorModal()" 
           class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-800 border-stone-200 hover:bg-stone-200"
-          title="Cambiar de Nodo (La Lucila / Loma Verde)"
+          title="Cambiar de Nodo Comunitario"
         >
           <span class="text-xs">📍</span>
           <span id="header-node-name">La Lucila</span>
           <span class="text-[9px] opacity-60">▾</span>
         </button>
 
-        <!-- Indicador / Selector de Rol -->
+        <!-- Botón Volver al Home del Nodo -->
         <button 
-          type="button"
-          id="header-role-badge"
-          onclick="openRoleSwitcherModal()"
-          class="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-700 border-stone-200 hover:bg-stone-200"
-          title="Cambiar perspectiva: Vecino No Miembro, Socio CsC o Gestor"
+          type="button" 
+          id="header-home-btn"
+          onclick="navigateTo('barrio')" 
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-emerald-50 text-emerald-900 border-emerald-300 hover:bg-emerald-100"
+          title="Volver a la portada del Nodo"
         >
-          <span id="header-role-dot" class="w-2 h-2 rounded-full bg-stone-400"></span>
-          <span id="header-role-text">Vecino</span>
-        </button>
-
-        <!-- Botón Salir / Volver a la Landing -->
-        <button 
-          type="button"
-          onclick="goToLanding()" 
-          class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center font-bold text-xs transition-colors shrink-0"
-          title="Cambiar de usuario o salir a la pantalla de bienvenida"
-        >
-          ✕
+          <span class="text-xs">🏠</span>
+          <span class="font-extrabold text-xs">Inicio</span>
         </button>
 
       </div>
@@ -321,26 +299,7 @@
       <!-- Gradiente sutil para contraste -->
       <div class="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-stone-950/20"></div>
 
-      <!-- Barra flotante en portada: Cambiar nodo & Badge de usuario -->
-      <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between">
-        <button 
-          onclick="openNodeSelectorModal()" 
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-black/50 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 shadow-sm transition-all"
-        >
-          <span>📍</span>
-          <span id="node-header-city">La Lucila</span>
-          <span class="text-[10px] opacity-70">▾ Cambiar</span>
-        </button>
 
-        <div class="flex items-center gap-2">
-          <span id="node-current-role-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-white/90 backdrop-blur-md text-stone-900 border border-white/40 shadow-sm">
-            👤 Visitante
-          </span>
-          <button onclick="goToLanding()" class="w-7 h-7 rounded-full bg-black/50 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 flex items-center justify-center text-xs font-bold transition-all" title="Salir a pantalla de acceso">
-            ✕
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- 2. PERFIL DEL NODO: AVATAR FLOTANTE + IDENTIDAD -->
@@ -4682,6 +4641,13 @@
 
       <div class="space-y-3" id="nodes-modal-list">
         <!-- Inyectado dinámicamente por JS -->
+      </div>
+
+      <div class="pt-3 border-t border-stone-100 flex items-center justify-between mt-4">
+        <button onclick="closeNodeSelectorModal(); goToLanding();" class="text-xs text-stone-500 hover:text-stone-800 font-bold flex items-center gap-1.5 py-1.5 px-3 rounded-xl hover:bg-stone-100 transition-colors">
+          <span>🚪</span> Salir / Cambiar Usuario
+        </button>
+        <button onclick="closeNodeSelectorModal()" class="text-xs text-stone-400 hover:text-stone-600 font-bold py-1.5 px-3">Cerrar</button>
       </div>
     </div>
   </div>
