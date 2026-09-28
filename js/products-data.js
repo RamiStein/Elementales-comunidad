@@ -90,11 +90,42 @@ const PLANES_MEMBRESIA = [
   }
 ];
 
+// Utilidades de nombres limpios y slugs para Cajones Chasqui
+function getProductCleanName(prodOrName) {
+  const rawName = (typeof prodOrName === 'string') ? prodOrName : (prodOrName ? (prodOrName.name || '') : '');
+  if (!rawName) return '';
+  return rawName
+    .replace(/cajon\s*/gi, '')
+    .replace(/zucchiniiagroecologico/gi, 'Zucchini')
+    .replace(/\s*x\s*\d+\s*(kg|kilos|un|unidades)?(\s*aprox\.?)?/gi, '')
+    .replace(/\s*\d+\s*(kg|kilos)(\s*aprox\.?)?/gi, '')
+    .replace(/\b(agroecol[oó]gicos?|agroecol[oó]gicas?|org[aá]nicos?|org[aá]nicas?|certificado|invernadero)\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase()
+    .split(' ')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
+function getProductSlug(prodOrName) {
+  if (typeof prodOrName === 'object' && prodOrName && prodOrName.slug) {
+    return prodOrName.slug;
+  }
+  return getProductCleanName(prodOrName)
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 // 4. CATÁLOGO CON ESCALAS DE PRECIO: Local (Feria/Visitante), Semanal (Socio) y Lunar (Costo de Red)
 const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-2528",
     "name": "MANDARINA DANCY AGROECOLOGICA x 15 KG",
+    "cleanName": "Mandarina Dancy",
+    "slug": "mandarina-dancy",
     "fullName": "MANDARINA DANCY AGROECOLOGICA x 15 KG (DON LUIS)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -118,6 +149,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-6042",
     "name": "BATATIN BEAUREGARD X 20 KG APROX. AGROECOLOGICO",
+    "cleanName": "Batatin Beauregard",
+    "slug": "batatin-beauregard",
     "fullName": "BATATIN BEAUREGARD X 20 KG APROX. AGROECOLOGICO (FINCA VERDE)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -141,6 +174,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-15784",
     "name": "NARANJA OMBLIGO AGROECOLOGICO 15 KG APROX",
+    "cleanName": "Naranja Ombligo",
+    "slug": "naranja-ombligo",
     "fullName": "NARANJA OMBLIGO AGROECOLOGICO 15 KG APROX (FINCA DON LUIS)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -164,6 +199,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-6984",
     "name": "NARANJA SALUSTIANA AGROECOLOGICO X 15 KG APROX",
+    "cleanName": "Naranja Salustiana",
+    "slug": "naranja-salustiana",
     "fullName": "NARANJA SALUSTIANA AGROECOLOGICO X 15 KG APROX (FINCA DON LUIS)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -187,6 +224,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-7361",
     "name": "MANDARINA ELLENDALE AGROECOLOGICO 15 KG APROX",
+    "cleanName": "Mandarina Ellendale",
+    "slug": "mandarina-ellendale",
     "fullName": "MANDARINA ELLENDALE AGROECOLOGICO 15 KG APROX (FINCA DON LUIS)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -210,6 +249,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-2526",
     "name": "LIMON GENOVA AGROECOLÓGICO x 15 KG Aprox.",
+    "cleanName": "Limon Genova",
+    "slug": "limon-genova",
     "fullName": "LIMON GENOVA AGROECOLÓGICO x 15 KG Aprox. (FINCA DON LUIS)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -233,6 +274,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-13646",
     "name": "MANDARINA ENCORE AGROECOLOGICA X 15 KG APROX",
+    "cleanName": "Mandarina Encore",
+    "slug": "mandarina-encore",
     "fullName": "MANDARINA ENCORE AGROECOLOGICA X 15 KG APROX (DON LUIS)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -256,6 +299,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-8324",
     "name": "POMELO ROJO AGROECOLOGICO 15 KG APROX",
+    "cleanName": "Pomelo Rojo",
+    "slug": "pomelo-rojo",
     "fullName": "POMELO ROJO AGROECOLOGICO 15 KG APROX (FINCA DON LUIS)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -279,6 +324,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-9839",
     "name": "ZAPALLO KABUTIA ORGANICO X 14 KG APROX",
+    "cleanName": "Zapallo Kabutia",
+    "slug": "zapallo-kabutia",
     "fullName": "ZAPALLO KABUTIA ORGANICO X 14 KG APROX (PUENTE BLANCO)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -302,6 +349,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-14813",
     "name": "ZANAHORIA SIN HOJAS AGROECOLOGICAS X 9 KG",
+    "cleanName": "Zanahoria Sin Hojas",
+    "slug": "zanahoria-sin-hojas",
     "fullName": "ZANAHORIA SIN HOJAS AGROECOLOGICAS X 9 KG (COMUNIDAD SEMBRANDO CONCIENCIA)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -325,6 +374,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-7625",
     "name": "BATATA MORADA ARAPEY AGROECOLOGICO 11 KG APROX",
+    "cleanName": "Batata Morada Arapey",
+    "slug": "batata-morada-arapey",
     "fullName": "BATATA MORADA ARAPEY AGROECOLOGICO 11 KG APROX (FINCA VERDE)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -348,6 +399,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-6966",
     "name": "NARANJA SANGUINA ROSA AGROECOLOGICO 16 KG APROX",
+    "cleanName": "Naranja Sanguina Rosa",
+    "slug": "naranja-sanguina-rosa",
     "fullName": "NARANJA SANGUINA ROSA AGROECOLOGICO 16 KG APROX (FINCA ECOTIPA)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -371,6 +424,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-17633",
     "name": "QUINOTO AGROECOLÓGICO 9 KG APROX",
+    "cleanName": "Quinoto",
+    "slug": "quinoto",
     "fullName": "QUINOTO AGROECOLÓGICO 9 KG APROX (FINCA ECOTIPA)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -394,6 +449,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-2541",
     "name": "PALTA SILVESTRE AGROECOLOGICA X 9 KG",
+    "cleanName": "Palta Silvestre",
+    "slug": "palta-silvestre",
     "fullName": "PALTA SILVESTRE AGROECOLOGICA X 9 KG ( FINCA ECOTIPA)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -417,6 +474,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-6398",
     "name": "BATATA BUENA BONIATO AGROECOLOGICA  12 KG APROX",
+    "cleanName": "Batata Buena Boniato",
+    "slug": "batata-buena-boniato",
     "fullName": "BATATA BUENA BONIATO AGROECOLOGICA  12 KG APROX (FINCA VERDE)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -440,6 +499,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-14028",
     "name": "FRUTILLAS AGROECOLOGICAS CAJON 5 KG APROX",
+    "cleanName": "Frutillas",
+    "slug": "frutillas",
     "fullName": "FRUTILLAS AGROECOLOGICAS CAJON 5 KG APROX (COMUNIDADA SEMBRANDO CONCIENCIA)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -463,6 +524,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-2513",
     "name": "BANANAS ORGANICO CERTIFICADO 16 KG APROX",
+    "cleanName": "Bananas",
+    "slug": "bananas",
     "fullName": "BANANAS ORGANICO CERTIFICADO 16 KG APROX (FINCA LA LUCRECIA)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -486,6 +549,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-9714",
     "name": "PERA PACKHAM ORGANICO CERTIFICADO 18 KG APROX",
+    "cleanName": "Pera Packham",
+    "slug": "pera-packham",
     "fullName": "PERA PACKHAM ORGANICO CERTIFICADO 18 KG APROX (PLUMA AZUL)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -509,6 +574,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-14820",
     "name": "BERENJENA AGROECOLOGICA X 10 KG",
+    "cleanName": "Berenjena",
+    "slug": "berenjena",
     "fullName": "BERENJENA AGROECOLOGICA X 10 KG (COMUNIDAD SEMBRANDO CONCIENCIA)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -532,6 +599,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-17363",
     "name": "BERENJENA RAYADA AGROECOLÓGICA INVERNADERO 10 KG APROX",
+    "cleanName": "Berenjena Rayada",
+    "slug": "berenjena-rayada",
     "fullName": "BERENJENA RAYADA AGROECOLÓGICA INVERNADERO 10 KG APROX (SEMRANDO CONCIENCIA)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -555,6 +624,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-2512",
     "name": "BANANAS AGROECOLOGICA PRATA 17 KG APROX",
+    "cleanName": "Bananas Prata",
+    "slug": "bananas-prata",
     "fullName": "BANANAS AGROECOLOGICA PRATA 17 KG APROX (ALEJANDRO CLANCI)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -578,6 +649,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-13550",
     "name": "TOMATE REDONDO AGROECOLOGICO X 15 KG APROX",
+    "cleanName": "Tomate Redondo",
+    "slug": "tomate-redondo",
     "fullName": "TOMATE REDONDO AGROECOLOGICO X 15 KG APROX (FINCA LA LUCRECIA)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -601,6 +674,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-13014",
     "name": "MANZANA CRIPPS PINK ORGANICA X 20 KG",
+    "cleanName": "Manzana Cripps Pink",
+    "slug": "manzana-cripps-pink",
     "fullName": "MANZANA CRIPPS PINK ORGANICA X 20 KG (FINCA PLUMA AZUL)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -624,6 +699,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-17267",
     "name": "KIWI ORGANICO X 10 KG",
+    "cleanName": "Kiwi",
+    "slug": "kiwi",
     "fullName": "KIWI ORGANICO X 10 KG  (PLUMA AZUL)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -647,6 +724,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-6447",
     "name": "MARACUYA AGROECOLOGICO 10 KG APROX",
+    "cleanName": "Maracuya",
+    "slug": "maracuya",
     "fullName": "MARACUYA AGROECOLOGICO 10 KG APROX (FINCA ECOTIPA)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -670,6 +749,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-8416",
     "name": "PIMIENTO ROJO AGROECOLÓGICO 7 KG APROX",
+    "cleanName": "Pimiento Rojo",
+    "slug": "pimiento-rojo",
     "fullName": "PIMIENTO ROJO AGROECOLÓGICO 7 KG APROX  (ROY CORRIENTES)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -693,6 +774,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-13939",
     "name": "ZAPALLITO AGROECOLOGICO X 15 KG",
+    "cleanName": "Zapallito",
+    "slug": "zapallito",
     "fullName": "ZAPALLITO AGROECOLOGICO X 15 KG (COMUNIDAD SEMBRANDO CONCIENCIA)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -716,6 +799,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-13992",
     "name": "ZUCCHINIIAGROECOLOGICO X 15 KG",
+    "cleanName": "Zucchini",
+    "slug": "zucchini",
     "fullName": "ZUCCHINIIAGROECOLOGICO X 15 KG (COMUNIDAD SEMBRANDO CONCIENCIA)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -739,6 +824,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-9713",
     "name": "PALTA HASS AGROECOLOGICA 9 KG APROX",
+    "cleanName": "Palta Hass",
+    "slug": "palta-hass",
     "fullName": "PALTA HASS AGROECOLOGICA 9 KG APROX (FINCA ECOTIPA)",
     "categoria": "Frutas Agroecológicas",
     "category": "Frutas Agroecológicas",
@@ -762,6 +849,8 @@ const CAJONES_CENTRAL_COOPERATIVA = [
   {
     "id": "chasqui-14463",
     "name": "MORRON ROJO AGROECOLOGICO X 8 KG",
+    "cleanName": "Morron Rojo",
+    "slug": "morron-rojo",
     "fullName": "MORRON ROJO AGROECOLOGICO X 8 KG (COMUNIDAD SEMBRANDO CONCIENCIA)",
     "categoria": "Verduras & Huerta",
     "category": "Verduras & Huerta",
@@ -861,7 +950,7 @@ const CajonesManager = {
       share = {
         id: 'share-' + Date.now(),
         productId: prod.id,
-        productName: prod.name,
+        productName: prod.cleanName || getProductCleanName(prod),
         producer: prod.producer,
         totalKg: prod.cajonKg,
         priceCajon: prod.precioCajon,

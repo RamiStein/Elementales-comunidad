@@ -84,15 +84,12 @@ const CirculosManager = {
 
   getShareUrl(circleId) {
     const circle = this.getCircle(circleId);
-    if (!circle) return window.location.href;
+    if (!circle) return 'https://elementales.store';
 
-    let base = window.location.origin;
-    if (!base || base === 'null' || window.location.protocol === 'file:') {
-      base = window.location.href.split('?')[0].split('#')[0];
-      return `${base}?c=${circle.slug || circle.id}`;
-    }
+    let base = (typeof window !== 'undefined' && window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
+      ? window.location.origin.replace(/\/+$/, '')
+      : 'https://elementales.store';
 
-    base = base.replace(/\/+$/, '');
     const slug = circle.slug || circle.id;
     return `${base}/circulo/${slug}`;
   },
@@ -366,17 +363,19 @@ const CirculosManager = {
     const circle = this.getCircle(circleId);
     if (!circle) return '';
     const url = this.getShareUrl(circle.id);
+    const modTxt = circle.modalidad === 'ambas' ? 'Semanal y Lunar' : (circle.modalidad === 'lunar' ? 'Lunar' : 'Semanal');
 
-    let text = `📦 *¡Sumate al pedido de cajones de ${circle.nombre}!* 🌿\n\n`;
-    text += `Estamos pidiendo juntos cajones agroecológicos de *Central Cooperativa Chasqui* en *Nodo Loma Verde*.\n\n`;
-    text += `📍 *Retiro en:* ${circle.direccion}\n`;
+    let text = `🤝 *¡Sumate al Círculo ${circle.nombre}!* 🌿\n`;
+    text += `📍 *Retiro:* ${circle.direccion}\n`;
     text += `👤 *Coordina:* ${circle.coordinador}\n`;
     if (circle.alias) {
-      text += `💳 *Alias del Círculo para transferir:* ${circle.alias}\n`;
+      text += `💳 *Alias para el fondo común:* ${circle.alias}\n`;
     }
-    text += `🗓️ *Modalidad:* ${circle.modalidad === 'ambas' ? 'Semanal y Lunar' : (circle.modalidad === 'lunar' ? 'Lunar' : 'Semanal')}\n\n`;
-    text += `👉 *Entrá acá a la tienda de nuestro Círculo para sumar tu cajón o tus kilos:*\n${url}\n\n`;
-    text += `_Pedí cajón entero o dividilo con nosotros. ¡Avisale a más vecinos para cerrar los cajones!_`;
+    text += `🗓️ *Modalidad de compra:* ${modTxt}\n\n`;
+    text += `¡Hola vecinos! 👋 En nuestro círculo compramos juntos cajones agroecológicos de Chasqui directo de quintas a precio mayorista.\n\n`;
+    text += `👉 *Entrá a la tienda de nuestro círculo para ver el catálogo y sumar tus pedidos:*\n`;
+    text += `${url}\n\n`;
+    text += `_Podés pedir el cajón entero cerrado o dividir los kilos con nosotros._`;
     return text;
   },
 

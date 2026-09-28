@@ -1021,7 +1021,7 @@ function renderOrderCatalog() {
     if (prod.esCajon) {
       const activeShare = (typeof CajonesManager !== 'undefined') ? CajonesManager.getShareForProduct(prod.id) : null;
       return `
-        <div class="spotify-card flex flex-col justify-between relative overflow-hidden transition-all ${isSelected ? 'border-amber-500 bg-amber-50/20 ring-2 ring-amber-400/40 shadow-md' : 'border-stone-200'}">
+        <div id="prod-card-${prod.id}" class="spotify-card flex flex-col justify-between relative overflow-hidden transition-all ${isSelected ? 'border-amber-500 bg-amber-50/20 ring-2 ring-amber-400/40 shadow-md' : 'border-stone-200'}">
           ${isSelected ? `<div class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse z-10"></div>` : ''}
           
           <!-- Foto del Cajón -->
@@ -1051,7 +1051,7 @@ function renderOrderCatalog() {
           <div class="p-3.5 flex flex-col flex-1 justify-between">
             <div>
               <h3 class="font-bold text-sm text-stone-900 leading-snug mb-1">
-                ${escapeHtml(prod.name)}
+                ${escapeHtml((typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name)}
               </h3>
               <div class="flex items-center gap-1.5 text-xs text-stone-500 mb-2">
                 <span>Total: <strong>${prod.cajonKg} kg</strong></span>
@@ -4057,7 +4057,13 @@ function renderCajonesSharesGrid() {
 
 function openFraccionarCajonModal(productId) {
   if (typeof CAJONES_CENTRAL_COOPERATIVA === 'undefined') return;
-  const prod = CAJONES_CENTRAL_COOPERATIVA.find(p => p.id === productId);
+  const q = String(productId || '').toLowerCase().trim();
+  const prod = CAJONES_CENTRAL_COOPERATIVA.find(p => 
+    p.id.toLowerCase() === q ||
+    (p.slug && p.slug.toLowerCase() === q) ||
+    (typeof getProductSlug === 'function' && getProductSlug(p) === q) ||
+    p.name.toLowerCase().includes(q)
+  );
   if (!prod) return;
 
   currentModalCajonProduct = prod;
@@ -4075,8 +4081,9 @@ function openFraccionarCajonModal(productId) {
   const imgEl = document.getElementById('modal-cajon-img');
   const emojiEl = document.getElementById('modal-cajon-emoji');
 
-  if (titleEl) titleEl.textContent = prod.name;
-  if (prodEl) prodEl.textContent = 'Quinta / Productor: ' + (prod.producer || 'Central Cooperativa');
+  const cleanName = (typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name;
+  if (titleEl) titleEl.textContent = cleanName;
+  if (prodEl) prodEl.textContent = 'Quinta / Productor: ' + (prod.producer || 'Agroecológico');
   if (kgBadgeEl) kgBadgeEl.textContent = `Cajón ${prod.cajonKg} kg`;
   if (priceTotEl) priceTotEl.textContent = `$${formatMoney(prod.precioCajon)}`;
   if (priceKgEl) priceKgEl.textContent = `$${formatMoney(prod.precioPerKg)} / kg`;
@@ -4258,11 +4265,44 @@ function shareCajonWhatsAppFromModal() {
   if (!currentModalCajonProduct) return;
   const prod = currentModalCajonProduct;
   const kg = currentModalRequestedKg;
-  const remaining = Math.max(0, prod.cajonKg - kg);
+  const activeCircleId = typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null;
+  const circle = activeCircleId ? CirculosManager.getCircle(activeCircleId) : null;
+  
+  // Revisar si ya hay un cajón compartido abierto
+  let remaining = Math.max(0, prod.cajonKg - kg);
+  if (typeof CajonesManager !== 'undefined') {
+    const existing = CajonesManager.getAllShares().find(s => s.productId === prod.id && s.status === 'abierto');
+    if (existing) {
+      remaining = existing.remainingKg;
+    }
+  }
 
-  const text = `¡Hola vecinos! 👋 Abrí un Cajón Compartido de *${prod.name}* (${prod.cajonKg} kg a $${formatMoney(prod.precioPerKg)}/kg) directo de quinta agroecológica (${prod.producer}).
-Puse ${kg} kg y quedan ${remaining} kg para cerrarlo a precio mayorista. ¿Quién se suma con unos kilos?
-Sumate directamente acá: https://elementales.store/?nodo=cooperativa&cajon=${prod.id}`;
+  const cleanName = (typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name;
+  const prodEmoji = prod.emoji || '🍊';
+  const prodSlug = (typeof getProductSlug === 'function') ? getProductSlug(prod) : prod.id;
+
+  let baseUrl = (typeof window !== 'undefined' && window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
+    ? window.location.origin.replace(/\/+$/, '')
+    : 'https://elementales.store';
+
+  let shareUrl = circle 
+    ? `${baseUrl}/circulo/${circle.slug || circle.id}?cajon=${prodSlug}`
+    : `${baseUrl}/nodo/lomaverde?cajon=${prodSlug}`;
+
+  let text = `${prodEmoji} *Cajón Compartido: ${cleanName}*\n`;
+  text += `🌱 Quinta: ${prod.producer || 'Agroecológica'}\n`;
+  if (circle) {
+    text += `🤝 Círculo: *${circle.nombre}* · Retiro: ${circle.direccion}\n`;
+  } else {
+    text += `📍 *Nodo Loma Verde (Escobar)*\n`;
+  }
+  text += `\n¡Hola vecinos! 👋 Abrí este cajón para dividirlo a precio directo de quinta:\n\n`;
+  text += `• *Cajón total:* ${prod.cajonKg} kg ($${formatMoney(prod.precioPerKg)} / kg)\n`;
+  text += `• *Mi parte:* Ya sumé ${kg} kg\n`;
+  text += `• *Quedan disponibles:* ${remaining} kg para cerrarlo\n\n`;
+  text += `👉 *Elegí cuántos kilos querés y sumate acá:*\n`;
+  text += `${shareUrl}\n\n`;
+  text += `_Pedí los kilos que necesites. ¡Avisale a más vecinos para cerrarlo rápido!_`;
 
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
@@ -4272,11 +4312,74 @@ function shareCajonWhatsAppFromCard(shareId) {
   const share = CajonesManager.getAllShares().find(s => s.id === shareId);
   if (!share) return;
 
-  const text = `¡Hola vecinos! 👋 En el nodo tenemos un Cajón Compartido de *${share.productName}* (${share.totalKg} kg a $${formatMoney(share.pricePerKg)}/kg) al *${share.percent}% lleno*.
-Faltan solo *${share.remainingKg} kg* para completarlo y despacharlo. ¿Quién se suma?
-Sumate acá: https://elementales.store/?nodo=cooperativa&share=${share.id}`;
+  const prod = (typeof CAJONES_CENTRAL_COOPERATIVA !== 'undefined')
+    ? CAJONES_CENTRAL_COOPERATIVA.find(p => p.id === share.productId)
+    : null;
+  const cleanName = prod 
+    ? ((typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name)
+    : share.productName;
+  const prodEmoji = (prod && prod.emoji) ? prod.emoji : '🧺';
+  const prodSlug = prod 
+    ? ((typeof getProductSlug === 'function') ? getProductSlug(prod) : prod.id)
+    : share.productId;
+  const activeCircleId = typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null;
+  const circle = activeCircleId ? CirculosManager.getCircle(activeCircleId) : null;
+
+  let baseUrl = (typeof window !== 'undefined' && window.location.origin && window.location.origin !== 'null' && window.location.protocol !== 'file:')
+    ? window.location.origin.replace(/\/+$/, '')
+    : 'https://elementales.store';
+
+  let shareUrl = circle 
+    ? `${baseUrl}/circulo/${circle.slug || circle.id}?cajon=${prodSlug}`
+    : `${baseUrl}/nodo/lomaverde?cajon=${prodSlug}`;
+
+  let text = `${prodEmoji} *Cajón Compartido: ${cleanName}*\n`;
+  text += `🌱 Quinta: ${share.producer || 'Agroecológica'}\n`;
+  if (circle) {
+    text += `🤝 Círculo: *${circle.nombre}*\n`;
+  } else {
+    text += `📍 *Nodo Loma Verde (Escobar)*\n`;
+  }
+  text += `\n¡Hola vecinos! 👋 Tenemos este cajón en llenado al *${share.percent}%*:\n\n`;
+  text += `• *Cajón total:* ${share.totalKg} kg ($${formatMoney(share.pricePerKg)} / kg)\n`;
+  text += `• *Faltan solo:* ${share.remainingKg} kg para completarlo y despacharlo\n\n`;
+  text += `👉 *Sumate con los kilos que quieras acá:*\n`;
+  text += `${shareUrl}\n\n`;
+  text += `_¡Avisale a los vecinos para cerrar el cajón a precio directo de quinta!_`;
 
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function handleDirectCajonOpening(cajonParam, shareParam) {
+  setTimeout(() => {
+    let targetProd = null;
+
+    if (cajonParam && typeof CAJONES_CENTRAL_COOPERATIVA !== 'undefined') {
+      const q = String(cajonParam).toLowerCase().trim();
+      targetProd = CAJONES_CENTRAL_COOPERATIVA.find(p => 
+        p.id.toLowerCase() === q ||
+        (p.slug && p.slug.toLowerCase() === q) ||
+        (typeof getProductSlug === 'function' && getProductSlug(p) === q) ||
+        p.name.toLowerCase().includes(q)
+      );
+    } else if (shareParam && typeof CajonesManager !== 'undefined') {
+      const share = CajonesManager.getAllShares().find(s => s.id === shareParam);
+      if (share && typeof CAJONES_CENTRAL_COOPERATIVA !== 'undefined') {
+        targetProd = CAJONES_CENTRAL_COOPERATIVA.find(p => p.id === share.productId);
+      }
+    }
+
+    if (targetProd) {
+      openFraccionarCajonModal(targetProd.id);
+      sounds.playPop();
+      const card = document.getElementById(`prod-card-${targetProd.id}`);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.classList.add('ring-4', 'ring-emerald-400');
+        setTimeout(() => card.classList.remove('ring-4', 'ring-emerald-400'), 2500);
+      }
+    }
+  }, 400);
 }
 
 // Interceptar rueda del ratón para scroll horizontal fluido en la subnavegación de escritorio
@@ -4922,18 +5025,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ta) ta.value = notasGuardadas;
   }
   
-  // Detección de autenticación inicial / hash de admin directo / Círculo compartido (?c=slug o ?circulos o ruta /circulo/... o /nodo/...)
+  // Detección de autenticación inicial / hash de admin directo / Círculo compartido / Cajón compartido directo
   const urlParams = new URLSearchParams(window.location.search);
   const pathParts = (window.location.pathname || '').replace(/^\/+|\/+$/g, '').split('/');
   let pathNodo = null;
   let pathCirculo = null;
+  let pathCajon = null;
+  let pathShare = null;
 
   if (pathParts[0] === 'nodo' && pathParts[1]) {
     pathNodo = pathParts[1];
   } else if (pathParts[0] === 'circulo' && pathParts[1]) {
     pathCirculo = pathParts[1];
-  } else if (['lomaverde', 'lucila', 'cooperativa', 'chasqui', 'nodo-lomaverde', 'nodo-lucila', 'nodo-cooperativa'].includes(pathParts[0])) {
-    pathNodo = pathParts[0];
+  } else if (pathParts[0] === 'cajon' && pathParts[1]) {
+    pathCajon = pathParts[1];
+  } else if (pathParts[0] === 'compartido' && pathParts[1]) {
+    pathShare = pathParts[1];
+  } else if (['lomaverde', 'nodo-lomaverde', 'cooperativa', 'chasqui', 'nodo-cooperativa'].includes(pathParts[0])) {
+    pathNodo = 'nodo-lomaverde';
   } else if (pathParts[0] && !pathParts[0].includes('.')) {
     pathCirculo = pathParts[0];
   }
@@ -4941,15 +5050,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const circuloParam = urlParams.get('c') || urlParams.get('circulo') || pathCirculo || (window.location.hash.includes('c=') ? window.location.hash.split('c=')[1] : null) || (window.location.hash.includes('circulo=') ? window.location.hash.split('circulo=')[1] : null);
   const isCirculosPilot = urlParams.has('circulos') || urlParams.get('seccion') === 'circulos' || window.location.hash === '#circulos';
   const nodoParam = urlParams.get('nodo') || pathNodo;
+  const cajonParam = urlParams.get('cajon') || pathCajon;
+  const shareParam = urlParams.get('share') || pathShare;
 
-  if (nodoParam) {
-    if (nodoParam === 'lomaverde' || nodoParam === 'nodo-lomaverde') AppState.activeNodeId = 'nodo-lomaverde';
-    else if (nodoParam === 'cooperativa' || nodoParam === 'chasqui' || nodoParam === 'nodo-cooperativa') AppState.activeNodeId = 'nodo-cooperativa';
-    else if (nodoParam === 'lucila' || nodoParam === 'nodo-lucila') AppState.activeNodeId = 'nodo-lucila';
-    else AppState.activeNodeId = nodoParam.startsWith('nodo-') ? nodoParam : 'nodo-' + nodoParam;
-    localStorage.setItem('elementales_active_node', AppState.activeNodeId);
-    currentCirculosFilter = AppState.activeNodeId;
-  }
+  // Nodo Loma Verde es el único nodo activo en el sistema
+  AppState.activeNodeId = 'nodo-lomaverde';
+  localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+  currentCirculosFilter = 'nodo-lomaverde';
 
   if (circuloParam && typeof CirculosManager !== 'undefined') {
     let found = CirculosManager.getCircle(circuloParam);
@@ -4958,16 +5065,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (found) {
       CirculosManager.setActiveCircleId(found.id);
-      AppState.activeNodeId = found.nodoId;
-      currentCirculosFilter = found.nodoId;
-      AppState.catalogMode = 'semanal'; // En círculos no se usa modo local
+      AppState.activeNodeId = found.nodoId || 'nodo-lomaverde';
+      currentCirculosFilter = found.nodoId || 'nodo-lomaverde';
+      AppState.catalogMode = (found.modalidad === 'lunar') ? 'lunar' : 'semanal';
       sessionStorage.setItem('elementales_authenticated', 'true');
 
       // Limpiar la barra del navegador dejando la ruta /circulo/nombre-circulo
       const cleanSlug = found.slug || found.id;
+      const cleanQuery = cajonParam ? `?cajon=${encodeURIComponent(cajonParam)}` : (shareParam ? `?share=${encodeURIComponent(shareParam)}` : '');
       try {
         if (window.history && window.history.replaceState) {
-          window.history.replaceState({ view: 'tierra', circuloId: found.id, nodeId: found.nodoId }, '', '/circulo/' + cleanSlug);
+          window.history.replaceState({ view: 'tierra', circuloId: found.id, nodeId: found.nodoId }, '', '/circulo/' + cleanSlug + cleanQuery);
         }
       } catch (e) {}
 
@@ -4976,8 +5084,36 @@ document.addEventListener('DOMContentLoaded', () => {
       navigateTo('tierra', false);
       renderCirculoStoreBanner();
       renderOrderCatalog();
+
+      if (cajonParam || shareParam) {
+        handleDirectCajonOpening(cajonParam, shareParam);
+      }
       return;
     }
+  }
+
+  // Si viene enlace directo a un cajón o cajón compartido sin círculo, abrir Tienda Loma Verde y modal directo
+  if (cajonParam || shareParam) {
+    sessionStorage.setItem('elementales_authenticated', 'true');
+    if (typeof CirculosManager !== 'undefined') {
+      CirculosManager.setActiveCircleId(null);
+    }
+
+    const cleanQuery = cajonParam ? `?cajon=${encodeURIComponent(cajonParam)}` : `?share=${encodeURIComponent(shareParam)}`;
+    try {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({ view: 'tierra', nodeId: 'nodo-lomaverde' }, '', '/nodo/lomaverde' + cleanQuery);
+      }
+    } catch (e) {}
+
+    updateRoleUI();
+    updateNodeUI();
+    navigateTo('tierra', false);
+    renderCirculoStoreBanner();
+    renderOrderCatalog();
+
+    handleDirectCajonOpening(cajonParam, shareParam);
+    return;
   }
 
   if (isCirculosPilot) {
