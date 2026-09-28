@@ -597,6 +597,10 @@ const AppState = {
   clearCart() {
     this.cart = {};
     this.customCartItems = [];
+    this.cajonSharesInCart = [];
+    try {
+      localStorage.removeItem('elementales_cajon_shares_cart');
+    } catch (e) {}
     renderOrderCatalog();
     renderFloatingCart();
   },
@@ -1019,9 +1023,9 @@ function renderOrderCatalog() {
 
     // RENDERIZADO ESPECIAL PARA CAJONES ENTEROS (CENTRAL COOPERATIVA / CHASQUI)
     if (prod.esCajon) {
-      const activeShare = (typeof CajonesManager !== 'undefined') ? CajonesManager.getShareForProduct(prod.id) : null;
+      const activeShare = (typeof CajonesManager !== 'undefined') ? CajonesManager.getShareForProduct(prod.id, activeCircleId) : null;
       return `
-        <div id="prod-card-${prod.id}" class="spotify-card flex flex-col justify-between relative overflow-hidden transition-all ${isSelected ? 'border-amber-500 bg-amber-50/20 ring-2 ring-amber-400/40 shadow-md' : 'border-stone-200'}">
+        <div id="prod-card-${prod.id}" class="spotify-card flex flex-col justify-between relative overflow-hidden transition-all ${isSelected ? 'border-amber-500 bg-amber-50/20 ring-2 ring-amber-400/40 shadow-md' : (activeShare ? 'border-amber-300 bg-amber-50/10' : 'border-stone-200')}">
           ${isSelected ? `<div class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse z-10"></div>` : ''}
           
           <!-- Foto del Cajón -->
@@ -1041,9 +1045,9 @@ function renderOrderCatalog() {
               </span>
             </div>
             ${activeShare ? `
-              <div class="absolute bottom-2 left-2 right-2 bg-black/75 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center justify-between">
-                <span>👥 En curso: ${activeShare.percent}%</span>
-                <span class="text-amber-300">Faltan ${activeShare.remainingKg} kg</span>
+              <div class="absolute bottom-2 left-2 right-2 bg-black/80 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center justify-between border border-amber-400/40">
+                <span class="flex items-center gap-1">👥 En curso: ${activeShare.percent}%</span>
+                <span class="text-amber-300 font-black">¡Faltan ${activeShare.remainingKg} kg!</span>
               </div>
             ` : ''}
           </div>
@@ -1058,6 +1062,21 @@ function renderOrderCatalog() {
                 <span>•</span>
                 <span class="text-emerald-700 font-bold">$${formatMoney(prod.precioPerKg)} / kg</span>
               </div>
+
+              ${activeShare ? `
+                <div class="mt-1 mb-2 p-2 rounded-xl bg-amber-50/80 border border-amber-200 text-[11px] text-amber-950">
+                  <div class="flex items-center justify-between font-bold mb-1">
+                    <span class="flex items-center gap-1"><span>👥</span> Cajón compartido en curso:</span>
+                    <span class="text-amber-900 font-black">Faltan ${activeShare.remainingKg} kg</span>
+                  </div>
+                  <div class="w-full h-2 bg-stone-200 rounded-full overflow-hidden mb-1">
+                    <div class="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full" style="width: ${activeShare.percent}%;"></div>
+                  </div>
+                  <span class="text-[10px] text-stone-600 truncate block">
+                    Sumados: ${(activeShare.participantes || []).map(p => `${p.name} (${p.kg}kg)`).join(', ')}
+                  </span>
+                </div>
+              ` : ''}
             </div>
 
             <!-- Precio y Acciones Duales (Entero o Compartido) -->
@@ -1088,11 +1107,11 @@ function renderOrderCatalog() {
                 <button 
                   type="button" 
                   onclick="openFraccionarCajonModal('${prod.id}')" 
-                  class="py-2 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px] flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-all"
-                  title="Dividir este cajón entre varios vecinos (ej: 1/2, 1/3, 1/4)"
+                  class="py-2 px-2 rounded-xl ${activeShare ? '!bg-emerald-600 hover:!bg-emerald-700 text-white ring-2 ring-emerald-400 font-black' : 'bg-amber-500 hover:bg-amber-600 text-white font-bold'} text-[11px] flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-all"
+                  title="${activeShare ? `Sumarme con los ${activeShare.remainingKg} kg que faltan o una fracción` : 'Dividir este cajón entre varios vecinos (1/2 o 1/3)'}"
                 >
                   <span>👥</span>
-                  <span>Dividir</span>
+                  <span>${activeShare ? `Sumarme (${activeShare.remainingKg}kg)` : 'Dividir (½ o ⅓)'}</span>
                 </button>
               </div>
             </div>
@@ -1174,6 +1193,10 @@ function renderOrderCatalog() {
       </div>
     `;
   }).join('');
+
+  if (typeof renderCirculoSharesDashboard === 'function') {
+    renderCirculoSharesDashboard();
+  }
 }
 
 function setCatalogMode(mode) {
@@ -1375,7 +1398,8 @@ function submitOrder(e) {
     CirculosManager.addOrderToCircle(circuloObj.id, {
       clientName,
       itemsSummary,
-      totalAmount: summary.subtotal
+      totalAmount: summary.subtotal,
+      items: summary.items
     });
   }
 
@@ -1431,7 +1455,11 @@ function openOrderSuccessModal(order) {
 
 function closeOrderSuccessModal() {
   sounds.playPop();
-  document.getElementById('modal-order-success').classList.add('hidden');
+  document.getElementById('modal-order-success')?.classList.add('hidden');
+  renderFloatingCart();
+  if (typeof renderCirculoSharesDashboard === 'function') {
+    renderCirculoSharesDashboard();
+  }
 }
 
 function sendWhatsAppTicket(order) {
@@ -4069,8 +4097,20 @@ function openFraccionarCajonModal(productId) {
   currentModalCajonProduct = prod;
   sounds.playPop();
 
-  // Determinar kg iniciales sugeridos (aprox 1/3 o 1/4)
-  currentModalRequestedKg = Math.max(1, Math.round(prod.cajonKg / 3));
+  const activeCircleId = (typeof CirculosManager !== 'undefined') ? CirculosManager.getActiveCircleId() : null;
+  const existingShare = (typeof CajonesManager !== 'undefined') ? CajonesManager.getShareForProduct(prod.id, activeCircleId) : null;
+
+  const total = prod.cajonKg;
+  const kgMedio = Math.round(total / 2);
+  const kgTercio = Math.max(1, Math.round(total / 3));
+  const remaining = existingShare ? Math.round(existingShare.remainingKg) : null;
+
+  // Selección inicial de porción (redonda y exacta)
+  if (remaining && remaining > 0 && remaining <= kgMedio) {
+    currentModalRequestedKg = remaining;
+  } else {
+    currentModalRequestedKg = kgMedio;
+  }
 
   // Actualizar datos del modal
   const titleEl = document.getElementById('modal-cajon-title');
@@ -4100,25 +4140,37 @@ function openFraccionarCajonModal(productId) {
     }
   }
 
-  // Generar botones de fracciones rápidas según el tamaño del cajón
+  // Generar botones de fracciones: Entero (1/1), Medio (1/2), Tercio (1/3) y Cerrar Restante
   const quickContainer = document.getElementById('modal-cajon-quick-buttons');
   if (quickContainer) {
-    const total = prod.cajonKg;
-    const f1 = Math.round((total * 0.25) * 10) / 10;
-    const f2 = Math.round((total / 3) * 10) / 10;
-    const f3 = Math.round((total * 0.5) * 10) / 10;
-
-    quickContainer.innerHTML = `
-      <button type="button" onclick="setModalCajonQuickKg(${f1})" class="p-2 rounded-xl border border-stone-300 hover:border-amber-500 bg-white font-bold text-xs text-stone-800 transition-colors">
-        1/4 Cajón (${f1} kg)
+    let btnsHtml = `
+      <button type="button" onclick="setModalCajonQuickKg(${total})" id="btn-share-entero" class="p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center ${currentModalRequestedKg === total ? 'border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400' : 'border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold'}">
+        <span class="text-sm">📦</span>
+        <span class="text-xs">Entero</span>
+        <span class="text-xs font-black text-amber-900">${total} kg</span>
       </button>
-      <button type="button" onclick="setModalCajonQuickKg(${f2})" class="p-2 rounded-xl border border-stone-300 hover:border-amber-500 bg-white font-bold text-xs text-stone-800 transition-colors">
-        1/3 Cajón (${f2} kg)
+      <button type="button" onclick="setModalCajonQuickKg(${kgMedio})" id="btn-share-medio" class="p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center ${currentModalRequestedKg === kgMedio ? 'border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400' : 'border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold'}">
+        <span class="text-sm">½</span>
+        <span class="text-xs">Medio</span>
+        <span class="text-xs font-black text-amber-900">${kgMedio} kg</span>
       </button>
-      <button type="button" onclick="setModalCajonQuickKg(${f3})" class="p-2 rounded-xl border border-stone-300 hover:border-amber-500 bg-white font-bold text-xs text-stone-800 transition-colors">
-        1/2 Cajón (${f3} kg)
+      <button type="button" onclick="setModalCajonQuickKg(${kgTercio})" id="btn-share-tercio" class="p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center ${currentModalRequestedKg === kgTercio ? 'border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400' : 'border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold'}">
+        <span class="text-sm">⅓</span>
+        <span class="text-xs">Tercio</span>
+        <span class="text-xs font-black text-amber-900">${kgTercio} kg</span>
       </button>
     `;
+
+    if (remaining && remaining > 0 && remaining < total && remaining !== kgMedio && remaining !== kgTercio) {
+      btnsHtml += `
+        <button type="button" onclick="setModalCajonQuickKg(${remaining})" id="btn-share-cerrar" class="col-span-full p-2.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-950 font-black text-xs flex items-center justify-center gap-2 hover:bg-emerald-100 transition-all ${currentModalRequestedKg === remaining ? 'ring-2 ring-emerald-500' : ''}">
+          <span>🎯</span>
+          <span>Cerrar Cajón con los ${remaining} kg restantes ($${formatMoney(Math.round(remaining * prod.precioPerKg))})</span>
+        </button>
+      `;
+    }
+
+    quickContainer.innerHTML = btnsHtml;
   }
 
   updateCajonModalPreview();
@@ -4135,44 +4187,59 @@ function closeFraccionarCajonModal() {
 
 function setModalCajonQuickKg(kg) {
   if (!currentModalCajonProduct) return;
-  currentModalRequestedKg = Math.max(1, Math.min(currentModalCajonProduct.cajonKg, kg));
+  const prod = currentModalCajonProduct;
+  currentModalRequestedKg = Math.max(1, Math.min(prod.cajonKg, Math.round(kg)));
   sounds.playPop();
-  updateCajonModalPreview();
-}
 
-function adjustCajonModalKg(delta) {
-  if (!currentModalCajonProduct) return;
-  currentModalRequestedKg = Math.max(1, Math.min(currentModalCajonProduct.cajonKg, currentModalRequestedKg + delta));
-  sounds.playPop();
+  const total = prod.cajonKg;
+  const kgMedio = Math.round(total / 2);
+  const kgTercio = Math.max(1, Math.round(total / 3));
+
+  const btnEntero = document.getElementById('btn-share-entero');
+  const btnMedio = document.getElementById('btn-share-medio');
+  const btnTercio = document.getElementById('btn-share-tercio');
+  const btnCerrar = document.getElementById('btn-share-cerrar');
+
+  const activeCls = 'p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400';
+  const inactiveCls = 'p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold';
+
+  if (btnEntero) btnEntero.className = currentModalRequestedKg === total ? activeCls : inactiveCls;
+  if (btnMedio) btnMedio.className = currentModalRequestedKg === kgMedio ? activeCls : inactiveCls;
+  if (btnTercio) btnTercio.className = currentModalRequestedKg === kgTercio ? activeCls : inactiveCls;
+  if (btnCerrar) {
+    const isAct = currentModalRequestedKg !== total && currentModalRequestedKg !== kgMedio && currentModalRequestedKg !== kgTercio;
+    btnCerrar.className = `col-span-full p-2.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-950 font-black text-xs flex items-center justify-center gap-2 hover:bg-emerald-100 transition-all ${isAct ? 'ring-2 ring-emerald-500' : ''}`;
+  }
+
   updateCajonModalPreview();
 }
 
 function updateCajonModalPreview() {
   if (!currentModalCajonProduct) return;
   const prod = currentModalCajonProduct;
-  const cost = Math.round(currentModalRequestedKg * prod.precioPerKg);
-  const percentShare = Math.round((currentModalRequestedKg / prod.cajonKg) * 100);
-
-  // Contador de kilos
-  const counterEl = document.getElementById('modal-cajon-kg-counter');
-  if (counterEl) counterEl.textContent = `${currentModalRequestedKg} kg`;
+  const total = prod.cajonKg;
+  const kg = Math.round(currentModalRequestedKg);
+  const cost = (kg === total) ? Math.round(prod.precioCajon) : Math.round(kg * prod.precioPerKg);
+  const percentShare = Math.min(100, Math.round((kg / total) * 100));
+  const activeCircleId = (typeof CirculosManager !== 'undefined') ? CirculosManager.getActiveCircleId() : null;
 
   // Cuadro proporcional
   const shareTextEl = document.getElementById('modal-cajon-my-share-text');
   if (shareTextEl) {
-    shareTextEl.textContent = `${currentModalRequestedKg} kg de ${prod.cajonKg} kg (${percentShare}% del cajón cerrado)`;
+    let porcionLabel = (kg === total) ? 'Cajón Entero' : ((kg === Math.round(total / 2)) ? 'Medio Cajón' : ((kg === Math.max(1, Math.round(total / 3))) ? 'Tercio de Cajón' : `${kg} kg`));
+    shareTextEl.textContent = `${kg} kg de ${total} kg (${porcionLabel} · ${percentShare}%)`;
   }
   const sharePriceEl = document.getElementById('modal-cajon-my-share-price');
   if (sharePriceEl) {
     sharePriceEl.textContent = `$${formatMoney(cost)}`;
   }
 
-  // Estado del cajón compartido (existente o nuevo)
-  const existingShare = (typeof CajonesManager !== 'undefined') ? CajonesManager.getShareForProduct(prod.id) : null;
-  const alreadyCovered = existingShare ? existingShare.coveredKg : 0;
-  const newTotalCovered = Math.min(prod.cajonKg, alreadyCovered + currentModalRequestedKg);
-  const newPercent = Math.min(100, Math.round((newTotalCovered / prod.cajonKg) * 100));
-  const remaining = Math.max(0, Math.round((prod.cajonKg - newTotalCovered) * 10) / 10);
+  // Estado del cajón compartido (en este círculo o general)
+  const existingShare = (typeof CajonesManager !== 'undefined') ? CajonesManager.getShareForProduct(prod.id, activeCircleId) : null;
+  const alreadyCovered = existingShare ? Math.round(existingShare.coveredKg) : 0;
+  const newTotalCovered = Math.min(total, (kg === total ? total : alreadyCovered + kg));
+  const newPercent = Math.min(100, Math.round((newTotalCovered / total) * 100));
+  const remaining = Math.max(0, Math.round(total - newTotalCovered));
 
   const pBar = document.getElementById('modal-cajon-progress-bar');
   const pPercent = document.getElementById('modal-cajon-progress-percent');
@@ -4181,14 +4248,14 @@ function updateCajonModalPreview() {
 
   if (pBar) pBar.style.width = `${newPercent}%`;
   if (pPercent) pPercent.textContent = `${newPercent}%`;
-  if (coveredText) coveredText.textContent = `${newTotalCovered} kg cubiertos (${prod.cajonKg} kg total)`;
+  if (coveredText) coveredText.textContent = `${newTotalCovered} kg cubiertos (${total} kg total)`;
   if (remText) {
-    if (remaining <= 0) {
-      remText.className = 'font-bold text-emerald-700';
-      remText.textContent = '🎉 ¡Completás el cajón al 100%! Listo para pedir.';
+    if (remaining <= 0 || kg === total) {
+      remText.className = 'font-black text-emerald-700';
+      remText.textContent = '🎉 ¡Con tu parte el cajón queda 100% CERRADO y listo para despachar!';
     } else {
       remText.className = 'font-bold text-amber-900';
-      remText.textContent = `¡Faltarían ${remaining} kg para cerrarlo!`;
+      remText.textContent = `¡Faltarían ${remaining} kg para cerrarlo a precio de quinta!`;
     }
   }
 
@@ -4209,7 +4276,7 @@ function updateCajonModalPreview() {
     } else {
       partList.innerHTML = `
         <span class="text-[10px] text-stone-500 italic">
-          💡 Serás el primer vecino en abrir este cajón compartido. Luego invitás a amigos o vecinos para completarlo.
+          💡 Serás el primer vecino en abrir este cajón compartido en el Círculo. Luego otro vecino se suma con lo que falta para cerrarlo.
         </span>
       `;
     }
@@ -4218,24 +4285,51 @@ function updateCajonModalPreview() {
   // Texto del botón de confirmación
   const btnConfirmText = document.getElementById('modal-cajon-confirm-btn-text');
   if (btnConfirmText) {
-    btnConfirmText.textContent = `Confirmar mi parte (${currentModalRequestedKg} kg · $${formatMoney(cost)}) y Sumar al Carrito`;
+    if (kg === total) {
+      btnConfirmText.textContent = `Sumar Cajón Entero (${kg} kg · $${formatMoney(cost)}) al Carrito`;
+    } else if (remaining <= 0) {
+      btnConfirmText.textContent = `🎯 Cerrar Cajón con mi parte (${kg} kg · $${formatMoney(cost)}) y Sumar al Carrito`;
+    } else {
+      btnConfirmText.textContent = `Confirmar mi parte (${kg} kg · $${formatMoney(cost)}) y Sumar al Carrito`;
+    }
   }
 }
 
 function confirmCajonShare() {
-  if (!currentModalCajonProduct || typeof CajonesManager === 'undefined') return;
+  if (!currentModalCajonProduct) return;
   const prod = currentModalCajonProduct;
-  const kg = currentModalRequestedKg;
-  const cost = Math.round(kg * prod.precioPerKg);
+  const total = prod.cajonKg;
+  const kg = Math.round(currentModalRequestedKg);
+  const activeCircleId = (typeof CirculosManager !== 'undefined') ? CirculosManager.getActiveCircleId() : null;
 
-  const share = CajonesManager.createOrJoinShare(prod.id, kg, AppState.userName);
+  // Si eligió Cajón Entero completo (1/1)
+  if (kg >= total) {
+    AppState.addToCart(prod.id, 1);
+    closeFraccionarCajonModal();
+    sounds.playSuccess();
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
+    }
+    renderOrderCatalog();
+    renderCirculoStoreBanner();
+    renderCirculoSharesDashboard();
+    return;
+  }
+
+  // Fraccionamiento colectivo (Medio, Tercio, o Restante)
+  if (typeof CajonesManager === 'undefined') return;
+  const cost = Math.round(kg * prod.precioPerKg);
+  const share = CajonesManager.createOrJoinShare(prod.id, kg, AppState.userName, activeCircleId);
   if (!share) return;
+
+  const cleanName = (typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name;
 
   AppState.addCajonShareToCart({
     id: 'cart-share-' + Date.now(),
     shareId: share.id,
+    circleId: activeCircleId,
     productId: prod.id,
-    productName: prod.name,
+    productName: cleanName,
     kg: kg,
     totalKg: prod.cajonKg,
     pricePerKg: prod.precioPerKg,
@@ -4250,13 +4344,15 @@ function confirmCajonShare() {
     confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
   }
 
-  // Si estamos en Tierra, refrescar las vistas
+  // Refrescar vistas del catálogo y círculo
   renderOrderCatalog();
+  renderCirculoStoreBanner();
+  renderCirculoSharesDashboard();
   if (currentCajonViewTab === 'compartidos') {
     renderCajonesSharesGrid();
   }
   const badgeCount = document.getElementById('count-cajones-compartidos-badge');
-  if (badgeCount) {
+  if (badgeCount && typeof CajonesManager !== 'undefined') {
     badgeCount.textContent = CajonesManager.getAllShares().filter(s => s.status === 'abierto').length;
   }
 }
@@ -4348,6 +4444,183 @@ function shareCajonWhatsAppFromCard(shareId) {
   text += `_¡Avisale a los vecinos para cerrar el cajón a precio directo de quinta!_`;
 
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function joinCajonShareDirectly(productId) {
+  closeCirculoTableroModal();
+  if (AppState.currentView !== 'tierra') {
+    navigateTo('tierra');
+  }
+  switchTierraTab('tienda');
+  setTimeout(() => {
+    openFraccionarCajonModal(productId);
+  }, 120);
+}
+
+function renderCirculoSharesDashboard() {
+  const container = document.getElementById('circulo-shares-container');
+  if (!container) return;
+
+  const activeCircleId = (typeof CirculosManager !== 'undefined') ? CirculosManager.getActiveCircleId() : null;
+  if (!activeCircleId) {
+    container.classList.add('hidden');
+    container.innerHTML = '';
+    return;
+  }
+
+  const circle = CirculosManager.getCircle(activeCircleId);
+  if (!circle) {
+    container.classList.add('hidden');
+    container.innerHTML = '';
+    return;
+  }
+
+  // Obtener cajones compartidos de este círculo
+  const allShares = (typeof CajonesManager !== 'undefined') ? CajonesManager.getSharesForCircle(activeCircleId) : [];
+  const openShares = allShares.filter(s => s.status === 'abierto' && s.remainingKg > 0);
+  const closedShares = allShares.filter(s => s.status === 'completo' || s.remainingKg <= 0);
+
+  container.classList.remove('hidden');
+
+  let html = `
+    <div class="bg-gradient-to-br from-amber-500/10 via-emerald-500/5 to-stone-50 rounded-3xl p-4 sm:p-5 border-2 border-amber-300/80 shadow-sm relative overflow-hidden">
+      <!-- Decoración de fondo -->
+      <div class="absolute -right-6 -bottom-6 text-7xl opacity-10 pointer-events-none select-none">🧺</div>
+
+      <!-- Cabecera del Panel -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-amber-200/60 mb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-black uppercase tracking-wider bg-amber-500 text-white px-2.5 py-0.5 rounded-full shadow-2xs">
+              🧺 Compras Colectivas
+            </span>
+            <span class="text-xs font-bold text-stone-600">
+              Círculo: <strong class="text-stone-900">${escapeHtml(circle.nombre)}</strong>
+            </span>
+          </div>
+          <h3 class="text-base sm:text-lg font-black text-stone-900 mt-1">
+            Cajones Compartidos en Curso de tus Vecinos
+          </h3>
+          <p class="text-xs text-stone-600">
+            Juntamos kilos entre vecinos para pedir cajones agroecológicos directos de Chasqui a precio mayorista.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button 
+            type="button" 
+            onclick="openCirculoTableroModal('${circle.id}')" 
+            class="btn-spotify !py-2 !px-3 text-xs font-black bg-stone-900 text-white hover:bg-stone-800 flex items-center gap-1.5 shadow-2xs cursor-pointer"
+          >
+            <span>📊</span> Tablero (${(circle.pedidos || []).length})
+          </button>
+        </div>
+      </div>
+  `;
+
+  if (openShares.length > 0) {
+    html += `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+        ${openShares.map(s => {
+          const prod = (typeof CAJONES_CENTRAL_COOPERATIVA !== 'undefined') ? CAJONES_CENTRAL_COOPERATIVA.find(p => p.id === s.productId) : null;
+          const cleanName = prod ? ((typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name) : s.productName;
+          const emoji = (prod && prod.emoji) ? prod.emoji : '🧺';
+          const participantsText = (s.participantes && s.participantes.length > 0)
+            ? s.participantes.map(p => `${p.name} (${p.kg} kg)`).join(', ')
+            : 'Un vecino';
+
+          return `
+            <div class="bg-white rounded-2xl p-3.5 border-2 border-amber-300 shadow-2xs flex flex-col justify-between hover:shadow-md transition-all">
+              <div>
+                <!-- Top info -->
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="text-2xl shrink-0">${emoji}</span>
+                    <div class="min-w-0">
+                      <h4 class="font-black text-sm text-stone-900 truncate leading-tight">${escapeHtml(cleanName)}</h4>
+                      <p class="text-[11px] text-stone-500 font-medium">Quinta: ${escapeHtml(s.producer || 'Agroecológica')} · Total: ${s.totalKg} kg</p>
+                    </div>
+                  </div>
+                  <span class="shrink-0 text-[11px] font-black text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full">
+                    ¡Faltan ${s.remainingKg} kg!
+                  </span>
+                </div>
+
+                <!-- Barra de progreso -->
+                <div class="mb-2">
+                  <div class="flex items-center justify-between text-[11px] font-bold mb-1">
+                    <span class="text-stone-700">${s.coveredKg} kg pedidos (${s.percent}%)</span>
+                    <span class="text-emerald-700 font-black">$${formatMoney(s.pricePerKg)} / kg</span>
+                  </div>
+                  <div class="w-full h-3 bg-stone-100 rounded-full overflow-hidden p-0.5 border border-stone-200">
+                    <div class="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full transition-all duration-300" style="width: ${s.percent}%;"></div>
+                  </div>
+                </div>
+
+                <!-- Participantes -->
+                <div class="text-[11px] text-stone-600 bg-stone-50 rounded-xl px-2.5 py-1.5 border border-stone-200 mb-3 flex items-center gap-1.5">
+                  <span class="shrink-0 font-bold text-stone-700">👥 Sumados:</span>
+                  <span class="truncate">${escapeHtml(participantsText)}</span>
+                </div>
+              </div>
+
+              <!-- Botones de Acción -->
+              <div class="grid grid-cols-2 gap-2 pt-2 border-t border-stone-100">
+                <button 
+                  type="button" 
+                  onclick="openFraccionarCajonModal('${s.productId}')" 
+                  class="btn-spotify !py-2 !px-2.5 text-xs font-black !bg-emerald-600 hover:!bg-emerald-700 !text-white flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-transform cursor-pointer"
+                >
+                  <span>➕ Sumarme</span>
+                  <span class="hidden sm:inline">(${s.remainingKg} kg)</span>
+                </button>
+                <button 
+                  type="button" 
+                  onclick="shareCajonWhatsAppFromCard('${s.id}')" 
+                  class="btn-spotify !py-2 !px-2.5 text-xs font-bold !bg-white hover:!bg-amber-50 !text-stone-800 border border-amber-300 flex items-center justify-center gap-1 shadow-2xs cursor-pointer"
+                  title="Avisar a los vecinos por WhatsApp"
+                >
+                  <span>📲 Avisar</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else {
+    html += `
+      <div class="bg-white/80 rounded-2xl p-4 border border-stone-200 text-center mb-3">
+        <p class="text-xl mb-1">🌱</p>
+        <h4 class="font-black text-xs uppercase tracking-wider text-stone-800 mb-0.5">
+          No hay cajones compartidos abiertos en este momento
+        </h4>
+        <p class="text-[11px] text-stone-500 max-w-md mx-auto">
+          ¿Querés mandarina, manzana, tomate o papa? Hacé clic en <strong>Dividir (½ o ⅓)</strong> en cualquier cajón del catálogo para pedir tu parte y abrirlo para que otros vecinos se sumen.
+        </p>
+      </div>
+    `;
+  }
+
+  if (closedShares.length > 0) {
+    html += `
+      <div class="flex items-center justify-between text-xs bg-emerald-50 text-emerald-900 border border-emerald-200 px-3.5 py-2 rounded-2xl">
+        <span class="font-bold flex items-center gap-1.5">
+          <span>🎉</span> <strong>${closedShares.length} cajón(es) cerrado(s) al 100%</strong> listo(s) para pedir a la quinta.
+        </span>
+        <button 
+          type="button" 
+          onclick="openCirculoTableroModal('${circle.id}')" 
+          class="font-black underline text-emerald-800 hover:text-emerald-950 text-[11px] cursor-pointer"
+        >
+          Ver en Tablero →
+        </button>
+      </div>
+    `;
+  }
+
+  html += `</div>`;
+  container.innerHTML = html;
 }
 
 function handleDirectCajonOpening(cajonParam, shareParam) {
@@ -6177,6 +6450,38 @@ function renderCirculosView() {
             </div>
           </div>
 
+          <!-- CAJONES EN CURSO POR COMPLETAR EN EL CÍRCULO -->
+          ${(() => {
+            const shares = (typeof CajonesManager !== 'undefined') ? CajonesManager.getSharesForCircle(activeCircle.id) : [];
+            const openShares = shares.filter(s => s.status === 'abierto' && s.remainingKg > 0);
+            if (openShares.length === 0) return '';
+            return `
+              <div class="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-300 mb-3">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-black uppercase text-amber-900 flex items-center gap-1">
+                    <span>🧺</span> Cajones en curso por completar (${openShares.length}):
+                  </span>
+                  <button onclick="enterCircleStore('${activeCircle.id}')" class="text-[10px] font-black underline text-amber-800 hover:text-amber-950 cursor-pointer">
+                    Ir a Tienda →
+                  </button>
+                </div>
+                <div class="space-y-2">
+                  ${openShares.map(s => `
+                    <div class="bg-white p-2.5 rounded-xl border border-amber-200 flex items-center justify-between text-xs shadow-2xs">
+                      <div class="min-w-0 pr-2">
+                        <span class="font-bold text-stone-900 block truncate">${escapeHtml(s.productName)}</span>
+                        <span class="text-[11px] text-amber-800 font-black">Faltan ${s.remainingKg} kg de ${s.totalKg} kg (${s.percent}% cubierto)</span>
+                      </div>
+                      <button onclick="joinCajonShareDirectly('${s.productId}')" class="btn-spotify !py-1.5 !px-3 text-xs font-black bg-emerald-600 hover:bg-emerald-700 text-white shrink-0 shadow-2xs cursor-pointer">
+                        + Sumarme
+                      </button>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+          })()}
+
           <!-- PEDIDOS CONSOLIDADOS DEL CÍRCULO -->
           <div class="bg-white/90 p-4 rounded-2xl border border-emerald-200 mb-4">
             <div class="flex items-center justify-between mb-2">
@@ -6717,6 +7022,7 @@ function openCirculoTableroModal(circleId) {
   const totalEl = document.getElementById('tablero-modal-total');
   const countEl = document.getElementById('tablero-modal-count');
   const listEl = document.getElementById('tablero-modal-list');
+  const cajonesSec = document.getElementById('tablero-cajones-section');
 
   if (titleEl) titleEl.textContent = `Tablero: ${circle.nombre}`;
   if (subEl) subEl.textContent = `📍 Retiro en: ${circle.direccion} · 👤 Coordina: ${circle.coordinador}`;
@@ -6727,6 +7033,117 @@ function openCirculoTableroModal(circleId) {
   if (totalEl) totalEl.textContent = `$${total.toLocaleString('es-AR')}`;
   if (countEl) countEl.textContent = `${pedidos.length} ${pedidos.length === 1 ? 'pedido' : 'pedidos'}`;
 
+  // 1. SECCIÓN DE CAJONES COMPARTIDOS (EN CURSO vs CERRADOS)
+  const allShares = (typeof CajonesManager !== 'undefined') ? CajonesManager.getSharesForCircle(circle.id) : [];
+  const openShares = allShares.filter(s => s.status === 'abierto' && s.remainingKg > 0);
+  const closedShares = allShares.filter(s => s.status === 'completo' || s.remainingKg <= 0);
+
+  if (cajonesSec) {
+    let cajonesHtml = '';
+
+    // A) Cajones en curso esperando que alguien se sume
+    if (openShares.length > 0) {
+      cajonesHtml += `
+        <div class="mb-4">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-xs font-black uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+              <span>🧺</span> Cajones en Curso (Falta sumar kilos):
+            </h4>
+            <span class="text-[10px] font-bold text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full">
+              ${openShares.length} en llenado
+            </span>
+          </div>
+          <div class="space-y-2.5">
+            ${openShares.map(s => {
+              const prod = (typeof CAJONES_CENTRAL_COOPERATIVA !== 'undefined') ? CAJONES_CENTRAL_COOPERATIVA.find(p => p.id === s.productId) : null;
+              const cleanName = prod ? ((typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name) : s.productName;
+              const emoji = (prod && prod.emoji) ? prod.emoji : '🧺';
+              const participantsText = (s.participantes && s.participantes.length > 0)
+                ? s.participantes.map(p => `${p.name} (${p.kg} kg)`).join(', ')
+                : 'Vecinos';
+
+              return `
+                <div class="p-3.5 rounded-2xl bg-amber-50/70 border-2 border-amber-300 shadow-2xs">
+                  <div class="flex items-start justify-between gap-2 mb-1.5">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xl">${emoji}</span>
+                      <div>
+                        <h5 class="font-black text-xs text-stone-900 leading-tight">${escapeHtml(cleanName)}</h5>
+                        <p class="text-[10px] text-stone-500">Cajón ${s.totalKg} kg · $${formatMoney(s.pricePerKg)}/kg</p>
+                      </div>
+                    </div>
+                    <span class="text-[11px] font-black text-amber-950 bg-amber-200 border border-amber-300 px-2 py-0.5 rounded-full shrink-0">
+                      ¡Faltan ${s.remainingKg} kg!
+                    </span>
+                  </div>
+
+                  <!-- Barra -->
+                  <div class="w-full h-2.5 bg-stone-200 rounded-full overflow-hidden p-0.5 mb-1.5">
+                    <div class="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full" style="width: ${s.percent}%;"></div>
+                  </div>
+
+                  <div class="flex items-center justify-between text-[10px] text-stone-600 mb-2.5">
+                    <span>👥 Sumados: <strong>${escapeHtml(participantsText)}</strong></span>
+                    <span class="font-bold text-stone-700">${s.coveredKg} kg de ${s.totalKg} kg (${s.percent}%)</span>
+                  </div>
+
+                  <!-- Botón para sumarse -->
+                  <div class="grid grid-cols-2 gap-2 pt-1 border-t border-amber-200/60">
+                    <button 
+                      type="button" 
+                      onclick="joinCajonShareDirectly('${s.productId}')" 
+                      class="btn-spotify !py-1.5 !px-2.5 text-xs font-black !bg-emerald-600 hover:!bg-emerald-700 !text-white flex items-center justify-center gap-1 shadow-2xs cursor-pointer"
+                    >
+                      <span>➕ Sumarme</span>
+                      <span>(Faltan ${s.remainingKg} kg)</span>
+                    </button>
+                    <button 
+                      type="button" 
+                      onclick="shareCajonWhatsAppFromCard('${s.id}')" 
+                      class="btn-spotify !py-1.5 !px-2.5 text-xs font-bold !bg-white hover:!bg-amber-100 !text-stone-800 border border-amber-300 flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <span>📲 Avisar</span>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // B) Cajones ya cerrados al 100%
+    if (closedShares.length > 0) {
+      cajonesHtml += `
+        <div class="mb-4">
+          <h4 class="text-xs font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1.5 mb-2">
+            <span>✅</span> Cajones 100% Cerrados (Listos para despachar):
+          </h4>
+          <div class="space-y-1.5">
+            ${closedShares.map(s => {
+              const participantsText = (s.participantes && s.participantes.length > 0)
+                ? s.participantes.map(p => `${p.name} (${p.kg}kg)`).join(', ')
+                : '';
+              return `
+                <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                  <div>
+                    <span class="font-black text-emerald-950">${escapeHtml(s.productName)}</span>
+                    <span class="text-[10px] text-emerald-700 block">(${s.totalKg} kg cerrados: ${escapeHtml(participantsText)})</span>
+                  </div>
+                  <span class="font-black text-xs text-emerald-900 bg-emerald-100 px-2 py-0.5 rounded-full">Listo</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    cajonesSec.innerHTML = cajonesHtml;
+  }
+
+  // 2. LISTA DE PEDIDOS POR VECINO
   if (listEl) {
     if (pedidos.length === 0) {
       listEl.innerHTML = `

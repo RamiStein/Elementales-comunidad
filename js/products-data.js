@@ -917,38 +917,49 @@ const CajonesManager = {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(shares));
   },
 
-  getShareForProduct(productId) {
+  getShareForProduct(productId, circleId) {
     const shares = this.getAllShares();
-    return shares.find(s => s.productId === productId && s.status === 'abierto');
+    const cId = circleId || null;
+    return shares.find(s => s.productId === productId && (s.circleId === cId || (!s.circleId && !cId)) && s.status === 'abierto');
   },
 
-  createOrJoinShare(productId, requestedKg, userName) {
+  getSharesForCircle(circleId) {
+    const shares = this.getAllShares();
+    if (!circleId) return shares.filter(s => !s.circleId);
+    return shares.filter(s => s.circleId === circleId);
+  },
+
+  createOrJoinShare(productId, requestedKg, userName, circleId) {
     const shares = this.getAllShares();
     const prod = CAJONES_CENTRAL_COOPERATIVA.find(p => p.id === productId);
     if (!prod) return null;
 
-    let share = shares.find(s => s.productId === productId && s.status === 'abierto');
-    const cost = Math.round(requestedKg * prod.precioPerKg);
+    const cId = circleId || null;
+    const roundKg = Math.max(1, Math.round(requestedKg));
+    const cost = Math.round(roundKg * prod.precioPerKg);
+
+    let share = shares.find(s => s.productId === productId && (s.circleId === cId || (!s.circleId && !cId)) && s.status === 'abierto');
 
     if (share) {
       share.participantes.push({
         id: 'usr-' + Date.now(),
         name: userName || (typeof AppState !== 'undefined' ? AppState.userName : 'Vecin@'),
-        kg: requestedKg,
+        kg: roundKg,
         total: cost,
         avatar: '👤',
         isCurrentUser: true
       });
-      share.coveredKg = Math.min(share.totalKg, Math.round((share.coveredKg + requestedKg) * 100) / 100);
-      share.remainingKg = Math.max(0, Math.round((share.totalKg - share.coveredKg) * 100) / 100);
+      share.coveredKg = Math.min(share.totalKg, Math.round(share.coveredKg + roundKg));
+      share.remainingKg = Math.max(0, Math.round(share.totalKg - share.coveredKg));
       share.percent = Math.min(100, Math.round((share.coveredKg / share.totalKg) * 100));
       if (share.remainingKg <= 0) {
         share.status = 'completo';
       }
     } else {
-      const remaining = Math.max(0, Math.round((prod.cajonKg - requestedKg) * 100) / 100);
+      const remaining = Math.max(0, Math.round(prod.cajonKg - roundKg));
       share = {
         id: 'share-' + Date.now(),
+        circleId: cId,
         productId: prod.id,
         productName: prod.cleanName || getProductCleanName(prod),
         producer: prod.producer,
@@ -961,15 +972,15 @@ const CajonesManager = {
           {
             id: 'usr-' + Date.now(),
             name: userName || (typeof AppState !== 'undefined' ? AppState.userName : 'Vecin@'),
-            kg: requestedKg,
+            kg: roundKg,
             total: cost,
             avatar: '👤',
             isCurrentUser: true
           }
         ],
-        coveredKg: requestedKg,
+        coveredKg: roundKg,
         remainingKg: remaining,
-        percent: Math.min(100, Math.round((requestedKg / prod.cajonKg) * 100))
+        percent: Math.min(100, Math.round((roundKg / prod.cajonKg) * 100))
       };
       shares.unshift(share);
     }

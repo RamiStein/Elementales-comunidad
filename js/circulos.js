@@ -316,15 +316,24 @@ const CirculosManager = {
     if (!circle) return false;
 
     if (!circle.pedidos) circle.pedidos = [];
+    const clientName = orderData.clientName || (typeof AppState !== 'undefined' && AppState.userName) || 'Vecino/a';
     const newOrder = {
       id: 'ped-circ-' + Date.now().toString(36),
-      vecino: orderData.clientName || (typeof AppState !== 'undefined' && AppState.userName) || 'Vecino/a',
+      vecino: clientName,
       items: orderData.itemsSummary || 'Cajón Chasqui',
+      itemsList: orderData.items || [],
       total: orderData.totalAmount || 0,
       fecha: new Date().toLocaleDateString('es-AR'),
       estado: 'Listo para consolidar'
     };
     circle.pedidos.unshift(newOrder);
+
+    // Sumar a miembros si aún no está
+    if (!circle.miembros) circle.miembros = [];
+    if (!circle.miembros.some(m => m.nombre && m.nombre.toLowerCase().trim() === clientName.toLowerCase().trim())) {
+      circle.miembros.push({ nombre: clientName, rol: 'miembro' });
+    }
+
     this.saveCircles(all);
     return newOrder;
   },
@@ -345,6 +354,29 @@ const CirculosManager = {
     }
     text += `📅 *Modalidad:* ${circle.modalidad === 'ambas' ? 'Semanal y Lunar' : (circle.modalidad === 'lunar' ? 'Lunar' : 'Semanal')}\n`;
     text += `------------------------------------\n`;
+
+    // Estado de Cajones Compartidos del Círculo
+    if (typeof CajonesManager !== 'undefined') {
+      const shares = CajonesManager.getSharesForCircle(circle.id);
+      const openShares = shares.filter(s => s.status === 'abierto' && s.remainingKg > 0);
+      const closedShares = shares.filter(s => s.status === 'completo' || s.remainingKg <= 0);
+
+      if (openShares.length > 0 || closedShares.length > 0) {
+        text += `🧺 *ESTADO DE CAJONES COMPARTIDOS:*\n`;
+        if (closedShares.length > 0) {
+          closedShares.forEach(s => {
+            text += `  ✅ *${s.productName} (${s.totalKg} kg)*: 100% CERRADO\n`;
+          });
+        }
+        if (openShares.length > 0) {
+          openShares.forEach(s => {
+            text += `  ⚠️ *${s.productName} (${s.totalKg} kg)*: ¡Faltan ${s.remainingKg} kg para cerrar!\n`;
+          });
+        }
+        text += `\n`;
+      }
+    }
+
     text += `👥 *DESGLOSE DE VECINOS (${pedidos.length} pedidos sumados):*\n\n`;
 
     pedidos.forEach((p, idx) => {
@@ -354,7 +386,7 @@ const CirculosManager = {
 
     text += `------------------------------------\n`;
     text += `💰 *TOTAL A CONSOLIDAR:* $${totalGral.toLocaleString('es-AR')}\n\n`;
-    text += `_Pedido coordinado en Círculo Vecinal desde Elementales Red Comunitario._`;
+    text += `_Pedido coordinado en Círculo Vecinal desde Elementales Red Comunitaria._`;
 
     return text;
   },

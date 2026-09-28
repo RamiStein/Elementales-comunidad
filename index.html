@@ -637,6 +637,9 @@
         <span class="absolute left-4 top-3.5 text-stone-400 text-sm">🔍</span>
       </div>
 
+      <!-- Panel de Cajones en Curso del Círculo (Llenado Colectivo) -->
+      <div id="circulo-shares-container" class="hidden mb-5"></div>
+
       <!-- Categorías Horizontales -->
       <div id="catalog-categories-bar" class="flex gap-2 overflow-x-auto pb-3 mb-4 no-scrollbar">
         <!-- Inyectado por JS -->
@@ -4711,6 +4714,9 @@
         </div>
       </div>
 
+      <!-- Cajones en Curso / Por Completar del Círculo -->
+      <div id="tablero-cajones-section" class="mb-4"></div>
+
       <!-- Lista de pedidos -->
       <div class="mb-4">
         <h4 class="text-xs font-bold uppercase tracking-wider text-stone-600 mb-2">Desglose por Vecino:</h4>
@@ -4723,8 +4729,17 @@
       <div class="space-y-2 pt-2">
         <button 
           type="button" 
+          onclick="closeCirculoTableroModal(); navigateTo('tierra'); switchTierraTab('tienda');" 
+          class="btn-spotify !bg-stone-900 hover:!bg-stone-800 !text-white w-full text-xs sm:text-sm font-black py-3 flex items-center justify-center gap-2 shadow-md cursor-pointer"
+        >
+          <span>🛒</span>
+          <span>Ir a la Tienda a Sumar Mi Pedido</span>
+        </button>
+
+        <button 
+          type="button" 
           onclick="sendConsolidatedToWhatsApp()" 
-          class="btn-spotify !bg-emerald-600 hover:!bg-emerald-700 !text-white w-full text-xs sm:text-sm font-bold py-3 flex items-center justify-center gap-2 shadow-md"
+          class="btn-spotify !bg-emerald-600 hover:!bg-emerald-700 !text-white w-full text-xs sm:text-sm font-bold py-2.5 flex items-center justify-center gap-2 shadow-md cursor-pointer"
         >
           <span>📲</span>
           <span>Enviar Pedido Consolidado por WhatsApp</span>
@@ -4733,7 +4748,7 @@
         <button 
           type="button" 
           onclick="openCirculoShareModal()" 
-          class="btn-spotify !bg-white hover:!bg-stone-50 !text-stone-800 border-2 border-stone-200 hover:border-emerald-500 w-full text-xs font-bold py-2.5 flex items-center justify-center gap-1.5 shadow-2xs transition-all"
+          class="btn-spotify !bg-white hover:!bg-stone-50 !text-stone-800 border-2 border-stone-200 hover:border-emerald-500 w-full text-xs font-bold py-2.5 flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer"
         >
           <span>💬</span>
           <span>Invitar a más vecinos al Círculo</span>
@@ -4996,33 +5011,23 @@
       <!-- 1. Selección de Fracción / Kilos -->
       <div class="mb-4">
         <label class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-2">
-          1. ¿Cuántos kilos querés para vos?
+          1. Elegí la porción que querés para vos:
         </label>
         
-        <!-- Botones Rápidos de Fracción -->
+        <!-- Botones de Fracción (1 Entero, 1/2 Cajón, 1/3 Cajón, o Cerrar) -->
         <div class="grid grid-cols-3 gap-2 mb-3" id="modal-cajon-quick-buttons">
-          <!-- Inyectado por JS (1/4, 1/3, 1/2) -->
-        </div>
-
-        <!-- Selector Fino con +/- -->
-        <div class="flex items-center justify-between bg-stone-50 p-2.5 rounded-2xl border border-stone-200">
-          <span class="text-xs font-bold text-stone-600">Ajuste de kilos:</span>
-          <div class="flex items-center gap-3">
-            <button type="button" onclick="adjustCajonModalKg(-1)" class="w-8 h-8 rounded-xl bg-white border border-stone-300 font-black text-base hover:bg-stone-100 active:scale-95 shadow-2xs">−</button>
-            <span id="modal-cajon-kg-counter" class="font-black text-base text-stone-900 min-w-[50px] text-center">5 kg</span>
-            <button type="button" onclick="adjustCajonModalKg(1)" class="w-8 h-8 rounded-xl bg-white border border-stone-300 font-black text-base hover:bg-stone-100 active:scale-95 shadow-2xs">+</button>
-          </div>
+          <!-- Inyectado por JS -->
         </div>
 
         <!-- Cuadro de Tu Aporte -->
         <div class="mt-2.5 p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-emerald-950 flex items-center justify-between text-xs">
           <div>
-            <span class="font-bold">Tu cuota proporcional:</span>
-            <span id="modal-cajon-my-share-text" class="block text-[11px] text-emerald-800 font-medium">5 kg de 15 kg (33% del cajón)</span>
+            <span class="font-bold">Tu porción seleccionada:</span>
+            <span id="modal-cajon-my-share-text" class="block text-[11px] text-emerald-800 font-medium">8 kg de 15 kg (Medio cajón)</span>
           </div>
           <div class="text-right">
-            <span id="modal-cajon-my-share-price" class="text-base font-black text-emerald-900">$3.853</span>
-            <span class="block text-[10px] text-emerald-700 font-bold">Ahorro mayorista</span>
+            <span id="modal-cajon-my-share-price" class="text-base font-black text-emerald-900">$6.705</span>
+            <span class="block text-[10px] text-emerald-700 font-bold">Precio directo mayorista</span>
           </div>
         </div>
       </div>
