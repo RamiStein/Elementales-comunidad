@@ -935,28 +935,30 @@ const CajonesManager = {
     if (!prod) return null;
 
     const cId = circleId || null;
-    const roundKg = Math.max(1, Math.round(requestedKg));
-    const cost = Math.round(roundKg * prod.precioPerKg);
+    const actualKg = Math.max(0.5, Math.round(parseFloat(requestedKg) * 100) / 100);
+    const cost = Math.round(actualKg * prod.precioPerKg);
+    const participantName = (userName || (typeof AppState !== 'undefined' ? AppState.userName : '') || 'Vecino/a').trim();
 
     let share = shares.find(s => s.productId === productId && (s.circleId === cId || (!s.circleId && !cId)) && s.status === 'abierto');
 
     if (share) {
       share.participantes.push({
-        id: 'usr-' + Date.now(),
-        name: userName || (typeof AppState !== 'undefined' ? AppState.userName : 'Vecin@'),
-        kg: roundKg,
+        id: 'usr-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        name: participantName,
+        kg: actualKg,
         total: cost,
         avatar: '👤',
         isCurrentUser: true
       });
-      share.coveredKg = Math.min(share.totalKg, Math.round(share.coveredKg + roundKg));
-      share.remainingKg = Math.max(0, Math.round(share.totalKg - share.coveredKg));
+      share.coveredKg = Math.min(share.totalKg, Math.round((share.coveredKg + actualKg) * 100) / 100);
+      share.remainingKg = Math.max(0, Math.round((share.totalKg - share.coveredKg) * 100) / 100);
       share.percent = Math.min(100, Math.round((share.coveredKg / share.totalKg) * 100));
-      if (share.remainingKg <= 0) {
+      if (share.remainingKg <= 0.05) {
+        share.remainingKg = 0;
         share.status = 'completo';
       }
     } else {
-      const remaining = Math.max(0, Math.round(prod.cajonKg - roundKg));
+      const remaining = Math.max(0, Math.round((prod.cajonKg - actualKg) * 100) / 100);
       share = {
         id: 'share-' + Date.now(),
         circleId: cId,
@@ -967,20 +969,20 @@ const CajonesManager = {
         priceCajon: prod.precioCajon,
         pricePerKg: prod.precioPerKg,
         image: prod.img,
-        status: remaining <= 0 ? 'completo' : 'abierto',
+        status: remaining <= 0.05 ? 'completo' : 'abierto',
         participantes: [
           {
-            id: 'usr-' + Date.now(),
-            name: userName || (typeof AppState !== 'undefined' ? AppState.userName : 'Vecin@'),
-            kg: roundKg,
+            id: 'usr-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+            name: participantName,
+            kg: actualKg,
             total: cost,
             avatar: '👤',
             isCurrentUser: true
           }
         ],
-        coveredKg: roundKg,
-        remainingKg: remaining,
-        percent: Math.min(100, Math.round((roundKg / prod.cajonKg) * 100))
+        coveredKg: actualKg,
+        remainingKg: remaining <= 0.05 ? 0 : remaining,
+        percent: Math.min(100, Math.round((actualKg / prod.cajonKg) * 100))
       };
       shares.unshift(share);
     }
@@ -989,3 +991,13 @@ const CajonesManager = {
     return share;
   }
 };
+
+function formatKg(kg) {
+  if (kg === null || kg === undefined) return '0';
+  const val = typeof kg === 'number' ? kg : parseFloat(kg);
+  if (isNaN(val)) return '0';
+  if (Math.abs(val - Math.round(val)) < 0.001) {
+    return String(Math.round(val));
+  }
+  return val.toFixed(2).replace(/\.?0+$/, '');
+}

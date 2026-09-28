@@ -972,3 +972,8 @@ body {
 .google-subnav {
   display: none !important;
 }
+
+/* Regla estricta universal para ocultar elementos */
+.hidden {
+  display: none !important;
+}

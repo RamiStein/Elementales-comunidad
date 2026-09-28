@@ -315,8 +315,8 @@ const CirculosManager = {
     const circle = all.find(c => c.id === circleId || c.slug === circleId);
     if (!circle) return false;
 
-    if (!circle.pedidos) circle.pedidos = [];
-    const clientName = orderData.clientName || (typeof AppState !== 'undefined' && AppState.userName) || 'Vecino/a';
+    if (!Array.isArray(circle.pedidos)) circle.pedidos = [];
+    const clientName = (orderData.clientName || (typeof AppState !== 'undefined' && AppState.userName) || 'Vecino/a').trim();
     const newOrder = {
       id: 'ped-circ-' + Date.now().toString(36),
       vecino: clientName,
@@ -329,12 +329,20 @@ const CirculosManager = {
     circle.pedidos.unshift(newOrder);
 
     // Sumar a miembros si aún no está
-    if (!circle.miembros) circle.miembros = [];
-    if (!circle.miembros.some(m => m.nombre && m.nombre.toLowerCase().trim() === clientName.toLowerCase().trim())) {
+    if (!Array.isArray(circle.miembros)) circle.miembros = [];
+    const exists = circle.miembros.some(m => {
+      if (!m) return false;
+      const n = (typeof m === 'string') ? m : (m.nombre || '');
+      return n.toLowerCase().trim() === clientName.toLowerCase().trim();
+    });
+    if (!exists && clientName) {
       circle.miembros.push({ nombre: clientName, rol: 'miembro' });
     }
 
     this.saveCircles(all);
+    if (typeof ElementalesDB !== 'undefined' && ElementalesDB.saveCircle) {
+      ElementalesDB.saveCircle(circle);
+    }
     return newOrder;
   },
 

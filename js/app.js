@@ -265,14 +265,14 @@ const AppState = {
   activeNodeId: 'nodo-lomaverde',
   userRole: 'visitante', // 'visitante' | 'socio'
   userPlan: 'plan-raices',
-  userName: 'Lucía Gómez',
-  userCode: 'CSC-2026-0482',
-  userEmail: 'lucia.gomez@comunidad.org',
-  userPhone: '+54 9 11 5566-7788',
-  userAddress: 'Av. Maipú 2140, Olivos, Vicente López',
-  userTrade: 'Diseñadora Textil & Cerámica Botánica',
-  userTradeDesc: 'Confección de prendas en tintes naturales, vajilla artesanal para fermentos y talleres comunitarios de arcilla viva.',
-  userTradeAvailability: 'Sábados de 10:00 a 14:00 hs en Rawson 3450 o por encargo',
+  userName: '',
+  userCode: '',
+  userEmail: '',
+  userPhone: '',
+  userAddress: '',
+  userTrade: '',
+  userTradeDesc: '',
+  userTradeAvailability: '',
   cajonSharesInCart: [],
 
   saveUserProfile(profileData) {
@@ -438,14 +438,17 @@ const AppState = {
 
     this.catalogMode = localStorage.getItem('elementales_catalog_mode') || 'semanal';
     this.userPlan = localStorage.getItem('elementales_user_plan') || 'plan-raices';
-    this.userName = localStorage.getItem('elementales_user_name') || 'Lucía Gómez';
-    this.userCode = localStorage.getItem('elementales_user_code') || 'CSC-2026-0482';
-    this.userEmail = localStorage.getItem('elementales_user_email') || 'lucia.gomez@comunidad.org';
-    this.userPhone = localStorage.getItem('elementales_user_phone') || '+54 9 11 5566-7788';
-    this.userAddress = localStorage.getItem('elementales_user_address') || 'Av. Maipú 2140, Olivos, Vicente López';
-    this.userTrade = localStorage.getItem('elementales_user_trade') || 'Diseñadora Textil & Cerámica Botánica';
-    this.userTradeDesc = localStorage.getItem('elementales_user_trade_desc') || 'Confección de prendas en tintes naturales, vajilla artesanal para fermentos y talleres comunitarios de arcilla viva.';
-    this.userTradeAvailability = localStorage.getItem('elementales_user_trade_avail') || 'Sábados de 10:00 a 14:00 hs en Rawson 3450 o por encargo';
+    const savedName = localStorage.getItem('elementales_user_name');
+    this.userName = (savedName && savedName !== 'Lucía Gómez') ? savedName : '';
+    this.userCode = localStorage.getItem('elementales_user_code') || '';
+    const savedEmail = localStorage.getItem('elementales_user_email');
+    this.userEmail = (savedEmail && !savedEmail.includes('lucia.gomez')) ? savedEmail : '';
+    const savedPhone = localStorage.getItem('elementales_user_phone');
+    this.userPhone = (savedPhone && !savedPhone.includes('5566-7788')) ? savedPhone : '';
+    this.userAddress = localStorage.getItem('elementales_user_address') || '';
+    this.userTrade = localStorage.getItem('elementales_user_trade') || '';
+    this.userTradeDesc = localStorage.getItem('elementales_user_trade_desc') || '';
+    this.userTradeAvailability = localStorage.getItem('elementales_user_trade_avail') || '';
 
     // Cargar productos: catálogo exclusivo de cajones Chasqui (+40% al costo base)
     const RESET_PRODS_KEY = 'elementales_products_v5_cajones';
@@ -601,6 +604,11 @@ const AppState = {
     try {
       localStorage.removeItem('elementales_cajon_shares_cart');
     } catch (e) {}
+    const floatingBar = document.getElementById('floating-cart-bar');
+    if (floatingBar) {
+      floatingBar.classList.add('hidden');
+      floatingBar.style.display = 'none';
+    }
     renderOrderCatalog();
     renderFloatingCart();
   },
@@ -659,12 +667,14 @@ const AppState = {
         // Cuotas de Cajones Compartidos en el Carrito
     if (this.cajonSharesInCart && this.cajonSharesInCart.length > 0) {
       for (const share of this.cajonSharesInCart) {
+        const kgStr = typeof formatKg === 'function' ? formatKg(share.kg) : share.kg;
+        const totalKgStr = typeof formatKg === 'function' ? formatKg(share.totalKg) : share.totalKg;
         items.push({
           id: share.id,
-          name: `${share.productName} (${share.kg} kg de ${share.totalKg} kg)`,
+          name: `${share.productName} (${kgStr} kg)`,
           price: share.total,
           retailPrice: share.total,
-          unit: `${share.kg} kg en cajón compartido`,
+          unit: `${kgStr} kg de ${totalKgStr} kg en cajón compartido`,
           qty: 1,
           total: share.total,
           emoji: '👥',
@@ -1047,7 +1057,7 @@ function renderOrderCatalog() {
             ${activeShare ? `
               <div class="absolute bottom-2 left-2 right-2 bg-black/80 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center justify-between border border-amber-400/40">
                 <span class="flex items-center gap-1">👥 En curso: ${activeShare.percent}%</span>
-                <span class="text-amber-300 font-black">¡Faltan ${activeShare.remainingKg} kg!</span>
+                <span class="text-amber-300 font-black">¡Faltan ${typeof formatKg === 'function' ? formatKg(activeShare.remainingKg) : activeShare.remainingKg} kg!</span>
               </div>
             ` : ''}
           </div>
@@ -1058,7 +1068,7 @@ function renderOrderCatalog() {
                 ${escapeHtml((typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name)}
               </h3>
               <div class="flex items-center gap-1.5 text-xs text-stone-500 mb-2">
-                <span>Total: <strong>${prod.cajonKg} kg</strong></span>
+                <span>Total: <strong>${typeof formatKg === 'function' ? formatKg(prod.cajonKg) : prod.cajonKg} kg</strong></span>
                 <span>•</span>
                 <span class="text-emerald-700 font-bold">$${formatMoney(prod.precioPerKg)} / kg</span>
               </div>
@@ -1067,13 +1077,13 @@ function renderOrderCatalog() {
                 <div class="mt-1 mb-2 p-2 rounded-xl bg-amber-50/80 border border-amber-200 text-[11px] text-amber-950">
                   <div class="flex items-center justify-between font-bold mb-1">
                     <span class="flex items-center gap-1"><span>👥</span> Cajón compartido en curso:</span>
-                    <span class="text-amber-900 font-black">Faltan ${activeShare.remainingKg} kg</span>
+                    <span class="text-amber-900 font-black">Faltan ${typeof formatKg === 'function' ? formatKg(activeShare.remainingKg) : activeShare.remainingKg} kg</span>
                   </div>
                   <div class="w-full h-2 bg-stone-200 rounded-full overflow-hidden mb-1">
                     <div class="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full" style="width: ${activeShare.percent}%;"></div>
                   </div>
                   <span class="text-[10px] text-stone-600 truncate block">
-                    Sumados: ${(activeShare.participantes || []).map(p => `${p.name} (${p.kg}kg)`).join(', ')}
+                    Sumados: ${(activeShare.participantes || []).map(p => `${p.name} (${typeof formatKg === 'function' ? formatKg(p.kg) : p.kg} kg)`).join(', ')}
                   </span>
                 </div>
               ` : ''}
@@ -1108,10 +1118,10 @@ function renderOrderCatalog() {
                   type="button" 
                   onclick="openFraccionarCajonModal('${prod.id}')" 
                   class="py-2 px-2 rounded-xl ${activeShare ? '!bg-emerald-600 hover:!bg-emerald-700 text-white ring-2 ring-emerald-400 font-black' : 'bg-amber-500 hover:bg-amber-600 text-white font-bold'} text-[11px] flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-all"
-                  title="${activeShare ? `Sumarme con los ${activeShare.remainingKg} kg que faltan o una fracción` : 'Dividir este cajón entre varios vecinos (1/2 o 1/3)'}"
+                  title="${activeShare ? `Sumarme con los ${typeof formatKg === 'function' ? formatKg(activeShare.remainingKg) : activeShare.remainingKg} kg que faltan o una fracción` : 'Dividir este cajón entre varios vecinos (1/2 o 1/3)'}"
                 >
                   <span>👥</span>
-                  <span>${activeShare ? `Sumarme (${activeShare.remainingKg}kg)` : 'Dividir (½ o ⅓)'}</span>
+                  <span>${activeShare ? `Sumarme (${typeof formatKg === 'function' ? formatKg(activeShare.remainingKg) : activeShare.remainingKg} kg)` : 'Dividir (½ o ⅓)'}</span>
                 </button>
               </div>
             </div>
@@ -1238,15 +1248,17 @@ function handleSearchProducts(value) {
 // --- RENDERIZADO: BARRA FLOTANTE DEL CARRITO ---
 function renderFloatingCart() {
   const floatingBar = document.getElementById('floating-cart-bar');
-  const cartSummary = AppState.getCartDetails();
-
   if (!floatingBar) return;
 
-  if (cartSummary.totalItems === 0) {
+  const cartSummary = AppState.getCartDetails();
+
+  if (!cartSummary || cartSummary.totalItems === 0) {
     floatingBar.classList.add('hidden');
+    floatingBar.style.display = 'none';
     return;
   }
 
+  floatingBar.style.display = '';
   floatingBar.classList.remove('hidden');
   const itemsCountEl = document.getElementById('floating-cart-items-count');
   const totalEl = document.getElementById('floating-cart-total');
@@ -1265,9 +1277,9 @@ function renderFloatingCart() {
 
 // --- MODAL DE CIERRE DE PEDIDO (CHECKOUT) ---
 function openCheckoutModal() {
-  sounds.playPop();
+  if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
   const summary = AppState.getCartDetails();
-  if (summary.totalItems === 0) {
+  if (!summary || summary.totalItems === 0) {
     alert('El carrito está vacío. Selecciona productos antes de continuar.');
     return;
   }
@@ -1283,37 +1295,58 @@ function openCheckoutModal() {
   }
 
   itemsContainer.innerHTML = summary.items.map(item => `
-    <div class="flex items-center justify-between py-2.5 border-b border-stone-100 text-sm">
-      <div class="flex items-center gap-2 max-w-[65%]">
-        <span class="text-lg">${item.emoji}</span>
-        <div>
-          <p class="font-bold text-stone-800 truncate">${escapeHtml(item.name)}</p>
-          <p class="text-xs text-stone-500">${item.qty} x $${formatMoney(item.price)} (${item.unit})</p>
+    <div class="flex items-start justify-between gap-3 py-3 border-b border-stone-100 text-xs sm:text-sm">
+      <div class="flex items-start gap-2.5 min-w-0 flex-1">
+        <span class="text-xl shrink-0 mt-0.5">${item.emoji || '📦'}</span>
+        <div class="min-w-0 flex-1">
+          <p class="font-bold text-stone-900 leading-snug break-words">${escapeHtml(item.name)}</p>
+          <p class="text-[11px] text-stone-500 mt-0.5">${item.qty} x $${formatMoney(item.price)} <span class="text-stone-400 font-normal">(${escapeHtml(item.unit || 'unidad')})</span></p>
         </div>
       </div>
-      <div class="flex items-center gap-3">
-        <span class="font-extrabold text-[#a6634f]">$${formatMoney(item.total)}</span>
+      <div class="flex items-center gap-2 shrink-0 text-right ml-2">
+        <span class="font-black text-[#a6634f] text-sm sm:text-base">$${formatMoney(item.total)}</span>
         ${item.isCustom ? `
-          <button onclick="AppState.removeCustomItem('${item.id}'); openCheckoutModal();" class="text-red-500 hover:text-red-700 text-xs font-bold">✕</button>
+          <button type="button" onclick="AppState.removeCustomItem('${item.id}'); openCheckoutModal();" class="text-red-500 hover:text-red-700 p-1 text-xs font-bold" title="Eliminar">✕</button>
+        ` : ''}
+        ${item.isCajonShare ? `
+          <button type="button" onclick="AppState.removeCajonShareFromCart('${item.id}'); openCheckoutModal();" class="text-stone-400 hover:text-red-600 p-1 text-xs font-bold" title="Quitar fracción">✕</button>
         ` : ''}
       </div>
     </div>
   `).join('');
 
-  // Limpiar campos
-  document.getElementById('checkout-client-name').value = '';
-  document.getElementById('checkout-client-phone').value = '';
+  // Precompletar con nombre real si ya está registrado en la sesión
+  const nameField = document.getElementById('checkout-client-name');
+  const phoneField = document.getElementById('checkout-client-phone');
+  const sessionData = (typeof ElementalesDB !== 'undefined') ? ElementalesDB.getSession() : null;
+  const currentName = AppState.userName || (sessionData ? sessionData.userName : '') || '';
+  const currentPhone = AppState.userPhone || (sessionData ? sessionData.userPhone : '') || '';
+  if (nameField) nameField.value = currentName;
+  if (phoneField) phoneField.value = currentPhone;
   document.getElementById('checkout-client-notes').value = '';
   document.getElementById('checkout-payment-method').value = 'Efectivo';
   document.getElementById('checkout-cash-amount').value = '';
   document.getElementById('checkout-cash-change-container').classList.add('hidden');
 
+  // Auto-activar modalidad de Círculo si hay un círculo activo
+  const activeCircleId = (typeof CirculosManager !== 'undefined') ? CirculosManager.getActiveCircleId() : null;
+  const radioCirculo = document.querySelector('input[name="checkout-delivery-type"][value="circulo"]');
+  const radioNodo = document.querySelector('input[name="checkout-delivery-type"][value="nodo"]');
+  if (activeCircleId) {
+    if (radioCirculo) radioCirculo.checked = true;
+    toggleCheckoutCirculoSelect(true);
+  } else {
+    if (radioNodo) radioNodo.checked = true;
+    toggleCheckoutCirculoSelect(false);
+  }
+
   modal.classList.remove('hidden');
 }
 
 function closeCheckoutModal() {
-  sounds.playPop();
-  document.getElementById('modal-checkout').classList.add('hidden');
+  if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
+  document.getElementById('modal-checkout')?.classList.add('hidden');
+  renderFloatingCart();
 }
 
 function handlePaymentMethodChange(method) {
@@ -1342,15 +1375,36 @@ function calculateCashChange() {
 
 // --- CONFIRMAR Y GUARDAR PEDIDO ---
 function submitOrder(e) {
-  e.preventDefault();
+  if (e && e.preventDefault) e.preventDefault();
   const summary = AppState.getCartDetails();
-  if (summary.totalItems === 0) return;
+  if (!summary || summary.totalItems === 0) return;
 
-  const clientName = document.getElementById('checkout-client-name').value.trim() || 'Cliente de Feria';
-  const clientPhone = document.getElementById('checkout-client-phone').value.trim();
-  const paymentMethod = document.getElementById('checkout-payment-method').value;
-  const notes = document.getElementById('checkout-client-notes').value.trim();
-  const cashGiven = parseFloat(document.getElementById('checkout-cash-amount').value) || 0;
+  const clientNameInput = document.getElementById('checkout-client-name');
+  const clientPhoneInput = document.getElementById('checkout-client-phone');
+  let clientName = clientNameInput ? clientNameInput.value.trim() : '';
+  if (!clientName) {
+    const sessionData = (typeof ElementalesDB !== 'undefined') ? ElementalesDB.getSession() : null;
+    clientName = AppState.userName || (sessionData ? sessionData.userName : '') || 'Vecin@ de Feria';
+  }
+  const clientPhone = clientPhoneInput ? clientPhoneInput.value.trim() : (AppState.userPhone || '');
+
+  // Persistir nombre y teléfono en sesión y AppState
+  if (clientName && clientName !== 'Vecin@ de Feria' && clientName !== 'Cliente de Feria') {
+    AppState.userName = clientName;
+    if (typeof ElementalesDB !== 'undefined' && ElementalesDB.setUserName) {
+      ElementalesDB.setUserName(clientName);
+    }
+  }
+  if (clientPhone) {
+    AppState.userPhone = clientPhone;
+    if (typeof ElementalesDB !== 'undefined' && ElementalesDB.setUserPhone) {
+      ElementalesDB.setUserPhone(clientPhone);
+    }
+  }
+
+  const paymentMethod = document.getElementById('checkout-payment-method')?.value || 'Efectivo';
+  const notes = document.getElementById('checkout-client-notes')?.value.trim() || '';
+  const cashGiven = parseFloat(document.getElementById('checkout-cash-amount')?.value) || 0;
 
   // Facultad de Círculo: Detección de entrega individual vs Círculo
   const deliveryTypeEl = document.querySelector('input[name="checkout-delivery-type"]:checked');
@@ -1392,26 +1446,35 @@ function submitOrder(e) {
     nodoId: AppState.activeNodeId
   };
 
-  // Sumar automáticamente al Círculo si corresponde (Autogestión de pedido)
-  if (circuloObj && typeof CirculosManager !== 'undefined') {
-    const itemsSummary = summary.items.map(i => `${i.qty}x ${i.name}`).join(', ');
-    CirculosManager.addOrderToCircle(circuloObj.id, {
-      clientName,
-      itemsSummary,
-      totalAmount: summary.subtotal,
-      items: summary.items
-    });
-  }
+  try {
+    // Sumar automáticamente al Círculo si corresponde (Autogestión de pedido)
+    if (circuloObj && typeof CirculosManager !== 'undefined') {
+      const itemsSummary = summary.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+      CirculosManager.addOrderToCircle(circuloObj.id, {
+        clientName,
+        itemsSummary,
+        totalAmount: summary.subtotal,
+        items: summary.items
+      });
+    }
 
-  AppState.orders.unshift(newOrder);
-  AppState.saveOrders();
-  AppState.lastCompletedOrder = newOrder;
+    AppState.orders.unshift(newOrder);
+    AppState.saveOrders();
+    AppState.lastCompletedOrder = newOrder;
+
+    // Persistir en base de datos unificada (ElementalesDB)
+    if (typeof ElementalesDB !== 'undefined' && ElementalesDB.saveOrder) {
+      ElementalesDB.saveOrder(newOrder);
+    }
+  } catch (err) {
+    console.error('Error procesando pedido:', err);
+  }
 
   AppState.clearCart();
   closeCheckoutModal();
 
-  sounds.playSuccess();
-  triggerCelebrationConfetti();
+  if (typeof sounds !== 'undefined' && sounds.playSuccess) sounds.playSuccess();
+  if (typeof triggerCelebrationConfetti === 'function') triggerCelebrationConfetti();
 
   openOrderSuccessModal(newOrder);
 }
@@ -4101,15 +4164,22 @@ function openFraccionarCajonModal(productId) {
   const existingShare = (typeof CajonesManager !== 'undefined') ? CajonesManager.getShareForProduct(prod.id, activeCircleId) : null;
 
   const total = prod.cajonKg;
-  const kgMedio = Math.round(total / 2);
-  const kgTercio = Math.max(1, Math.round(total / 3));
-  const remaining = existingShare ? Math.round(existingShare.remainingKg) : null;
+  const kgMedio = Math.round((total / 2) * 100) / 100;
+  const kgTercio = Math.round((total / 3) * 100) / 100;
+  const remaining = existingShare ? Math.round(existingShare.remainingKg * 100) / 100 : null;
 
-  // Selección inicial de porción (redonda y exacta)
+  // Selección inicial de porción (exacta y fraccional)
   if (remaining && remaining > 0 && remaining <= kgMedio) {
     currentModalRequestedKg = remaining;
   } else {
     currentModalRequestedKg = kgMedio;
+  }
+
+  // Pre-completar nombre de usuario real en el modal
+  const userNameInput = document.getElementById('modal-cajon-user-name');
+  if (userNameInput) {
+    const sessionData = (typeof ElementalesDB !== 'undefined') ? ElementalesDB.getSession() : null;
+    userNameInput.value = AppState.userName || (sessionData ? sessionData.userName : '') || '';
   }
 
   // Actualizar datos del modal
@@ -4124,7 +4194,7 @@ function openFraccionarCajonModal(productId) {
   const cleanName = (typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name;
   if (titleEl) titleEl.textContent = cleanName;
   if (prodEl) prodEl.textContent = 'Quinta / Productor: ' + (prod.producer || 'Agroecológico');
-  if (kgBadgeEl) kgBadgeEl.textContent = `Cajón ${prod.cajonKg} kg`;
+  if (kgBadgeEl) kgBadgeEl.textContent = `Cajón ${typeof formatKg === 'function' ? formatKg(prod.cajonKg) : prod.cajonKg} kg`;
   if (priceTotEl) priceTotEl.textContent = `$${formatMoney(prod.precioCajon)}`;
   if (priceKgEl) priceKgEl.textContent = `$${formatMoney(prod.precioPerKg)} / kg`;
 
@@ -4140,32 +4210,37 @@ function openFraccionarCajonModal(productId) {
     }
   }
 
-  // Generar botones de fracciones: Entero (1/1), Medio (1/2), Tercio (1/3) y Cerrar Restante
+  // Generar botones de fracciones exactas: Entero (1/1), Medio (1/2), Tercio (1/3) y Cerrar Restante
   const quickContainer = document.getElementById('modal-cajon-quick-buttons');
   if (quickContainer) {
+    const totalKgStr = typeof formatKg === 'function' ? formatKg(total) : total;
+    const kgMedioStr = typeof formatKg === 'function' ? formatKg(kgMedio) : kgMedio;
+    const kgTercioStr = typeof formatKg === 'function' ? formatKg(kgTercio) : kgTercio;
+
     let btnsHtml = `
-      <button type="button" onclick="setModalCajonQuickKg(${total})" id="btn-share-entero" class="p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center ${currentModalRequestedKg === total ? 'border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400' : 'border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold'}">
+      <button type="button" onclick="setModalCajonQuickKg(${total})" id="btn-share-entero" class="p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center ${Math.abs(currentModalRequestedKg - total) < 0.05 ? 'border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400' : 'border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold'}">
         <span class="text-sm">📦</span>
         <span class="text-xs">Entero</span>
-        <span class="text-xs font-black text-amber-900">${total} kg</span>
+        <span class="text-xs font-black text-amber-900">${totalKgStr} kg</span>
       </button>
-      <button type="button" onclick="setModalCajonQuickKg(${kgMedio})" id="btn-share-medio" class="p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center ${currentModalRequestedKg === kgMedio ? 'border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400' : 'border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold'}">
+      <button type="button" onclick="setModalCajonQuickKg(${kgMedio})" id="btn-share-medio" class="p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center ${Math.abs(currentModalRequestedKg - kgMedio) < 0.05 ? 'border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400' : 'border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold'}">
         <span class="text-sm">½</span>
         <span class="text-xs">Medio</span>
-        <span class="text-xs font-black text-amber-900">${kgMedio} kg</span>
+        <span class="text-xs font-black text-amber-900">${kgMedioStr} kg</span>
       </button>
-      <button type="button" onclick="setModalCajonQuickKg(${kgTercio})" id="btn-share-tercio" class="p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center ${currentModalRequestedKg === kgTercio ? 'border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400' : 'border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold'}">
+      <button type="button" onclick="setModalCajonQuickKg(${kgTercio})" id="btn-share-tercio" class="p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center ${Math.abs(currentModalRequestedKg - kgTercio) < 0.05 ? 'border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400' : 'border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold'}">
         <span class="text-sm">⅓</span>
         <span class="text-xs">Tercio</span>
-        <span class="text-xs font-black text-amber-900">${kgTercio} kg</span>
+        <span class="text-xs font-black text-amber-900">${kgTercioStr} kg</span>
       </button>
     `;
 
-    if (remaining && remaining > 0 && remaining < total && remaining !== kgMedio && remaining !== kgTercio) {
+    if (remaining && remaining > 0.05 && remaining < total && Math.abs(remaining - kgMedio) > 0.05 && Math.abs(remaining - kgTercio) > 0.05) {
+      const remKgStr = typeof formatKg === 'function' ? formatKg(remaining) : remaining;
       btnsHtml += `
-        <button type="button" onclick="setModalCajonQuickKg(${remaining})" id="btn-share-cerrar" class="col-span-full p-2.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-950 font-black text-xs flex items-center justify-center gap-2 hover:bg-emerald-100 transition-all ${currentModalRequestedKg === remaining ? 'ring-2 ring-emerald-500' : ''}">
+        <button type="button" onclick="setModalCajonQuickKg(${remaining})" id="btn-share-cerrar" class="col-span-full p-2.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-950 font-black text-xs flex items-center justify-center gap-2 hover:bg-emerald-100 transition-all ${Math.abs(currentModalRequestedKg - remaining) < 0.05 ? 'ring-2 ring-emerald-500' : ''}">
           <span>🎯</span>
-          <span>Cerrar Cajón con los ${remaining} kg restantes ($${formatMoney(Math.round(remaining * prod.precioPerKg))})</span>
+          <span>Cerrar Cajón con los ${remKgStr} kg restantes ($${formatMoney(Math.round(remaining * prod.precioPerKg))})</span>
         </button>
       `;
     }
@@ -4188,12 +4263,13 @@ function closeFraccionarCajonModal() {
 function setModalCajonQuickKg(kg) {
   if (!currentModalCajonProduct) return;
   const prod = currentModalCajonProduct;
-  currentModalRequestedKg = Math.max(1, Math.min(prod.cajonKg, Math.round(kg)));
-  sounds.playPop();
+  const num = Math.round(parseFloat(kg) * 100) / 100;
+  currentModalRequestedKg = Math.max(0.5, Math.min(prod.cajonKg, num));
+  if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
 
   const total = prod.cajonKg;
-  const kgMedio = Math.round(total / 2);
-  const kgTercio = Math.max(1, Math.round(total / 3));
+  const kgMedio = Math.round((total / 2) * 100) / 100;
+  const kgTercio = Math.round((total / 3) * 100) / 100;
 
   const btnEntero = document.getElementById('btn-share-entero');
   const btnMedio = document.getElementById('btn-share-medio');
@@ -4203,11 +4279,15 @@ function setModalCajonQuickKg(kg) {
   const activeCls = 'p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center border-amber-500 bg-amber-50 text-amber-950 font-black ring-2 ring-amber-400';
   const inactiveCls = 'p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-0.5 text-center border-stone-200 bg-white text-stone-700 hover:border-amber-300 font-bold';
 
-  if (btnEntero) btnEntero.className = currentModalRequestedKg === total ? activeCls : inactiveCls;
-  if (btnMedio) btnMedio.className = currentModalRequestedKg === kgMedio ? activeCls : inactiveCls;
-  if (btnTercio) btnTercio.className = currentModalRequestedKg === kgTercio ? activeCls : inactiveCls;
+  const isEntero = Math.abs(currentModalRequestedKg - total) < 0.05;
+  const isMedio = Math.abs(currentModalRequestedKg - kgMedio) < 0.05;
+  const isTercio = Math.abs(currentModalRequestedKg - kgTercio) < 0.05;
+
+  if (btnEntero) btnEntero.className = isEntero ? activeCls : inactiveCls;
+  if (btnMedio) btnMedio.className = isMedio ? activeCls : inactiveCls;
+  if (btnTercio) btnTercio.className = isTercio ? activeCls : inactiveCls;
   if (btnCerrar) {
-    const isAct = currentModalRequestedKg !== total && currentModalRequestedKg !== kgMedio && currentModalRequestedKg !== kgTercio;
+    const isAct = !isEntero && !isMedio && !isTercio;
     btnCerrar.className = `col-span-full p-2.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-950 font-black text-xs flex items-center justify-center gap-2 hover:bg-emerald-100 transition-all ${isAct ? 'ring-2 ring-emerald-500' : ''}`;
   }
 
@@ -4218,16 +4298,28 @@ function updateCajonModalPreview() {
   if (!currentModalCajonProduct) return;
   const prod = currentModalCajonProduct;
   const total = prod.cajonKg;
-  const kg = Math.round(currentModalRequestedKg);
-  const cost = (kg === total) ? Math.round(prod.precioCajon) : Math.round(kg * prod.precioPerKg);
+  const kg = Math.round(currentModalRequestedKg * 100) / 100;
+  const kgStr = typeof formatKg === 'function' ? formatKg(kg) : kg;
+  const totalStr = typeof formatKg === 'function' ? formatKg(total) : total;
+
+  const cost = (kg >= total) ? Math.round(prod.precioCajon) : Math.round(kg * prod.precioPerKg);
   const percentShare = Math.min(100, Math.round((kg / total) * 100));
   const activeCircleId = (typeof CirculosManager !== 'undefined') ? CirculosManager.getActiveCircleId() : null;
+
+  const kgMedio = Math.round((total / 2) * 100) / 100;
+  const kgTercio = Math.round((total / 3) * 100) / 100;
 
   // Cuadro proporcional
   const shareTextEl = document.getElementById('modal-cajon-my-share-text');
   if (shareTextEl) {
-    let porcionLabel = (kg === total) ? 'Cajón Entero' : ((kg === Math.round(total / 2)) ? 'Medio Cajón' : ((kg === Math.max(1, Math.round(total / 3))) ? 'Tercio de Cajón' : `${kg} kg`));
-    shareTextEl.textContent = `${kg} kg de ${total} kg (${porcionLabel} · ${percentShare}%)`;
+    let porcionLabel = (Math.abs(kg - total) < 0.05)
+      ? 'Cajón Entero'
+      : (Math.abs(kg - kgMedio) < 0.05)
+        ? 'Medio Cajón'
+        : (Math.abs(kg - kgTercio) < 0.05)
+          ? 'Tercio de Cajón'
+          : `${kgStr} kg`;
+    shareTextEl.textContent = `${kgStr} kg de ${totalStr} kg (${porcionLabel} · ${percentShare}%)`;
   }
   const sharePriceEl = document.getElementById('modal-cajon-my-share-price');
   if (sharePriceEl) {
@@ -4236,10 +4328,10 @@ function updateCajonModalPreview() {
 
   // Estado del cajón compartido (en este círculo o general)
   const existingShare = (typeof CajonesManager !== 'undefined') ? CajonesManager.getShareForProduct(prod.id, activeCircleId) : null;
-  const alreadyCovered = existingShare ? Math.round(existingShare.coveredKg) : 0;
-  const newTotalCovered = Math.min(total, (kg === total ? total : alreadyCovered + kg));
+  const alreadyCovered = existingShare ? Math.round(existingShare.coveredKg * 100) / 100 : 0;
+  const newTotalCovered = Math.min(total, (kg >= total ? total : Math.round((alreadyCovered + kg) * 100) / 100));
   const newPercent = Math.min(100, Math.round((newTotalCovered / total) * 100));
-  const remaining = Math.max(0, Math.round(total - newTotalCovered));
+  const remaining = Math.max(0, Math.round((total - newTotalCovered) * 100) / 100);
 
   const pBar = document.getElementById('modal-cajon-progress-bar');
   const pPercent = document.getElementById('modal-cajon-progress-percent');
@@ -4248,29 +4340,36 @@ function updateCajonModalPreview() {
 
   if (pBar) pBar.style.width = `${newPercent}%`;
   if (pPercent) pPercent.textContent = `${newPercent}%`;
-  if (coveredText) coveredText.textContent = `${newTotalCovered} kg cubiertos (${total} kg total)`;
+  if (coveredText) {
+    const coveredStr = typeof formatKg === 'function' ? formatKg(newTotalCovered) : newTotalCovered;
+    coveredText.textContent = `${coveredStr} kg cubiertos (${totalStr} kg total)`;
+  }
   if (remText) {
-    if (remaining <= 0 || kg === total) {
+    if (remaining <= 0.05 || kg >= total) {
       remText.className = 'font-black text-emerald-700';
       remText.textContent = '🎉 ¡Con tu parte el cajón queda 100% CERRADO y listo para despachar!';
     } else {
+      const remStr = typeof formatKg === 'function' ? formatKg(remaining) : remaining;
       remText.className = 'font-bold text-amber-900';
-      remText.textContent = `¡Faltarían ${remaining} kg para cerrarlo a precio de quinta!`;
+      remText.textContent = `¡Faltarían ${remStr} kg para cerrarlo a precio de quinta!`;
     }
   }
 
-  // Lista de participantes si ya existe
+  // Lista de participantes reales si ya existe
   const partList = document.getElementById('modal-cajon-participants-list');
   if (partList) {
     if (existingShare && existingShare.participantes.length > 0) {
       partList.innerHTML = `
         <span class="text-[10px] font-bold text-stone-500 block mb-1">Vecinos ya sumados a este cajón:</span>
         <div class="flex flex-wrap gap-1">
-          ${existingShare.participantes.map(p => `
-            <span class="text-[10px] bg-white border border-stone-200 px-2 py-0.5 rounded-lg text-stone-700">
-              ${p.avatar || '👤'} ${escapeHtml(p.name)} (${p.kg} kg)
-            </span>
-          `).join('')}
+          ${existingShare.participantes.map(p => {
+            const pKgStr = typeof formatKg === 'function' ? formatKg(p.kg) : p.kg;
+            return `
+              <span class="text-[10px] bg-white border border-stone-200 px-2 py-0.5 rounded-lg text-stone-700">
+                ${p.avatar || '👤'} ${escapeHtml(p.name)} (${pKgStr} kg)
+              </span>
+            `;
+          }).join('')}
         </div>
       `;
     } else {
@@ -4285,12 +4384,12 @@ function updateCajonModalPreview() {
   // Texto del botón de confirmación
   const btnConfirmText = document.getElementById('modal-cajon-confirm-btn-text');
   if (btnConfirmText) {
-    if (kg === total) {
-      btnConfirmText.textContent = `Sumar Cajón Entero (${kg} kg · $${formatMoney(cost)}) al Carrito`;
-    } else if (remaining <= 0) {
-      btnConfirmText.textContent = `🎯 Cerrar Cajón con mi parte (${kg} kg · $${formatMoney(cost)}) y Sumar al Carrito`;
+    if (kg >= total) {
+      btnConfirmText.textContent = `Sumar Cajón Entero (${totalStr} kg · $${formatMoney(cost)}) al Carrito`;
+    } else if (remaining <= 0.05) {
+      btnConfirmText.textContent = `🎯 Cerrar Cajón con mi parte (${kgStr} kg · $${formatMoney(cost)}) y Sumar al Carrito`;
     } else {
-      btnConfirmText.textContent = `Confirmar mi parte (${kg} kg · $${formatMoney(cost)}) y Sumar al Carrito`;
+      btnConfirmText.textContent = `Confirmar mi parte (${kgStr} kg · $${formatMoney(cost)}) y Sumar al Carrito`;
     }
   }
 }
@@ -4299,14 +4398,31 @@ function confirmCajonShare() {
   if (!currentModalCajonProduct) return;
   const prod = currentModalCajonProduct;
   const total = prod.cajonKg;
-  const kg = Math.round(currentModalRequestedKg);
+  const kg = Math.round(currentModalRequestedKg * 100) / 100;
   const activeCircleId = (typeof CirculosManager !== 'undefined') ? CirculosManager.getActiveCircleId() : null;
+
+  // Leer y persistir el nombre real del vecino/a
+  const userNameInput = document.getElementById('modal-cajon-user-name');
+  let realName = userNameInput ? userNameInput.value.trim() : '';
+  if (!realName) {
+    const sessionData = (typeof ElementalesDB !== 'undefined') ? ElementalesDB.getSession() : null;
+    realName = AppState.userName || (sessionData ? sessionData.userName : '') || '';
+  }
+  if (!realName) {
+    realName = 'Vecin@ Loma Verde';
+  }
+  AppState.userName = realName;
+  if (typeof ElementalesDB !== 'undefined' && ElementalesDB.setUserName) {
+    ElementalesDB.setUserName(realName);
+  } else {
+    try { localStorage.setItem('elementales_user_name', realName); } catch (e) {}
+  }
 
   // Si eligió Cajón Entero completo (1/1)
   if (kg >= total) {
     AppState.addToCart(prod.id, 1);
     closeFraccionarCajonModal();
-    sounds.playSuccess();
+    if (typeof sounds !== 'undefined' && sounds.playSuccess) sounds.playSuccess();
     if (typeof confetti === 'function') {
       confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
     }
@@ -4319,7 +4435,7 @@ function confirmCajonShare() {
   // Fraccionamiento colectivo (Medio, Tercio, o Restante)
   if (typeof CajonesManager === 'undefined') return;
   const cost = Math.round(kg * prod.precioPerKg);
-  const share = CajonesManager.createOrJoinShare(prod.id, kg, AppState.userName, activeCircleId);
+  const share = CajonesManager.createOrJoinShare(prod.id, kg, realName, activeCircleId);
   if (!share) return;
 
   const cleanName = (typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name;
@@ -4339,9 +4455,14 @@ function confirmCajonShare() {
   });
 
   closeFraccionarCajonModal();
-  sounds.playSuccess();
+  if (typeof sounds !== 'undefined' && sounds.playSuccess) sounds.playSuccess();
   if (typeof confetti === 'function') {
     confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
+  }
+
+  // Sincronizar en DB si existe
+  if (typeof ElementalesDB !== 'undefined' && ElementalesDB.saveShare) {
+    ElementalesDB.saveShare(share);
   }
 
   // Refrescar vistas del catálogo y círculo
@@ -4385,6 +4506,10 @@ function shareCajonWhatsAppFromModal() {
     ? `${baseUrl}/circulo/${circle.slug || circle.id}?cajon=${prodSlug}`
     : `${baseUrl}/nodo/lomaverde?cajon=${prodSlug}`;
 
+  const kgStr = typeof formatKg === 'function' ? formatKg(kg) : kg;
+  const totalKgStr = typeof formatKg === 'function' ? formatKg(prod.cajonKg) : prod.cajonKg;
+  const remKgStr = typeof formatKg === 'function' ? formatKg(remaining) : remaining;
+
   let text = `${prodEmoji} *Cajón Compartido: ${cleanName}*\n`;
   text += `🌱 Quinta: ${prod.producer || 'Agroecológica'}\n`;
   if (circle) {
@@ -4393,9 +4518,9 @@ function shareCajonWhatsAppFromModal() {
     text += `📍 *Nodo Loma Verde (Escobar)*\n`;
   }
   text += `\n¡Hola vecinos! 👋 Abrí este cajón para dividirlo a precio directo de quinta:\n\n`;
-  text += `• *Cajón total:* ${prod.cajonKg} kg ($${formatMoney(prod.precioPerKg)} / kg)\n`;
-  text += `• *Mi parte:* Ya sumé ${kg} kg\n`;
-  text += `• *Quedan disponibles:* ${remaining} kg para cerrarlo\n\n`;
+  text += `• *Cajón total:* ${totalKgStr} kg ($${formatMoney(prod.precioPerKg)} / kg)\n`;
+  text += `• *Mi parte:* Ya sumé ${kgStr} kg\n`;
+  text += `• *Quedan disponibles:* ${remKgStr} kg para cerrarlo\n\n`;
   text += `👉 *Elegí cuántos kilos querés y sumate acá:*\n`;
   text += `${shareUrl}\n\n`;
   text += `_Pedí los kilos que necesites. ¡Avisale a más vecinos para cerrarlo rápido!_`;
@@ -4429,6 +4554,9 @@ function shareCajonWhatsAppFromCard(shareId) {
     ? `${baseUrl}/circulo/${circle.slug || circle.id}?cajon=${prodSlug}`
     : `${baseUrl}/nodo/lomaverde?cajon=${prodSlug}`;
 
+  const shareTotKgStr = typeof formatKg === 'function' ? formatKg(share.totalKg) : share.totalKg;
+  const shareRemKgStr = typeof formatKg === 'function' ? formatKg(share.remainingKg) : share.remainingKg;
+
   let text = `${prodEmoji} *Cajón Compartido: ${cleanName}*\n`;
   text += `🌱 Quinta: ${share.producer || 'Agroecológica'}\n`;
   if (circle) {
@@ -4437,8 +4565,8 @@ function shareCajonWhatsAppFromCard(shareId) {
     text += `📍 *Nodo Loma Verde (Escobar)*\n`;
   }
   text += `\n¡Hola vecinos! 👋 Tenemos este cajón en llenado al *${share.percent}%*:\n\n`;
-  text += `• *Cajón total:* ${share.totalKg} kg ($${formatMoney(share.pricePerKg)} / kg)\n`;
-  text += `• *Faltan solo:* ${share.remainingKg} kg para completarlo y despacharlo\n\n`;
+  text += `• *Cajón total:* ${shareTotKgStr} kg ($${formatMoney(share.pricePerKg)} / kg)\n`;
+  text += `• *Faltan solo:* ${shareRemKgStr} kg para completarlo y despacharlo\n\n`;
   text += `👉 *Sumate con los kilos que quieras acá:*\n`;
   text += `${shareUrl}\n\n`;
   text += `_¡Avisale a los vecinos para cerrar el cajón a precio directo de quinta!_`;
@@ -4526,8 +4654,12 @@ function renderCirculoSharesDashboard() {
           const cleanName = prod ? ((typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name) : s.productName;
           const emoji = (prod && prod.emoji) ? prod.emoji : '🧺';
           const participantsText = (s.participantes && s.participantes.length > 0)
-            ? s.participantes.map(p => `${p.name} (${p.kg} kg)`).join(', ')
+            ? s.participantes.map(p => `${p.name} (${typeof formatKg === 'function' ? formatKg(p.kg) : p.kg} kg)`).join(', ')
             : 'Un vecino';
+
+          const remKgStr = typeof formatKg === 'function' ? formatKg(s.remainingKg) : s.remainingKg;
+          const covKgStr = typeof formatKg === 'function' ? formatKg(s.coveredKg) : s.coveredKg;
+          const totKgStr = typeof formatKg === 'function' ? formatKg(s.totalKg) : s.totalKg;
 
           return `
             <div class="bg-white rounded-2xl p-3.5 border-2 border-amber-300 shadow-2xs flex flex-col justify-between hover:shadow-md transition-all">
@@ -4538,18 +4670,18 @@ function renderCirculoSharesDashboard() {
                     <span class="text-2xl shrink-0">${emoji}</span>
                     <div class="min-w-0">
                       <h4 class="font-black text-sm text-stone-900 truncate leading-tight">${escapeHtml(cleanName)}</h4>
-                      <p class="text-[11px] text-stone-500 font-medium">Quinta: ${escapeHtml(s.producer || 'Agroecológica')} · Total: ${s.totalKg} kg</p>
+                      <p class="text-[11px] text-stone-500 font-medium">Quinta: ${escapeHtml(s.producer || 'Agroecológica')} · Total: ${totKgStr} kg</p>
                     </div>
                   </div>
                   <span class="shrink-0 text-[11px] font-black text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full">
-                    ¡Faltan ${s.remainingKg} kg!
+                    ¡Faltan ${remKgStr} kg!
                   </span>
                 </div>
 
                 <!-- Barra de progreso -->
                 <div class="mb-2">
                   <div class="flex items-center justify-between text-[11px] font-bold mb-1">
-                    <span class="text-stone-700">${s.coveredKg} kg pedidos (${s.percent}%)</span>
+                    <span class="text-stone-700">${covKgStr} kg pedidos (${s.percent}%)</span>
                     <span class="text-emerald-700 font-black">$${formatMoney(s.pricePerKg)} / kg</span>
                   </div>
                   <div class="w-full h-3 bg-stone-100 rounded-full overflow-hidden p-0.5 border border-stone-200">
@@ -4572,7 +4704,7 @@ function renderCirculoSharesDashboard() {
                   class="btn-spotify !py-2 !px-2.5 text-xs font-black !bg-emerald-600 hover:!bg-emerald-700 !text-white flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-transform cursor-pointer"
                 >
                   <span>➕ Sumarme</span>
-                  <span class="hidden sm:inline">(${s.remainingKg} kg)</span>
+                  <span class="hidden sm:inline">(${remKgStr} kg)</span>
                 </button>
                 <button 
                   type="button" 
@@ -7059,8 +7191,12 @@ function openCirculoTableroModal(circleId) {
               const cleanName = prod ? ((typeof getProductCleanName === 'function') ? getProductCleanName(prod) : prod.name) : s.productName;
               const emoji = (prod && prod.emoji) ? prod.emoji : '🧺';
               const participantsText = (s.participantes && s.participantes.length > 0)
-                ? s.participantes.map(p => `${p.name} (${p.kg} kg)`).join(', ')
+                ? s.participantes.map(p => `${p.name} (${typeof formatKg === 'function' ? formatKg(p.kg) : p.kg} kg)`).join(', ')
                 : 'Vecinos';
+
+              const remKgStr = typeof formatKg === 'function' ? formatKg(s.remainingKg) : s.remainingKg;
+              const covKgStr = typeof formatKg === 'function' ? formatKg(s.coveredKg) : s.coveredKg;
+              const totKgStr = typeof formatKg === 'function' ? formatKg(s.totalKg) : s.totalKg;
 
               return `
                 <div class="p-3.5 rounded-2xl bg-amber-50/70 border-2 border-amber-300 shadow-2xs">
@@ -7069,11 +7205,11 @@ function openCirculoTableroModal(circleId) {
                       <span class="text-xl">${emoji}</span>
                       <div>
                         <h5 class="font-black text-xs text-stone-900 leading-tight">${escapeHtml(cleanName)}</h5>
-                        <p class="text-[10px] text-stone-500">Cajón ${s.totalKg} kg · $${formatMoney(s.pricePerKg)}/kg</p>
+                        <p class="text-[10px] text-stone-500">Cajón ${totKgStr} kg · $${formatMoney(s.pricePerKg)}/kg</p>
                       </div>
                     </div>
                     <span class="text-[11px] font-black text-amber-950 bg-amber-200 border border-amber-300 px-2 py-0.5 rounded-full shrink-0">
-                      ¡Faltan ${s.remainingKg} kg!
+                      ¡Faltan ${remKgStr} kg!
                     </span>
                   </div>
 
@@ -7084,7 +7220,7 @@ function openCirculoTableroModal(circleId) {
 
                   <div class="flex items-center justify-between text-[10px] text-stone-600 mb-2.5">
                     <span>👥 Sumados: <strong>${escapeHtml(participantsText)}</strong></span>
-                    <span class="font-bold text-stone-700">${s.coveredKg} kg de ${s.totalKg} kg (${s.percent}%)</span>
+                    <span class="font-bold text-stone-700">${covKgStr} kg de ${totKgStr} kg (${s.percent}%)</span>
                   </div>
 
                   <!-- Botón para sumarse -->
@@ -7095,7 +7231,7 @@ function openCirculoTableroModal(circleId) {
                       class="btn-spotify !py-1.5 !px-2.5 text-xs font-black !bg-emerald-600 hover:!bg-emerald-700 !text-white flex items-center justify-center gap-1 shadow-2xs cursor-pointer"
                     >
                       <span>➕ Sumarme</span>
-                      <span>(Faltan ${s.remainingKg} kg)</span>
+                      <span>(Faltan ${remKgStr} kg)</span>
                     </button>
                     <button 
                       type="button" 
