@@ -105,8 +105,25 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             parts = [p for p in clean_slug.split('/') if p]
             first = parts[0].lower() if parts else ''
             second = parts[1].lower() if len(parts) > 1 else ''
+            third = parts[2].lower() if len(parts) > 2 else ''
 
-            if first == 'nodo':
+            if first == 'frutilla':
+                circ = second if second else ''
+                q = f"circulo={circ}" if circ else ""
+                if query_part:
+                    q = f"{q}&{query_part}" if q else query_part
+                self.path = f"/frutilla.html?{q}" if q else "/frutilla.html"
+            elif (first == 'circulo' or first == 'c') and third == 'frutilla':
+                q = f"circulo={second}"
+                if query_part:
+                    q = f"{q}&{query_part}"
+                self.path = f"/frutilla.html?{q}"
+            elif second == 'frutilla':
+                q = f"circulo={first}"
+                if query_part:
+                    q = f"{q}&{query_part}"
+                self.path = f"/frutilla.html?{q}"
+            elif first == 'nodo':
                 self.path = f"/?nodo=lomaverde&{query_part}" if query_part else "/?nodo=lomaverde"
             elif first == 'circulo' and second:
                 self.path = f"/?c={second}&{query_part}" if query_part else f"/?c={second}"

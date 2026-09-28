@@ -16,6 +16,24 @@
       var second = (parts[1] || '').toLowerCase();
       var queryJoin = search ? '&' + search.replace(/^\?/, '') : '';
 
+      // Rutas para Landing Exclusiva de Frutillas (/frutilla, /circulo/{slug}/frutilla, /frutilla/{slug})
+      if (first === 'frutilla') {
+        var circ = second ? 'circulo=' + encodeURIComponent(second) : '';
+        var finalQ = circ ? '?' + circ + (search ? '&' + search.replace(/^\?/, '') : '') : search;
+        window.location.replace('/frutilla.html' + finalQ + (hash || ''));
+        return;
+      }
+      if ((first === 'circulo' || first === 'c') && (parts[2] || '').toLowerCase() === 'frutilla') {
+        var finalQ = '?circulo=' + encodeURIComponent(second) + (search ? '&' + search.replace(/^\?/, '') : '');
+        window.location.replace('/frutilla.html' + finalQ + (hash || ''));
+        return;
+      }
+      if (second === 'frutilla') {
+        var finalQ = '?circulo=' + encodeURIComponent(first) + (search ? '&' + search.replace(/^\?/, '') : '');
+        window.location.replace('/frutilla.html' + finalQ + (hash || ''));
+        return;
+      }
+
       // Rutas con prefijo /nodo/{slug}
       if (first === 'nodo') {
         localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
