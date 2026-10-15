@@ -2699,13 +2699,20 @@ function openAdminPinModal() {
 function goToLanding() {
   sounds.playPop();
   sessionStorage.removeItem('elementales_authenticated');
+  sessionStorage.removeItem('elementales_node_associated');
   
   if (typeof CirculosManager !== 'undefined') {
     CirculosManager.setActiveCircleId(null);
   }
 
   AppState.selectedLandingNode = AppState.activeNodeId || 'nodo-lomaverde';
-  navigateTo('landing', true);
+  try {
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({ view: 'landing', nodeId: AppState.selectedLandingNode }, '', '/#landing');
+    }
+  } catch (e) {}
+
+  navigateTo('landing', false);
   selectLandingNode(AppState.selectedLandingNode);
 }
 
@@ -3368,6 +3375,295 @@ function selectElementFilter(elemId) {
     renderBarrioFeed();
   }
 }
+
+// =========================================================================
+// BUSCADOR DEL NODO ESTILO GOOGLE (VIEW-BARRIO)
+// =========================================================================
+
+function handleNodeGoogleSearch(e) {
+  const input = document.getElementById('node-google-search-input');
+  const query = (input ? input.value : (e && e.target ? e.target.value : '')).trim();
+  const clearBtn = document.getElementById('node-search-clear-btn');
+  const resultsContainer = document.getElementById('node-google-search-results');
+  const defaultDashboard = document.getElementById('node-google-default-dashboard');
+
+  if (clearBtn) {
+    if (query) clearBtn.classList.remove('hidden');
+    else clearBtn.classList.add('hidden');
+  }
+
+  if (!query) {
+    if (resultsContainer) {
+      resultsContainer.innerHTML = '';
+      resultsContainer.classList.add('hidden');
+    }
+    if (defaultDashboard) {
+      defaultDashboard.classList.remove('hidden');
+    }
+    return;
+  }
+
+  if (defaultDashboard) {
+    defaultDashboard.classList.add('hidden');
+  }
+  if (resultsContainer) {
+    resultsContainer.classList.remove('hidden');
+  }
+
+  renderNodeGoogleSearchResults(query);
+}
+
+function setNodeSearchQuery(term) {
+  const input = document.getElementById('node-google-search-input');
+  if (input) {
+    input.value = term;
+    input.focus();
+  }
+  handleNodeGoogleSearch({ target: { value: term } });
+  if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
+}
+
+function clearNodeGoogleSearch() {
+  const input = document.getElementById('node-google-search-input');
+  if (input) {
+    input.value = '';
+    input.focus();
+  }
+  handleNodeGoogleSearch({ target: { value: '' } });
+}
+
+function executeNodeGoogleSearch() {
+  const input = document.getElementById('node-google-search-input');
+  const q = input ? input.value.trim().toLowerCase() : '';
+  if (!q) {
+    if (input) input.focus();
+    return;
+  }
+
+  if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
+
+  if (q.includes('frutilla') || q.includes('fresa')) {
+    window.location.href = 'frutilla.html';
+    return;
+  }
+  if (q.includes('circulo') || q.includes('círculo') || q.includes('vecin')) {
+    navigateTo('circulos', true);
+    return;
+  }
+  if (q.includes('tienda') || q.includes('catálogo') || q.includes('catalogo') || q.includes('bolson') || q.includes('bolsón')) {
+    navigateTo('tierra', true);
+    return;
+  }
+
+  handleNodeGoogleSearch({ target: { value: q } });
+}
+
+function luckyNodeGoogleSearch() {
+  if (typeof sounds !== 'undefined' && sounds.playSuccess) sounds.playSuccess();
+  window.location.href = 'frutilla.html';
+}
+
+function renderNodeGoogleSearchResults(query) {
+  const container = document.getElementById('node-google-search-results');
+  if (!container) return;
+
+  const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  const allProducts = (typeof CAJONES_CENTRAL_COOPERATIVA !== 'undefined' ? CAJONES_CENTRAL_COOPERATIVA : []);
+  
+  const specialProducts = [
+    {
+      id: 'frutilla-ecotipa-5kg',
+      name: 'Frutillas Finca Ecotipa x 5 KG',
+      cleanName: 'Frutillas Agroecológicas',
+      category: 'Frutas de Estación',
+      price: 44000,
+      precioPerKg: 8800,
+      producer: 'Finca Ecotipa',
+      url: 'frutilla.html',
+      desc: 'Compra colectiva de frutillas de estación ($8.800/kg) en cajón entero, 1/2 o 1/3.'
+    }
+  ];
+
+  const matchedSpecial = specialProducts.filter(p => 
+    p.name.toLowerCase().includes(q) || 
+    p.desc.toLowerCase().includes(q) || 
+    p.category.toLowerCase().includes(q) ||
+    q.includes('fruti') || q.includes('fresa')
+  );
+
+  const matchedProducts = allProducts.filter(p => {
+    const name = (p.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const clean = (p.cleanName || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const cat = (p.categoria || p.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const prod = (p.producer || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return name.includes(q) || clean.includes(q) || cat.includes(q) || prod.includes(q);
+  });
+
+  const allCircles = (typeof CirculosManager !== 'undefined' ? CirculosManager.getAllCircles() : []);
+  const matchedCircles = allCircles.filter(c => {
+    const cName = (c.nombre || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const cDesc = (c.direccion || c.descripcion || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return cName.includes(q) || cDesc.includes(q) || q.includes('circulo') || q.includes('vecin');
+  });
+
+  const activeNode = (typeof NODOS_COMUNIDAD !== 'undefined' ? NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) : null) || {
+    name: 'Nodo Loma Verde (Escobar)',
+    address: 'Calle Los Ciruelos y Colectora Oeste, Loma Verde',
+    time: 'Miércoles y Sábados · 10:00 a 18:00 hs',
+    guardian: 'Coordinación Círculos Loma Verde & VRDE Club',
+    phone: '5491133445566'
+  };
+
+  const nodeInfoMatch = (
+    q.includes('retiro') || q.includes('horario') || q.includes('direccion') || 
+    q.includes('donde') || q.includes('loma') || q.includes('verde') || 
+    q.includes('whatsapp') || q.includes('contacto') || q.includes('lugar')
+  );
+
+  const totalCount = matchedSpecial.length + matchedProducts.length + matchedCircles.length + (nodeInfoMatch ? 1 : 0);
+
+  if (totalCount === 0) {
+    container.innerHTML = `
+      <div class="p-8 text-center bg-white rounded-3xl border border-stone-200 shadow-xs">
+        <span class="text-3xl block mb-2">🔍</span>
+        <h3 class="text-base font-black text-stone-900 font-heading">No encontramos resultados para "${escapeHtml(query)}"</h3>
+        <p class="text-xs text-stone-500 mt-1 max-w-md mx-auto">
+          Probá buscando alimentos como <strong>"frutillas"</strong>, <strong>"bolsón"</strong>, <strong>"acelga"</strong>, <strong>"mandarina"</strong> o escribí <strong>"círculos"</strong> para unirte a tus vecinos.
+        </p>
+        <div class="mt-4 flex justify-center gap-2">
+          <button type="button" onclick="setNodeSearchQuery('frutilla')" class="px-3 py-1.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200 text-xs font-bold hover:bg-rose-100 cursor-pointer">
+            🍓 Ver Frutillas
+          </button>
+          <button type="button" onclick="navigateTo('tierra')" class="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold hover:bg-emerald-100 cursor-pointer">
+            🌱 Abrir Tienda Completa
+          </button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  let html = `
+    <div class="flex items-center justify-between mb-3 text-xs text-stone-500 pb-2 border-b border-stone-200">
+      <span>Aproximadamente <strong>${totalCount} resultados</strong> en ${escapeHtml(activeNode.shortName || activeNode.name)}</span>
+      <button type="button" onclick="clearNodeGoogleSearch()" class="text-[#a6634f] hover:underline font-bold cursor-pointer">Limpiar</button>
+    </div>
+    <div class="space-y-3">
+  `;
+
+  matchedSpecial.forEach(item => {
+    html += `
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-rose-50 via-white to-amber-50 border-2 border-rose-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl p-2 bg-white rounded-xl shadow-2xs border border-rose-200">🍓</span>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[9px] font-black uppercase tracking-wider text-rose-800 bg-rose-100 px-2 py-0.5 rounded-full border border-rose-300">
+                CAMPAÑA ESPECIAL COLECTIVA
+              </span>
+              <span class="text-xs font-bold text-rose-700">$8.800/kg</span>
+            </div>
+            <h4 class="font-black text-sm sm:text-base text-stone-900 mt-0.5 font-heading">${escapeHtml(item.name)}</h4>
+            <p class="text-xs text-stone-600 mt-0.5">${escapeHtml(item.desc)}</p>
+          </div>
+        </div>
+        <a href="${item.url}" class="shrink-0 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs text-center shadow-xs text-decoration-none">
+          Participar y Pedir →
+        </a>
+      </div>
+    `;
+  });
+
+  if (nodeInfoMatch) {
+    html += `
+      <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-300 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl p-2 bg-white rounded-xl shadow-2xs border border-emerald-200">📍</span>
+          <div>
+            <span class="text-[9px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
+              LOGÍSTICA Y RETIRO
+            </span>
+            <h4 class="font-black text-sm text-stone-900 mt-0.5 font-heading">${escapeHtml(activeNode.name)}</h4>
+            <p class="text-xs text-stone-600 mt-0.5">${escapeHtml(activeNode.address)} · Horarios: ${escapeHtml(activeNode.time)}</p>
+          </div>
+        </div>
+        <a href="https://wa.me/${activeNode.phone}?text=${encodeURIComponent('Hola! Te consulto por el punto de retiro ' + activeNode.name)}" target="_blank" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs text-center shadow-2xs text-decoration-none">
+          💬 Consultar WhatsApp
+        </a>
+      </div>
+    `;
+  }
+
+  matchedCircles.forEach(c => {
+    html += `
+      <div class="p-4 rounded-2xl bg-white border border-stone-200 hover:border-emerald-500 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl p-2 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-800">👥</span>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[9px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                CÍRCULO VECINAL
+              </span>
+              <span class="text-[11px] font-bold text-stone-500">${(c.pedidos || []).length} pedidos</span>
+            </div>
+            <h4 class="font-black text-sm text-stone-900 mt-0.5 font-heading">${escapeHtml(c.nombre)}</h4>
+            <p class="text-xs text-stone-500 mt-0.5">${escapeHtml(c.direccion || 'Loma Verde, Escobar')}</p>
+          </div>
+        </div>
+        <button type="button" onclick="navigateTo('tierra'); if(typeof CirculosManager!=='undefined') CirculosManager.setActiveCircleId('${c.id}');" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold text-xs text-center border border-emerald-300 cursor-pointer">
+          Ver Círculo →
+        </button>
+      </div>
+    `;
+  });
+
+  matchedProducts.slice(0, 8).forEach(p => {
+    const priceDisplay = formatPrice(p.precioSemanal || p.price || p.precioLocal || 0);
+    html += `
+      <div class="p-3.5 rounded-2xl bg-white border border-stone-200 hover:border-[#8ca15d] shadow-2xs flex items-center justify-between gap-3 transition-all">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-stone-100 overflow-hidden shrink-0 border border-stone-200 flex items-center justify-center">
+            ${p.img ? `<img src="${p.img}" class="w-full h-full object-cover" alt="${escapeHtml(p.name)}" onerror="this.src='public/assets/brand/tierra_clean.png'" />` : `<span class="text-xl">${p.emoji || '🥬'}</span>`}
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[9px] font-black uppercase text-stone-500 bg-stone-100 px-2 py-0.5 rounded-full">
+                ${escapeHtml(p.categoria || p.category || 'Huerta')}
+              </span>
+              <span class="text-xs font-black text-stone-900">${priceDisplay}</span>
+            </div>
+            <h4 class="font-bold text-xs sm:text-sm text-stone-900 leading-tight mt-0.5">${escapeHtml(p.cleanName || p.name)}</h4>
+            <span class="text-[10px] text-stone-400 block">${p.producer ? 'Productor: ' + escapeHtml(p.producer) : 'Agroecológico'}</span>
+          </div>
+        </div>
+        <button type="button" onclick="navigateTo('tierra')" class="shrink-0 px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-[#8ca15d] hover:text-white text-stone-800 font-bold text-xs transition-colors cursor-pointer">
+          🛒 Pedir
+        </button>
+      </div>
+    `;
+  });
+
+  if (matchedProducts.length > 8) {
+    html += `
+      <div class="pt-2 text-center">
+        <button type="button" onclick="navigateTo('tierra')" class="text-xs font-bold text-[#8ca15d] hover:underline cursor-pointer">
+          + Ver ${matchedProducts.length - 8} productos más en la Tienda →
+        </button>
+      </div>
+    `;
+  }
+
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+window.handleNodeGoogleSearch = handleNodeGoogleSearch;
+window.setNodeSearchQuery = setNodeSearchQuery;
+window.clearNodeGoogleSearch = clearNodeGoogleSearch;
+window.executeNodeGoogleSearch = executeNodeGoogleSearch;
+window.luckyNodeGoogleSearch = luckyNodeGoogleSearch;
+window.renderNodeGoogleSearchResults = renderNodeGoogleSearchResults;
 
 function executeGoogleSearch(query) {
   const q = (query || '').trim();
@@ -5856,8 +6152,10 @@ document.addEventListener('DOMContentLoaded', () => {
     pathShare = pathParts[1];
   } else if (['lomaverde', 'nodo-lomaverde', 'cooperativa', 'chasqui', 'nodo-cooperativa'].includes(pathParts[0])) {
     pathNodo = 'nodo-lomaverde';
-  } else if (pathParts[0] && !pathParts[0].includes('.')) {
-    pathCirculo = pathParts[0];
+  } else if (pathParts[0] && !pathParts[0].includes('.') && !['elementales-comunidad', 'scratch', 'antigravity', 'landing', 'login', 'barrio', 'nodo'].includes(pathParts[0].toLowerCase())) {
+    if (typeof CirculosManager !== 'undefined' && CirculosManager.getCircle(pathParts[0])) {
+      pathCirculo = pathParts[0];
+    }
   }
 
   const circuloParam = urlParams.get('c') || urlParams.get('circulo') || pathCirculo || (window.location.hash.includes('c=') ? window.location.hash.split('c=')[1] : null) || (window.location.hash.includes('circulo=') ? window.location.hash.split('circulo=')[1] : null);
@@ -5866,10 +6164,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const cajonParam = urlParams.get('cajon') || pathCajon;
   const shareParam = urlParams.get('share') || pathShare;
 
-  // Nodo Loma Verde es el único nodo activo en el sistema
-  AppState.activeNodeId = 'nodo-lomaverde';
-  localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
-  currentCirculosFilter = 'nodo-lomaverde';
+  // Nodo Loma Verde es el nodo activo por defecto en el sistema
+  AppState.activeNodeId = localStorage.getItem('elementales_preferred_node') || localStorage.getItem('elementales_active_node') || 'nodo-lomaverde';
+  currentCirculosFilter = AppState.activeNodeId;
 
   if (circuloParam && typeof CirculosManager !== 'undefined') {
     let found = CirculosManager.getCircle(circuloParam);
@@ -5939,6 +6236,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const isAuth = sessionStorage.getItem('elementales_authenticated') === 'true';
+  const hasExplicitDeepLink = Boolean(circuloParam || cajonParam || shareParam || isCirculosPilot || pathNodo || window.location.hash === '#admin' || window.location.hash === '#barrio' || urlParams.get('nodo'));
+  const isLandingRequested = window.location.hash === '#landing' || 
+                             window.location.hash === '#login' || 
+                             urlParams.get('view') === 'landing' ||
+                             !hasExplicitDeepLink;
+
   if (window.location.hash === '#admin') {
     AppState.userRole = 'gestor';
     sessionStorage.setItem('elementales_authenticated', 'true');
@@ -5946,7 +6249,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateRoleUI();
     updateNodeUI();
     navigateTo('barrio', false);
-  } else if (!isAuth) {
+  } else if (isLandingRequested || !isAuth) {
     if (typeof CirculosManager !== 'undefined') {
       CirculosManager.setActiveCircleId(null);
     }
@@ -5990,7 +6293,7 @@ window.addEventListener('popstate', (e) => {
   }
 
   // Fallback si el usuario navegó a una URL directa o sin state previo
-  if (!path || path === '') {
+  if (!path || path === '' || path === 'index.html' || path === 'landing' || path === 'login' || path === 'elementales-comunidad') {
     if (typeof CirculosManager !== 'undefined') {
       CirculosManager.setActiveCircleId(null);
     }
@@ -6679,12 +6982,17 @@ function updateNodeUI() {
   // 1. Cabecera Minimalista
   const nameEl = document.getElementById('header-node-name');
   if (nameEl) {
-    nameEl.textContent = 'Loma Verde';
+    nameEl.textContent = node.shortName || 'Loma Verde';
   }
 
   const indicatorEl = document.getElementById('header-node-indicator');
   if (indicatorEl) {
-    indicatorEl.textContent = 'Loma Verde · Escobar';
+    indicatorEl.textContent = `${node.shortName || 'Loma Verde'} · ${node.zone || 'Red Elementales'}`;
+  }
+
+  const barrioActiveTitle = document.getElementById('node-barrio-active-title');
+  if (barrioActiveTitle) {
+    barrioActiveTitle.textContent = node.name || 'Nodo Loma Verde (Escobar)';
   }
 
   const badgeEl = document.getElementById('header-node-badge');

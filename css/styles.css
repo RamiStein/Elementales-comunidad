@@ -1138,6 +1138,67 @@ body {
   }
 }
 
+/* ========================================================================= */
+/* BUSCADOR ESTILO GOOGLE DENTRO DEL NODO                                   */
+/* ========================================================================= */
+.google-node-search-box {
+  background: #ffffff;
+  border: 1px solid #dfe1e5;
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.08);
+  border-radius: 9999px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.google-node-search-box:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 10px rgba(32, 33, 36, 0.14);
+}
+
+.google-node-search-box:focus-within {
+  border-color: #10b981;
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.16);
+}
+
+.google-chip-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.google-chip-pill:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.google-chip-pill:active {
+  transform: scale(0.96);
+}
+
+.google-card-panel {
+  background: #ffffff;
+  border: 1px solid #e8eaed;
+  border-radius: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.google-card-panel:hover {
+  border-color: #10b981;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
 /* Ocultar barra superior redundante si existe */
 .google-subnav {
   display: none !important;

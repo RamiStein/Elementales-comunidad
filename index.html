@@ -57,9 +57,9 @@
   <header id="main-app-header" class="google-nav-fixed w-full transition-all">
     <div class="max-w-5xl mx-auto px-3.5 sm:px-6 py-2.5 flex items-center justify-between gap-3">
       
-      <!-- LOGO ELEMENTALES -->
-      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="navigateTo('barrio')">
-        <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs" alt="Elementales" />
+      <!-- LOGO ELEMENTALES (LLEVA AL PORTAL DE ACCESO / LOGIN) -->
+      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="goToLanding()" title="Ir al Portal de Acceso y Login de Elementales">
+        <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs hover:scale-105 transition-transform" alt="Elementales" />
         <div class="flex flex-col">
           <span class="font-black text-sm sm:text-base text-stone-900 tracking-tight leading-none">
             Elementales <span class="text-[#a6634f]">Comunidad</span>
@@ -75,32 +75,44 @@
         </div>
       </div>
 
-      <!-- BOTONES DE ACCIÓN PRINCIPALES: NODO ACTIVO E INICIO -->
+      <!-- BOTONES DE ACCIÓN PRINCIPALES: PORTAL, NODO ACTIVO E INICIO NODO -->
       <div class="flex items-center gap-2 shrink-0">
         
+        <!-- Botón Portal / Login -->
+        <button 
+          type="button" 
+          id="header-portal-btn"
+          onclick="goToLanding()" 
+          class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-700 border-stone-200 hover:bg-[#fcf4f0] hover:text-[#a6634f] hover:border-[#eddcd5]"
+          title="Abrir Portal de Inicio y Login de Elementales"
+        >
+          <span class="text-xs">🔑</span>
+          <span class="hidden sm:inline font-bold">Portal / Login</span>
+        </button>
+
         <!-- Selector Rápido de Nodo Activo -->
         <button 
           type="button" 
           id="header-node-badge" 
           onclick="openNodeSelectorModal()" 
-          class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-800 border-stone-200 hover:bg-stone-200"
+          class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-emerald-50 text-emerald-950 border-emerald-300 hover:bg-emerald-100"
           title="Cambiar de Nodo Comunitario"
         >
           <span class="text-xs">📍</span>
-          <span id="header-node-name">La Lucila</span>
+          <span id="header-node-name">Loma Verde</span>
           <span class="text-[9px] opacity-60">▾</span>
         </button>
 
-        <!-- Botón Volver al Home del Nodo -->
+        <!-- Botón Volver al Buscador del Nodo -->
         <button 
           type="button" 
           id="header-home-btn"
           onclick="navigateTo('barrio')" 
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-emerald-50 text-emerald-900 border-emerald-300 hover:bg-emerald-100"
-          title="Volver a la portada del Nodo"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700"
+          title="Buscador y Portal del Nodo"
         >
-          <span class="text-xs">🏠</span>
-          <span class="font-extrabold text-xs">Inicio</span>
+          <span class="text-xs">🔍</span>
+          <span class="font-extrabold text-xs">Nodo</span>
         </button>
 
       </div>
@@ -563,153 +575,261 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 0.C VISTA: PERFIL Y PORTAL DEL NODO (SIMPLIFICADO ESTILO SPOTIFY)          -->
+  <!-- 0.C VISTA: BUSCADOR DEL NODO ESTILO GOOGLE (NODO LOMA VERDE)              -->
   <!-- ========================================================================= -->
-  <div id="view-barrio" class="app-view hidden max-w-4xl mx-auto px-4 sm:px-6 pt-4 pb-24">
+  <div id="view-barrio" class="app-view hidden max-w-4xl mx-auto px-4 sm:px-6 pt-4 pb-24 animate-fade-in">
 
-    <!-- 1. PORTADA DEL NODO (COVER BANNER) -->
-    <div class="relative w-full h-44 sm:h-60 rounded-3xl overflow-hidden shadow-lg border border-stone-200 bg-stone-900">
-      <img id="node-cover-image" src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200&h=400" class="w-full h-full object-cover opacity-85 transition-opacity" alt="Portada del Nodo" />
+    <!-- BARRA SUPERIOR MINIMALISTA ESTILO GOOGLE (Usuario, Nodo y Enlaces rápidos) -->
+    <div class="flex items-center justify-between gap-3 pb-3 mb-6 border-b border-stone-200/80 text-xs text-stone-600">
       
-      <!-- Gradiente sutil para contraste -->
-      <div class="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-stone-950/20"></div>
+      <!-- Lado Izquierdo: Nodo Activo y Estado -->
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="font-medium text-stone-500">Punto de Retiro:</span>
+        <strong id="node-barrio-active-title" class="text-stone-900 font-black">Nodo Loma Verde (Escobar)</strong>
+        <button type="button" onclick="openNodeSelectorModal()" class="text-[#a6634f] hover:underline font-bold text-[11px] ml-1 cursor-pointer">
+          Cambiar nodo
+        </button>
+      </div>
 
+      <!-- Lado Derecho: Enlaces rápidos estilo Google Apps -->
+      <div class="flex items-center gap-3">
+        <button type="button" onclick="navigateTo('tierra')" class="hover:text-emerald-700 font-bold transition-colors cursor-pointer hidden sm:inline-flex items-center gap-1">
+          <span>🌱</span> Tienda
+        </button>
+        <button type="button" onclick="navigateTo('circulos')" class="hover:text-emerald-700 font-bold transition-colors cursor-pointer hidden sm:inline-flex items-center gap-1">
+          <span>👥</span> Círculos
+        </button>
+        <a href="frutilla.html" class="text-[#a6634f] hover:underline font-black text-xs inline-flex items-center gap-1">
+          <span>🍓</span> Frutillas
+        </a>
+        <button type="button" onclick="goToLanding()" class="text-stone-500 hover:text-stone-900 font-semibold text-xs ml-1 cursor-pointer">
+          Salir
+        </button>
+      </div>
 
     </div>
 
-    <!-- 2. PERFIL DEL NODO: AVATAR FLOTANTE + IDENTIDAD -->
-    <div class="relative px-3 sm:px-6 mb-6">
+    <!-- NÚCLEO CENTRAL ESTILO GOOGLE: LOGO Y BUSCADOR -->
+    <div class="text-center pt-4 sm:pt-8 pb-6">
       
-      <!-- Fila superior: Avatar flotante a la izquierda y botones de acción a la derecha -->
-      <div class="flex items-end justify-between -mt-10 sm:-mt-12 mb-3">
-        <!-- Avatar / Sello del Nodo -->
-        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white border-4 border-white shadow-xl overflow-hidden p-1.5 shrink-0 flex items-center justify-center relative">
-          <img id="node-avatar-image" src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Sello del Nodo" />
-          <div id="node-status-dot" class="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white ring-2 ring-emerald-400/40 animate-pulse"></div>
+      <!-- LOGO DE MARCA CON ESTILO GOOGLE -->
+      <div class="flex flex-col items-center justify-center mb-6">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-[#fcf4f0] border-2 border-[#eddcd5] p-3 flex items-center justify-center shadow-md mb-3 hover:scale-105 transition-transform cursor-pointer" onclick="goToLanding()" title="Elementales">
+          <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain drop-shadow-sm" alt="Elementales" />
         </div>
-
-        <!-- Botones de Acción Inmediata -->
-        <div class="flex items-center gap-2 flex-wrap justify-end">
-          <button onclick="navigateTo('tierra')" class="btn-spotify !py-2.5 !px-5 text-xs font-bold bg-[#c0826d] hover:bg-[#a6634f] text-white flex items-center gap-1.5 shadow-md">
-            <span>🌱</span> Abrir Tienda
-          </button>
-          <a id="node-whatsapp-link" href="https://wa.me/5491123456789" target="_blank" class="btn-spotify !py-2.5 !px-4 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-sm">
-            <span>💬</span> WhatsApp
-          </a>
-        </div>
-      </div>
-
-      <!-- Identidad y Título del Nodo (100% legible sobre fondo claro) -->
-      <div class="mt-1">
-        <div class="flex flex-wrap items-center gap-2 mb-1.5">
-          <span id="node-category-tag" class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#fcf4f0] px-2.5 py-0.5 rounded-full border border-[#c0826d]/20">
-            Sede Central
-          </span>
-          <span id="node-status-text" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-            🟢 Abierto Hoy
-          </span>
-        </div>
-        <h1 id="node-main-title" class="text-xl sm:text-2xl md:text-3xl font-black text-stone-900 tracking-tight leading-snug">
-          Centro Comunitario Elementales - La Lucila
+        
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-stone-900 tracking-tight font-heading leading-tight">
+          Elementales <span class="text-[#a6634f]">Loma Verde</span>
         </h1>
+        <p class="text-xs sm:text-sm text-stone-500 font-medium mt-1 max-w-lg mx-auto">
+          Buscador Comunitario del Nodo · Encontrá verduras, frutas, bolsones, círculos de vecinos y logística
+        </p>
       </div>
 
-      <!-- Datos Esenciales del Nodo (Chips) -->
-      <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-stone-600">
-        <span id="node-address-chip" class="inline-flex items-center gap-1 bg-stone-100 px-3 py-1.5 rounded-full border border-stone-200">
-          📍 Calle Rawson 3450, La Lucila
-        </span>
-        <span id="node-hours-chip" class="inline-flex items-center gap-1 bg-stone-100 px-3 py-1.5 rounded-full border border-stone-200">
-          ⏰ Lun a Sáb 09:30 a 19:30 hs
-        </span>
-        <span id="node-guardians-chip" class="inline-flex items-center gap-1 bg-stone-100 px-3 py-1.5 rounded-full border border-stone-200">
-          👥 Atienden: Gonza, Agus, Rami, Cris & Ro
-        </span>
+      <!-- LA BARRA DE BÚSQUEDA GOOGLE -->
+      <div class="max-w-2xl mx-auto px-2 relative z-10">
+        
+        <div class="google-node-search-box flex items-center px-4 sm:px-5 py-3.5 sm:py-4 gap-3 bg-white">
+          <!-- Icono Lupa Google -->
+          <span class="text-stone-400 text-lg sm:text-xl shrink-0">🔍</span>
+          
+          <!-- Input Principal del Buscador -->
+          <input 
+            type="text" 
+            id="node-google-search-input" 
+            oninput="handleNodeGoogleSearch(event)" 
+            onkeydown="if(event.key === 'Enter') executeNodeGoogleSearch()"
+            placeholder="¿Qué estás buscando en Loma Verde? (ej. frutillas, bolsones, acelga, círculos...)" 
+            class="w-full bg-transparent border-none outline-none text-stone-800 text-sm sm:text-base font-medium placeholder:text-stone-400"
+            autocomplete="off"
+            autofocus
+          />
+
+          <!-- Botón Limpiar Búsqueda -->
+          <button 
+            type="button" 
+            id="node-search-clear-btn" 
+            onclick="clearNodeGoogleSearch()" 
+            class="hidden text-stone-400 hover:text-stone-700 text-sm cursor-pointer p-1 shrink-0"
+            title="Limpiar búsqueda"
+          >
+            ✕
+          </button>
+
+          <!-- Icono de acción -->
+          <span class="text-stone-400 text-sm hidden sm:inline shrink-0 cursor-default" title="Búsqueda en tiempo real">
+            ↵
+          </span>
+        </div>
+
+        <!-- Botones Estilo Google: "Buscar en el Nodo" y "Me siento con suerte" -->
+        <div class="flex items-center justify-center gap-3 mt-4">
+          <button 
+            type="button" 
+            onclick="executeNodeGoogleSearch()" 
+            class="px-5 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs sm:text-sm font-bold transition-all shadow-2xs hover:shadow-xs cursor-pointer border border-stone-200/80 active:scale-98"
+          >
+            Buscar en Loma Verde
+          </button>
+          <button 
+            type="button" 
+            onclick="luckyNodeGoogleSearch()" 
+            class="px-5 py-2.5 rounded-full bg-[#fcf4f0] hover:bg-[#f5ded5] text-[#a6634f] text-xs sm:text-sm font-bold transition-all shadow-2xs hover:shadow-xs cursor-pointer border border-[#c0826d]/30 active:scale-98"
+          >
+            Me siento con suerte ✨
+          </button>
+        </div>
+
+        <!-- Píldoras de Búsqueda Rápida (Trending Searches) -->
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+          <span class="text-[11px] font-bold text-stone-400 mr-1">Populares:</span>
+          
+          <button type="button" onclick="setNodeSearchQuery('frutilla')" class="google-chip-pill">
+            <span>🍓</span> Frutillas Ecotipa
+          </button>
+          
+          <button type="button" onclick="setNodeSearchQuery('bolsón')" class="google-chip-pill">
+            <span>🧺</span> Bolsones de Huerta
+          </button>
+          
+          <button type="button" onclick="setNodeSearchQuery('círculo')" class="google-chip-pill">
+            <span>👥</span> Círculos de Vecinos
+          </button>
+          
+          <button type="button" onclick="setNodeSearchQuery('verduras')" class="google-chip-pill">
+            <span>🥕</span> Verduras Frescas
+          </button>
+          
+          <button type="button" onclick="setNodeSearchQuery('panadería')" class="google-chip-pill">
+            <span>🥖</span> Masa Madre
+          </button>
+
+          <button type="button" onclick="setNodeSearchQuery('retiro')" class="google-chip-pill">
+            <span>📦</span> Punto de Retiro
+          </button>
+        </div>
+
       </div>
 
-      <!-- Descripción Clara y Contundente -->
-      <p id="node-description-text" class="text-xs sm:text-sm text-stone-600 mt-3.5 leading-relaxed bg-[#fdfaf8] p-4 rounded-2xl border border-stone-200">
-        Oficina barrial de la nueva era: gestión comunitaria, recepción de proyectos, compras de huerta agroecológica, oficios de confianza y saberes compartidos.
-      </p>
     </div>
 
-    <!-- 3. PULSO ESENCIAL DEL NODO (SIN SATURACIÓN: SOLO 2 TARJETAS DIRECTAS) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+    <!-- CONTENEDOR DE RESULTADOS DINÁMICOS DE BÚSQUEDA (APARECE AL ESCRIBIR) -->
+    <div id="node-google-search-results" class="hidden mb-10 text-left animate-fade-in max-w-3xl mx-auto">
+      <!-- Inyectado dinámicamente por JS con tarjetas de resultados instantáneos -->
+    </div>
+
+    <!-- TARJETAS PRINCIPALES DEL NODO (GOOGLE WORKSPACE DASHBOARD CUANDO NO SE BUSCA) -->
+    <div id="node-google-default-dashboard" class="space-y-6 mt-4 max-w-3xl mx-auto">
       
-      <!-- Tarjeta 1: Tienda & Cosecha Semanal -->
-      <div id="barrio-card-tierra" onclick="navigateTo('tierra')" class="p-5 rounded-3xl bg-white border border-stone-200 hover:border-[#8ca15d] shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between gap-2 mb-2">
-            <span id="barrio-card-tierra-badge" class="text-xs font-black uppercase tracking-wider text-[#8ca15d] bg-[#f4f6ef] px-2.5 py-0.5 rounded-full border border-[#c2d49e]/40">
-              🌱 Elemento Tierra
-            </span>
-            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Pedidos Abiertos</span>
-          </div>
-          <h3 id="barrio-card-tierra-title" class="font-black text-base text-stone-900 group-hover:text-[#8ca15d] transition-colors">
-            Tienda Comunitaria & Cosecha Fresca
-          </h3>
-          <p id="barrio-card-tierra-desc" class="text-xs text-stone-500 mt-1 leading-relaxed">
-            Bolsones de verduras agroecológicas, panadería de masa madre, quesos de campo y almacén de cooperativas.
-          </p>
-        </div>
-        <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#8ca15d]">
-          <span>Ver Catálogo y Precios →</span>
-          <span class="text-stone-400 group-hover:translate-x-1 transition-transform">→</span>
-        </div>
+      <div class="flex items-center justify-between pb-2 border-b border-stone-200">
+        <h2 class="text-xs font-black uppercase tracking-wider text-stone-500 font-mono-code">
+          SERVICIOS Y DIMENSIONES DEL NODO LOMA VERDE
+        </h2>
+        <span class="text-xs text-stone-400">Acceso directo</span>
       </div>
 
-      <!-- Tarjeta 2: Círculos o Comunidad -->
-      <div id="barrio-card-circulos" onclick="navigateTo('circulos')" class="p-5 rounded-3xl bg-white border border-stone-200 hover:border-emerald-500 shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between gap-2 mb-2">
-            <span id="barrio-card-circulos-badge" class="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
-              🌀 Círculos VRDE
-            </span>
-            <span class="text-xs font-bold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">Autogestión</span>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
+        <!-- Tarjeta 1: Círculos de Compra Colectiva -->
+        <div onclick="navigateTo('circulos')" class="google-card-panel p-5 cursor-pointer flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                👥 Círculos VRDE
+              </span>
+              <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Abierto</span>
+            </div>
+            <h3 class="font-black text-base text-stone-900 group-hover:text-emerald-700 transition-colors font-heading">
+              Círculos Barriales de Vecinos
+            </h3>
+            <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+              Sumate con familias de tu cuadra para pedir cajones agroecológicos al costo base de Chasqui y autogestionar el retiro barrial.
+            </p>
           </div>
-          <h3 id="barrio-card-circulos-title" class="font-black text-base text-stone-900 group-hover:text-emerald-700 transition-colors">
-            Círculos de Compra Colectiva
-          </h3>
-          <p id="barrio-card-circulos-desc" class="text-xs text-stone-500 mt-1 leading-relaxed">
-            Comprá junto a familias y amigos de tu cuadra para autogestionar el retiro barrial al costo directo de productor.
-          </p>
+          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-emerald-700">
+            <span>Explorar Círculos Activos →</span>
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
+          </div>
         </div>
-        <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-emerald-700">
-          <span>Ver Círculos Barriales →</span>
-          <span class="text-stone-400 group-hover:translate-x-1 transition-transform">→</span>
+
+        <!-- Tarjeta 2: Tienda Comunitaria y Cosecha -->
+        <div onclick="navigateTo('tierra')" class="google-card-panel p-5 cursor-pointer flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-[#8ca15d] bg-[#f4f6ef] px-2.5 py-0.5 rounded-full border border-[#c2d49e]/40">
+                🌱 Cosecha Semanal
+              </span>
+              <span class="text-[10px] font-bold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">Catálogo</span>
+            </div>
+            <h3 class="font-black text-base text-stone-900 group-hover:text-[#8ca15d] transition-colors font-heading">
+              Tienda & Bolsones de Huerta
+            </h3>
+            <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+              Bolsones de verdura agroecológica, hortalizas de estación, panadería de masa madre y alimentos de cooperativas.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#8ca15d]">
+            <span>Abrir Tienda y Pedir →</span>
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
+          </div>
         </div>
+
+        <!-- Tarjeta 3: Venta Especial de Frutillas -->
+        <a href="frutilla.html" class="google-card-panel p-5 cursor-pointer flex flex-col justify-between group text-decoration-none bg-gradient-to-br from-white to-[#fcf5f3]">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-rose-800 bg-rose-100 px-2.5 py-0.5 rounded-full border border-rose-300">
+                🍓 Especial Estación
+              </span>
+              <span class="text-[10px] font-bold text-[#a6634f] bg-orange-50 px-2 py-0.5 rounded-full">$8.800/kg</span>
+            </div>
+            <h3 class="font-black text-base text-stone-900 group-hover:text-rose-700 transition-colors font-heading">
+              Frutillas Finca Ecotipa x 5 KG
+            </h3>
+            <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+              Compra colectiva de frutillas agroecológicas. Pedí cajón entero, 1/2 cajón o 1/3 de cajón con commit comunitario.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-rose-100 flex items-center justify-between text-xs font-bold text-[#a6634f]">
+            <span>Landing Especial Frutillas →</span>
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
+          </div>
+        </a>
+
+        <!-- Tarjeta 4: Google Knowledge Panel - Ficha de Retiro del Nodo -->
+        <div class="google-card-panel p-5 flex flex-col justify-between bg-stone-50/60 border-stone-200">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-stone-700 bg-white px-2.5 py-0.5 rounded-full border border-stone-200">
+                📍 Información de Retiro
+              </span>
+              <span class="text-[10px] font-bold text-emerald-700">En línea</span>
+            </div>
+            <h3 class="font-black text-base text-stone-900 font-heading">
+              Punto de Encuentro Loma Verde
+            </h3>
+            <div class="mt-2 space-y-1.5 text-xs text-stone-600">
+              <p>📍 <strong>Lugar:</strong> Calle Los Ciruelos y Colectora Oeste, Loma Verde</p>
+              <p>🕒 <strong>Horarios:</strong> Miércoles y Sábados · 10:00 a 18:00 hs</p>
+              <p>👥 <strong>Coordinación:</strong> Círculos Loma Verde & VRDE Club</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-200 flex items-center justify-between text-xs font-bold text-emerald-800">
+            <a id="node-whatsapp-link" href="https://wa.me/5491133445566?text=Hola!%20Te%20consulto%20por%20el%20Nodo%20Loma%20Verde%20de%20Elementales" target="_blank" class="hover:underline flex items-center gap-1">
+              <span>💬</span> Consultar al Guardián
+            </a>
+            <button type="button" onclick="openNodeSelectorModal()" class="text-stone-500 hover:text-stone-800 font-medium text-[11px] underline cursor-pointer">
+              Cambiar nodo
+            </button>
+          </div>
+        </div>
+
       </div>
 
     </div>
 
-    <!-- Acceso rápido a los otros 4 elementos (Mini Grid Limpio) -->
-    <div id="barrio-dimensiones-section" class="mt-8 pt-6 border-t border-stone-200">
-      <h3 class="font-black text-xs uppercase tracking-wider text-stone-500 mb-3">
-        Explorar Dimensiones del Nodo
-      </h3>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-        <button id="barrio-btn-agua" onclick="navigateTo('agua')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#7ca1b5] text-left transition-all group shadow-2xs">
-          <span class="text-xl block mb-1">💧</span>
-          <span class="font-black text-xs text-stone-900 group-hover:text-[#7ca1b5] block">Agua</span>
-          <span class="text-[10px] text-stone-500">Oficios & LinkedIn</span>
-        </button>
-        <button id="barrio-btn-fuego" onclick="navigateTo('fuego')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#d97757] text-left transition-all group shadow-2xs">
-          <span class="text-xl block mb-1">🔥</span>
-          <span class="font-black text-xs text-stone-900 group-hover:text-[#d97757] block">Fuego</span>
-          <span class="text-[10px] text-stone-500">E-Learning & Saberes</span>
-        </button>
-        <button id="barrio-btn-aire" onclick="navigateTo('aire')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#aab091] text-left transition-all group shadow-2xs">
-          <span class="text-xl block mb-1">💨</span>
-          <span class="font-black text-xs text-stone-900 group-hover:text-stone-700 block">Aire</span>
-          <span class="text-[10px] text-stone-500">Red Social & Podcasts</span>
-        </button>
-        <button id="barrio-btn-eter" onclick="navigateTo('eter')" class="p-3 rounded-2xl bg-white border border-stone-200 hover:border-[#c0826d] text-left transition-all group shadow-2xs">
-          <span class="text-xl block mb-1">✨</span>
-          <span class="font-black text-xs text-stone-900 group-hover:text-[#a6634f] block">Éter</span>
-          <span class="text-[10px] text-stone-500">Mi Portal & Gestión</span>
-        </button>
-      </div>
-    </div>
+  </div>
 
   </div>
 
