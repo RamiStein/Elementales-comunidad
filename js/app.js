@@ -698,10 +698,10 @@ const AppState = {
 function navigateTo(viewName, updateHistory = true) {
   sounds.playPop();
 
-  // Control de Header y Barra de Navegación Inferior (Ocultos en view-landing)
+  // Control de Header y Barra de Navegación Inferior (Ocultos en view-landing y view-asociar-nodo)
   const mainHeader = document.getElementById('main-app-header');
   const spotifyNav = document.getElementById('spotify-bottom-nav');
-  if (viewName === 'landing') {
+  if (viewName === 'landing' || viewName === 'asociar-nodo') {
     if (mainHeader) mainHeader.classList.add('hidden');
     if (spotifyNav) spotifyNav.classList.add('hidden');
   } else {
@@ -782,6 +782,9 @@ function navigateTo(viewName, updateHistory = true) {
       if (viewName === 'landing') {
         targetPath = '/';
         stateObj = { view: 'landing', nodeId: AppState.activeNodeId, circuloId: null };
+      } else if (viewName === 'asociar-nodo') {
+        targetPath = '/asociar-nodo';
+        stateObj = { view: 'asociar-nodo', nodeId: AppState.activeNodeId, circuloId: null };
       } else if (viewName === 'barrio') {
         if (typeof CirculosManager !== 'undefined') {
           CirculosManager.setActiveCircleId(null);
@@ -843,7 +846,9 @@ function navigateTo(viewName, updateHistory = true) {
   }
 
   // Renderizar contenido según la vista
-  if (viewName === 'barrio') {
+  if (viewName === 'asociar-nodo') {
+    renderNodeAssociationList();
+  } else if (viewName === 'barrio') {
     renderBarrioFeed();
   } else if (viewName === 'circulos') {
     renderCirculosView();
@@ -2666,56 +2671,28 @@ function selectLandingNode(nodeId) {
 }
 
 function loginFromLanding(role) {
-  const targetNode = AppState.selectedLandingNode || AppState.activeNodeId || 'nodo-lomaverde';
-  AppState.activeNodeId = targetNode;
-  localStorage.setItem('elementales_active_node', targetNode);
-  currentCirculosFilter = targetNode;
-
   AppState.userRole = role;
   localStorage.setItem('elementales_user_role', role);
   sessionStorage.setItem('elementales_authenticated', 'true');
 
-  const nodeObj = NODOS_COMUNIDAD.find(n => n.id === targetNode);
-  const feats = nodeObj ? (nodeObj.features || {}) : {};
-
-  if (feats.showLocal === false) {
-    AppState.catalogMode = 'semanal';
-  } else if (role === 'socio') {
-    AppState.catalogMode = 'semanal';
-  } else {
-    AppState.catalogMode = 'local';
-  }
-  localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
-
-  // Asegurar que al ingresar al nodo no quede ningún círculo viejo como activo
-  if (typeof CirculosManager !== 'undefined') {
-    CirculosManager.setActiveCircleId(null);
-  }
-
   sounds.playSuccess();
   updateRoleUI();
-  updateNodeUI();
 
-  navigateTo('barrio', true);
+  // El sistema lleva al paso siguiente: asociar la cuenta al nodo de preferencia
+  goToNodeAssociation(role);
 }
 
 function openAdminPinModal() {
   requestGestorAccess(() => {
-    const targetNode = AppState.selectedLandingNode || AppState.activeNodeId || 'nodo-lomaverde';
-    AppState.activeNodeId = targetNode;
-    localStorage.setItem('elementales_active_node', targetNode);
-    currentCirculosFilter = targetNode;
+    AppState.userRole = 'gestor';
+    localStorage.setItem('elementales_user_role', 'gestor');
     sessionStorage.setItem('elementales_authenticated', 'true');
-
-    if (typeof CirculosManager !== 'undefined') {
-      CirculosManager.setActiveCircleId(null);
-    }
+    sessionStorage.setItem('elementales_gestor_auth', 'true');
 
     sounds.playSuccess();
     updateRoleUI();
-    updateNodeUI();
 
-    navigateTo('barrio', true);
+    goToNodeAssociation('gestor');
   });
 }
 
@@ -2731,6 +2708,311 @@ function goToLanding() {
   navigateTo('landing', true);
   selectLandingNode(AppState.selectedLandingNode);
 }
+
+// =========================================================================
+// PASO SIGUIENTE: ASOCIAR CUENTA AL NODO DE PREFERENCIA (PUNTO DE RETIRO)
+// =========================================================================
+
+function goToNodeAssociation(role) {
+  if (role) {
+    AppState.userRole = role;
+    localStorage.setItem('elementales_user_role', role);
+  }
+
+  // Identificar el nombre de la cuenta activa
+  const accountEl = document.getElementById('asociar-nodo-account-name');
+  let displayName = '';
+  if (typeof ElementalesDB !== 'undefined' && ElementalesDB.getUserName) {
+    displayName = ElementalesDB.getUserName();
+  }
+  if (!displayName) {
+    displayName = sessionStorage.getItem('elementales_access_word');
+  }
+  if (!displayName) {
+    displayName = (AppState.userRole === 'socio') 
+      ? 'Socio de la Red' 
+      : (AppState.userRole === 'gestor' ? 'Administrador' : 'Visitante');
+  }
+  if (accountEl) {
+    accountEl.textContent = displayName;
+  }
+
+  // Preseleccionar el nodo preferido guardado o el activo
+  const savedNode = localStorage.getItem('elementales_preferred_node') || AppState.activeNodeId || 'nodo-lomaverde';
+  AppState.selectedAssociationNode = savedNode;
+
+  navigateTo('asociar-nodo', true);
+  renderNodeAssociationList();
+}
+
+function renderNodeAssociationList(searchQuery = '') {
+  const container = document.getElementById('asociar-nodos-grid');
+  if (!container) return;
+
+  const q = searchQuery.toLowerCase().trim();
+  const selectedId = AppState.selectedAssociationNode || AppState.activeNodeId || 'nodo-lomaverde';
+
+  let list = Array.isArray(NODOS_COMUNIDAD) ? [...NODOS_COMUNIDAD] : [];
+  if (q) {
+    list = list.filter(n => 
+      (n.name && n.name.toLowerCase().includes(q)) ||
+      (n.address && n.address.toLowerCase().includes(q)) ||
+      (n.zone && n.zone.toLowerCase().includes(q)) ||
+      (n.shortName && n.shortName.toLowerCase().includes(q)) ||
+      (n.guardian && n.guardian.toLowerCase().includes(q))
+    );
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full py-10 text-center bg-stone-50 rounded-2xl border border-stone-200">
+        <span class="text-3xl block mb-2">🔍</span>
+        <h4 class="font-bold text-stone-700 text-sm">No encontramos nodos con esa búsqueda</h4>
+        <p class="text-xs text-stone-500 mt-1">Probá buscando "Escobar", "Maschwitz", "Central" o "Vicente López".</p>
+        <button type="button" onclick="const i = document.getElementById('search-nodes-asociar'); if(i) i.value=''; renderNodeAssociationList();" class="mt-3 text-xs text-[#a6634f] font-bold hover:underline cursor-pointer">
+          Ver todos los nodos
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = list.map(node => {
+    const isSelected = node.id === selectedId;
+    const isNearest = node._isNearest === true;
+    const distText = node._distKm ? `a ${node._distKm} km` : null;
+
+    return `
+      <div 
+        id="card-asociar-node-${node.id}"
+        onclick="selectNodeForAssociation('${node.id}')"
+        class="group relative rounded-3xl p-5 sm:p-6 transition-all duration-200 cursor-pointer text-left flex flex-col justify-between ${
+          isSelected 
+            ? 'border-2 border-emerald-600 bg-emerald-50/50 shadow-md ring-2 ring-emerald-500/20' 
+            : 'border-2 border-stone-200 bg-white hover:border-[#a6634f]/50 hover:shadow-xs'
+        }"
+      >
+        <!-- Badge superior -->
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
+            isSelected 
+              ? 'bg-emerald-600 text-white font-mono-code' 
+              : 'bg-stone-100 text-stone-600 font-mono-code'
+          }">
+            ${node.zone || 'Nodo Barrial'}
+          </span>
+
+          <div class="flex items-center gap-1.5">
+            ${isNearest ? `
+              <span class="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+                <span>📍</span> Más cercano ${distText ? `(${distText})` : ''}
+              </span>
+            ` : ''}
+            
+            <div class="w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+              isSelected 
+                ? 'bg-emerald-600 text-white' 
+                : 'border-2 border-stone-300 text-transparent group-hover:border-stone-400'
+            }">
+              <span class="text-xs font-black">✓</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nombre y Ubicación -->
+        <div class="mb-4">
+          <h3 class="font-black text-base sm:text-lg text-stone-900 leading-tight font-heading flex items-center gap-2">
+            <span>🌿</span>
+            <span>${escapeHtml(node.name)}</span>
+          </h3>
+          <p class="text-xs text-stone-600 mt-1 flex items-start gap-1.5">
+            <span class="text-stone-400 shrink-0">📍</span>
+            <span>${escapeHtml(node.address)}</span>
+          </p>
+        </div>
+
+        <!-- Ficha de Retiro de Pedidos -->
+        <div class="p-3.5 rounded-2xl bg-white border border-stone-200/90 shadow-2xs space-y-2 mb-4 text-xs">
+          
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-700 font-bold shrink-0">📦</span>
+            <div>
+              <span class="font-black text-[11px] uppercase tracking-wide text-stone-700 block">Punto de Retiro:</span>
+              <span class="text-stone-600 text-[11px] leading-relaxed block">${escapeHtml(node.pickupInfo || node.desc || 'Retiro autogestionado por Círculos')}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 pt-1 border-t border-stone-100">
+            <span class="text-amber-600 font-bold shrink-0">🕒</span>
+            <div>
+              <span class="text-[11px] text-stone-600 font-medium"><strong>Horarios:</strong> ${escapeHtml(node.time)}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 pt-1 border-t border-stone-100">
+            <span class="text-stone-400 font-bold shrink-0">👤</span>
+            <div>
+              <span class="text-[10px] text-stone-500"><strong>Guardián / Coordinación:</strong> ${escapeHtml(node.guardian)}</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Botón de Selección -->
+        <button 
+          type="button" 
+          class="w-full py-2.5 px-4 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            isSelected 
+              ? 'bg-emerald-600 text-white shadow-xs' 
+              : 'bg-stone-100 hover:bg-stone-200 text-stone-800'
+          }"
+        >
+          <span>${isSelected ? '✓ Nodo Seleccionado para Retiro' : 'Elegir este Nodo'}</span>
+        </button>
+
+      </div>
+    `;
+  }).join('');
+
+  updateAssociationSummary();
+}
+
+function selectNodeForAssociation(nodeId) {
+  AppState.selectedAssociationNode = nodeId;
+  sounds.playPop();
+  renderNodeAssociationList(document.getElementById('search-nodes-asociar')?.value || '');
+}
+
+function updateAssociationSummary() {
+  const selectedId = AppState.selectedAssociationNode || 'nodo-lomaverde';
+  const node = NODOS_COMUNIDAD.find(n => n.id === selectedId) || NODOS_COMUNIDAD[0];
+
+  const nameEl = document.getElementById('asociar-nodo-summary-name');
+  const addrEl = document.getElementById('asociar-nodo-summary-address');
+
+  if (nameEl && node) nameEl.textContent = node.name;
+  if (addrEl && node) addrEl.textContent = `${node.address} · ${node.time}`;
+}
+
+function filterNodesForAssociation() {
+  const input = document.getElementById('search-nodes-asociar');
+  const val = input ? input.value : '';
+  renderNodeAssociationList(val);
+}
+
+function confirmNodeAssociation() {
+  const selectedId = AppState.selectedAssociationNode || 'nodo-lomaverde';
+  const nodeObj = NODOS_COMUNIDAD.find(n => n.id === selectedId) || NODOS_COMUNIDAD[0];
+
+  AppState.activeNodeId = selectedId;
+  localStorage.setItem('elementales_active_node', selectedId);
+  localStorage.setItem('elementales_preferred_node', selectedId);
+  sessionStorage.setItem('elementales_node_associated', 'true');
+  currentCirculosFilter = selectedId;
+
+  if (typeof ElementalesDB !== 'undefined' && ElementalesDB.setUserNode) {
+    ElementalesDB.setUserNode(selectedId);
+  }
+
+  const feats = nodeObj ? (nodeObj.features || {}) : {};
+  if (feats.showLocal === false || AppState.userRole === 'socio') {
+    AppState.catalogMode = 'semanal';
+  } else {
+    AppState.catalogMode = 'local';
+  }
+  localStorage.setItem('elementales_catalog_mode', AppState.catalogMode);
+
+  if (typeof CirculosManager !== 'undefined') {
+    CirculosManager.setActiveCircleId(null);
+  }
+
+  sounds.playSuccess();
+  updateRoleUI();
+  updateNodeUI();
+
+  if (typeof showToast === 'function') {
+    showToast(`¡Cuenta asociada a ${nodeObj.name}! Retirarás tus pedidos en este punto.`);
+  }
+
+  navigateTo('barrio', true);
+}
+
+function detectNearestNode() {
+  const btnText = document.getElementById('btn-detect-nearest-text');
+
+  if (!navigator.geolocation) {
+    if (typeof showToast === 'function') {
+      showToast('Tu navegador no soporta geolocalización. Podés elegir tu nodo en la lista.');
+    } else {
+      alert('Tu navegador no soporta geolocalización.');
+    }
+    return;
+  }
+
+  if (btnText) btnText.textContent = 'Detectando ubicación...';
+
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      const userLat = position.coords.latitude;
+      const userLng = position.coords.longitude;
+
+      let closestNode = null;
+      let minDistance = Infinity;
+
+      NODOS_COMUNIDAD.forEach(node => {
+        if (node.lat && node.lng) {
+          const d = calculateDistanceKm(userLat, userLng, node.lat, node.lng);
+          node._distKm = d.toFixed(1);
+          node._isNearest = false;
+          if (d < minDistance) {
+            minDistance = d;
+            closestNode = node;
+          }
+        }
+      });
+
+      if (closestNode) {
+        closestNode._isNearest = true;
+        AppState.selectedAssociationNode = closestNode.id;
+        if (btnText) btnText.textContent = `📍 Más cercano: ${closestNode.shortName || closestNode.name} (${minDistance.toFixed(1)} km)`;
+        sounds.playSuccess();
+        renderNodeAssociationList(document.getElementById('search-nodes-asociar')?.value || '');
+
+        const targetCard = document.getElementById(`card-asociar-node-${closestNode.id}`);
+        if (targetCard) {
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    },
+    error => {
+      if (btnText) btnText.textContent = 'Sugerir el nodo más cercano con mi ubicación';
+      if (typeof showToast === 'function') {
+        showToast('No pudimos acceder a tu ubicación. Podés elegir tu nodo de preferencia en la lista.');
+      }
+    },
+    { timeout: 8000 }
+  );
+}
+
+function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radio de la Tierra en km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+window.goToNodeAssociation = goToNodeAssociation;
+window.renderNodeAssociationList = renderNodeAssociationList;
+window.selectNodeForAssociation = selectNodeForAssociation;
+window.updateAssociationSummary = updateAssociationSummary;
+window.filterNodesForAssociation = filterNodesForAssociation;
+window.confirmNodeAssociation = confirmNodeAssociation;
+window.detectNearestNode = detectNearestNode;
 
 // =========================================================================
 // ACCESO POR PALABRA CLAVE Y COSMOS ELEMENTAL (5 ELEMENTOS & SÓLIDOS)
@@ -4099,7 +4381,7 @@ function checkInitialLogin() {
     sessionStorage.setItem('elementales_gestor_auth', 'true');
     updateRoleUI();
     updateNodeUI();
-    navigateTo('barrio');
+    goToNodeAssociation('gestor');
     return;
   }
 
@@ -4107,7 +4389,12 @@ function checkInitialLogin() {
   if (!isAuth) {
     goToLanding();
   } else {
-    navigateTo('barrio');
+    const nodeAssociated = sessionStorage.getItem('elementales_node_associated') || localStorage.getItem('elementales_preferred_node');
+    if (!nodeAssociated) {
+      goToNodeAssociation(AppState.userRole || 'visitante');
+    } else {
+      navigateTo('barrio');
+    }
   }
 }
 
@@ -6359,6 +6646,10 @@ function renderNodesModalList() {
 function selectNode(nodeId) {
   AppState.activeNodeId = nodeId;
   localStorage.setItem('elementales_active_node', nodeId);
+  localStorage.setItem('elementales_preferred_node', nodeId);
+  if (typeof ElementalesDB !== 'undefined' && ElementalesDB.setUserNode) {
+    ElementalesDB.setUserNode(nodeId);
+  }
   currentCirculosFilter = nodeId;
   if (typeof CirculosManager !== 'undefined') {
     CirculosManager.setActiveCircleId(null);

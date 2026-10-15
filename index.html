@@ -430,7 +430,140 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 0.B VISTA: PERFIL Y PORTAL DEL NODO (SIMPLIFICADO ESTILO SPOTIFY) -->
+  <!-- 0.B VISTA: ASOCIAR CUENTA AL NODO DE PREFERENCIA (PUNTO DE RETIRO)        -->
+  <!-- ========================================================================= -->
+  <div id="view-asociar-nodo" class="app-view hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 animate-fade-in">
+    
+    <!-- Barra superior con Identidad y Stepper -->
+    <div class="mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200">
+        
+        <!-- Logo y Regreso -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-[#fcf4f0] border border-[#eddcd5] p-2 flex items-center justify-center shrink-0 shadow-inner">
+            <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Elementales" />
+          </div>
+          <div>
+            <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] block font-mono-code">RED ELEMENTALES</span>
+            <span class="text-xs text-stone-500 font-medium">Configuración de Retiros Comunitarios</span>
+          </div>
+        </div>
+
+        <!-- Indicador de cuenta activa -->
+        <div class="flex items-center gap-2 bg-[#fcfaf8] border border-stone-200 px-3.5 py-1.5 rounded-full text-xs self-start sm:self-auto shadow-2xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-stone-500">Cuenta activa:</span>
+          <strong id="asociar-nodo-account-name" class="text-stone-900 font-black">Visitante</strong>
+          <button type="button" onclick="goToLanding()" class="text-[11px] text-[#a6634f] hover:underline ml-1 font-bold cursor-pointer">Cambiar</button>
+        </div>
+
+      </div>
+
+      <!-- Stepper Visual de 2 Pasos -->
+      <div class="mt-4 flex items-center justify-center gap-2 sm:gap-4 max-w-md mx-auto text-xs">
+        <div class="flex items-center gap-1.5 text-emerald-700 font-bold">
+          <span class="w-5 h-5 rounded-full bg-emerald-100 border border-emerald-500 flex items-center justify-center text-[10px]">✓</span>
+          <span>1. Ingreso</span>
+        </div>
+        <span class="h-0.5 w-8 bg-emerald-400"></span>
+        <div class="flex items-center gap-1.5 text-[#a6634f] font-black">
+          <span class="w-5 h-5 rounded-full bg-[#fcf4f0] border-2 border-[#a6634f] flex items-center justify-center text-[11px]">2</span>
+          <span>2. Asociar Nodo de Retiro</span>
+        </div>
+        <span class="h-0.5 w-8 bg-stone-200"></span>
+        <div class="flex items-center gap-1.5 text-stone-400 font-medium">
+          <span class="w-5 h-5 rounded-full bg-stone-100 border border-stone-300 flex items-center justify-center text-[11px]">3</span>
+          <span>3. Círculos & Tienda</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Título y Propósito Explicativo -->
+    <div class="text-center max-w-2xl mx-auto mb-8">
+      <span class="text-[11px] font-black uppercase tracking-widest text-[#a6634f] bg-[#fcf4f0] px-3 py-1 rounded-full border border-[#c0826d]/20 inline-block mb-2 font-mono-code">
+        📍 PASO SIGUIENTE · RETIRO DE PEDIDOS
+      </span>
+      <h1 class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight font-heading">
+        Asociá tu cuenta al nodo de tu preferencia
+      </h1>
+      <p class="text-xs sm:text-sm text-stone-600 mt-2 leading-relaxed">
+        Ese nodo va a ser el <strong>punto de encuentro donde retires tus pedidos</strong> de la red comunitaria. Puede ser el más cercano a tu ubicación o el que vos prefieras.
+      </p>
+    </div>
+
+    <!-- Barra de Herramientas: Sugerir por Ubicación y Filtro Rápido -->
+    <div class="bg-white rounded-2xl p-3 sm:p-4 border border-stone-200 shadow-xs mb-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      
+      <!-- Botón de Geolocalización: Sugerir más cercano -->
+      <button 
+        type="button" 
+        id="btn-detect-nearest-node"
+        onclick="detectNearestNode()" 
+        class="flex items-center justify-center gap-2 bg-[#fcf4f0] hover:bg-[#f6e5dc] text-[#a6634f] font-bold text-xs px-4 py-2.5 rounded-xl border border-[#c0826d]/30 transition-all cursor-pointer shadow-2xs group"
+      >
+        <span class="group-hover:scale-110 transition-transform">📍</span>
+        <span id="btn-detect-nearest-text">Sugerir el nodo más cercano con mi ubicación</span>
+      </button>
+
+      <!-- Buscador de Nodos -->
+      <div class="relative flex-1 max-w-xs">
+        <input 
+          type="text" 
+          id="search-nodes-asociar" 
+          oninput="filterNodesForAssociation()" 
+          placeholder="Buscar por barrio o zona..." 
+          class="w-full bg-stone-50 border border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-xl px-3 py-2 text-xs font-medium text-stone-800 focus:outline-none transition-all pl-8 placeholder:text-stone-400"
+        />
+        <span class="absolute left-2.5 top-2.5 text-stone-400 text-xs">🔍</span>
+      </div>
+
+    </div>
+
+    <!-- Contenedor dinámico de tarjetas de Nodos -->
+    <div id="asociar-nodos-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mb-8">
+      <!-- Inyectado dinámicamente por JS desde NODOS_COMUNIDAD -->
+    </div>
+
+    <!-- Barra de Acción y Confirmación -->
+    <div class="sticky bottom-4 z-20 bg-white/95 backdrop-blur-md rounded-2xl p-4 sm:p-5 border-2 border-emerald-500/40 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      
+      <div class="flex items-center gap-3 text-left w-full sm:w-auto">
+        <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl shrink-0">
+          📦
+        </div>
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 block">Nodo de Retiro Seleccionado:</span>
+          <h4 id="asociar-nodo-summary-name" class="font-black text-sm sm:text-base text-stone-900 leading-tight">
+            Nodo Loma Verde (Escobar)
+          </h4>
+          <span id="asociar-nodo-summary-address" class="text-xs text-stone-500 block truncate max-w-xs sm:max-w-md">
+            Calle Los Ciruelos y Colectora Oeste, Loma Verde
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+        <button 
+          type="button" 
+          onclick="confirmNodeAssociation()" 
+          class="w-full sm:w-auto bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm px-6 py-3.5 rounded-xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+        >
+          <span>✓</span>
+          <span>Asociar mi cuenta a este Nodo</span>
+          <span>→</span>
+        </button>
+      </div>
+
+    </div>
+
+    <p class="text-[11px] text-stone-400 text-center mt-4">
+      ℹ️ Vas a poder cambiar tu nodo de retiro o explorar otros en cualquier momento desde el menú superior.
+    </p>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 0.C VISTA: PERFIL Y PORTAL DEL NODO (SIMPLIFICADO ESTILO SPOTIFY)          -->
   <!-- ========================================================================= -->
   <div id="view-barrio" class="app-view hidden max-w-4xl mx-auto px-4 sm:px-6 pt-4 pb-24">
 

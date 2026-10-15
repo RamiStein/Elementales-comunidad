@@ -89,6 +89,16 @@ const ElementalesDB = {
     this.saveSession(sess);
   },
 
+  setUserNode(nodeId) {
+    if (!nodeId) return;
+    const clean = nodeId.trim();
+    const sess = this.getSession();
+    sess.preferredNode = clean;
+    localStorage.setItem('elementales_active_node', clean);
+    localStorage.setItem('elementales_preferred_node', clean);
+    this.saveSession(sess);
+  },
+
   loginAsSocio(socioData) {
     const sess = this.getSession();
     sess.role = 'socio';
