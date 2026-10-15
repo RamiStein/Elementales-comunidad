@@ -2732,6 +2732,127 @@ function goToLanding() {
   selectLandingNode(AppState.selectedLandingNode);
 }
 
+// =========================================================================
+// ACCESO POR PALABRA CLAVE Y COSMOS ELEMENTAL (5 ELEMENTOS & SÓLIDOS)
+// =========================================================================
+const ELEMENTAL_DATA = {
+  eter: {
+    badge: '<span>✨</span> ÉTER · DODECAEDRO (CENTRO · LOGO)',
+    desc: '<strong>Quintaesencia y Conciencia:</strong> El tejido conector que une a toda la comunidad. En el centro está la persona y la armonía cósmica entre los elementos.',
+    badgeClass: 'text-[#d99a86]'
+  },
+  fuego: {
+    badge: '<span>🔥</span> FUEGO · TETRAEDRO',
+    desc: '<strong>Transformación y Energía:</strong> El impulso creador, la calidez del hogar, la pasión y la voluntad comunitaria para emprender proyectos compartidos.',
+    badgeClass: 'text-orange-400'
+  },
+  tierra: {
+    badge: '<span>🍃</span> TIERRA · HEXAEDRO (CUBO)',
+    desc: '<strong>Materia y Nutrición:</strong> La raíz fértil, los alimentos agroecológicos de nuestros productores y la estabilidad sólida de nuestra red.',
+    badgeClass: 'text-emerald-400'
+  },
+  agua: {
+    badge: '<span>💧</span> AGUA · ICOSAEDRO',
+    desc: '<strong>Fluidez y Vida:</strong> La adaptabilidad, la empatía, el flujo dinámico de los intercambios y el vínculo afectivo entre vecinos.',
+    badgeClass: 'text-sky-400'
+  },
+  aire: {
+    badge: '<span>💨</span> AIRE · OCTAEDRO',
+    desc: '<strong>Pensamiento y Comunicación:</strong> La claridad mental, las ideas abiertas, el diálogo transparente y la libertad comunitaria.',
+    badgeClass: 'text-teal-400'
+  }
+};
+
+function showElementalDetail(element) {
+  const data = ELEMENTAL_DATA[element] || ELEMENTAL_DATA.eter;
+  const badgeEl = document.getElementById('detail-element-badge');
+  const descEl = document.getElementById('detail-element-description');
+  const cardEl = document.getElementById('elemental-active-detail-card');
+
+  if (badgeEl) {
+    badgeEl.innerHTML = data.badge;
+    badgeEl.className = `font-black text-xs uppercase tracking-wider flex items-center gap-1.5 ${data.badgeClass || 'text-[#d99a86]'}`;
+  }
+
+  if (descEl) {
+    descEl.innerHTML = data.desc;
+  }
+
+  if (cardEl) {
+    cardEl.classList.remove('animate-fade-in');
+    void cardEl.offsetWidth; // Reflow
+    cardEl.classList.add('animate-fade-in');
+  }
+
+  if (typeof sounds !== 'undefined' && sounds.playPop) {
+    sounds.playPop();
+  }
+}
+
+function handleAccessWordLogin(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  const input = document.getElementById('login-access-word');
+  const word = input ? input.value.trim() : '';
+  const feedback = document.getElementById('login-feedback-msg');
+
+  if (!word) {
+    if (feedback) {
+      feedback.textContent = 'Por favor ingresá tu palabra de acceso.';
+      feedback.className = 'text-xs text-rose-600 font-bold block animate-shake';
+      feedback.classList.remove('hidden');
+    }
+    return;
+  }
+
+  // Normalizar para comparación de claves
+  const cleanWord = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  try {
+    sessionStorage.setItem('elementales_access_word', word);
+    localStorage.setItem('elementales_last_access_word', word);
+  } catch (err) {}
+
+  let role = 'visitante';
+  let welcomeMsg = `¡Bienvenido/a a la red Elementales, ${word}!`;
+
+  // 1. Claves de Administrador / Gestor
+  if (cleanWord === 'admin' || cleanWord === '1234' || cleanWord === '2026' || cleanWord === 'gestor' || cleanWord === 'nodo') {
+    role = 'gestor';
+    sessionStorage.setItem('elementales_gestor_auth', 'true');
+    welcomeMsg = 'Acceso concedido como Administrador del Nodo.';
+  } 
+  // 2. Claves de Socio / Miembro
+  else if (cleanWord === 'socio' || cleanWord === 'miembro' || cleanWord === 'raices' || cleanWord === 'comunidad' || cleanWord === 'elemental' || cleanWord === 'lomaverde' || cleanWord === 'verde' || cleanWord === 'coop') {
+    role = 'socio';
+    welcomeMsg = 'Acceso concedido como Socio de Elementales.';
+  }
+  // 3. Palabra/Nombre general
+  else {
+    role = 'visitante';
+    if (typeof ElementalesDB !== 'undefined' && ElementalesDB.setUserName) {
+      ElementalesDB.setUserName(word);
+    }
+  }
+
+  if (feedback) {
+    feedback.textContent = welcomeMsg;
+    feedback.className = 'text-xs text-emerald-600 font-bold block animate-fade-in';
+    feedback.classList.remove('hidden');
+  }
+
+  if (typeof sounds !== 'undefined' && sounds.playSuccess) {
+    sounds.playSuccess();
+  }
+
+  setTimeout(() => {
+    loginFromLanding(role);
+  }, 250);
+}
+
+window.showElementalDetail = showElementalDetail;
+window.handleAccessWordLogin = handleAccessWordLogin;
+
 // CONTROL DEL MODAL SELECTOR DE ROL
 function openRoleSwitcherModal() {
   sounds.playPop();

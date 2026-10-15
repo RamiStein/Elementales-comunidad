@@ -114,168 +114,317 @@
   <!-- ========================================================================= -->
   <!-- 0. VISTA: PORTAL & RED SOCIAL BARRIAL (TODO EL BARRIO - LA LUCILA) -->
   <!-- ========================================================================= -->
-  <!-- 0.A VISTA: LANDING PREVIA DE ACCESO Y ELECCIÓN DE NODO -->
+  <!-- 0.A VISTA: ACCESO AL SISTEMA / LOGIN & COSMOS ELEMENTAL                     -->
   <!-- ========================================================================= -->
-  <div id="view-landing" class="app-view max-w-xl mx-auto px-4 sm:px-6 pt-8 pb-20 text-center animate-fade-in">
+  <div id="view-landing" class="app-view max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 animate-fade-in">
     
-    <!-- Emblema de la Red -->
-    <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-3xl bg-white border border-stone-200 p-3 shadow-md mb-4 flex items-center justify-center">
-      <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Elementales" />
-    </div>
-
-    <span class="text-[10px] font-black uppercase tracking-widest text-[#a6634f] bg-[#fcf4f0] px-3.5 py-1 rounded-full border border-[#c0826d]/20">
-      Red Comunitaria de Nodos & Círculos
-    </span>
-    
-    <h1 class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight mt-2.5 mb-1.5">
-      Ingreso a la Red de Nodos
-    </h1>
-    <p class="text-xs sm:text-sm text-stone-500 max-w-md mx-auto mb-6 leading-relaxed">
-      Elegí tu punto barrial para ver las actividades, sumarte a compras de huerta o gestionar tu espacio.
-    </p>
-
-    <!-- 1. PASO: NODO ACTIVO -->
-    <div class="mb-6 text-left">
-      <div class="flex items-center justify-between mb-2">
-        <label class="block text-xs font-black uppercase tracking-wider text-stone-800">
-          1. Nodo Activo de la Red:
-        </label>
-        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Sede Activa</span>
-      </div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
       
-      <div id="landing-nodes-selector">
-        <!-- Nodo Loma Verde (Único Nodo Activo) -->
-        <div 
-          onclick="selectLandingNode('nodo-lomaverde')" 
-          id="landing-node-nodo-lomaverde" 
-          class="p-4 rounded-2xl border-2 border-emerald-600 bg-emerald-50/70 transition-all flex items-start gap-3 shadow-xs relative"
-        >
-          <span class="text-3xl shrink-0 mt-0.5">🌿</span>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <h4 class="font-black text-sm sm:text-base text-stone-900 truncate">Nodo Loma Verde</h4>
-              <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full shrink-0">Círculos de Vecinos</span>
+      <!-- ===================================================================== -->
+      <!-- COLUMNA IZQUIERDA: CLÁSICO ACCESO DE LOGIN                            -->
+      <!-- ===================================================================== -->
+      <div class="lg:col-span-5 w-full">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#eddcd5] shadow-xl text-left relative overflow-hidden">
+          
+          <!-- Encabezado de Marca -->
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-2xl bg-[#fcf4f0] border border-[#f0d8ce] p-2 flex items-center justify-center shrink-0 shadow-inner">
+              <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain drop-shadow-xs" alt="Elementales" />
             </div>
-            <p class="text-xs text-stone-600 mt-0.5 font-medium">Loma Verde, Partido de Escobar, Zona Norte</p>
-            <p class="text-[11px] text-stone-500 mt-1">Cajones agroecológicos de Central Cooperativa Chasqui (+40% al costo base) autogestionados por compras colectivas.</p>
-          </div>
-          <span id="landing-node-check-nodo-lomaverde" class="text-emerald-600 font-black text-sm absolute top-3 right-3">✓</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2. PASO: ACCESOS AL NODO SELECCIONADO -->
-    <div class="space-y-3 text-left mb-6">
-      <div class="flex items-center justify-between mb-1">
-        <label class="block text-xs font-black uppercase tracking-wider text-stone-800">
-          2. Ingresar a: <span id="landing-step2-node-name" class="text-emerald-800 font-black">Nodo Loma Verde</span>
-        </label>
-        <span class="text-[10px] text-stone-500 font-medium">Elegí tu perfil de acceso</span>
-      </div>
-
-      <!-- Opción A: Invitado / Visitante (Acceso Libre y Abierto) -->
-      <div onclick="loginFromLanding('visitante')" class="p-4 rounded-2xl border-2 border-stone-200 hover:border-[#c0826d] bg-white hover:bg-[#fdfaf8] cursor-pointer transition-all flex items-center justify-between group shadow-xs">
-        <div class="flex items-center gap-3.5">
-          <div class="w-11 h-11 rounded-2xl bg-stone-100 border border-stone-200 flex items-center justify-center text-xl group-hover:scale-105 transition-transform shrink-0">
-            👤
-          </div>
-          <div>
-            <div class="flex items-center gap-2 mb-0.5">
-              <h3 class="font-black text-sm text-stone-900 group-hover:text-[#a6634f]">Ingresar como Invitado / Visitante</h3>
-              <span class="text-[10px] font-bold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">Acceso Libre</span>
+            <div>
+              <span class="text-[10px] font-black uppercase tracking-widest text-[#a6634f] bg-[#fcf4f0] px-2.5 py-0.5 rounded-full border border-[#c0826d]/20 inline-block">
+                PORTAL DE ACCESO
+              </span>
+              <h1 class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight leading-tight font-heading mt-0.5">
+                Elementales <span class="text-[#a6634f]">.store</span>
+              </h1>
             </div>
-            <p class="text-xs text-stone-500 leading-snug">
-              Ver todo lo que sucede en el nodo, la tienda comunitaria y participar sin cuota ni registro previo.
-            </p>
           </div>
-        </div>
-        <span class="text-xs font-bold text-[#c0826d] shrink-0 ml-2 group-hover:translate-x-1 transition-transform" id="landing-btn-visitante-text">Ingresar →</span>
-      </div>
 
-      <!-- Opción B: Miembro / Socio CsC -->
-      <div onclick="loginFromLanding('socio')" class="p-4 rounded-2xl border-2 border-blue-200 hover:border-blue-500 bg-gradient-to-r from-blue-50/40 via-white to-sky-50/30 cursor-pointer transition-all flex items-center justify-between group shadow-xs">
-        <div class="flex items-center gap-3.5">
-          <div class="w-11 h-11 rounded-2xl bg-blue-100 border border-blue-200 flex items-center justify-center text-xl group-hover:scale-105 transition-transform shrink-0">
-            💧
-          </div>
-          <div>
-            <div class="flex items-center gap-2 mb-0.5">
-              <h3 class="font-black text-sm text-blue-950 group-hover:text-blue-700">Ingresar como Miembro / Socio CsC</h3>
-              <span class="text-[10px] font-black text-blue-800 bg-blue-100 px-2 py-0.5 rounded-full">-25% Costo Red</span>
+          <p class="text-xs sm:text-sm text-stone-600 mb-6 leading-relaxed">
+            Ingresá tu <strong>palabra de acceso</strong> para ingresar a la red comunitaria, sumarte a las compras colectivas y participar en los círculos barriales.
+          </p>
+
+          <!-- FORMULARIO CLÁSICO DE LOGIN -->
+          <form onsubmit="handleAccessWordLogin(event)" class="space-y-4">
+            
+            <div>
+              <label for="login-access-word" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1.5 flex items-center justify-between">
+                <span class="flex items-center gap-1.5">
+                  <span>🔑</span> Palabra de Acceso
+                </span>
+                <span class="text-[10px] font-medium text-stone-400 lowercase">tu clave o nombre</span>
+              </label>
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="login-access-word" 
+                  required 
+                  placeholder="Escribe tu palabra de acceso..." 
+                  class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3.5 text-sm sm:text-base font-bold text-stone-900 focus:outline-none transition-all shadow-inner placeholder:text-stone-400 placeholder:font-normal"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="none"
+                />
+              </div>
             </div>
-            <p class="text-xs text-stone-600 leading-snug">
-              Acceso con carnet digital a compras al costo campesino, Círculos barriales y asambleas.
-            </p>
-          </div>
-        </div>
-        <span class="text-xs font-bold text-blue-600 shrink-0 ml-2 group-hover:translate-x-1 transition-transform" id="landing-btn-socio-text">Ingresar →</span>
-      </div>
 
-      <!-- Opción C: Administrador / Gestor del Nodo -->
-      <div onclick="openAdminPinModal()" class="p-4 rounded-2xl border-2 border-amber-200 hover:border-amber-500 bg-gradient-to-r from-amber-50/40 via-white to-orange-50/30 cursor-pointer transition-all flex items-center justify-between group shadow-xs">
-        <div class="flex items-center gap-3.5">
-          <div class="w-11 h-11 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-xl group-hover:scale-105 transition-transform shrink-0">
-            🔐
-          </div>
-          <div>
-            <div class="flex items-center gap-2 mb-0.5">
-              <h3 class="font-black text-sm text-amber-950 group-hover:text-amber-800">Administrador / Equipo del Nodo</h3>
-              <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">PIN Equipo</span>
+            <!-- Botón Principal: Ingresar a Elementales -->
+            <button 
+              type="submit" 
+              id="btn-login-submit"
+              class="btn-action w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-3.5 sm:py-4 rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+            >
+              <span>✨</span>
+              <span>Ingresar a Elementales</span>
+              <span>→</span>
+            </button>
+
+            <!-- Mensaje dinámico de feedback -->
+            <div id="login-feedback-msg" class="hidden text-xs"></div>
+
+          </form>
+
+          <!-- Divisor decorativo -->
+          <div class="relative my-6 text-center">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-stone-200"></div>
             </div>
-            <p class="text-xs text-stone-600 leading-snug">
-              Gestión operativa del nodo: caja, turnos de guardia, catálogo y administración de círculos.
-            </p>
-          </div>
-        </div>
-        <span class="text-xs font-bold text-amber-700 shrink-0 ml-2 group-hover:translate-x-1 transition-transform">Con PIN →</span>
-      </div>
-
-    </div>
-
-    <!-- Acceso Destacado a la Landing Exclusiva de Frutillas Finca Ecotipa (Estética Elementales) -->
-    <a href="frutilla.html" class="p-4 rounded-3xl bg-gradient-to-r from-[#a6634f] via-[#b8735f] to-[#8ca15d] text-white text-left flex items-center justify-between gap-3 shadow-md hover:shadow-lg transition-all group text-decoration-none border border-[#eddcd5]/30">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform shadow-inner">
-          🍓
-        </div>
-        <div>
-          <div class="flex items-center gap-1.5 mb-0.5">
-            <span class="text-[10px] font-black uppercase tracking-wider bg-white/25 px-2 py-0.5 rounded-full text-white">
-              Venta Exclusiva · Elementales
-            </span>
-            <span class="text-[10px] font-extrabold text-[#edf3e3]">
-              Finca Ecotipa
+            <span class="relative bg-white px-3 text-[11px] font-bold text-stone-400 uppercase tracking-wider">
+              o ingresá de forma directa
             </span>
           </div>
-          <p class="font-black text-sm text-white tracking-tight leading-tight font-heading">
-            Frutillas Agroecológicas x Cajón (5 kg)
-          </p>
-          <p class="text-[11px] text-white/90 mt-0.5">
-            Pedí cajón entero, ½ o ⅓ a precio mayorista ($8.800/kg)
-          </p>
-        </div>
-      </div>
-      <span class="shrink-0 px-3.5 py-2 rounded-xl bg-white text-[#a6634f] font-black text-xs shadow-xs group-hover:bg-[#fcf4f0] transition-colors">
-        Sumate →
-      </span>
-    </a>
 
-    <!-- Acceso Directo a Círculos de Cajones Chasqui (Pie de landing ordenado y discreto) -->
-    <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-left flex items-center justify-between gap-3 shadow-2xs">
-      <div class="flex items-center gap-2.5">
-        <span class="text-xl">📦</span>
-        <div>
-          <p class="font-bold text-xs text-emerald-950">¿Venís a comprar cajones con tus vecinos?</p>
-          <p class="text-[11px] text-emerald-700">Entrá directo a la sección de Círculos de Central Chasqui.</p>
+          <!-- Accesos directos y roles secundarios -->
+          <div class="space-y-2.5">
+            
+            <!-- Acceso Libre como Visitante -->
+            <button 
+              type="button" 
+              onclick="loginFromLanding('visitante')"
+              class="w-full p-3 rounded-2xl border border-stone-200 hover:border-[#c0826d] bg-[#fcfaf8] hover:bg-white text-left flex items-center justify-between group transition-all cursor-pointer shadow-2xs"
+            >
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-stone-100 flex items-center justify-center text-sm group-hover:scale-105 transition-transform">
+                  👤
+                </div>
+                <div>
+                  <span class="block text-xs font-black text-stone-900 group-hover:text-[#a6634f] leading-tight font-heading">
+                    Visitante Libre
+                  </span>
+                  <span class="block text-[11px] text-stone-500 leading-tight">
+                    Acceso abierto sin clave para explorar el nodo
+                  </span>
+                </div>
+              </div>
+              <span class="text-xs font-black text-[#a6634f] group-hover:translate-x-1 transition-transform">
+                Entrar →
+              </span>
+            </button>
+
+            <!-- Acceso Administrador con PIN -->
+            <button 
+              type="button" 
+              onclick="openAdminPinModal()"
+              class="w-full p-2.5 px-3 rounded-2xl border border-stone-200 hover:border-amber-400 bg-white hover:bg-amber-50/40 text-left flex items-center justify-between group transition-all cursor-pointer"
+            >
+              <span class="text-xs font-bold text-stone-600 flex items-center gap-2 group-hover:text-amber-900">
+                <span>🔐</span> Administrador del Nodo (PIN Equipo)
+              </span>
+              <span class="text-[11px] font-bold text-amber-700">Con PIN →</span>
+            </button>
+
+          </div>
+
+          <!-- Acceso Destacado a la Venta de Frutillas -->
+          <div class="mt-5 pt-4 border-t border-stone-100">
+            <a href="frutilla.html" class="p-3 rounded-2xl bg-gradient-to-r from-[#fcf4f0] via-[#f7f9f2] to-[#edf3e3] border border-[#eddcd5] flex items-center justify-between gap-2.5 text-decoration-none group hover:shadow-xs transition-all">
+              <div class="flex items-center gap-2">
+                <span class="text-lg group-hover:scale-110 transition-transform">🍓</span>
+                <div>
+                  <span class="block text-xs font-black text-stone-900 leading-tight font-heading">
+                    Frutillas Finca Ecotipa x 5 KG
+                  </span>
+                  <span class="block text-[10px] font-medium text-stone-500">
+                    Compra colectiva por cajón o fracciones ($8.800/kg)
+                  </span>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold text-[#a6634f] shrink-0">Ver →</span>
+            </a>
+          </div>
+
+          <!-- Pie del login con nodo activo -->
+          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-500">
+            <span class="flex items-center gap-1.5 font-medium">
+              <span>📍</span> Sede Activa: <strong>Loma Verde</strong>
+            </span>
+            <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 text-[10px]">
+              En línea
+            </span>
+          </div>
+
         </div>
       </div>
-      <button 
-        type="button" 
-        onclick="openCirculosPilotView()"
-        class="shrink-0 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-all shadow-xs cursor-pointer"
-      >
-        Ver Círculos
-      </button>
+
+      <!-- ===================================================================== -->
+      <!-- COLUMNA DERECHA: ESENCIA DE ELEMENTALES, 5 SÓLIDOS Y SISTEMA SOLAR   -->
+      <!-- ===================================================================== -->
+      <div class="lg:col-span-7 w-full">
+        <div class="relative bg-gradient-to-b from-[#1c1917] via-[#241f1c] to-[#141211] rounded-3xl p-6 sm:p-8 border-2 border-[#a6634f]/40 shadow-2xl text-white overflow-hidden flex flex-col justify-between items-center text-center">
+          
+          <!-- Fondo Cósmico & Geometría Sagrada (Estrellas / Cuadrícula Platónica) -->
+          <div class="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#d99a86_1px,transparent_1px)] [background-size:24px_24px]"></div>
+
+          <!-- Encabezado: Nombre de la Red & Frase Central -->
+          <div class="relative z-10 w-full mb-2">
+            <span class="text-[10px] sm:text-xs font-black uppercase tracking-[0.25em] text-[#d99a86] font-mono-code block mb-1">
+              RED COMUNITARIA
+            </span>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-none font-heading mb-2">
+              Elementales
+            </h2>
+            <!-- Frase Central Solicitada por el Usuario -->
+            <div class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-[#d99a86]/40 backdrop-blur-md shadow-inner">
+              <p class="text-sm sm:text-base md:text-lg font-bold text-[#fcf4f0] tracking-wide italic">
+                “Soy una parte Elemental”
+              </p>
+            </div>
+          </div>
+
+          <!-- ESCENARIO DEL SISTEMA SOLAR: LOS 4 ELEMENTOS EN ÓRBITA CON ÉTER AL CENTRO -->
+          <div class="relative z-10 w-full flex items-center justify-center my-3 sm:my-4">
+            <div class="solar-system-stage">
+              
+              <!-- Anillos orbitales concéntricos (Pistas planetarias) -->
+              <div class="solar-orbit-ring ring-outer"></div>
+              <div class="solar-orbit-ring ring-mid"></div>
+              <div class="solar-orbit-ring ring-inner"></div>
+
+              <!-- Anillo Giratorio del Sistema Solar (Carousel orbital animado) -->
+              <div class="solar-orbit-carousel">
+                
+                <!-- 1. PLANETA FUEGO (Tetraedro - Arriba / 0°) -->
+                <div class="solar-planet-anchor planet-fuego" onclick="showElementalDetail('fuego')" title="Fuego · Tetraedro">
+                  <div class="solar-planet-card border-[#ea580c] hover:border-amber-300 shadow-[0_0_18px_rgba(234,88,12,0.45)]">
+                    <img src="public/assets/brand/fuego_clean.png" class="w-10 h-10 sm:w-12 sm:h-12 object-contain pointer-events-none drop-shadow-sm" alt="Fuego" />
+                    <!-- Badge flotante del Sólido Platónico -->
+                    <span class="absolute -bottom-4 bg-black/85 text-[#fdba74] text-[9px] font-black uppercase px-2 py-0.5 rounded-full border border-[#ea580c]/50 whitespace-nowrap shadow-xs">
+                      🔥 Tetraedro
+                    </span>
+                  </div>
+                </div>
+
+                <!-- 2. PLANETA AGUA (Icosaedro - Derecha / 90°) -->
+                <div class="solar-planet-anchor planet-agua" onclick="showElementalDetail('agua')" title="Agua · Icosaedro">
+                  <div class="solar-planet-card border-[#0284c7] hover:border-sky-300 shadow-[0_0_18px_rgba(2,132,199,0.45)]">
+                    <img src="public/assets/brand/agua_clean.png" class="w-10 h-10 sm:w-12 sm:h-12 object-contain pointer-events-none drop-shadow-sm" alt="Agua" />
+                    <span class="absolute -bottom-4 bg-black/85 text-[#7dd3fc] text-[9px] font-black uppercase px-2 py-0.5 rounded-full border border-[#0284c7]/50 whitespace-nowrap shadow-xs">
+                      💧 Icosaedro
+                    </span>
+                  </div>
+                </div>
+
+                <!-- 3. PLANETA TIERRA (Hexaedro / Cubo - Abajo / 180°) -->
+                <div class="solar-planet-anchor planet-tierra" onclick="showElementalDetail('tierra')" title="Tierra · Hexaedro">
+                  <div class="solar-planet-card border-[#166534] hover:border-emerald-300 shadow-[0_0_18px_rgba(22,101,52,0.45)]">
+                    <img src="public/assets/brand/tierra_clean.png" class="w-10 h-10 sm:w-12 sm:h-12 object-contain pointer-events-none drop-shadow-sm" alt="Tierra" />
+                    <span class="absolute -bottom-4 bg-black/85 text-[#86efac] text-[9px] font-black uppercase px-2 py-0.5 rounded-full border border-[#166534]/50 whitespace-nowrap shadow-xs">
+                      🍃 Hexaedro
+                    </span>
+                  </div>
+                </div>
+
+                <!-- 4. PLANETA AIRE (Octaedro - Izquierda / 270°) -->
+                <div class="solar-planet-anchor planet-aire" onclick="showElementalDetail('aire')" title="Aire · Octaedro">
+                  <div class="solar-planet-card border-[#0d9488] hover:border-teal-300 shadow-[0_0_18px_rgba(13,148,136,0.45)]">
+                    <img src="public/assets/brand/aire_clean.png" class="w-10 h-10 sm:w-12 sm:h-12 object-contain pointer-events-none drop-shadow-sm" alt="Aire" />
+                    <span class="absolute -bottom-4 bg-black/85 text-[#5eead4] text-[9px] font-black uppercase px-2 py-0.5 rounded-full border border-[#0d9488]/50 whitespace-nowrap shadow-xs">
+                      💨 Octaedro
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- CENTRO DEL SISTEMA SOLAR: ÉTER (LOGO DE ELEMENTALES) -->
+              <div class="solar-sun-center cursor-pointer group" onclick="showElementalDetail('eter')" title="Éter · Dodecaedro · Logo Oficial de Elementales">
+                <img 
+                  src="public/assets/brand/comunidad_emblem_clean.png" 
+                  class="w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-[0_0_12px_rgba(217,154,134,0.7)] group-hover:scale-108 transition-transform" 
+                  alt="Éter - Elementales" 
+                />
+                <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-[#d99a86] font-mono-code mt-1">
+                  ✨ ÉTER
+                </span>
+                <span class="text-[8px] sm:text-[9px] font-bold text-stone-300">
+                  Dodecaedro
+                </span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- PLACA INFORMATIVA INTERACTIVA DE CUALIDADES ELEMENTALES -->
+          <div class="relative z-10 w-full mt-2">
+            
+            <div id="elemental-active-detail-card" class="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-[#d99a86]/30 text-left transition-all text-xs">
+              <div class="flex items-center justify-between mb-1">
+                <span id="detail-element-badge" class="font-black text-xs text-[#d99a86] uppercase tracking-wider flex items-center gap-1.5">
+                  <span>✨</span> ÉTER · DODECAEDRO (CENTRO · LOGO)
+                </span>
+                <span class="text-[10px] text-stone-400">Toca cada elemento</span>
+              </div>
+              <p id="detail-element-description" class="text-stone-300 text-[11px] sm:text-xs leading-relaxed">
+                <strong>Quintaesencia y Conciencia:</strong> El tejido conector que une a toda la comunidad. En el centro está la persona y la armonía cósmica entre los elementos.
+              </p>
+            </div>
+
+            <!-- Botonera / Ribbon táctil de los 5 Elementos -->
+            <div class="grid grid-cols-5 gap-1.5 sm:gap-2 mt-2.5 w-full">
+              
+              <!-- Fuego -->
+              <button type="button" onclick="showElementalDetail('fuego')" class="p-1.5 rounded-xl bg-orange-950/60 hover:bg-orange-900/80 border border-orange-500/40 text-center transition-all cursor-pointer">
+                <span class="block text-xs">🔥</span>
+                <span class="block text-[9px] font-black text-orange-300">Fuego</span>
+                <span class="hidden sm:block text-[8px] text-stone-400">Tetraedro</span>
+              </button>
+
+              <!-- Tierra -->
+              <button type="button" onclick="showElementalDetail('tierra')" class="p-1.5 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/40 text-center transition-all cursor-pointer">
+                <span class="block text-xs">🍃</span>
+                <span class="block text-[9px] font-black text-emerald-300">Tierra</span>
+                <span class="hidden sm:block text-[8px] text-stone-400">Hexaedro</span>
+              </button>
+
+              <!-- Éter (Centro) -->
+              <button type="button" onclick="showElementalDetail('eter')" class="p-1.5 rounded-xl bg-[#a6634f]/40 hover:bg-[#a6634f]/70 border border-[#d99a86]/60 text-center transition-all cursor-pointer ring-1 ring-[#d99a86]/40">
+                <span class="block text-xs">✨</span>
+                <span class="block text-[9px] font-black text-[#fcf4f0]">Éter</span>
+                <span class="hidden sm:block text-[8px] text-[#d99a86]">Centro</span>
+              </button>
+
+              <!-- Agua -->
+              <button type="button" onclick="showElementalDetail('agua')" class="p-1.5 rounded-xl bg-sky-950/60 hover:bg-sky-900/80 border border-sky-500/40 text-center transition-all cursor-pointer">
+                <span class="block text-xs">💧</span>
+                <span class="block text-[9px] font-black text-sky-300">Agua</span>
+                <span class="hidden sm:block text-[8px] text-stone-400">Icosaedro</span>
+              </button>
+
+              <!-- Aire -->
+              <button type="button" onclick="showElementalDetail('aire')" class="p-1.5 rounded-xl bg-teal-950/60 hover:bg-teal-900/80 border border-teal-500/40 text-center transition-all cursor-pointer">
+                <span class="block text-xs">💨</span>
+                <span class="block text-[9px] font-black text-teal-300">Aire</span>
+                <span class="hidden sm:block text-[8px] text-stone-400">Octaedro</span>
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
     </div>
 
   </div>
