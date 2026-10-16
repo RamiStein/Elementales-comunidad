@@ -3212,11 +3212,10 @@ function handleLandingRegister(e) {
 
   let res = { success: true };
   if (typeof ElementalesDB !== 'undefined' && ElementalesDB.registerUser) {
-    res = ElementalesDB.registerUser({ code, name, phone, node: 'nodo-lomaverde' });
+    res = ElementalesDB.registerUser({ code, name, phone, node: '' });
   } else {
     localStorage.setItem('elementales_access_code', code);
     localStorage.setItem('elementales_user_name', name || code);
-    localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
   }
 
   if (!res.success) {
@@ -3229,7 +3228,7 @@ function handleLandingRegister(e) {
   }
 
   sessionStorage.setItem('elementales_authenticated', 'true');
-  sessionStorage.setItem('elementales_node_associated', 'true');
+  sessionStorage.removeItem('elementales_node_associated');
   sessionStorage.setItem('elementales_access_word', code);
   localStorage.setItem('elementales_access_code', code);
 
@@ -3237,7 +3236,7 @@ function handleLandingRegister(e) {
   AppState.userName = name || code;
 
   if (feedback) {
-    feedback.textContent = `¡Bienvenido/a ${name || code}! Tu código único quedó registrado.`;
+    feedback.textContent = `¡Bienvenido/a ${name || code}! Tu código quedó registrado. Elegí tu nodo de retiro...`;
     feedback.className = 'text-xs text-emerald-600 font-bold block mt-2 animate-fade-in';
     feedback.classList.remove('hidden');
   }
@@ -3252,8 +3251,9 @@ function handleLandingRegister(e) {
   updateGoogleUserMenuUI();
   updateRoleUI();
 
+  // Lleva al paso siguiente: asociar la cuenta al nodo de su preferencia (donde retira los pedidos)
   setTimeout(() => {
-    navigateTo('barrio', true);
+    goToNodeAssociation('socio');
   }, 600);
 }
 

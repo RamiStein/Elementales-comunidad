@@ -385,18 +385,18 @@
           <!-- MODO 2: REGISTRO PARA NUEVO ELEMENTAL (CÓDIGO ÚNICO IRREPETIBLE) -->
           <div id="landing-mode-register" class="hidden space-y-4">
             <p class="text-xs sm:text-sm text-stone-600 mb-4 leading-relaxed">
-              Sumate a la red comunitaria. Creá tu <strong>código único e irrepetible</strong> para asociarte a tu nodo y participar en compras colectivas.
+              Sumate a la red comunitaria. Creá tu <strong>código único e irrepetible</strong> para ser parte de Elementales.
             </p>
 
             <form onsubmit="handleLandingRegister(event)" class="space-y-3.5">
               
-              <!-- Código Único -->
+              <!-- 1. Clave de Acceso Nueva (Código Único e Irrepetible) -->
               <div>
                 <label for="landing-register-code" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1 flex items-center justify-between">
                   <span class="flex items-center gap-1.5">
-                    <span>✨</span> Código Único e Irrepetible
+                    <span>✨</span> Clave de Acceso Nueva
                   </span>
-                  <span class="text-[10px] font-medium text-stone-400">tu llave exclusiva</span>
+                  <span class="text-[10px] font-medium text-stone-400">código único e irrepetible</span>
                 </label>
                 <div class="relative">
                   <input 
@@ -412,10 +412,10 @@
                 </div>
               </div>
 
-              <!-- Nombre o Familia -->
+              <!-- 2. Nombre de Elemental -->
               <div>
                 <label for="landing-register-name" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1">
-                  👤 Tu Nombre o Familia
+                  👤 Nombre de Elemental
                 </label>
                 <input 
                   type="text" 
@@ -426,11 +426,11 @@
                 />
               </div>
 
-              <!-- WhatsApp -->
+              <!-- 3. Contacto Telefónico -->
               <div>
                 <label for="landing-register-phone" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1 flex items-center justify-between">
-                  <span>📱 Tu WhatsApp</span>
-                  <span class="text-[10px] font-medium text-stone-400">para retiros</span>
+                  <span>📱 Contacto Telefónico</span>
+                  <span class="text-[10px] font-medium text-stone-400">WhatsApp / Tel</span>
                 </label>
                 <input 
                   type="tel" 
@@ -438,18 +438,6 @@
                   placeholder="ej. 11 2345 6789" 
                   class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3 text-sm font-bold text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
                 />
-              </div>
-
-              <!-- Nodo Asignado -->
-              <div class="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-500/30 flex items-center justify-between text-xs">
-                <div class="flex items-center gap-2">
-                  <span class="text-lg">📍</span>
-                  <div>
-                    <span class="font-bold text-stone-900 block leading-tight">Retiro en Nodo Loma Verde</span>
-                    <span class="text-[10px] text-stone-500 block">Calle Los Ciruelos y Colectora Oeste</span>
-                  </div>
-                </div>
-                <span class="text-[9px] font-black uppercase bg-emerald-600 text-white px-2 py-0.5 rounded-full">Activo</span>
               </div>
 
               <!-- Botón Crear Código y Sumarme -->

@@ -253,7 +253,7 @@ const ElementalesDB = {
       code: cleanCode,
       name: (userData.name || '').trim() || cleanCode,
       phone: (userData.phone || '').trim(),
-      node: (userData.node || 'nodo-lomaverde').trim(),
+      node: (userData.node || '').trim(),
       role: 'socio',
       createdAt: new Date().toISOString()
     };
@@ -269,13 +269,15 @@ const ElementalesDB = {
     sess.userCode = newUser.code;
     sess.userName = newUser.name;
     sess.userPhone = newUser.phone;
-    sess.preferredNode = newUser.node;
+    if (newUser.node) {
+      sess.preferredNode = newUser.node;
+      localStorage.setItem('elementales_active_node', newUser.node);
+      localStorage.setItem('elementales_preferred_node', newUser.node);
+    }
     this.saveSession(sess);
 
     localStorage.setItem('elementales_user_name', sess.userName);
     localStorage.setItem('elementales_access_code', newUser.code);
-    localStorage.setItem('elementales_active_node', newUser.node);
-    localStorage.setItem('elementales_preferred_node', newUser.node);
 
     this.syncToServer('users', newUser);
     return { success: true, user: newUser };
