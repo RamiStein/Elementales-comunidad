@@ -881,6 +881,10 @@ function navigateTo(viewName, updateHistory = true) {
   } else if (viewName === 'profile') {
     renderProfile();
   }
+
+  if (typeof updateHeaderUI === 'function') {
+    updateHeaderUI();
+  }
 }
 
 // --- RENDERIZADO: HUB PRINCIPAL ---
@@ -2714,6 +2718,7 @@ function goToLanding() {
 
   navigateTo('landing', false);
   selectLandingNode(AppState.selectedLandingNode);
+  if (typeof updateHeaderUI === 'function') updateHeaderUI();
 }
 
 // =========================================================================
@@ -2744,12 +2749,13 @@ function goToNodeAssociation(role) {
     accountEl.textContent = displayName;
   }
 
-  // Preseleccionar el nodo preferido guardado o el activo
-  const savedNode = localStorage.getItem('elementales_preferred_node') || AppState.activeNodeId || 'nodo-lomaverde';
-  AppState.selectedAssociationNode = savedNode;
+  // Preseleccionar el nodo preferido guardado si existe
+  const savedNode = localStorage.getItem('elementales_preferred_node');
+  AppState.selectedAssociationNode = savedNode || null;
 
   navigateTo('asociar-nodo', true);
   renderNodeAssociationList();
+  if (typeof updateHeaderUI === 'function') updateHeaderUI();
 }
 
 function renderNodeAssociationList(searchQuery = '') {
@@ -2757,7 +2763,7 @@ function renderNodeAssociationList(searchQuery = '') {
   if (!container) return;
 
   const q = searchQuery.toLowerCase().trim();
-  const selectedId = AppState.selectedAssociationNode || AppState.activeNodeId || 'nodo-lomaverde';
+  const selectedId = AppState.selectedAssociationNode;
 
   let list = Array.isArray(NODOS_COMUNIDAD) ? [...NODOS_COMUNIDAD] : [];
   if (q) {
@@ -2785,7 +2791,7 @@ function renderNodeAssociationList(searchQuery = '') {
   }
 
   container.innerHTML = list.map(node => {
-    const isSelected = node.id === selectedId;
+    const isSelected = selectedId ? (node.id === selectedId) : false;
     const isNearest = node._isNearest === true;
     const distText = node._distKm ? `a ${node._distKm} km` : null;
 
@@ -2891,14 +2897,28 @@ function selectNodeForAssociation(nodeId) {
 }
 
 function updateAssociationSummary() {
-  const selectedId = AppState.selectedAssociationNode || 'nodo-lomaverde';
-  const node = NODOS_COMUNIDAD.find(n => n.id === selectedId) || NODOS_COMUNIDAD[0];
-
+  const selectedId = AppState.selectedAssociationNode;
   const nameEl = document.getElementById('asociar-nodo-summary-name');
   const addrEl = document.getElementById('asociar-nodo-summary-address');
+  const confirmBtn = document.getElementById('btn-confirm-association');
 
+  if (!selectedId) {
+    if (nameEl) nameEl.textContent = 'Seleccioná un nodo de retiro';
+    if (addrEl) addrEl.textContent = 'Hacé clic en cualquiera de las opciones de arriba para coordinar tus entregas';
+    if (confirmBtn) {
+      confirmBtn.disabled = true;
+      confirmBtn.classList.add('opacity-50', 'pointer-events-none');
+    }
+    return;
+  }
+
+  const node = NODOS_COMUNIDAD.find(n => n.id === selectedId) || NODOS_COMUNIDAD[0];
   if (nameEl && node) nameEl.textContent = node.name;
   if (addrEl && node) addrEl.textContent = `${node.address} · ${node.time}`;
+  if (confirmBtn) {
+    confirmBtn.disabled = false;
+    confirmBtn.classList.remove('opacity-50', 'pointer-events-none');
+  }
 }
 
 function filterNodesForAssociation() {
@@ -2908,7 +2928,16 @@ function filterNodesForAssociation() {
 }
 
 function confirmNodeAssociation() {
-  const selectedId = AppState.selectedAssociationNode || 'nodo-lomaverde';
+  const selectedId = AppState.selectedAssociationNode;
+  if (!selectedId) {
+    if (typeof showToast === 'function') {
+      showToast('Por favor seleccioná un nodo para continuar.', 'warning');
+    } else {
+      alert('Por favor seleccioná un nodo para continuar.');
+    }
+    return;
+  }
+
   const nodeObj = NODOS_COMUNIDAD.find(n => n.id === selectedId) || NODOS_COMUNIDAD[0];
 
   AppState.activeNodeId = selectedId;
@@ -2936,6 +2965,7 @@ function confirmNodeAssociation() {
   sounds.playSuccess();
   updateRoleUI();
   updateNodeUI();
+  if (typeof updateHeaderUI === 'function') updateHeaderUI();
 
   if (typeof showToast === 'function') {
     showToast(`¡Cuenta asociada a ${nodeObj.name}! Retirarás tus pedidos en este punto.`);
@@ -3104,6 +3134,7 @@ function handleAccessWordLogin(e) {
 
   let role = 'socio';
   let welcomeMsg = `¡Bienvenido/a a la red Elementales, ${word}!`;
+  let existingUser = null;
 
   // 1. Claves de Administrador / Gestor
   if (cleanWord === 'admin' || cleanWord === '1234' || cleanWord === '2026' || cleanWord === 'gestor' || cleanWord === 'nodo' || cleanWord === '1321') {
@@ -3113,7 +3144,7 @@ function handleAccessWordLogin(e) {
   } 
   // 2. Buscar si es un usuario registrado en DB
   else if (typeof ElementalesDB !== 'undefined' && ElementalesDB.findUserByCode) {
-    const existingUser = ElementalesDB.findUserByCode(cleanWord);
+    existingUser = ElementalesDB.findUserByCode(cleanWord);
     if (existingUser) {
       role = 'socio';
       welcomeMsg = `¡Hola de nuevo, ${existingUser.name || word}!`;
@@ -3122,13 +3153,18 @@ function handleAccessWordLogin(e) {
       localStorage.setItem('elementales_access_code', existingUser.code);
       if (existingUser.node) {
         localStorage.setItem('elementales_active_node', existingUser.node);
+        localStorage.setItem('elementales_preferred_node', existingUser.node);
       }
     }
   }
 
   sessionStorage.setItem('elementales_authenticated', 'true');
-  sessionStorage.setItem('elementales_node_associated', 'true');
   localStorage.setItem('elementales_access_code', word);
+
+  const hasNode = Boolean(
+    (existingUser && existingUser.node) ||
+    localStorage.getItem('elementales_preferred_node')
+  );
 
   if (feedback) {
     feedback.textContent = welcomeMsg;
@@ -3143,9 +3179,22 @@ function handleAccessWordLogin(e) {
   updateGoogleUserMenuUI();
   updateRoleUI();
 
-  setTimeout(() => {
-    navigateTo('barrio', true);
-  }, 250);
+  if (role === 'gestor') {
+    sessionStorage.setItem('elementales_node_associated', 'true');
+    setTimeout(() => {
+      navigateTo('barrio', true);
+    }, 250);
+  } else if (!hasNode) {
+    sessionStorage.removeItem('elementales_node_associated');
+    setTimeout(() => {
+      goToNodeAssociation('socio');
+    }, 250);
+  } else {
+    sessionStorage.setItem('elementales_node_associated', 'true');
+    setTimeout(() => {
+      navigateTo('barrio', true);
+    }, 250);
+  }
 }
 
 function switchLandingMode(mode) {
@@ -3403,6 +3452,10 @@ function updateRoleUI() {
     btnSoc.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex flex-col items-center justify-center gap-1 ' + (role === 'socio' ? 'bg-blue-50 border-blue-600 text-blue-900 shadow-xs' : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50');
     btnGes.className = 'p-2.5 rounded-xl border-2 font-bold text-xs transition-all flex flex-col items-center justify-center gap-1 ' + (role === 'gestor' ? 'bg-amber-50 border-amber-600 text-amber-950 shadow-xs' : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50');
   }
+
+  if (typeof updateHeaderUI === 'function') {
+    updateHeaderUI();
+  }
 }
 
 // =========================================================================
@@ -3478,6 +3531,8 @@ function updateGoogleUserMenuUI() {
   const nameEl = document.getElementById('user-menu-display-name');
   const codeEl = document.getElementById('user-menu-display-code');
   const roleEl = document.getElementById('user-menu-display-role');
+  const pickupTextEl = document.getElementById('user-menu-pickup-text');
+  const waffleNodePill = document.getElementById('waffle-node-pill');
 
   let name = '';
   let code = '';
@@ -3486,17 +3541,78 @@ function updateGoogleUserMenuUI() {
     code = ElementalesDB.getUserCode ? ElementalesDB.getUserCode() : '';
   }
   if (!name) name = localStorage.getItem('elementales_user_name') || sessionStorage.getItem('elementales_access_word') || 'Soy una parte Elemental';
-  if (!code) code = localStorage.getItem('elementales_access_code') || sessionStorage.getItem('elementales_access_word') || 'miembro.lomaverde';
+  if (!code) code = localStorage.getItem('elementales_access_code') || sessionStorage.getItem('elementales_access_word') || 'miembro.elemental';
+
+  const nodeObj = (typeof NODOS_COMUNIDAD !== 'undefined' ? NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) : null) || (typeof NODOS_COMUNIDAD !== 'undefined' ? NODOS_COMUNIDAD[0] : { shortName: 'Loma Verde' });
+  const hasPreferredNode = Boolean(localStorage.getItem('elementales_preferred_node') || sessionStorage.getItem('elementales_node_associated'));
+  const nodeName = hasPreferredNode ? (nodeObj ? (nodeObj.shortName || 'Loma Verde') : 'Loma Verde') : 'Sin asignar';
 
   if (nameEl) nameEl.textContent = name;
   if (codeEl) codeEl.textContent = `@${code.replace(/^@/, '')}`;
   if (roleEl) {
     const roleText = AppState.userRole === 'gestor' 
-      ? 'Administrador · Guardián del Nodo' 
-      : 'Miembro Activo · Nodo Loma Verde';
+      ? `Administrador · Guardián del Nodo (${nodeName})` 
+      : (hasPreferredNode ? `Miembro Activo · Nodo ${nodeName}` : 'Miembro de la Red');
     roleEl.textContent = roleText;
   }
+
+  if (pickupTextEl) {
+    pickupTextEl.innerHTML = `<span>📍</span> Punto de Retiro: ${hasPreferredNode ? (nodeObj ? (nodeObj.shortName || nodeObj.name) : 'Loma Verde') : 'Elegir Nodo'}`;
+  }
+
+  if (waffleNodePill) {
+    waffleNodePill.textContent = hasPreferredNode ? (nodeObj ? nodeObj.shortName : 'Loma Verde') : 'Red Elementales';
+  }
 }
+
+function updateHeaderUI() {
+  const isAuth = sessionStorage.getItem('elementales_authenticated') === 'true';
+  const hasPreferredNode = Boolean(localStorage.getItem('elementales_preferred_node') || sessionStorage.getItem('elementales_node_associated'));
+  const isLandingView = AppState.currentView === 'landing' || AppState.currentView === 'asociar-nodo';
+
+  const nodeBadge = document.getElementById('header-node-badge');
+  const waffleBtn = document.getElementById('btn-google-waffle');
+  const avatarBtn = document.getElementById('btn-google-avatar');
+  const navLinks = document.getElementById('header-nav-links');
+  const loginBtn = document.getElementById('header-login-btn');
+  const nodeNameEl = document.getElementById('header-node-name');
+
+  if (!isAuth || isLandingView) {
+    if (nodeBadge) nodeBadge.classList.add('hidden');
+    if (avatarBtn) avatarBtn.classList.add('hidden');
+    if (waffleBtn) waffleBtn.classList.add('hidden');
+    if (navLinks) navLinks.classList.add('hidden');
+    if (loginBtn) {
+      loginBtn.classList.remove('hidden');
+      loginBtn.classList.add('inline-flex');
+    }
+  } else {
+    if (avatarBtn) avatarBtn.classList.remove('hidden');
+    if (waffleBtn) waffleBtn.classList.remove('hidden');
+    if (navLinks) navLinks.classList.remove('hidden');
+    if (loginBtn) {
+      loginBtn.classList.add('hidden');
+      loginBtn.classList.remove('inline-flex');
+    }
+
+    if (hasPreferredNode) {
+      if (nodeBadge) nodeBadge.classList.remove('hidden');
+      if (nodeNameEl) {
+        const node = (typeof NODOS_COMUNIDAD !== 'undefined' ? NODOS_COMUNIDAD.find(n => n.id === AppState.activeNodeId) : null) || (typeof NODOS_COMUNIDAD !== 'undefined' ? NODOS_COMUNIDAD[0] : { shortName: 'Loma Verde' });
+        nodeNameEl.textContent = node.shortName || 'Loma Verde';
+      }
+    } else {
+      if (nodeBadge) {
+        nodeBadge.classList.remove('hidden');
+        if (nodeNameEl) nodeNameEl.textContent = 'Elegir Nodo';
+      }
+    }
+  }
+
+  updateGoogleUserMenuUI();
+}
+
+window.updateHeaderUI = updateHeaderUI;
 
 // Cerrar waffle y menú de usuario si se hace clic afuera o en el telón
 document.addEventListener('click', (e) => {
@@ -6452,6 +6568,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  if (window.location.hash === '#asociar-nodo' || urlParams.get('view') === 'asociar-nodo') {
+    goToNodeAssociation(AppState.userRole || 'socio');
+    if (typeof updateHeaderUI === 'function') updateHeaderUI();
+    return;
+  }
+
   if (window.location.hash === '#admin') {
     AppState.userRole = 'gestor';
     sessionStorage.setItem('elementales_authenticated', 'true');
@@ -6472,6 +6594,7 @@ document.addEventListener('DOMContentLoaded', () => {
     navigateTo('barrio', false);
     renderCirculoStoreBanner();
   }
+  if (typeof updateHeaderUI === 'function') updateHeaderUI();
 });
 
 // --- MANEJO DE NAVEGACIÓN ATRÁS / ADELANTE DEL NAVEGADOR (SPA SIN RECARGA) ---
@@ -7414,6 +7537,23 @@ function updateNodeUI() {
   }
 
   populateCheckoutCirculos();
+
+  const barrioTitleEl = document.getElementById('view-barrio-node-title');
+  if (barrioTitleEl) {
+    barrioTitleEl.textContent = node.shortName || 'Loma Verde';
+  }
+  const btnSearchText = document.getElementById('btn-search-node-text');
+  if (btnSearchText) {
+    btnSearchText.textContent = `Buscar en ${node.shortName || 'Loma Verde'}`;
+  }
+  const nodeGoogleSearchInput = document.getElementById('node-google-search-input');
+  if (nodeGoogleSearchInput) {
+    nodeGoogleSearchInput.placeholder = `¿Qué estás buscando en ${node.shortName || 'Loma Verde'}? (ej. frutillas, bolsones, acelga, círculos...)`;
+  }
+
+  if (typeof updateHeaderUI === 'function') {
+    updateHeaderUI();
+  }
 }
 
 // =========================================================================

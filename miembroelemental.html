@@ -334,17 +334,39 @@
       }
 
       sessionStorage.setItem('elementales_authenticated', 'true');
-      sessionStorage.setItem('elementales_node_associated', 'true');
       sessionStorage.setItem('elementales_access_word', code);
       localStorage.setItem('elementales_access_code', code);
 
-      feedback.textContent = `¡Hola de nuevo! Ingresando a tu nodo...`;
-      feedback.className = 'text-xs text-emerald-700 font-bold block mt-2';
-      feedback.classList.remove('hidden');
+      let hasAssociatedNode = Boolean(localStorage.getItem('elementales_preferred_node'));
+      if (typeof ElementalesDB !== 'undefined' && ElementalesDB.findUserByCode) {
+        const u = ElementalesDB.findUserByCode(code);
+        if (u) {
+          if (u.name) localStorage.setItem('elementales_user_name', u.name);
+          if (u.node) {
+            localStorage.setItem('elementales_active_node', u.node);
+            localStorage.setItem('elementales_preferred_node', u.node);
+            hasAssociatedNode = true;
+          }
+        }
+      }
 
-      setTimeout(() => {
-        window.location.href = 'index.html#barrio';
-      }, 400);
+      if (hasAssociatedNode) {
+        sessionStorage.setItem('elementales_node_associated', 'true');
+        feedback.textContent = `¡Hola de nuevo! Ingresando a tu nodo...`;
+        feedback.className = 'text-xs text-emerald-700 font-bold block mt-2';
+        feedback.classList.remove('hidden');
+        setTimeout(() => {
+          window.location.href = 'index.html#barrio';
+        }, 400);
+      } else {
+        sessionStorage.removeItem('elementales_node_associated');
+        feedback.textContent = `¡Código verificado! Elegí tu nodo de retiro a continuación...`;
+        feedback.className = 'text-xs text-emerald-700 font-bold block mt-2';
+        feedback.classList.remove('hidden');
+        setTimeout(() => {
+          window.location.href = 'index.html#asociar-nodo';
+        }, 400);
+      }
     }
   </script>
 </body>
