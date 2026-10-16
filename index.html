@@ -301,15 +301,15 @@
   <!-- ========================================================================= -->
   <!-- 0.A VISTA: ACCESO AL SISTEMA / LOGIN & COSMOS ELEMENTAL                     -->
   <!-- ========================================================================= -->
-  <div id="view-landing" class="app-view max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 animate-fade-in">
+  <div id="view-landing" class="app-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 animate-fade-in">
     
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
       
       <!-- ===================================================================== -->
       <!-- COLUMNA IZQUIERDA: CLÁSICO ACCESO DE LOGIN                            -->
       <!-- ===================================================================== -->
-      <div class="lg:col-span-5 w-full">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#eddcd5] shadow-xl text-left relative overflow-hidden">
+      <div class="lg:col-span-5 w-full flex flex-col justify-center">
+        <div class="bg-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-8 md:p-10 border-2 border-[#eddcd5] shadow-xl text-left relative overflow-hidden h-full flex flex-col justify-between">
           
           <!-- Encabezado de Marca -->
           <div class="flex items-center gap-3 mb-5">
@@ -484,158 +484,65 @@
       </div>
 
       <!-- ===================================================================== -->
-      <!-- COLUMNA DERECHA: ESENCIA DE ELEMENTALES, 5 SÓLIDOS Y SISTEMA SOLAR   -->
+      <!-- COLUMNA DERECHA: PORTADA DE ARTE ELEMENTAL (ESTILO BEHANCE SHOWCASE) -->
       <!-- ===================================================================== -->
-      <div class="lg:col-span-7 w-full">
-        <div class="relative bg-gradient-to-b from-[#1c1917] via-[#241f1c] to-[#141211] rounded-3xl p-6 sm:p-8 border-2 border-[#a6634f]/40 shadow-2xl text-white overflow-hidden flex flex-col justify-between items-center text-center">
+      <div class="lg:col-span-7 w-full flex">
+        <div class="relative w-full rounded-3xl sm:rounded-[2.5rem] overflow-hidden shadow-2xl border border-stone-200/80 bg-stone-900 group min-h-[440px] sm:min-h-[560px] lg:min-h-[640px] flex flex-col justify-between">
           
-          <!-- Fondo Cósmico & Geometría Sagrada (Estrellas / Cuadrícula Platónica) -->
-          <div class="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#d99a86_1px,transparent_1px)] [background-size:24px_24px]"></div>
+          <!-- Imagen de Portada Hero Preponderante -->
+          <img 
+            src="public/assets/brand/login_behance_art.jpg" 
+            alt="Arte de Portada Elementales - Resonancia Elemental" 
+            class="absolute inset-0 w-full h-full object-cover object-center transform group-hover:scale-102 transition-transform duration-700 ease-out"
+          />
 
-          <!-- Encabezado: Nombre de la Red & Frase Central -->
-          <div class="relative z-10 w-full mb-2">
-            <span class="text-[10px] sm:text-xs font-black uppercase tracking-[0.25em] text-[#d99a86] font-mono-code block mb-1">
+          <!-- Gradientes sutiles de contraste editorial estilo Behance -->
+          <div class="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-stone-950/70 via-stone-950/25 to-transparent pointer-events-none"></div>
+          <div class="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-stone-950/90 via-stone-950/45 to-transparent pointer-events-none"></div>
+
+          <!-- Cabecera Superior Flotante Estilo Behance Curation -->
+          <div class="relative z-10 p-5 sm:p-7 flex items-center justify-between gap-3">
+            <div class="bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/60 shadow-sm flex items-center gap-2">
+              <span class="text-xs">🌀</span>
+              <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-stone-900 font-mono-code">
+                ARTE & RESONANCIA
+              </span>
+            </div>
+
+            <div class="bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 text-white/90 text-[10px] font-bold flex items-center gap-1.5 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+              <span>Huella Comunitaria</span>
+            </div>
+          </div>
+
+          <!-- Pie Editorial Estilo Behance Showcase -->
+          <div class="relative z-10 p-6 sm:p-8 text-white text-left">
+            <span class="text-[10px] sm:text-xs font-black uppercase tracking-[0.25em] text-sky-200 font-mono-code block mb-1.5">
               RED COMUNITARIA
             </span>
-            <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-none font-heading mb-2">
-              Elementales
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight font-heading mb-2 drop-shadow-md">
+              “Soy una parte Elemental”
             </h2>
-            <!-- Frase Central Solicitada por el Usuario -->
-            <div class="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-[#d99a86]/40 backdrop-blur-md shadow-inner">
-              <p class="text-sm sm:text-base md:text-lg font-bold text-[#fcf4f0] tracking-wide italic">
-                “Soy una parte Elemental”
-              </p>
-            </div>
-          </div>
+            <p class="text-xs sm:text-sm text-stone-200 font-medium max-w-lg leading-relaxed drop-shadow-sm">
+              Cada integrante es una huella viva e irrepetible en el tejido del nodo. Círculos de consumo consciente, cosechas agroecológicas y logística barrial compartida.
+            </p>
 
-          <!-- ESCENARIO DEL SISTEMA SOLAR: LOS 4 ELEMENTOS EN ÓRBITA CON ÉTER AL CENTRO -->
-          <div class="relative z-10 w-full flex items-center justify-center my-3 sm:my-4">
-            <div class="solar-system-stage">
-              
-              <!-- Anillos orbitales concéntricos (Pistas planetarias) -->
-              <div class="solar-orbit-ring ring-outer"></div>
-              <div class="solar-orbit-ring ring-mid"></div>
-              <div class="solar-orbit-ring ring-inner"></div>
-
-              <!-- Anillo Giratorio del Sistema Solar (Carousel orbital animado) -->
-              <div class="solar-orbit-carousel">
-                
-                <!-- 1. PLANETA FUEGO (Tetraedro - Arriba / 0°) -->
-                <div class="solar-planet-anchor planet-fuego" onclick="showElementalDetail('fuego')" title="Fuego · Tetraedro">
-                  <div class="solar-planet-card border-[#ea580c] hover:border-amber-300 shadow-[0_0_18px_rgba(234,88,12,0.45)]">
-                    <img src="public/assets/brand/fuego_clean.png" class="w-10 h-10 sm:w-12 sm:h-12 object-contain pointer-events-none drop-shadow-sm" alt="Fuego" />
-                    <!-- Badge flotante del Sólido Platónico -->
-                    <span class="absolute -bottom-4 bg-black/85 text-[#fdba74] text-[9px] font-black uppercase px-2 py-0.5 rounded-full border border-[#ea580c]/50 whitespace-nowrap shadow-xs">
-                      🔥 Tetraedro
-                    </span>
-                  </div>
+            <div class="mt-5 pt-4 border-t border-white/20 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md p-1 border border-white/30 flex items-center justify-center shrink-0">
+                  <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Elementales" />
                 </div>
-
-                <!-- 2. PLANETA AGUA (Icosaedro - Derecha / 90°) -->
-                <div class="solar-planet-anchor planet-agua" onclick="showElementalDetail('agua')" title="Agua · Icosaedro">
-                  <div class="solar-planet-card border-[#0284c7] hover:border-sky-300 shadow-[0_0_18px_rgba(2,132,199,0.45)]">
-                    <img src="public/assets/brand/agua_clean.png" class="w-10 h-10 sm:w-12 sm:h-12 object-contain pointer-events-none drop-shadow-sm" alt="Agua" />
-                    <span class="absolute -bottom-4 bg-black/85 text-[#7dd3fc] text-[9px] font-black uppercase px-2 py-0.5 rounded-full border border-[#0284c7]/50 whitespace-nowrap shadow-xs">
-                      💧 Icosaedro
-                    </span>
-                  </div>
+                <div>
+                  <strong class="block font-bold text-white text-xs leading-none">Elementales Comunidad</strong>
+                  <span class="text-[10px] text-stone-300 font-mono">elementales.store</span>
                 </div>
-
-                <!-- 3. PLANETA TIERRA (Hexaedro / Cubo - Abajo / 180°) -->
-                <div class="solar-planet-anchor planet-tierra" onclick="showElementalDetail('tierra')" title="Tierra · Hexaedro">
-                  <div class="solar-planet-card border-[#166534] hover:border-emerald-300 shadow-[0_0_18px_rgba(22,101,52,0.45)]">
-                    <img src="public/assets/brand/tierra_clean.png" class="w-10 h-10 sm:w-12 sm:h-12 object-contain pointer-events-none drop-shadow-sm" alt="Tierra" />
-                    <span class="absolute -bottom-4 bg-black/85 text-[#86efac] text-[9px] font-black uppercase px-2 py-0.5 rounded-full border border-[#166534]/50 whitespace-nowrap shadow-xs">
-                      🍃 Hexaedro
-                    </span>
-                  </div>
-                </div>
-
-                <!-- 4. PLANETA AIRE (Octaedro - Izquierda / 270°) -->
-                <div class="solar-planet-anchor planet-aire" onclick="showElementalDetail('aire')" title="Aire · Octaedro">
-                  <div class="solar-planet-card border-[#0d9488] hover:border-teal-300 shadow-[0_0_18px_rgba(13,148,136,0.45)]">
-                    <img src="public/assets/brand/aire_clean.png" class="w-10 h-10 sm:w-12 sm:h-12 object-contain pointer-events-none drop-shadow-sm" alt="Aire" />
-                    <span class="absolute -bottom-4 bg-black/85 text-[#5eead4] text-[9px] font-black uppercase px-2 py-0.5 rounded-full border border-[#0d9488]/50 whitespace-nowrap shadow-xs">
-                      💨 Octaedro
-                    </span>
-                  </div>
-                </div>
-
               </div>
 
-              <!-- CENTRO DEL SISTEMA SOLAR: ÉTER (LOGO DE ELEMENTALES) -->
-              <div class="solar-sun-center cursor-pointer group" onclick="showElementalDetail('eter')" title="Éter · Dodecaedro · Logo Oficial de Elementales">
-                <img 
-                  src="public/assets/brand/comunidad_emblem_clean.png" 
-                  class="w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-[0_0_12px_rgba(217,154,134,0.7)] group-hover:scale-108 transition-transform" 
-                  alt="Éter - Elementales" 
-                />
-                <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-[#d99a86] font-mono-code mt-1">
-                  ✨ ÉTER
-                </span>
-                <span class="text-[8px] sm:text-[9px] font-bold text-stone-300">
-                  Dodecaedro
-                </span>
+              <div class="inline-flex items-center gap-1.5 text-[11px] font-bold text-sky-200 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+                <span>✨</span>
+                <span>Curaduría del Ecosistema</span>
               </div>
-
             </div>
-          </div>
-
-          <!-- PLACA INFORMATIVA INTERACTIVA DE CUALIDADES ELEMENTALES -->
-          <div class="relative z-10 w-full mt-2">
-            
-            <div id="elemental-active-detail-card" class="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-[#d99a86]/30 text-left transition-all text-xs">
-              <div class="flex items-center justify-between mb-1">
-                <span id="detail-element-badge" class="font-black text-xs text-[#d99a86] uppercase tracking-wider flex items-center gap-1.5">
-                  <span>✨</span> ÉTER · DODECAEDRO (CENTRO · LOGO)
-                </span>
-                <span class="text-[10px] text-stone-400">Toca cada elemento</span>
-              </div>
-              <p id="detail-element-description" class="text-stone-300 text-[11px] sm:text-xs leading-relaxed">
-                <strong>Quintaesencia y Conciencia:</strong> El tejido conector que une a toda la comunidad. En el centro está la persona y la armonía cósmica entre los elementos.
-              </p>
-            </div>
-
-            <!-- Botonera / Ribbon táctil de los 5 Elementos -->
-            <div class="grid grid-cols-5 gap-1.5 sm:gap-2 mt-2.5 w-full">
-              
-              <!-- Fuego -->
-              <button type="button" onclick="showElementalDetail('fuego')" class="p-1.5 rounded-xl bg-orange-950/60 hover:bg-orange-900/80 border border-orange-500/40 text-center transition-all cursor-pointer">
-                <span class="block text-xs">🔥</span>
-                <span class="block text-[9px] font-black text-orange-300">Fuego</span>
-                <span class="hidden sm:block text-[8px] text-stone-400">Tetraedro</span>
-              </button>
-
-              <!-- Tierra -->
-              <button type="button" onclick="showElementalDetail('tierra')" class="p-1.5 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/40 text-center transition-all cursor-pointer">
-                <span class="block text-xs">🍃</span>
-                <span class="block text-[9px] font-black text-emerald-300">Tierra</span>
-                <span class="hidden sm:block text-[8px] text-stone-400">Hexaedro</span>
-              </button>
-
-              <!-- Éter (Centro) -->
-              <button type="button" onclick="showElementalDetail('eter')" class="p-1.5 rounded-xl bg-[#a6634f]/40 hover:bg-[#a6634f]/70 border border-[#d99a86]/60 text-center transition-all cursor-pointer ring-1 ring-[#d99a86]/40">
-                <span class="block text-xs">✨</span>
-                <span class="block text-[9px] font-black text-[#fcf4f0]">Éter</span>
-                <span class="hidden sm:block text-[8px] text-[#d99a86]">Centro</span>
-              </button>
-
-              <!-- Agua -->
-              <button type="button" onclick="showElementalDetail('agua')" class="p-1.5 rounded-xl bg-sky-950/60 hover:bg-sky-900/80 border border-sky-500/40 text-center transition-all cursor-pointer">
-                <span class="block text-xs">💧</span>
-                <span class="block text-[9px] font-black text-sky-300">Agua</span>
-                <span class="hidden sm:block text-[8px] text-stone-400">Icosaedro</span>
-              </button>
-
-              <!-- Aire -->
-              <button type="button" onclick="showElementalDetail('aire')" class="p-1.5 rounded-xl bg-teal-950/60 hover:bg-teal-900/80 border border-teal-500/40 text-center transition-all cursor-pointer">
-                <span class="block text-xs">💨</span>
-                <span class="block text-[9px] font-black text-teal-300">Aire</span>
-                <span class="hidden sm:block text-[8px] text-stone-400">Octaedro</span>
-              </button>
-
-            </div>
-
           </div>
 
         </div>
