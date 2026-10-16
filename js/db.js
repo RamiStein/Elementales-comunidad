@@ -205,6 +205,93 @@ const ElementalesDB = {
   },
 
   // -----------------------------------------------------------------------
+  // 2.B REGISTRO DE USUARIOS Y CÓDIGOS ÚNICOS IRREPETIBLES
+  // -----------------------------------------------------------------------
+  getAllUsers() {
+    try {
+      const raw = localStorage.getItem(this.KEYS.USERS);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.error('Error cargando usuarios:', e);
+    }
+    return [];
+  },
+
+  findUserByCode(code) {
+    if (!code) return null;
+    const clean = String(code).trim().toLowerCase();
+    const users = this.getAllUsers();
+    return users.find(u => {
+      const uCode = String(u.code || u.userCode || '').trim().toLowerCase();
+      return uCode === clean;
+    }) || null;
+  },
+
+  isCodeAvailable(code) {
+    if (!code) return false;
+    const clean = String(code).trim().toLowerCase();
+    const reserved = ['admin', 'gestor', 'visitante', 'root', 'elementales', 'nodo', 'lomaverde', 'api'];
+    if (reserved.includes(clean)) return false;
+    return !this.findUserByCode(clean);
+  },
+
+  registerUser(userData) {
+    if (!userData || !userData.code) return { success: false, error: 'Por favor ingresá un código único.' };
+    const cleanCode = String(userData.code).trim().toLowerCase().replace(/[^a-z0-9._-]/g, '');
+    if (cleanCode.length < 3) {
+      return { success: false, error: 'El código debe tener al menos 3 caracteres.' };
+    }
+    if (!this.isCodeAvailable(cleanCode)) {
+      return { success: false, error: 'Este código ya está registrado. Por favor elegí otro código único.' };
+    }
+
+    const users = this.getAllUsers();
+    const newUser = {
+      code: cleanCode,
+      name: (userData.name || '').trim() || cleanCode,
+      phone: (userData.phone || '').trim(),
+      node: (userData.node || 'nodo-lomaverde').trim(),
+      role: 'socio',
+      createdAt: new Date().toISOString()
+    };
+
+    users.unshift(newUser);
+    try {
+      localStorage.setItem(this.KEYS.USERS, JSON.stringify(users));
+    } catch (e) {}
+
+    // Actualizar sesión activa
+    const sess = this.getSession();
+    sess.role = 'socio';
+    sess.userCode = newUser.code;
+    sess.userName = newUser.name;
+    sess.userPhone = newUser.phone;
+    sess.preferredNode = newUser.node;
+    this.saveSession(sess);
+
+    localStorage.setItem('elementales_user_name', sess.userName);
+    localStorage.setItem('elementales_access_code', newUser.code);
+    localStorage.setItem('elementales_active_node', newUser.node);
+    localStorage.setItem('elementales_preferred_node', newUser.node);
+
+    this.syncToServer('users', newUser);
+    return { success: true, user: newUser };
+  },
+
+  getUserName() {
+    const sess = this.getSession();
+    return sess.userName || localStorage.getItem('elementales_user_name') || '';
+  },
+
+  getUserCode() {
+    const sess = this.getSession();
+    return sess.userCode || localStorage.getItem('elementales_access_code') || '';
+  },
+
+  // -----------------------------------------------------------------------
   // 3. PERSISTENCIA DE CAJONES COMPARTIDOS Y CÍRCULOS
   // -----------------------------------------------------------------------
   saveShare(share) {

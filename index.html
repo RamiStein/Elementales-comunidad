@@ -75,20 +75,35 @@
         </div>
       </div>
 
-      <!-- BOTONES DE ACCIÓN PRINCIPALES: PORTAL, NODO ACTIVO E INICIO NODO -->
-      <div class="flex items-center gap-2 shrink-0">
+      <!-- BOTONES Y HERRAMIENTAS ESTILO GOOGLE SUITE -->
+      <div class="relative flex items-center gap-2 sm:gap-3 shrink-0">
         
-        <!-- Botón Portal / Login -->
+        <!-- Enlaces Rápidos estilo Google (Tienda, Círculos, Frutillas) -->
         <button 
           type="button" 
-          id="header-portal-btn"
-          onclick="goToLanding()" 
-          class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-stone-100 text-stone-700 border-stone-200 hover:bg-[#fcf4f0] hover:text-[#a6634f] hover:border-[#eddcd5]"
-          title="Abrir Portal de Inicio y Login de Elementales"
+          onclick="navigateTo('tierra')" 
+          class="hidden md:inline-flex items-center gap-1 text-xs font-bold text-stone-600 hover:text-emerald-700 transition-colors cursor-pointer py-1.5 px-2 rounded-lg hover:bg-stone-100"
+          title="Ver catálogo y cosechas"
         >
-          <span class="text-xs">🔑</span>
-          <span class="hidden sm:inline font-bold">Portal / Login</span>
+          <span>🌱</span> Tienda
         </button>
+
+        <button 
+          type="button" 
+          onclick="navigateTo('circulos')" 
+          class="hidden md:inline-flex items-center gap-1 text-xs font-bold text-stone-600 hover:text-emerald-700 transition-colors cursor-pointer py-1.5 px-2 rounded-lg hover:bg-stone-100"
+          title="Ver círculos barriales"
+        >
+          <span>👥</span> Círculos
+        </button>
+
+        <a 
+          href="frutilla.html" 
+          class="hidden sm:inline-flex items-center gap-1 text-xs font-black text-[#a6634f] hover:underline py-1.5 px-2 rounded-lg hover:bg-orange-50/50 transition-colors text-decoration-none"
+          title="Campaña Frutillas Ecotipa"
+        >
+          <span>🍓</span> Frutillas
+        </a>
 
         <!-- Selector Rápido de Nodo Activo -->
         <button 
@@ -103,25 +118,169 @@
           <span class="text-[9px] opacity-60">▾</span>
         </button>
 
-        <!-- Botón Volver al Buscador del Nodo -->
+        <!-- Botón Waffle de 9 Puntos (Google Apps con los 5 Elementos) -->
         <button 
           type="button" 
-          id="header-home-btn"
-          onclick="navigateTo('barrio')" 
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs border bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700"
-          title="Buscador y Portal del Nodo"
+          id="btn-google-waffle" 
+          onclick="toggleGoogleWaffle()" 
+          class="google-waffle-btn relative p-2 rounded-full hover:bg-stone-100 text-stone-600 hover:text-stone-900 transition-colors cursor-pointer flex items-center justify-center shrink-0" 
+          title="Dimensiones y Productos de Elementales" 
+          aria-label="Menú de Elementales"
         >
-          <span class="text-xs">🔍</span>
-          <span class="font-extrabold text-xs">Nodo</span>
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+          </svg>
         </button>
+
+        <!-- Botón de Avatar de Usuario estilo Google Account -->
+        <button 
+          type="button" 
+          id="btn-google-avatar" 
+          onclick="toggleGoogleUserMenu()" 
+          class="relative p-0.5 rounded-full hover:ring-2 hover:ring-emerald-400 transition-all cursor-pointer shrink-0" 
+          title="Perfil y Cuenta Elemental"
+        >
+          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden p-[1.5px] bg-gradient-to-tr from-sky-400 via-indigo-500 to-rose-400 shadow-xs">
+            <img 
+              id="header-avatar-img" 
+              src="public/assets/user_avatar.png" 
+              class="w-full h-full object-cover rounded-full bg-white" 
+              alt="Usuario Elemental" 
+              onerror="this.src='public/assets/brand/comunidad_emblem_clean.png'" 
+            />
+          </div>
+        </button>
+
+        <!-- MENÚ DESPLEGABLE WAFFLE DE 9 PUNTOS: LOS 5 ELEMENTOS -->
+        <div id="google-waffle-menu" class="google-waffle-menu hidden">
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-stone-100">
+            <div>
+              <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] block font-mono-code">ECOSISTEMA ELEMENTAL</span>
+              <h3 class="text-sm font-black text-stone-900 font-heading">Dimensiones del Nodo</h3>
+            </div>
+            <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              Loma Verde
+            </span>
+          </div>
+
+          <!-- Cuadrícula de los 5 Elementos -->
+          <div class="grid grid-cols-3 gap-2 py-1">
+            
+            <!-- 1. TIERRA (Hexaedro) -->
+            <div onclick="navigateTo('tierra'); closeGoogleWaffle();" class="waffle-item group" title="Tierra · Hexaedro">
+              <div class="w-12 h-12 rounded-2xl bg-[#f4f7ed] border border-[#c2d49e]/50 p-2 flex items-center justify-center mb-1 group-hover:scale-105 group-hover:shadow-xs transition-all">
+                <img src="public/assets/brand/tierra_clean.png" class="w-full h-full object-contain" alt="Tierra" onerror="this.src='public/assets/brand/tierra_logo.jpg'" />
+              </div>
+              <span class="text-xs font-black text-stone-800 group-hover:text-emerald-700 transition-colors">Tierra</span>
+              <span class="text-[10px] text-stone-400 font-medium leading-tight">Alimentos</span>
+            </div>
+
+            <!-- 2. AGUA (Icosaedro) -->
+            <div onclick="navigateTo('agua'); closeGoogleWaffle();" class="waffle-item group" title="Agua · Icosaedro">
+              <div class="w-12 h-12 rounded-2xl bg-[#edf5f9] border border-[#a8cee0]/50 p-2 flex items-center justify-center mb-1 group-hover:scale-105 group-hover:shadow-xs transition-all">
+                <img src="public/assets/brand/agua_clean.png" class="w-full h-full object-contain" alt="Agua" onerror="this.src='public/assets/brand/agua_logo.jpg'" />
+              </div>
+              <span class="text-xs font-black text-stone-800 group-hover:text-sky-700 transition-colors">Agua</span>
+              <span class="text-[10px] text-stone-400 font-medium leading-tight">Oficios</span>
+            </div>
+
+            <!-- 3. FUEGO (Tetraedro) -->
+            <div onclick="navigateTo('fuego'); closeGoogleWaffle();" class="waffle-item group" title="Fuego · Tetraedro">
+              <div class="w-12 h-12 rounded-2xl bg-[#fdf2ee] border border-[#f0b5a1]/50 p-2 flex items-center justify-center mb-1 group-hover:scale-105 group-hover:shadow-xs transition-all">
+                <img src="public/assets/brand/fuego_clean.png" class="w-full h-full object-contain" alt="Fuego" onerror="this.src='public/assets/brand/fuego_logo.jpg'" />
+              </div>
+              <span class="text-xs font-black text-stone-800 group-hover:text-orange-700 transition-colors">Fuego</span>
+              <span class="text-[10px] text-stone-400 font-medium leading-tight">Saberes</span>
+            </div>
+
+            <!-- 4. AIRE (Octaedro) -->
+            <div onclick="navigateTo('aire'); closeGoogleWaffle();" class="waffle-item group" title="Aire · Octaedro">
+              <div class="w-12 h-12 rounded-2xl bg-[#f2f6f5] border border-[#bdd5ce]/50 p-2 flex items-center justify-center mb-1 group-hover:scale-105 group-hover:shadow-xs transition-all">
+                <img src="public/assets/brand/aire_clean.png" class="w-full h-full object-contain" alt="Aire" onerror="this.src='public/assets/brand/aire_logo.jpg'" />
+              </div>
+              <span class="text-xs font-black text-stone-800 group-hover:text-teal-700 transition-colors">Aire</span>
+              <span class="text-[10px] text-stone-400 font-medium leading-tight">Comunidad</span>
+            </div>
+
+            <!-- 5. ÉTER (Dodecaedro / Logo) -->
+            <div onclick="navigateTo('eter'); closeGoogleWaffle();" class="waffle-item group" title="Éter · Dodecaedro">
+              <div class="w-12 h-12 rounded-2xl bg-[#fcf4f0] border border-[#eddcd5] p-2 flex items-center justify-center mb-1 group-hover:scale-105 group-hover:shadow-xs transition-all">
+                <img src="public/assets/brand/eter_clean.png" class="w-full h-full object-contain" alt="Éter" onerror="this.src='public/assets/brand/comunidad_emblem_clean.png'" />
+              </div>
+              <span class="text-xs font-black text-[#a6634f] group-hover:text-[#8b4e3d] transition-colors">Éter</span>
+              <span class="text-[10px] text-stone-400 font-medium leading-tight">Portal</span>
+            </div>
+
+            <!-- 6. FRUTILLAS ECOTIPA (Campaña Activa) -->
+            <a href="frutilla.html" onclick="closeGoogleWaffle();" class="waffle-item group text-decoration-none" title="Frutillas Finca Ecotipa">
+              <div class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 p-2 flex items-center justify-center mb-1 group-hover:scale-105 group-hover:shadow-xs transition-all">
+                <span class="text-2xl">🍓</span>
+              </div>
+              <span class="text-xs font-black text-rose-800 group-hover:text-rose-900 transition-colors">Frutillas</span>
+              <span class="text-[10px] text-stone-400 font-medium leading-tight">Cajón 5kg</span>
+            </a>
+
+          </div>
+
+          <!-- Accesos Rápidos Inferiores -->
+          <div class="mt-3 pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+            <a href="miembroelemental.html" onclick="closeGoogleWaffle();" class="text-xs font-bold text-[#a6634f] hover:underline flex items-center gap-1">
+              <span>🌱</span> Miembro Elemental
+            </a>
+            <button type="button" onclick="navigateTo('barrio'); closeGoogleWaffle();" class="text-xs font-bold text-emerald-800 hover:underline flex items-center gap-1 cursor-pointer">
+              <span>🔍</span> Buscador Nodo
+            </button>
+          </div>
+        </div>
+
+        <!-- MENÚ DESPLEGABLE GOOGLE ACCOUNT / USUARIO ELEMENTAL -->
+        <div id="google-user-menu" class="google-user-menu hidden">
+          <div class="p-4 text-center border-b border-stone-100">
+            <div class="relative inline-block mb-2">
+              <div class="w-16 h-16 rounded-full overflow-hidden p-0.5 border-2 border-indigo-400 shadow-md mx-auto">
+                <img id="user-menu-avatar-img" src="public/assets/user_avatar.png" class="w-full h-full object-cover rounded-full" alt="Perfil" onerror="this.src='public/assets/brand/comunidad_emblem_clean.png'" />
+              </div>
+            </div>
+            <h3 id="user-menu-display-name" class="font-black text-sm text-stone-900 font-heading leading-tight">
+              Soy una parte Elemental
+            </h3>
+            <span id="user-menu-display-code" class="text-xs text-stone-500 font-mono block mt-0.5">
+              @miembro.elemental
+            </span>
+            <span id="user-menu-display-role" class="inline-block mt-1.5 text-[10px] font-black uppercase text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              Miembro del Nodo Loma Verde
+            </span>
+          </div>
+
+          <div class="p-2 space-y-1 text-xs font-bold text-stone-700">
+            <button type="button" onclick="openNodeSelectorModal(); closeGoogleUserMenu();" class="w-full p-2.5 rounded-xl hover:bg-stone-50 text-left flex items-center justify-between cursor-pointer">
+              <span class="flex items-center gap-2"><span>📍</span> Punto de Retiro: Loma Verde</span>
+              <span class="text-[11px] text-[#a6634f]">Cambiar →</span>
+            </button>
+            <a href="miembroelemental.html" onclick="closeGoogleUserMenu();" class="w-full p-2.5 rounded-xl hover:bg-stone-50 text-left flex items-center justify-between text-stone-700 text-decoration-none block">
+              <span class="flex items-center gap-2"><span>🌱</span> Mi Membresía Elemental</span>
+              <span class="text-[11px] text-[#a6634f]">Gestionar →</span>
+            </a>
+            <a href="gestionelemental.html" onclick="closeGoogleUserMenu();" class="w-full p-2.5 rounded-xl hover:bg-stone-50 text-left flex items-center justify-between text-stone-700 text-decoration-none block">
+              <span class="flex items-center gap-2"><span>🔐</span> Panel de Gestión (Admin)</span>
+              <span class="text-[11px] text-amber-700">Acceder →</span>
+            </a>
+          </div>
+
+          <div class="p-2 border-t border-stone-100">
+            <button type="button" onclick="goToLanding(); closeGoogleUserMenu();" class="w-full py-2 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-black transition-colors cursor-pointer text-center">
+              Cerrar Sesión / Salir
+            </button>
+          </div>
+        </div>
 
       </div>
 
     </div>
   </header>
 
-  <!-- TELÓN / BACKDROP PARA EL WAFFLE EN CELULAR -->
-  <div id="google-waffle-backdrop" onclick="closeGoogleWaffle()" class="waffle-backdrop hidden"></div>
+  <!-- TELÓN / BACKDROP PARA EL WAFFLE Y MENÚ DE USUARIO -->
+  <div id="google-waffle-backdrop" onclick="closeGoogleWaffle(); closeGoogleUserMenu();" class="waffle-backdrop hidden"></div>
 
   <!-- ========================================================================= -->
   <!-- 0. VISTA: PORTAL & RED SOCIAL BARRIAL (TODO EL BARRIO - LA LUCILA) -->
@@ -153,127 +312,170 @@
             </div>
           </div>
 
-          <p class="text-xs sm:text-sm text-stone-600 mb-6 leading-relaxed">
-            Ingresá tu <strong>palabra de acceso</strong> para ingresar a la red comunitaria, sumarte a las compras colectivas y participar en los círculos barriales.
-          </p>
+          <!-- Pestañas de Alternancia: Ingresar con Código vs Nuevo Elemental -->
+          <div class="flex items-center bg-stone-100 p-1 rounded-2xl mb-5 border border-stone-200">
+            <button 
+              type="button" 
+              id="landing-tab-login-btn"
+              onclick="switchLandingMode('login')"
+              class="flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer bg-white text-stone-900 shadow-xs"
+            >
+              🔑 Ya soy Elemental
+            </button>
+            <button 
+              type="button" 
+              id="landing-tab-register-btn"
+              onclick="switchLandingMode('register')"
+              class="flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer text-stone-500 hover:text-stone-800"
+            >
+              ✨ Nuevo Elemental
+            </button>
+          </div>
 
-          <!-- FORMULARIO CLÁSICO DE LOGIN -->
-          <form onsubmit="handleAccessWordLogin(event)" class="space-y-4">
-            
-            <div>
-              <label for="login-access-word" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1.5 flex items-center justify-between">
-                <span class="flex items-center gap-1.5">
-                  <span>🔑</span> Palabra de Acceso
-                </span>
-                <span class="text-[10px] font-medium text-stone-400 lowercase">tu clave o nombre</span>
-              </label>
-              <div class="relative">
+          <!-- MODO 1: INGRESO PARA QUIENES YA TIENEN CÓDIGO -->
+          <div id="landing-mode-login" class="space-y-4">
+            <p class="text-xs sm:text-sm text-stone-600 mb-4 leading-relaxed">
+              Ingresá tu <strong>código de acceso personal</strong> para entrar a tu nodo, sumarte a las compras colectivas y revisar tus pedidos.
+            </p>
+
+            <form onsubmit="handleAccessWordLogin(event)" class="space-y-4">
+              <div>
+                <label for="login-access-word" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1.5 flex items-center justify-between">
+                  <span class="flex items-center gap-1.5">
+                    <span>🔑</span> Código de Acceso
+                  </span>
+                  <span class="text-[10px] font-medium text-stone-400">tu código personal</span>
+                </label>
+                <div class="relative">
+                  <input 
+                    type="text" 
+                    id="login-access-word" 
+                    required 
+                    placeholder="Escribí tu código de acceso..." 
+                    class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3.5 text-sm sm:text-base font-bold text-stone-900 focus:outline-none transition-all shadow-inner placeholder:text-stone-400 placeholder:font-normal font-mono"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="none"
+                  />
+                </div>
+              </div>
+
+              <!-- Botón Principal: Ingresar a Elementales -->
+              <button 
+                type="submit" 
+                id="btn-login-submit"
+                class="btn-action w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-3.5 sm:py-4 rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+              >
+                <span>✨</span>
+                <span>Ingresar a Elementales</span>
+                <span>→</span>
+              </button>
+
+              <!-- Mensaje dinámico de feedback -->
+              <div id="login-feedback-msg" class="hidden text-xs"></div>
+            </form>
+
+            <div class="pt-2 text-center">
+              <button type="button" onclick="switchLandingMode('register')" class="text-xs font-bold text-[#a6634f] hover:underline cursor-pointer">
+                ¿No tenés código aún? Creá tu código único aquí →
+              </button>
+            </div>
+          </div>
+
+          <!-- MODO 2: REGISTRO PARA NUEVO ELEMENTAL (CÓDIGO ÚNICO IRREPETIBLE) -->
+          <div id="landing-mode-register" class="hidden space-y-4">
+            <p class="text-xs sm:text-sm text-stone-600 mb-4 leading-relaxed">
+              Sumate a la red comunitaria. Creá tu <strong>código único e irrepetible</strong> para asociarte a tu nodo y participar en compras colectivas.
+            </p>
+
+            <form onsubmit="handleLandingRegister(event)" class="space-y-3.5">
+              
+              <!-- Código Único -->
+              <div>
+                <label for="landing-register-code" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1 flex items-center justify-between">
+                  <span class="flex items-center gap-1.5">
+                    <span>✨</span> Código Único e Irrepetible
+                  </span>
+                  <span class="text-[10px] font-medium text-stone-400">tu llave exclusiva</span>
+                </label>
+                <div class="relative">
+                  <input 
+                    type="text" 
+                    id="landing-register-code" 
+                    required 
+                    oninput="checkLandingCodeAvailability(this.value)"
+                    placeholder="ej. ramiro.lomaverde o lucas.tierra" 
+                    class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3 text-sm font-bold text-stone-900 focus:outline-none transition-all placeholder:text-stone-400 font-mono"
+                    autocomplete="off"
+                  />
+                  <span id="landing-code-status-badge" class="hidden absolute right-3 top-3 text-[10px] font-bold"></span>
+                </div>
+              </div>
+
+              <!-- Nombre o Familia -->
+              <div>
+                <label for="landing-register-name" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1">
+                  👤 Tu Nombre o Familia
+                </label>
                 <input 
                   type="text" 
-                  id="login-access-word" 
+                  id="landing-register-name" 
                   required 
-                  placeholder="Escribe tu palabra de acceso..." 
-                  class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3.5 text-sm sm:text-base font-bold text-stone-900 focus:outline-none transition-all shadow-inner placeholder:text-stone-400 placeholder:font-normal"
-                  autocomplete="off"
-                  autocorrect="off"
-                  autocapitalize="none"
+                  placeholder="ej. Ramiro Stein o Familia Gómez" 
+                  class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3 text-sm font-bold text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
                 />
               </div>
-            </div>
 
-            <!-- Botón Principal: Ingresar a Elementales -->
-            <button 
-              type="submit" 
-              id="btn-login-submit"
-              class="btn-action w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-3.5 sm:py-4 rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
-            >
-              <span>✨</span>
-              <span>Ingresar a Elementales</span>
-              <span>→</span>
-            </button>
-
-            <!-- Mensaje dinámico de feedback -->
-            <div id="login-feedback-msg" class="hidden text-xs"></div>
-
-          </form>
-
-          <!-- Divisor decorativo -->
-          <div class="relative my-6 text-center">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-stone-200"></div>
-            </div>
-            <span class="relative bg-white px-3 text-[11px] font-bold text-stone-400 uppercase tracking-wider">
-              o ingresá de forma directa
-            </span>
-          </div>
-
-          <!-- Accesos directos y roles secundarios -->
-          <div class="space-y-2.5">
-            
-            <!-- Acceso Libre como Visitante -->
-            <button 
-              type="button" 
-              onclick="loginFromLanding('visitante')"
-              class="w-full p-3 rounded-2xl border border-stone-200 hover:border-[#c0826d] bg-[#fcfaf8] hover:bg-white text-left flex items-center justify-between group transition-all cursor-pointer shadow-2xs"
-            >
-              <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-xl bg-stone-100 flex items-center justify-center text-sm group-hover:scale-105 transition-transform">
-                  👤
-                </div>
-                <div>
-                  <span class="block text-xs font-black text-stone-900 group-hover:text-[#a6634f] leading-tight font-heading">
-                    Visitante Libre
-                  </span>
-                  <span class="block text-[11px] text-stone-500 leading-tight">
-                    Acceso abierto sin clave para explorar el nodo
-                  </span>
-                </div>
+              <!-- WhatsApp -->
+              <div>
+                <label for="landing-register-phone" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1 flex items-center justify-between">
+                  <span>📱 Tu WhatsApp</span>
+                  <span class="text-[10px] font-medium text-stone-400">para retiros</span>
+                </label>
+                <input 
+                  type="tel" 
+                  id="landing-register-phone" 
+                  placeholder="ej. 11 2345 6789" 
+                  class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3 text-sm font-bold text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
+                />
               </div>
-              <span class="text-xs font-black text-[#a6634f] group-hover:translate-x-1 transition-transform">
-                Entrar →
-              </span>
-            </button>
 
-            <!-- Acceso Administrador con PIN -->
-            <button 
-              type="button" 
-              onclick="openAdminPinModal()"
-              class="w-full p-2.5 px-3 rounded-2xl border border-stone-200 hover:border-amber-400 bg-white hover:bg-amber-50/40 text-left flex items-center justify-between group transition-all cursor-pointer"
-            >
-              <span class="text-xs font-bold text-stone-600 flex items-center gap-2 group-hover:text-amber-900">
-                <span>🔐</span> Administrador del Nodo (PIN Equipo)
-              </span>
-              <span class="text-[11px] font-bold text-amber-700">Con PIN →</span>
-            </button>
-
-          </div>
-
-          <!-- Acceso Destacado a la Venta de Frutillas -->
-          <div class="mt-5 pt-4 border-t border-stone-100">
-            <a href="frutilla.html" class="p-3 rounded-2xl bg-gradient-to-r from-[#fcf4f0] via-[#f7f9f2] to-[#edf3e3] border border-[#eddcd5] flex items-center justify-between gap-2.5 text-decoration-none group hover:shadow-xs transition-all">
-              <div class="flex items-center gap-2">
-                <span class="text-lg group-hover:scale-110 transition-transform">🍓</span>
-                <div>
-                  <span class="block text-xs font-black text-stone-900 leading-tight font-heading">
-                    Frutillas Finca Ecotipa x 5 KG
-                  </span>
-                  <span class="block text-[10px] font-medium text-stone-500">
-                    Compra colectiva por cajón o fracciones ($8.800/kg)
-                  </span>
+              <!-- Nodo Asignado -->
+              <div class="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-500/30 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">📍</span>
+                  <div>
+                    <span class="font-bold text-stone-900 block leading-tight">Retiro en Nodo Loma Verde</span>
+                    <span class="text-[10px] text-stone-500 block">Calle Los Ciruelos y Colectora Oeste</span>
+                  </div>
                 </div>
+                <span class="text-[9px] font-black uppercase bg-emerald-600 text-white px-2 py-0.5 rounded-full">Activo</span>
               </div>
-              <span class="text-[11px] font-bold text-[#a6634f] shrink-0">Ver →</span>
-            </a>
+
+              <!-- Botón Crear Código y Sumarme -->
+              <button 
+                type="submit" 
+                id="btn-register-submit"
+                class="btn-action w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-3.5 sm:py-4 rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+              >
+                <span>🌱</span>
+                <span>Crear mi Código y Sumarme a la Red</span>
+                <span>→</span>
+              </button>
+
+              <div id="register-feedback-msg" class="hidden text-xs text-center font-bold"></div>
+
+            </form>
           </div>
 
-          <!-- Pie del login con nodo activo -->
-          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-500">
+          <!-- Pie del login con nodo activo y acceso a gestión -->
+          <div class="mt-5 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-500">
             <span class="flex items-center gap-1.5 font-medium">
               <span>📍</span> Sede Activa: <strong>Loma Verde</strong>
             </span>
-            <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 text-[10px]">
-              En línea
-            </span>
+            <a href="gestionelemental.html" class="text-stone-400 hover:text-stone-700 text-[10px] font-bold flex items-center gap-1 text-decoration-none">
+              <span>🔐</span> Gestión
+            </a>
           </div>
 
         </div>
@@ -592,19 +794,45 @@
         </button>
       </div>
 
-      <!-- Lado Derecho: Enlaces rápidos estilo Google Apps -->
-      <div class="flex items-center gap-3">
+      <!-- Lado Derecho: Enlaces rápidos y Waffle estilo Google -->
+      <div class="flex items-center gap-2.5 sm:gap-3.5">
         <button type="button" onclick="navigateTo('tierra')" class="hover:text-emerald-700 font-bold transition-colors cursor-pointer hidden sm:inline-flex items-center gap-1">
           <span>🌱</span> Tienda
         </button>
         <button type="button" onclick="navigateTo('circulos')" class="hover:text-emerald-700 font-bold transition-colors cursor-pointer hidden sm:inline-flex items-center gap-1">
           <span>👥</span> Círculos
         </button>
-        <a href="frutilla.html" class="text-[#a6634f] hover:underline font-black text-xs inline-flex items-center gap-1">
+        <a href="frutilla.html" class="text-[#a6634f] hover:underline font-black text-xs inline-flex items-center gap-1 text-decoration-none">
           <span>🍓</span> Frutillas
         </a>
-        <button type="button" onclick="goToLanding()" class="text-stone-500 hover:text-stone-900 font-semibold text-xs ml-1 cursor-pointer">
-          Salir
+
+        <!-- Botón Waffle 9 Puntos -->
+        <button 
+          type="button" 
+          onclick="toggleGoogleWaffle()" 
+          class="google-waffle-btn p-1.5 rounded-full hover:bg-stone-100 text-stone-600 hover:text-stone-900 transition-colors cursor-pointer flex items-center justify-center shrink-0" 
+          title="Dimensiones y Productos de Elementales (5 Elementos)"
+        >
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+          </svg>
+        </button>
+
+        <!-- Botón de Avatar de Usuario -->
+        <button 
+          type="button" 
+          onclick="toggleGoogleUserMenu()" 
+          class="relative p-0.5 rounded-full hover:ring-2 hover:ring-emerald-400 transition-all cursor-pointer shrink-0" 
+          title="Mi Cuenta y Membresía Elemental"
+        >
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden p-[1.5px] bg-gradient-to-tr from-sky-400 via-indigo-500 to-rose-400 shadow-xs">
+            <img 
+              src="public/assets/user_avatar.png" 
+              class="w-full h-full object-cover rounded-full bg-white" 
+              alt="Usuario Elemental" 
+              onerror="this.src='public/assets/brand/comunidad_emblem_clean.png'" 
+            />
+          </div>
         </button>
       </div>
 

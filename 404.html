@@ -16,6 +16,16 @@
       var second = (parts[1] || '').toLowerCase();
       var queryJoin = search ? '&' + search.replace(/^\?/, '') : '';
 
+      // Rutas para Landings Exclusivas de Gestión y Miembro Elemental
+      if (first === 'gestionelemental' || first === 'gestionelemental.html') {
+        window.location.replace('/gestionelemental.html' + (search || '') + (hash || ''));
+        return;
+      }
+      if (first === 'miembroelemental' || first === 'miembroelemental.html') {
+        window.location.replace('/miembroelemental.html' + (search || '') + (hash || ''));
+        return;
+      }
+
       // Rutas para Landing Exclusiva de Frutillas (/frutilla, /circulo/{slug}/frutilla, /frutilla/{slug})
       if (first === 'frutilla') {
         var circ = second ? 'circulo=' + encodeURIComponent(second) : '';

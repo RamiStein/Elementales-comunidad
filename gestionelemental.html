@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión Elemental | Administración de Nodos · Elementales.store</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Outfit', 'sans-serif'],
+            body: ['Outfit', 'sans-serif'],
+            'mono-code': ['ui-monospace', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-[#141211] text-stone-100 min-h-screen font-body flex flex-col justify-between selection:bg-[#c0826d] selection:text-white relative overflow-x-hidden">
+
+  <!-- Fondo Cósmico de Geometría Sagrada -->
+  <div class="fixed inset-0 pointer-events-none opacity-25 bg-[radial-gradient(#d99a86_1px,transparent_1px)] [background-size:28px_28px]"></div>
+  <div class="fixed inset-0 pointer-events-none bg-gradient-to-b from-stone-950 via-transparent to-stone-950/90"></div>
+
+  <!-- Encabezado Superior Minimalista -->
+  <header class="relative z-20 w-full border-b border-white/10 bg-black/40 backdrop-blur-md">
+    <div class="max-w-4xl mx-auto px-4 py-3.5 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group text-decoration-none">
+        <div class="w-10 h-10 rounded-2xl bg-white/10 border border-white/15 p-2 flex items-center justify-center group-hover:scale-105 transition-transform shadow-inner">
+          <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Elementales" />
+        </div>
+        <div>
+          <span class="text-xs font-black uppercase tracking-wider text-[#d99a86] block font-mono-code">RED ELEMENTALES</span>
+          <span class="text-sm font-bold text-white group-hover:text-[#d99a86] transition-colors">Portal de Gestión</span>
+        </div>
+      </a>
+
+      <a href="index.html" class="text-xs text-stone-400 hover:text-white transition-colors flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-full border border-white/10 hover:border-white/20">
+        <span>←</span> Volver a la Tienda
+      </a>
+    </div>
+  </header>
+
+  <!-- Contenido Central: Tarjeta de Acceso Administrativo -->
+  <main class="relative z-10 max-w-lg mx-auto w-full px-4 py-10 sm:py-16 my-auto">
+    <div class="bg-gradient-to-b from-stone-900/90 via-stone-900/95 to-black/95 rounded-3xl p-6 sm:p-8 border-2 border-[#a6634f]/50 shadow-2xl backdrop-blur-xl">
+      
+      <!-- Icono y Título -->
+      <div class="text-center mb-6">
+        <div class="inline-flex w-16 h-16 rounded-3xl bg-[#a6634f]/20 border border-[#a6634f]/40 p-3 items-center justify-center shadow-lg mb-3">
+          <span class="text-3xl">🔐</span>
+        </div>
+        <span class="text-[10px] font-black uppercase tracking-widest text-[#d99a86] bg-white/5 px-3 py-1 rounded-full border border-[#d99a86]/30 inline-block mb-2 font-mono-code">
+          GESTIÓN EXCLUSIVA · GUARDIÁN DEL NODO
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-black text-white font-heading tracking-tight">
+          Gestión <span class="text-[#d99a86]">Elemental</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-stone-300 mt-1.5 leading-relaxed">
+          Acceso restringido para la coordinación de nodos, círculos barriales, logística de cosechas y pedidos colectivos.
+        </p>
+      </div>
+
+      <!-- Formulario de Acceso por PIN -->
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+        <div>
+          <label for="admin-pin-input" class="block text-xs font-black uppercase tracking-wider text-stone-300 mb-1.5 flex items-center justify-between">
+            <span>🔑 PIN de Administrador</span>
+            <span class="text-[10px] font-mono text-stone-500">Clave de Equipo</span>
+          </label>
+          <input 
+            type="password" 
+            id="admin-pin-input" 
+            required 
+            placeholder="Ingresá el PIN del Administrador..."
+            class="w-full bg-white/5 border-2 border-white/15 focus:border-[#d99a86] focus:bg-white/10 rounded-2xl px-4 py-3.5 text-base sm:text-lg font-bold text-white focus:outline-none transition-all placeholder:text-stone-500 placeholder:font-normal text-center tracking-widest"
+            autocomplete="off"
+            autofocus
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          id="btn-admin-submit"
+          class="w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-3.5 rounded-2xl shadow-lg hover:shadow-emerald-900/50 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+        >
+          <span>Ingresar al Panel de Gestión</span>
+          <span>→</span>
+        </button>
+
+        <div id="admin-feedback" class="hidden text-xs text-center font-bold"></div>
+      </form>
+
+      <!-- Dimensiones y Herramientas que se Gestionan -->
+      <div class="mt-8 pt-6 border-t border-white/10">
+        <h3 class="text-[11px] font-black uppercase tracking-wider text-stone-400 mb-3 text-center">
+          Herramientas de Coordinación
+        </h3>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2 text-stone-300">
+            <span class="text-base">👥</span>
+            <span>Círculos Barriales</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2 text-stone-300">
+            <span class="text-base">🍓</span>
+            <span>Commits Frutillas</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2 text-stone-300">
+            <span class="text-base">📦</span>
+            <span>Puntos de Retiro</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2 text-stone-300">
+            <span class="text-base">📊</span>
+            <span>Lista de Miembros</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Pie de Página -->
+  <footer class="relative z-10 w-full py-4 text-center text-xs text-stone-500 border-t border-white/5">
+    <p>Red Comunitaria Elementales · Nodo Loma Verde (Escobar)</p>
+  </footer>
+
+  <script>
+    function handleAdminLogin(e) {
+      if (e) e.preventDefault();
+      const pinInput = document.getElementById('admin-pin-input');
+      const pin = pinInput ? pinInput.value.trim() : '';
+      const feedback = document.getElementById('admin-feedback');
+
+      const validPins = ['1321', 'admin', 'gestor', '1234', '2026', 'nodo'];
+
+      if (validPins.includes(pin.toLowerCase())) {
+        feedback.textContent = '✓ Credencial autorizada. Abriendo panel de gestión...';
+        feedback.className = 'text-xs text-center font-bold text-emerald-400 block animate-pulse';
+        feedback.classList.remove('hidden');
+
+        sessionStorage.setItem('elementales_authenticated', 'true');
+        sessionStorage.setItem('elementales_gestor_auth', 'true');
+        localStorage.setItem('elementales_user_role', 'gestor');
+
+        try {
+          if (typeof confetti === 'function') {
+            confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
+          }
+        } catch (err) {}
+
+        setTimeout(() => {
+          window.location.href = 'index.html#admin';
+        }, 500);
+      } else {
+        feedback.textContent = '✕ PIN incorrecto. Verificá la clave con el equipo de coordinación.';
+        feedback.className = 'text-xs text-center font-bold text-rose-400 block';
+        feedback.classList.remove('hidden');
+        if (pinInput) {
+          pinInput.select();
+        }
+      }
+    }
+  </script>
+</body>
+</html>

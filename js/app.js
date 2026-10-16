@@ -3087,7 +3087,7 @@ function handleAccessWordLogin(e) {
 
   if (!word) {
     if (feedback) {
-      feedback.textContent = 'Por favor ingresá tu palabra de acceso.';
+      feedback.textContent = 'Por favor ingresá tu código de acceso.';
       feedback.className = 'text-xs text-rose-600 font-bold block animate-shake';
       feedback.classList.remove('hidden');
     }
@@ -3095,34 +3095,40 @@ function handleAccessWordLogin(e) {
   }
 
   // Normalizar para comparación de claves
-  const cleanWord = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const cleanWord = word.toLowerCase().replace(/[^a-z0-9._-]/g, '');
 
   try {
     sessionStorage.setItem('elementales_access_word', word);
     localStorage.setItem('elementales_last_access_word', word);
   } catch (err) {}
 
-  let role = 'visitante';
+  let role = 'socio';
   let welcomeMsg = `¡Bienvenido/a a la red Elementales, ${word}!`;
 
   // 1. Claves de Administrador / Gestor
-  if (cleanWord === 'admin' || cleanWord === '1234' || cleanWord === '2026' || cleanWord === 'gestor' || cleanWord === 'nodo') {
+  if (cleanWord === 'admin' || cleanWord === '1234' || cleanWord === '2026' || cleanWord === 'gestor' || cleanWord === 'nodo' || cleanWord === '1321') {
     role = 'gestor';
     sessionStorage.setItem('elementales_gestor_auth', 'true');
     welcomeMsg = 'Acceso concedido como Administrador del Nodo.';
   } 
-  // 2. Claves de Socio / Miembro
-  else if (cleanWord === 'socio' || cleanWord === 'miembro' || cleanWord === 'raices' || cleanWord === 'comunidad' || cleanWord === 'elemental' || cleanWord === 'lomaverde' || cleanWord === 'verde' || cleanWord === 'coop') {
-    role = 'socio';
-    welcomeMsg = 'Acceso concedido como Socio de Elementales.';
-  }
-  // 3. Palabra/Nombre general
-  else {
-    role = 'visitante';
-    if (typeof ElementalesDB !== 'undefined' && ElementalesDB.setUserName) {
-      ElementalesDB.setUserName(word);
+  // 2. Buscar si es un usuario registrado en DB
+  else if (typeof ElementalesDB !== 'undefined' && ElementalesDB.findUserByCode) {
+    const existingUser = ElementalesDB.findUserByCode(cleanWord);
+    if (existingUser) {
+      role = 'socio';
+      welcomeMsg = `¡Hola de nuevo, ${existingUser.name || word}!`;
+      sessionStorage.setItem('elementales_access_word', existingUser.code);
+      localStorage.setItem('elementales_user_name', existingUser.name || word);
+      localStorage.setItem('elementales_access_code', existingUser.code);
+      if (existingUser.node) {
+        localStorage.setItem('elementales_active_node', existingUser.node);
+      }
     }
   }
+
+  sessionStorage.setItem('elementales_authenticated', 'true');
+  sessionStorage.setItem('elementales_node_associated', 'true');
+  localStorage.setItem('elementales_access_code', word);
 
   if (feedback) {
     feedback.textContent = welcomeMsg;
@@ -3134,13 +3140,128 @@ function handleAccessWordLogin(e) {
     sounds.playSuccess();
   }
 
+  updateGoogleUserMenuUI();
+  updateRoleUI();
+
   setTimeout(() => {
-    loginFromLanding(role);
+    navigateTo('barrio', true);
   }, 250);
+}
+
+function switchLandingMode(mode) {
+  if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
+  const btnLogin = document.getElementById('landing-tab-login-btn');
+  const btnRegister = document.getElementById('landing-tab-register-btn');
+  const cardLogin = document.getElementById('landing-mode-login');
+  const cardRegister = document.getElementById('landing-mode-register');
+
+  if (mode === 'register') {
+    if (btnLogin) btnLogin.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer text-stone-500 hover:text-stone-800';
+    if (btnRegister) btnRegister.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer bg-white text-stone-900 shadow-xs';
+    if (cardLogin) cardLogin.classList.add('hidden');
+    if (cardRegister) cardRegister.classList.remove('hidden');
+    const inputReg = document.getElementById('landing-register-code');
+    if (inputReg) inputReg.focus();
+  } else {
+    if (btnLogin) btnLogin.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer bg-white text-stone-900 shadow-xs';
+    if (btnRegister) btnRegister.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all cursor-pointer text-stone-500 hover:text-stone-800';
+    if (cardRegister) cardRegister.classList.add('hidden');
+    if (cardLogin) cardLogin.classList.remove('hidden');
+    const inputLogin = document.getElementById('login-access-word');
+    if (inputLogin) inputLogin.focus();
+  }
+}
+
+function checkLandingCodeAvailability(code) {
+  const badge = document.getElementById('landing-code-status-badge');
+  if (!badge) return;
+  const clean = (code || '').trim().toLowerCase().replace(/[^a-z0-9._-]/g, '');
+  if (clean.length < 3) {
+    badge.classList.add('hidden');
+    return;
+  }
+  badge.classList.remove('hidden');
+  if (typeof ElementalesDB !== 'undefined' && !ElementalesDB.isCodeAvailable(clean)) {
+    badge.textContent = '✕ En uso';
+    badge.className = 'absolute right-3 top-3 text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200';
+  } else {
+    badge.textContent = '✓ Libre';
+    badge.className = 'absolute right-3 top-3 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200';
+  }
+}
+
+function handleLandingRegister(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const codeInput = document.getElementById('landing-register-code');
+  const nameInput = document.getElementById('landing-register-name');
+  const phoneInput = document.getElementById('landing-register-phone');
+  const feedback = document.getElementById('register-feedback-msg');
+
+  const code = (codeInput ? codeInput.value : '').trim();
+  const name = (nameInput ? nameInput.value : '').trim();
+  const phone = (phoneInput ? phoneInput.value : '').trim();
+
+  if (!code || code.length < 3) {
+    if (feedback) {
+      feedback.textContent = 'El código debe tener al menos 3 caracteres.';
+      feedback.className = 'text-xs text-rose-600 font-bold block mt-2 animate-shake';
+      feedback.classList.remove('hidden');
+    }
+    return;
+  }
+
+  let res = { success: true };
+  if (typeof ElementalesDB !== 'undefined' && ElementalesDB.registerUser) {
+    res = ElementalesDB.registerUser({ code, name, phone, node: 'nodo-lomaverde' });
+  } else {
+    localStorage.setItem('elementales_access_code', code);
+    localStorage.setItem('elementales_user_name', name || code);
+    localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+  }
+
+  if (!res.success) {
+    if (feedback) {
+      feedback.textContent = res.error || 'Código no disponible. Elegí otro.';
+      feedback.className = 'text-xs text-rose-600 font-bold block mt-2 animate-shake';
+      feedback.classList.remove('hidden');
+    }
+    return;
+  }
+
+  sessionStorage.setItem('elementales_authenticated', 'true');
+  sessionStorage.setItem('elementales_node_associated', 'true');
+  sessionStorage.setItem('elementales_access_word', code);
+  localStorage.setItem('elementales_access_code', code);
+
+  AppState.userRole = 'socio';
+  AppState.userName = name || code;
+
+  if (feedback) {
+    feedback.textContent = `¡Bienvenido/a ${name || code}! Tu código único quedó registrado.`;
+    feedback.className = 'text-xs text-emerald-600 font-bold block mt-2 animate-fade-in';
+    feedback.classList.remove('hidden');
+  }
+
+  if (typeof sounds !== 'undefined' && sounds.playSuccess) sounds.playSuccess();
+  try {
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
+    }
+  } catch (err) {}
+
+  updateGoogleUserMenuUI();
+  updateRoleUI();
+
+  setTimeout(() => {
+    navigateTo('barrio', true);
+  }, 600);
 }
 
 window.showElementalDetail = showElementalDetail;
 window.handleAccessWordLogin = handleAccessWordLogin;
+window.switchLandingMode = switchLandingMode;
+window.checkLandingCodeAvailability = checkLandingCodeAvailability;
+window.handleLandingRegister = handleLandingRegister;
 
 // CONTROL DEL MODAL SELECTOR DE ROL
 function openRoleSwitcherModal() {
@@ -3222,6 +3343,10 @@ function updateRoleUI() {
     }
   }
 
+  if (typeof updateGoogleUserMenuUI === 'function') {
+    updateGoogleUserMenuUI();
+  }
+
   // 2. Banners contextuales y Secciones dedicadas en view-barrio
   const bVisitante = document.getElementById('role-banner-visitante');
   const bSocio = document.getElementById('role-banner-socio');
@@ -3288,9 +3413,10 @@ let activeBarrioElement = 'todos';
 let activeBarrioSearchQuery = '';
 let activeOficioCategory = 'todos';
 
-// 1. CONTROL DEL MENÚ WAFFLE DE 9 PUNTOS (GOOGLE SUITE)
+// 1. CONTROL DEL MENÚ WAFFLE DE 9 PUNTOS (GOOGLE SUITE) Y MENÚ DE USUARIO
 function toggleGoogleWaffle() {
-  sounds.playPop();
+  if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
+  closeGoogleUserMenu();
   const menu = document.getElementById('google-waffle-menu');
   const backdrop = document.getElementById('google-waffle-backdrop');
   if (menu) {
@@ -3311,23 +3437,97 @@ function closeGoogleWaffle() {
   if (menu) {
     menu.classList.add('hidden');
   }
-  if (backdrop) {
+  if (backdrop && (!document.getElementById('google-user-menu') || document.getElementById('google-user-menu').classList.contains('hidden'))) {
     backdrop.classList.add('hidden');
   }
 }
 
-// Cerrar waffle si se hace clic afuera o en el telón
-document.addEventListener('click', (e) => {
-  const menu = document.getElementById('google-waffle-menu');
-  const btn = document.getElementById('btn-google-waffle');
+// 1.B CONTROL DEL MENÚ DE USUARIO / GOOGLE ACCOUNT
+function toggleGoogleUserMenu() {
+  if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
+  closeGoogleWaffle();
+  const menu = document.getElementById('google-user-menu');
   const backdrop = document.getElementById('google-waffle-backdrop');
-  if (menu && !menu.classList.contains('hidden')) {
-    if (!menu.contains(e.target) && btn && !btn.contains(e.target)) {
-      menu.classList.add('hidden');
-      if (backdrop) backdrop.classList.add('hidden');
+  if (menu) {
+    const isNowHidden = menu.classList.toggle('hidden');
+    if (backdrop) {
+      if (isNowHidden) {
+        backdrop.classList.add('hidden');
+      } else {
+        backdrop.classList.remove('hidden');
+      }
+    }
+    if (!isNowHidden) {
+      updateGoogleUserMenuUI();
     }
   }
+}
+
+function closeGoogleUserMenu() {
+  const menu = document.getElementById('google-user-menu');
+  const backdrop = document.getElementById('google-waffle-backdrop');
+  if (menu) {
+    menu.classList.add('hidden');
+  }
+  if (backdrop && (!document.getElementById('google-waffle-menu') || document.getElementById('google-waffle-menu').classList.contains('hidden'))) {
+    backdrop.classList.add('hidden');
+  }
+}
+
+function updateGoogleUserMenuUI() {
+  const nameEl = document.getElementById('user-menu-display-name');
+  const codeEl = document.getElementById('user-menu-display-code');
+  const roleEl = document.getElementById('user-menu-display-role');
+
+  let name = '';
+  let code = '';
+  if (typeof ElementalesDB !== 'undefined') {
+    name = ElementalesDB.getUserName ? ElementalesDB.getUserName() : '';
+    code = ElementalesDB.getUserCode ? ElementalesDB.getUserCode() : '';
+  }
+  if (!name) name = localStorage.getItem('elementales_user_name') || sessionStorage.getItem('elementales_access_word') || 'Soy una parte Elemental';
+  if (!code) code = localStorage.getItem('elementales_access_code') || sessionStorage.getItem('elementales_access_word') || 'miembro.lomaverde';
+
+  if (nameEl) nameEl.textContent = name;
+  if (codeEl) codeEl.textContent = `@${code.replace(/^@/, '')}`;
+  if (roleEl) {
+    const roleText = AppState.userRole === 'gestor' 
+      ? 'Administrador · Guardián del Nodo' 
+      : 'Miembro Activo · Nodo Loma Verde';
+    roleEl.textContent = roleText;
+  }
+}
+
+// Cerrar waffle y menú de usuario si se hace clic afuera o en el telón
+document.addEventListener('click', (e) => {
+  const waffleMenu = document.getElementById('google-waffle-menu');
+  const waffleBtn = document.getElementById('btn-google-waffle');
+  const userMenu = document.getElementById('google-user-menu');
+  const userBtn = document.getElementById('btn-google-avatar');
+  const backdrop = document.getElementById('google-waffle-backdrop');
+
+  if (waffleMenu && !waffleMenu.classList.contains('hidden')) {
+    if (!waffleMenu.contains(e.target) && waffleBtn && !waffleBtn.contains(e.target)) {
+      waffleMenu.classList.add('hidden');
+    }
+  }
+
+  if (userMenu && !userMenu.classList.contains('hidden')) {
+    if (!userMenu.contains(e.target) && userBtn && !userBtn.contains(e.target)) {
+      userMenu.classList.add('hidden');
+    }
+  }
+
+  if (backdrop && (!waffleMenu || waffleMenu.classList.contains('hidden')) && (!userMenu || userMenu.classList.contains('hidden'))) {
+    backdrop.classList.add('hidden');
+  }
 });
+
+window.toggleGoogleWaffle = toggleGoogleWaffle;
+window.closeGoogleWaffle = closeGoogleWaffle;
+window.toggleGoogleUserMenu = toggleGoogleUserMenu;
+window.closeGoogleUserMenu = closeGoogleUserMenu;
+window.updateGoogleUserMenuUI = updateGoogleUserMenuUI;
 
 // 2. BUSCADOR OMNIBAR Y FILTROS POR ELEMENTO
 function handleBarrioSearch(val) {
@@ -6241,6 +6441,16 @@ document.addEventListener('DOMContentLoaded', () => {
                              window.location.hash === '#login' || 
                              urlParams.get('view') === 'landing' ||
                              !hasExplicitDeepLink;
+
+  if (window.location.hash === '#gestionelemental' || urlParams.get('view') === 'gestionelemental') {
+    window.location.href = 'gestionelemental.html';
+    return;
+  }
+
+  if (window.location.hash === '#miembroelemental' || urlParams.get('view') === 'miembroelemental') {
+    window.location.href = 'miembroelemental.html';
+    return;
+  }
 
   if (window.location.hash === '#admin') {
     AppState.userRole = 'gestor';

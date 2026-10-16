@@ -96,6 +96,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(response_bytes)
             return
 
+        if self.path.startswith('/api/users'):
+            db_data = read_db()
+            response_bytes = json.dumps(db_data.get('users', []), ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(response_bytes)))
+            self.end_headers()
+            self.wfile.write(response_bytes)
+            return
+
         # Soporte para URLs limpias (SPA): si no existe el archivo estático, redirigir internamente a index.html
         path_without_query = self.path.split('?')[0].split('#')[0]
         full_path = self.translate_path(path_without_query)
@@ -107,7 +117,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             second = parts[1].lower() if len(parts) > 1 else ''
             third = parts[2].lower() if len(parts) > 2 else ''
 
-            if first == 'frutilla':
+            if first in ['gestionelemental', 'gestionelemental.html']:
+                self.path = f"/gestionelemental.html?{query_part}" if query_part else "/gestionelemental.html"
+            elif first in ['miembroelemental', 'miembroelemental.html']:
+                self.path = f"/miembroelemental.html?{query_part}" if query_part else "/miembroelemental.html"
+            elif first == 'frutilla':
                 circ = second if second else ''
                 q = f"circulo={circ}" if circ else ""
                 if query_part:
@@ -190,6 +204,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     sessions[idx] = payload
                 else:
                     sessions.insert(0, payload)
+                write_db(db_data)
+
+            elif endpoint == 'users':
+                users = db_data.setdefault('users', [])
+                u_code = payload.get('code') or payload.get('userCode')
+                idx = next((i for i, u in enumerate(users) if (u.get('code') or u.get('userCode')) == u_code), None)
+                if idx is not None:
+                    users[idx] = payload
+                else:
+                    users.insert(0, payload)
                 write_db(db_data)
 
             resp = {"success": True, "endpoint": endpoint}
