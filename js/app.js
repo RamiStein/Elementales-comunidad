@@ -3180,9 +3180,12 @@ function handleAccessWordLogin(e) {
   updateRoleUI();
 
   if (role === 'gestor') {
+    sessionStorage.setItem('elementales_authenticated', 'true');
+    sessionStorage.setItem('elementales_gestor_auth', 'true');
     sessionStorage.setItem('elementales_node_associated', 'true');
+    localStorage.setItem('elementales_user_role', 'gestor');
     setTimeout(() => {
-      navigateTo('barrio', true);
+      window.location.href = 'gestionelemental.html';
     }, 250);
   } else if (!hasNode) {
     sessionStorage.removeItem('elementales_node_associated');
@@ -6574,13 +6577,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  if (window.location.hash === '#admin') {
+  if (window.location.hash === '#admin' || urlParams.get('view') === 'admin') {
     AppState.userRole = 'gestor';
     sessionStorage.setItem('elementales_authenticated', 'true');
     sessionStorage.setItem('elementales_gestor_auth', 'true');
-    updateRoleUI();
-    updateNodeUI();
-    navigateTo('barrio', false);
+    localStorage.setItem('elementales_user_role', 'gestor');
+    window.location.href = 'gestionelemental.html';
+    return;
   } else if (isLandingRequested || !isAuth) {
     if (typeof CirculosManager !== 'undefined') {
       CirculosManager.setActiveCircleId(null);
@@ -7139,7 +7142,7 @@ async function exportProducerToVRDE(producerId) {
 // =========================================================================
 // SEGURIDAD & AUTENTICACIÓN PIN DE GESTOR DEL NODO
 // =========================================================================
-const GESTOR_ALLOWED_PINS = ['3450', '1234', 'elementales'];
+const GESTOR_ALLOWED_PINS = ['1321', 'admin', 'gestor', '1234', '2026', 'nodo', '3450', 'elementales'];
 let pendingGestorCallback = null;
 
 function requestGestorAccess(onSuccess) {
@@ -7168,9 +7171,10 @@ function handleAdminPinSubmit(e) {
   e.preventDefault();
   const input = document.getElementById('admin-pin-input');
   const err = document.getElementById('admin-pin-error');
-  const val = (input?.value || '').trim();
+  const val = (input?.value || '').trim().toLowerCase();
 
   if (GESTOR_ALLOWED_PINS.includes(val)) {
+    sessionStorage.setItem('elementales_authenticated', 'true');
     sessionStorage.setItem('elementales_gestor_auth', 'true');
     AppState.userRole = 'gestor';
     localStorage.setItem('elementales_user_role', 'gestor');
@@ -7188,9 +7192,7 @@ function handleAdminPinSubmit(e) {
       pendingGestorCallback = null;
       cb();
     } else {
-      navigateTo('eter');
-      switchEterMainTab('gestion');
-      showEterModule('elementos');
+      window.location.href = 'gestionelemental.html';
     }
   } else {
     sounds.playPop();

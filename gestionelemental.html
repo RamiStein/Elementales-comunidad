@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gestión Elemental | Administración de Nodos · Elementales.store</title>
+  <title>Panel de Gestión Elemental | Administración del Nodo · Elementales.store</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -15,6 +15,14 @@
             heading: ['Outfit', 'sans-serif'],
             body: ['Outfit', 'sans-serif'],
             'mono-code': ['ui-monospace', 'monospace']
+          },
+          colors: {
+            brand: {
+              brown: '#a6634f',
+              peach: '#fcf4f0',
+              accent: '#d99a86',
+              green: '#1db954'
+            }
           }
         }
       }
@@ -29,35 +37,111 @@
   <!-- Canvas Confetti CDN -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
-  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Estilos de Impresión para Listas de Empaque y Retiro */
+    @media print {
+      body { background: #ffffff !important; color: #000000 !important; }
+      header, .no-print, #pin-gate-container, .admin-tabs-nav, .action-buttons { display: none !important; }
+      #admin-dashboard-container { display: block !important; }
+      .print-only { display: block !important; }
+      table { width: 100% !important; border: 1px solid #ccc !important; font-size: 11px !important; }
+      th, td { border: 1px solid #ccc !important; padding: 6px !important; }
+    }
+    .print-only { display: none; }
+    
+    /* Scrollbar sutil */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+    ::-webkit-scrollbar-thumb { background: #a6634f; border-radius: 999px; }
+  </style>
 </head>
-<body class="bg-[#141211] text-stone-100 min-h-screen font-body flex flex-col justify-between selection:bg-[#c0826d] selection:text-white relative overflow-x-hidden">
+<body class="bg-[#121110] text-stone-100 min-h-screen font-body flex flex-col justify-between selection:bg-[#c0826d] selection:text-white relative overflow-x-hidden">
 
   <!-- Fondo Cósmico de Geometría Sagrada -->
-  <div class="fixed inset-0 pointer-events-none opacity-25 bg-[radial-gradient(#d99a86_1px,transparent_1px)] [background-size:28px_28px]"></div>
+  <div class="fixed inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#d99a86_1px,transparent_1px)] [background-size:28px_28px]"></div>
   <div class="fixed inset-0 pointer-events-none bg-gradient-to-b from-stone-950 via-transparent to-stone-950/90"></div>
 
-  <!-- Encabezado Superior Minimalista -->
-  <header class="relative z-20 w-full border-b border-white/10 bg-black/40 backdrop-blur-md">
-    <div class="max-w-4xl mx-auto px-4 py-3.5 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3 group text-decoration-none">
-        <div class="w-10 h-10 rounded-2xl bg-white/10 border border-white/15 p-2 flex items-center justify-center group-hover:scale-105 transition-transform shadow-inner">
+  <!-- ========================================================================= -->
+  <!-- CABECERA PRINCIPAL DE GESTIÓN                                             -->
+  <!-- ========================================================================= -->
+  <header class="relative z-30 w-full border-b border-white/10 bg-black/60 backdrop-blur-md sticky top-0 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Logo y Título -->
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="w-10 h-10 rounded-2xl bg-white/10 border border-white/15 p-2 flex items-center justify-center hover:scale-105 transition-transform shadow-inner text-decoration-none">
           <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Elementales" />
-        </div>
+        </a>
         <div>
-          <span class="text-xs font-black uppercase tracking-wider text-[#d99a86] block font-mono-code">RED ELEMENTALES</span>
-          <span class="text-sm font-bold text-white group-hover:text-[#d99a86] transition-colors">Portal de Gestión</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-black uppercase tracking-wider text-[#d99a86] font-mono-code bg-[#a6634f]/20 px-2 py-0.5 rounded-full border border-[#d99a86]/30">
+              👑 PANEL DE ADMINISTRACIÓN
+            </span>
+            <span id="node-online-status-badge" class="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Nodo Abierto
+            </span>
+          </div>
+          <h1 class="text-base sm:text-lg font-black text-white leading-tight font-heading">
+            Gestión <span class="text-[#d99a86]">Elemental</span> · Sede Loma Verde
+          </h1>
         </div>
-      </a>
+      </div>
 
-      <a href="index.html" class="text-xs text-stone-400 hover:text-white transition-colors flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-full border border-white/10 hover:border-white/20">
-        <span>←</span> Volver a la Tienda
-      </a>
+      <!-- Herramientas y Navegación Rápida -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        
+        <!-- Selector de Nodo Administrado -->
+        <select 
+          id="admin-active-node-select" 
+          onchange="onAdminNodeChange(this.value)"
+          class="bg-white/10 hover:bg-white/15 border border-white/20 text-xs font-bold text-stone-200 rounded-xl px-2.5 py-1.5 outline-none cursor-pointer"
+          title="Filtrar por sede comunitaria"
+        >
+          <option value="todos" class="bg-stone-900 text-white">🌐 Todos los Nodos</option>
+          <option value="nodo-lomaverde" selected class="bg-stone-900 text-white">📍 Loma Verde (Escobar)</option>
+          <option value="nodo-cooperativa" class="bg-stone-900 text-white">📍 Chasqui Maschwitz</option>
+          <option value="nodo-central" class="bg-stone-900 text-white">📍 Central Vicente López</option>
+        </select>
+
+        <!-- Ir a la Tienda -->
+        <a 
+          href="index.html" 
+          class="text-xs font-bold text-stone-300 hover:text-white px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 transition-all flex items-center gap-1 text-decoration-none"
+          title="Ver cómo ve la tienda el vecino"
+        >
+          <span>🛒</span> <span class="hidden md:inline">Tienda</span>
+        </a>
+
+        <!-- Ir a Campaña Frutillas -->
+        <a 
+          href="frutilla.html" 
+          class="text-xs font-bold text-[#fca5a5] hover:text-white px-3 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/30 transition-all flex items-center gap-1 text-decoration-none"
+          title="Ver campaña de Frutillas Ecotipa"
+        >
+          <span>🍓</span> <span class="hidden md:inline">Frutillas</span>
+        </a>
+
+        <!-- Botón Salir / Logout -->
+        <button 
+          type="button" 
+          id="btn-admin-logout"
+          onclick="handleAdminLogout()" 
+          class="text-xs font-bold text-stone-400 hover:text-rose-400 px-2.5 py-1.5 rounded-xl hover:bg-white/5 transition-colors cursor-pointer"
+          title="Cerrar sesión de administrador"
+        >
+          Salir
+        </button>
+
+      </div>
+
     </div>
   </header>
 
-  <!-- Contenido Central: Tarjeta de Acceso Administrativo -->
-  <main class="relative z-10 max-w-lg mx-auto w-full px-4 py-10 sm:py-16 my-auto">
+  <!-- ========================================================================= -->
+  <!-- 1. GATE DE ACCESO POR PIN (VISIBLE SOLO SI NO ESTÁ AUTENTICADO)           -->
+  <!-- ========================================================================= -->
+  <main id="pin-gate-container" class="relative z-10 max-w-md mx-auto w-full px-4 py-12 sm:py-20 my-auto animate-fade-in">
     <div class="bg-gradient-to-b from-stone-900/90 via-stone-900/95 to-black/95 rounded-3xl p-6 sm:p-8 border-2 border-[#a6634f]/50 shadow-2xl backdrop-blur-xl">
       
       <!-- Icono y Título -->
@@ -66,13 +150,13 @@
           <span class="text-3xl">🔐</span>
         </div>
         <span class="text-[10px] font-black uppercase tracking-widest text-[#d99a86] bg-white/5 px-3 py-1 rounded-full border border-[#d99a86]/30 inline-block mb-2 font-mono-code">
-          GESTIÓN EXCLUSIVA · GUARDIÁN DEL NODO
+          USO EXCLUSIVO · GUARDIÁN DEL NODO
         </span>
-        <h1 class="text-2xl sm:text-3xl font-black text-white font-heading tracking-tight">
-          Gestión <span class="text-[#d99a86]">Elemental</span>
-        </h1>
+        <h2 class="text-2xl sm:text-3xl font-black text-white font-heading tracking-tight">
+          Ingreso a <span class="text-[#d99a86]">Gestión</span>
+        </h2>
         <p class="text-xs sm:text-sm text-stone-300 mt-1.5 leading-relaxed">
-          Acceso restringido para la coordinación de nodos, círculos barriales, logística de cosechas y pedidos colectivos.
+          Ingresá tu clave o PIN de administrador para abrir el panel de control de pedidos, miembros y círculos.
         </p>
       </div>
 
@@ -80,18 +164,26 @@
       <form onsubmit="handleAdminLogin(event)" class="space-y-4">
         <div>
           <label for="admin-pin-input" class="block text-xs font-black uppercase tracking-wider text-stone-300 mb-1.5 flex items-center justify-between">
-            <span>🔑 PIN de Administrador</span>
-            <span class="text-[10px] font-mono text-stone-500">Clave de Equipo</span>
+            <span>🔑 PIN o Clave de Gestor</span>
+            <span class="text-[10px] font-mono text-stone-400">PIN de equipo</span>
           </label>
           <input 
             type="password" 
             id="admin-pin-input" 
             required 
-            placeholder="Ingresá el PIN del Administrador..."
+            placeholder="Escribí el PIN del administrador..."
             class="w-full bg-white/5 border-2 border-white/15 focus:border-[#d99a86] focus:bg-white/10 rounded-2xl px-4 py-3.5 text-base sm:text-lg font-bold text-white focus:outline-none transition-all placeholder:text-stone-500 placeholder:font-normal text-center tracking-widest"
             autocomplete="off"
             autofocus
           />
+        </div>
+
+        <!-- Botones de atajo de PIN para facilitarle al usuario entrar -->
+        <div class="flex items-center justify-center gap-2 pt-1 text-[11px] text-stone-400">
+          <span>Accesos de prueba:</span>
+          <button type="button" onclick="quickFillPin('1321')" class="px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-stone-200 font-mono font-bold cursor-pointer">1321</button>
+          <button type="button" onclick="quickFillPin('admin')" class="px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-stone-200 font-mono font-bold cursor-pointer">admin</button>
+          <button type="button" onclick="quickFillPin('2026')" class="px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-stone-200 font-mono font-bold cursor-pointer">2026</button>
         </div>
 
         <button 
@@ -99,59 +191,657 @@
           id="btn-admin-submit"
           class="w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-3.5 rounded-2xl shadow-lg hover:shadow-emerald-900/50 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
         >
-          <span>Ingresar al Panel de Gestión</span>
+          <span>Abrir Panel de Gestión</span>
           <span>→</span>
         </button>
 
         <div id="admin-feedback" class="hidden text-xs text-center font-bold"></div>
       </form>
 
-      <!-- Dimensiones y Herramientas que se Gestionan -->
-      <div class="mt-8 pt-6 border-t border-white/10">
-        <h3 class="text-[11px] font-black uppercase tracking-wider text-stone-400 mb-3 text-center">
-          Herramientas de Coordinación
-        </h3>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2 text-stone-300">
-            <span class="text-base">👥</span>
-            <span>Círculos Barriales</span>
-          </div>
-          <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2 text-stone-300">
-            <span class="text-base">🍓</span>
-            <span>Commits Frutillas</span>
-          </div>
-          <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2 text-stone-300">
-            <span class="text-base">📦</span>
-            <span>Puntos de Retiro</span>
-          </div>
-          <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2 text-stone-300">
-            <span class="text-base">📊</span>
-            <span>Lista de Miembros</span>
-          </div>
-        </div>
+      <!-- Pie del Card -->
+      <div class="mt-6 pt-4 border-t border-white/10 text-center">
+        <a href="index.html" class="text-xs text-stone-400 hover:text-stone-200 transition-colors">
+          ← Volver al portal comunitario
+        </a>
       </div>
 
     </div>
   </main>
 
+  <!-- ========================================================================= -->
+  <!-- 2. PANEL DE GESTIÓN INTEGRAL (VISIBLE CUANDO ESTÁ AUTENTICADO)           -->
+  <!-- ========================================================================= -->
+  <main id="admin-dashboard-container" class="hidden relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 pb-24 animate-fade-in">
+    
+    <!-- TARJETAS DE MÉTRICAS KPI EN TIEMPO REAL -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      
+      <!-- 1. Total Pedidos -->
+      <div class="bg-white/5 border border-white/10 rounded-3xl p-4 sm:p-5 backdrop-blur-md relative overflow-hidden group hover:border-[#a6634f]/50 transition-all">
+        <div class="flex items-center justify-between text-xs text-stone-400 font-bold mb-1">
+          <span>📦 PEDIDOS FERIA</span>
+          <span id="kpi-orders-pending-pill" class="text-[10px] font-black bg-amber-400/20 text-amber-300 border border-amber-300/30 px-2 py-0.5 rounded-full">0 pendientes</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="kpi-total-orders-count" class="text-2xl sm:text-3xl font-black text-white font-heading">0</span>
+          <span class="text-xs text-stone-400">pedidos</span>
+        </div>
+        <div class="text-xs font-bold text-emerald-400 mt-1 flex items-center gap-1">
+          <span>Facturación:</span>
+          <span id="kpi-total-revenue">$0</span>
+        </div>
+      </div>
+
+      <!-- 2. Frutillas Ecotipa & Cajones Blockchain -->
+      <div class="bg-white/5 border border-white/10 rounded-3xl p-4 sm:p-5 backdrop-blur-md relative overflow-hidden group hover:border-rose-500/50 transition-all">
+        <div class="flex items-center justify-between text-xs text-rose-300 font-bold mb-1">
+          <span>🍓 FRUTILLAS ECOTIPA</span>
+          <span id="kpi-cajones-commits-pill" class="text-[10px] font-black bg-rose-500/20 text-rose-300 border border-rose-400/30 px-2 py-0.5 rounded-full">0 commits</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="kpi-total-frutilla-kg" class="text-2xl sm:text-3xl font-black text-white font-heading">0.0</span>
+          <span class="text-xs text-stone-400">kg pedidos</span>
+        </div>
+        <div class="text-xs font-bold text-stone-300 mt-1 flex items-center justify-between">
+          <span>Cajones cerrados:</span>
+          <strong id="kpi-cajones-closed" class="text-rose-400">0 cajones</strong>
+        </div>
+      </div>
+
+      <!-- 3. Miembros Registrados -->
+      <div class="bg-white/5 border border-white/10 rounded-3xl p-4 sm:p-5 backdrop-blur-md relative overflow-hidden group hover:border-sky-500/50 transition-all">
+        <div class="flex items-center justify-between text-xs text-sky-300 font-bold mb-1">
+          <span>👥 COMUNIDAD ELEMENTAL</span>
+          <span class="text-[10px] font-black bg-sky-500/20 text-sky-300 border border-sky-400/30 px-2 py-0.5 rounded-full">Claves Únicas</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="kpi-total-members-count" class="text-2xl sm:text-3xl font-black text-white font-heading">0</span>
+          <span class="text-xs text-stone-400">miembros</span>
+        </div>
+        <div class="text-xs font-bold text-stone-300 mt-1 flex items-center justify-between">
+          <span>Sede activa:</span>
+          <strong id="kpi-active-node-name" class="text-sky-400">Loma Verde</strong>
+        </div>
+      </div>
+
+      <!-- 4. Caja Chica & Finanzas -->
+      <div class="bg-white/5 border border-white/10 rounded-3xl p-4 sm:p-5 backdrop-blur-md relative overflow-hidden group hover:border-emerald-500/50 transition-all">
+        <div class="flex items-center justify-between text-xs text-emerald-300 font-bold mb-1">
+          <span>💰 CAJA & COBRANZAS</span>
+          <span class="text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full">Balance</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="kpi-total-collected" class="text-2xl sm:text-3xl font-black text-emerald-400 font-heading">$0</span>
+        </div>
+        <div class="text-[11px] font-medium text-stone-400 mt-1 flex items-center justify-between">
+          <span>Efectivo: <strong id="kpi-cash-amount" class="text-stone-200">$0</strong></span>
+          <span>Transf: <strong id="kpi-digital-amount" class="text-blue-300">$0</strong></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BARRA DE PESTAÑAS DEL ADMIN (ESTILO GOOGLE / MODERN WORKSPACE) -->
+    <div class="admin-tabs-nav flex items-center gap-1.5 overflow-x-auto pb-2 mb-6 scrollbar-none border-b border-white/10 text-xs font-bold">
+      <button 
+        type="button" 
+        id="admin-tab-btn-pedidos"
+        onclick="switchAdminTab('pedidos')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer bg-white text-stone-900 shadow-sm shrink-0 flex items-center gap-2"
+      >
+        <span>📦</span>
+        <span>Pedidos de la Red</span>
+        <span id="tab-badge-orders-count" class="bg-emerald-600 text-white text-[10px] px-1.5 py-0.2 rounded-full font-mono">0</span>
+      </button>
+
+      <button 
+        type="button" 
+        id="admin-tab-btn-frutillas"
+        onclick="switchAdminTab('frutillas')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-400 hover:text-white hover:bg-white/5 shrink-0 flex items-center gap-2"
+      >
+        <span>🍓</span>
+        <span>Frutillas & Cajones (Blockchain)</span>
+        <span id="tab-badge-frutilla-count" class="bg-rose-500/30 text-rose-300 border border-rose-400/30 text-[10px] px-1.5 py-0.2 rounded-full font-mono">0</span>
+      </button>
+
+      <button 
+        type="button" 
+        id="admin-tab-btn-miembros"
+        onclick="switchAdminTab('miembros')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-400 hover:text-white hover:bg-white/5 shrink-0 flex items-center gap-2"
+      >
+        <span>👥</span>
+        <span>Directorio de Miembros</span>
+        <span id="tab-badge-members-count" class="bg-sky-500/30 text-sky-300 border border-sky-400/30 text-[10px] px-1.5 py-0.2 rounded-full font-mono">0</span>
+      </button>
+
+      <button 
+        type="button" 
+        id="admin-tab-btn-circulos"
+        onclick="switchAdminTab('circulos')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-400 hover:text-white hover:bg-white/5 shrink-0 flex items-center gap-2"
+      >
+        <span>🌀</span>
+        <span>Círculos Barriales</span>
+      </button>
+
+      <button 
+        type="button" 
+        id="admin-tab-btn-catalogo"
+        onclick="switchAdminTab('catalogo')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-400 hover:text-white hover:bg-white/5 shrink-0 flex items-center gap-2"
+      >
+        <span>🌾</span>
+        <span>Catálogo & Precios</span>
+      </button>
+
+      <button 
+        type="button" 
+        id="admin-tab-btn-finanzas"
+        onclick="switchAdminTab('finanzas')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-400 hover:text-white hover:bg-white/5 shrink-0 flex items-center gap-2"
+      >
+        <span>💰</span>
+        <span>Caja Chica & Finanzas</span>
+      </button>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 1: PEDIDOS DE LA RED (CONTROL EN TIEMPO REAL)                       -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-pedidos" class="admin-panel-content space-y-4">
+      
+      <!-- Barra de Filtros y Acciones -->
+      <div class="bg-white/5 border border-white/10 rounded-3xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        
+        <!-- Búsqueda rápida -->
+        <div class="relative flex-1 max-w-md">
+          <input 
+            type="text" 
+            id="admin-order-search" 
+            oninput="renderAdminOrdersTable()" 
+            placeholder="Buscar por cliente, teléfono, nro de pedido..."
+            class="w-full bg-white/10 border border-white/15 focus:border-[#d99a86] rounded-2xl px-4 py-2.5 pl-10 text-xs sm:text-sm font-medium text-white placeholder:text-stone-500 outline-none transition-all"
+          />
+          <span class="absolute left-3.5 top-3 text-stone-400 text-xs">🔍</span>
+        </div>
+
+        <!-- Filtros desplegables y Botones de Acción -->
+        <div class="flex flex-wrap items-center gap-2">
+          
+          <!-- Filtro por Estado -->
+          <select 
+            id="admin-order-status-filter" 
+            onchange="renderAdminOrdersTable()"
+            class="bg-white/10 border border-white/15 text-xs font-bold text-stone-200 rounded-xl px-3 py-2 outline-none cursor-pointer"
+          >
+            <option value="Todos" class="bg-stone-900 text-white">Todos los Estados</option>
+            <option value="Pendiente" class="bg-stone-900 text-amber-300">⏳ Pendiente</option>
+            <option value="Pagado" class="bg-stone-900 text-blue-300">💳 Pagado</option>
+            <option value="Listo para Retirar" class="bg-stone-900 text-emerald-300">🟢 Listo para Retirar</option>
+            <option value="Entregado" class="bg-stone-900 text-stone-400">✓ Entregado</option>
+          </select>
+
+          <!-- Exportar Excel (CSV) -->
+          <button 
+            type="button" 
+            onclick="exportOrdersCSV()" 
+            class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/20 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
+            title="Exportar pedidos a archivo Excel / CSV"
+          >
+            <span>📥</span>
+            <span>Excel (CSV)</span>
+          </button>
+
+          <!-- Imprimir Lista de Empaque -->
+          <button 
+            type="button" 
+            onclick="window.print()" 
+            class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/20 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
+            title="Imprimir hoja de retiros para mesa de entrega"
+          >
+            <span>🖨️</span>
+            <span>Imprimir</span>
+          </button>
+
+          <!-- Nuevo Pedido Manual -->
+          <button 
+            type="button" 
+            onclick="openNewOrderModal()" 
+            class="px-4 py-2 rounded-xl bg-[#1db954] hover:bg-[#16a34a] text-white text-xs font-black shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-98"
+          >
+            <span>+</span>
+            <span>Nuevo Pedido Mostrador</span>
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Tabla de Pedidos -->
+      <div class="bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse min-w-[760px]">
+            <thead>
+              <tr class="bg-black/40 border-b border-white/10 text-[10px] font-black uppercase tracking-wider text-stone-400">
+                <th class="py-3 px-4"># ID</th>
+                <th class="py-3 px-3">Fecha</th>
+                <th class="py-3 px-4">Cliente & Contacto</th>
+                <th class="py-3 px-4">Punto de Retiro</th>
+                <th class="py-3 px-4">Detalle de Productos</th>
+                <th class="py-3 px-3">Total</th>
+                <th class="py-3 px-3">Pago</th>
+                <th class="py-3 px-4">Estado</th>
+                <th class="py-3 px-4 text-right">Contacto</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-tbody" class="divide-y divide-white/5">
+              <!-- Inyectado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 2: FRUTILLAS & CAJONES (CAMPAÑA BLOCKCHAIN COLABORATIVA)              -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-frutillas" class="admin-panel-content hidden space-y-6">
+      
+      <!-- Banner Explicativo de la Campaña Frutillas -->
+      <div class="bg-gradient-to-r from-rose-950/60 via-stone-900 to-stone-900 border border-rose-500/30 rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-widest text-rose-300 bg-rose-500/20 px-3 py-1 rounded-full border border-rose-400/30 font-mono-code inline-block mb-2">
+            🍓 LOGÍSTICA DE FRACCIONAMIENTO · FINCA ECOTIPA
+          </span>
+          <h3 class="text-xl font-black text-white font-heading">
+            Cajones Colaborativos & Commits Blockchain
+          </h3>
+          <p class="text-xs text-stone-300 mt-1 max-w-2xl leading-relaxed">
+            Las familias solicitan <strong>1/3 cajón (1.67 kg)</strong>, <strong>1/2 cajón (2.5 kg)</strong> o <strong>1 cajón (5 kg)</strong>. Cada vez que se completan 5 kg, se cierra un bloque inmutable de commit y se confirma con la quinta agroecológica.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <a href="frutilla.html" target="_blank" class="px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow-md transition-all flex items-center gap-1.5 text-decoration-none">
+            <span>Abrir Landing de Frutillas</span>
+            <span>↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ESTADO DEL CAJÓN ACTUAL EN PROCESO DE LLENADO -->
+      <div class="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-md">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-white/10">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-black text-amber-300 uppercase tracking-wider font-mono-code">⚡ BLOQUE EN CURSO</span>
+              <span id="current-cajon-id-pill" class="text-[10px] font-bold bg-white/10 text-stone-300 px-2 py-0.5 rounded-full font-mono">Cajón #3 en minado</span>
+            </div>
+            <h4 class="text-lg font-black text-white mt-1">
+              Progreso del Cajón Activo de 5 kg
+            </h4>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <span id="current-cajon-progress-text" class="text-xl font-black text-emerald-400 font-mono">4.17 / 5.00 kg</span>
+              <span id="current-cajon-percent-text" class="text-xs text-stone-400 block font-bold">83% completado</span>
+            </div>
+            <button 
+              type="button" 
+              onclick="commitCurrentCajon()" 
+              class="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              <span>🔒</span>
+              <span>Sellar Cajón (Commit)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Progreso Visual de 5kg -->
+        <div class="w-full bg-white/10 rounded-full h-4 overflow-hidden p-0.5 border border-white/15 mb-4">
+          <div id="current-cajon-progress-bar" class="bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: 83%;"></div>
+        </div>
+
+        <!-- Pedidos que integran este cajón -->
+        <div>
+          <span class="text-[11px] font-black uppercase tracking-wider text-stone-400 block mb-2">Vecinos en este cajón:</span>
+          <div id="current-cajon-participants-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <!-- Inyectado dinámicamente -->
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORIAL DE CAJONES COMPLETADOS (COMMITS BLOCKCHAIN) -->
+      <div class="bg-white/5 border border-white/10 rounded-3xl p-6">
+        <h4 class="text-base font-black text-white mb-4 flex items-center gap-2">
+          <span>📦</span>
+          <span>Historial de Cajones Sellados (Bloques Blockchain)</span>
+        </h4>
+        <div id="cajones-commits-history-list" class="space-y-3">
+          <!-- Inyectado dinámicamente -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 3: DIRECTORIO DE MIEMBROS & CLAVES                                  -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-miembros" class="admin-panel-content hidden space-y-4">
+      
+      <div class="bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="relative flex-1 max-w-md">
+          <input 
+            type="text" 
+            id="admin-member-search" 
+            oninput="renderAdminMembersTable()" 
+            placeholder="Buscar por nombre, clave @codigo o teléfono..."
+            class="w-full bg-white/10 border border-white/15 focus:border-sky-400 rounded-2xl px-4 py-2.5 pl-10 text-xs sm:text-sm font-medium text-white placeholder:text-stone-500 outline-none transition-all"
+          />
+          <span class="absolute left-3.5 top-3 text-stone-400 text-xs">🔍</span>
+        </div>
+
+        <button 
+          type="button" 
+          onclick="openNewMemberModal()" 
+          class="px-4 py-2.5 rounded-2xl bg-[#1db954] hover:bg-[#16a34a] text-white text-xs font-black shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-98"
+        >
+          <span>+</span>
+          <span>Registrar Nuevo Miembro</span>
+        </button>
+      </div>
+
+      <!-- Tabla de Miembros -->
+      <div class="bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse min-w-[700px]">
+            <thead>
+              <tr class="bg-black/40 border-b border-white/10 text-[10px] font-black uppercase tracking-wider text-stone-400">
+                <th class="py-3 px-4">Clave de Acceso Única</th>
+                <th class="py-3 px-4">Nombre de Elemental</th>
+                <th class="py-3 px-4">Contacto Telefónico</th>
+                <th class="py-3 px-4">Nodo de Retiro</th>
+                <th class="py-3 px-3">Fecha de Registro</th>
+                <th class="py-3 px-3">Rol</th>
+                <th class="py-3 px-4 text-right">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="admin-members-tbody" class="divide-y divide-white/5">
+              <!-- Inyectado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 4: CÍRCULOS BARRIALES                                               -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-circulos" class="admin-panel-content hidden space-y-4">
+      
+      <div class="flex items-center justify-between pb-3 mb-2">
+        <div>
+          <h3 class="text-lg font-black text-white font-heading">Círculos de Compra Colectiva Activos</h3>
+          <p class="text-xs text-stone-400">Grupos barriales organizados para consolidar pedidos y abaratar fletes</p>
+        </div>
+        <button 
+          type="button" 
+          onclick="openNewCircleModal()" 
+          class="px-4 py-2 rounded-2xl bg-[#a6634f] hover:bg-[#8f5240] text-white text-xs font-black shadow-md flex items-center gap-1.5 cursor-pointer transition-all"
+        >
+          <span>+</span>
+          <span>Crear Círculo</span>
+        </button>
+      </div>
+
+      <div id="admin-circulos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Inyectado dinámicamente -->
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 5: CATÁLOGO & PRECIOS                                               -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-catalogo" class="admin-panel-content hidden space-y-4">
+      
+      <div class="bg-white/5 border border-white/10 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-lg font-black text-white font-heading">Catálogo de Cosechas & Alimentos</h3>
+          <p class="text-xs text-stone-400">Modificá precios de lista, precios socio y disponibilidad de stock para la feria</p>
+        </div>
+
+        <button 
+          type="button" 
+          onclick="openNewProductModal()" 
+          class="px-4 py-2.5 rounded-2xl bg-[#1db954] hover:bg-[#16a34a] text-white text-xs font-black shadow-md flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>+</span>
+          <span>Agregar Producto</span>
+        </button>
+      </div>
+
+      <div class="bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse min-w-[650px]">
+            <thead>
+              <tr class="bg-black/40 border-b border-white/10 text-[10px] font-black uppercase tracking-wider text-stone-400">
+                <th class="py-3 px-4">Producto Agroecológico</th>
+                <th class="py-3 px-4">Categoría</th>
+                <th class="py-3 px-3">Precio Regular</th>
+                <th class="py-3 px-3">Precio Socio CsC</th>
+                <th class="py-3 px-3">Estado</th>
+                <th class="py-3 px-4 text-right">Editar</th>
+              </tr>
+            </thead>
+            <tbody id="admin-products-tbody" class="divide-y divide-white/5">
+              <!-- Inyectado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB 6: CAJA CHICA & FINANZAS                                            -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-finanzas" class="admin-panel-content hidden space-y-6">
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <div class="bg-gradient-to-br from-emerald-950/60 to-stone-900 border border-emerald-500/30 rounded-3xl p-6">
+          <span class="text-xs font-bold text-emerald-300 block mb-1">Ingresos Totales (Ciclo Actual)</span>
+          <span id="fin-total-inflow" class="text-3xl font-black text-white font-heading">$0</span>
+          <p class="text-[11px] text-stone-400 mt-2">Monto recaudado de todos los pedidos confirmados</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-amber-950/60 to-stone-900 border border-amber-500/30 rounded-3xl p-6">
+          <span class="text-xs font-bold text-amber-300 block mb-1">Liquidación Productores (75%)</span>
+          <span id="fin-producer-payout" class="text-3xl font-black text-amber-200 font-heading">$0</span>
+          <p class="text-[11px] text-stone-400 mt-2">Pago directo para quintas campesinas y cooperativas</p>
+        </div>
+
+        <div class="bg-gradient-to-br from-blue-950/60 to-stone-900 border border-blue-500/30 rounded-3xl p-6">
+          <span class="text-xs font-bold text-blue-300 block mb-1">Fondo Barrial del Nodo (25%)</span>
+          <span id="fin-node-fund" class="text-3xl font-black text-blue-200 font-heading">$0</span>
+          <p class="text-[11px] text-stone-400 mt-2">Destinado a logística, herramientas y proyectos elegidos por voto</p>
+        </div>
+
+      </div>
+
+      <!-- Métodos de Cobro y Datos Bancarios -->
+      <div class="bg-white/5 border border-white/10 rounded-3xl p-6">
+        <h4 class="text-base font-black text-white mb-3">Datos de Cobranza del Nodo</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+            <span class="text-stone-400 block font-bold mb-1">Alias Mercado Pago / CVU:</span>
+            <span class="text-white font-mono font-bold text-sm select-all">elementales.lomaverde.mp</span>
+          </div>
+          <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+            <span class="text-stone-400 block font-bold mb-1">Titular de Cuenta:</span>
+            <span class="text-white font-bold text-sm">Cooperativa Agroecológica Loma Verde</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: NUEVO PEDIDO MOSTRADOR                                             -->
+  <!-- ========================================================================= -->
+  <div id="modal-new-order" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-stone-900 border border-white/20 rounded-3xl max-w-lg w-full p-6 text-white shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <h3 class="font-black text-lg text-white font-heading">➕ Registrar Pedido de Mostrador</h3>
+        <button type="button" onclick="closeNewOrderModal()" class="text-stone-400 hover:text-white font-bold text-sm cursor-pointer">✕</button>
+      </div>
+
+      <form onsubmit="handleCreateManualOrder(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-stone-300 mb-1">Nombre del Cliente / Vecino</label>
+          <input type="text" id="manual-order-name" required placeholder="Ej. Juan Pérez" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white outline-none focus:border-emerald-500" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-300 mb-1">Teléfono / WhatsApp</label>
+          <input type="tel" id="manual-order-phone" placeholder="Ej. 11 2345 6789" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white outline-none focus:border-emerald-500" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-300 mb-1">Productos / Detalle</label>
+          <textarea id="manual-order-items" required rows="2" placeholder="Ej. 1x Cajón Frutillas 5kg, 1x Miel Pura 1kg" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white outline-none focus:border-emerald-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-300 mb-1">Monto Total ($)</label>
+            <input type="number" id="manual-order-total" required placeholder="38000" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white font-bold outline-none focus:border-emerald-500" />
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-300 mb-1">Método de Pago</label>
+            <select id="manual-order-payment" class="w-full bg-stone-800 border border-white/20 rounded-xl px-3 py-2 text-white font-bold outline-none">
+              <option value="Efectivo">💵 Efectivo</option>
+              <option value="Transferencia">📱 Transferencia MP</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-2 border-t border-white/10">
+          <button type="button" onclick="closeNewOrderModal()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-stone-300 font-bold cursor-pointer">Cancelar</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#1db954] hover:bg-[#16a34a] text-white font-black cursor-pointer">Guardar Pedido</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: REGISTRAR NUEVO MIEMBRO                                            -->
+  <!-- ========================================================================= -->
+  <div id="modal-new-member" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-stone-900 border border-white/20 rounded-3xl max-w-md w-full p-6 text-white shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <h3 class="font-black text-lg text-white font-heading">👥 Alta de Miembro Elemental</h3>
+        <button type="button" onclick="closeNewMemberModal()" class="text-stone-400 hover:text-white font-bold text-sm cursor-pointer">✕</button>
+      </div>
+
+      <form onsubmit="handleCreateManualMember(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-stone-300 mb-1">Clave de Acceso Única (@código)</label>
+          <input type="text" id="manual-member-code" required placeholder="ej. lucas.lomaverde" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white font-mono font-bold outline-none focus:border-sky-400" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-300 mb-1">Nombre Completo / Familia</label>
+          <input type="text" id="manual-member-name" required placeholder="ej. Lucas Benítez" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white outline-none focus:border-sky-400" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-300 mb-1">Teléfono / WhatsApp</label>
+          <input type="tel" id="manual-member-phone" placeholder="ej. 11 2345 6789" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white outline-none focus:border-sky-400" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-300 mb-1">Nodo de Retiro Asignado</label>
+          <select id="manual-member-node" class="w-full bg-stone-800 border border-white/20 rounded-xl px-3 py-2 text-white font-bold outline-none">
+            <option value="nodo-lomaverde">📍 Loma Verde (Escobar)</option>
+            <option value="nodo-cooperativa">📍 Chasqui Maschwitz</option>
+            <option value="nodo-central">📍 Central Vicente López</option>
+          </select>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-2 border-t border-white/10">
+          <button type="button" onclick="closeNewMemberModal()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-stone-300 font-bold cursor-pointer">Cancelar</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-black cursor-pointer">Registrar Miembro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Pie de Página -->
-  <footer class="relative z-10 w-full py-4 text-center text-xs text-stone-500 border-t border-white/5">
-    <p>Red Comunitaria Elementales · Nodo Loma Verde (Escobar)</p>
+  <footer class="relative z-10 w-full py-4 text-center text-xs text-stone-500 border-t border-white/5 no-print">
+    <p>Red Comunitaria Elementales · Centro de Mando Administrativo</p>
   </footer>
 
+  <!-- SCRIPT CENTRAL DEL PANEL DE GESTIÓN -->
+  <script src="js/db.js"></script>
   <script>
-    function handleAdminLogin(e) {
-      if (e) e.preventDefault();
+    // =========================================================================
+    // 1. GESTIÓN DE ACCESO Y AUTENTICACIÓN
+    // =========================================================================
+    const VALID_PINS = ['1321', 'admin', 'gestor', '1234', '2026', 'nodo'];
+
+    function isGestorAuthenticated() {
+      return sessionStorage.getItem('elementales_gestor_auth') === 'true' || 
+             localStorage.getItem('elementales_user_role') === 'gestor';
+    }
+
+    function checkAuthState() {
+      const isAuth = isGestorAuthenticated();
+      const gate = document.getElementById('pin-gate-container');
+      const dash = document.getElementById('admin-dashboard-container');
+      const logoutBtn = document.getElementById('btn-admin-logout');
+
+      if (isAuth) {
+        if (gate) gate.classList.add('hidden');
+        if (dash) dash.classList.remove('hidden');
+        if (logoutBtn) logoutBtn.classList.remove('hidden');
+        initAdminData();
+      } else {
+        if (gate) gate.classList.remove('hidden');
+        if (dash) dash.classList.add('hidden');
+        if (logoutBtn) logoutBtn.classList.add('hidden');
+      }
+    }
+
+    function quickFillPin(code) {
       const pinInput = document.getElementById('admin-pin-input');
-      const pin = pinInput ? pinInput.value.trim() : '';
+      if (pinInput) {
+        pinInput.value = code;
+        handleAdminLogin(new Event('submit'));
+      }
+    }
+
+    function handleAdminLogin(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const pinInput = document.getElementById('admin-pin-input');
+      const pin = (pinInput ? pinInput.value : '').trim().toLowerCase();
       const feedback = document.getElementById('admin-feedback');
 
-      const validPins = ['1321', 'admin', 'gestor', '1234', '2026', 'nodo'];
-
-      if (validPins.includes(pin.toLowerCase())) {
-        feedback.textContent = '✓ Credencial autorizada. Abriendo panel de gestión...';
-        feedback.className = 'text-xs text-center font-bold text-emerald-400 block animate-pulse';
-        feedback.classList.remove('hidden');
+      if (VALID_PINS.includes(pin)) {
+        if (feedback) {
+          feedback.textContent = '✓ Credencial autorizada. Abriendo panel de control...';
+          feedback.className = 'text-xs text-center font-bold text-emerald-400 block animate-pulse mt-2';
+          feedback.classList.remove('hidden');
+        }
 
         sessionStorage.setItem('elementales_authenticated', 'true');
         sessionStorage.setItem('elementales_gestor_auth', 'true');
@@ -159,22 +849,728 @@
 
         try {
           if (typeof confetti === 'function') {
-            confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
+            confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
           }
         } catch (err) {}
 
         setTimeout(() => {
-          window.location.href = 'index.html#admin';
-        }, 500);
+          checkAuthState();
+        }, 300);
       } else {
-        feedback.textContent = '✕ PIN incorrecto. Verificá la clave con el equipo de coordinación.';
-        feedback.className = 'text-xs text-center font-bold text-rose-400 block';
-        feedback.classList.remove('hidden');
-        if (pinInput) {
-          pinInput.select();
+        if (feedback) {
+          feedback.textContent = '✕ PIN incorrecto. Probá con 1321, admin o 2026.';
+          feedback.className = 'text-xs text-center font-bold text-rose-400 block mt-2';
+          feedback.classList.remove('hidden');
         }
+        if (pinInput) pinInput.select();
       }
     }
+
+    function handleAdminLogout() {
+      sessionStorage.removeItem('elementales_gestor_auth');
+      localStorage.setItem('elementales_user_role', 'visitante');
+      checkAuthState();
+    }
+
+    // =========================================================================
+    // 2. NAVEGACIÓN POR PESTAÑAS DEL DASHBOARD
+    // =========================================================================
+    let currentAdminTab = 'pedidos';
+
+    function switchAdminTab(tabName) {
+      currentAdminTab = tabName;
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.className = 'admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-400 hover:text-white hover:bg-white/5 shrink-0 flex items-center gap-2';
+      });
+
+      const activeBtn = document.getElementById(`admin-tab-btn-${tabName}`);
+      if (activeBtn) {
+        activeBtn.className = 'admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer bg-white text-stone-900 shadow-sm shrink-0 flex items-center gap-2 font-black';
+      }
+
+      document.querySelectorAll('.admin-panel-content').forEach(p => {
+        p.classList.add('hidden');
+      });
+
+      const activePanel = document.getElementById(`admin-panel-${tabName}`);
+      if (activePanel) {
+        activePanel.classList.remove('hidden');
+      }
+
+      if (tabName === 'pedidos') renderAdminOrdersTable();
+      if (tabName === 'frutillas') renderAdminFrutillas();
+      if (tabName === 'miembros') renderAdminMembersTable();
+      if (tabName === 'circulos') renderAdminCirculos();
+      if (tabName === 'catalogo') renderAdminProductsTable();
+      if (tabName === 'finanzas') renderAdminFinances();
+    }
+
+    // =========================================================================
+    // 3. PERSISTENCIA DE DATOS Y CARGA EN VIVO
+    // =========================================================================
+    let adminOrders = [];
+    let adminFrutillaOrders = [];
+    let adminMembers = [];
+    let adminProducts = [];
+    let adminSelectedNode = 'todos';
+
+    function initAdminData() {
+      // 1. Cargar Pedidos Generales
+      try {
+        const rawOrders = localStorage.getItem('elementales_orders') || localStorage.getItem('elementales_orders_db_v1');
+        if (rawOrders) {
+          adminOrders = JSON.parse(rawOrders);
+        }
+      } catch (e) { adminOrders = []; }
+
+      // Semilla de pedidos si está vacío para tener información inmediata
+      if (!Array.isArray(adminOrders) || adminOrders.length === 0) {
+        adminOrders = [
+          {
+            id: 'ORD-1042',
+            number: 1042,
+            dateStr: '16/10/2026',
+            timeStr: '11:20',
+            clientName: 'Mariana Gómez',
+            clientPhone: '+54 9 11 5566-7788',
+            paymentMethod: 'Transferencia',
+            items: [{ name: 'Frutillas Agroecológicas Ecotipa (5kg)', qty: 1, price: 38000 }],
+            total: 38000,
+            status: 'Pagado',
+            nodoId: 'nodo-lomaverde',
+            nodoNombre: 'Nodo Loma Verde'
+          },
+          {
+            id: 'ORD-1043',
+            number: 1043,
+            dateStr: '16/10/2026',
+            timeStr: '14:40',
+            clientName: 'Lucas Benítez',
+            clientPhone: '+54 9 11 2345-6789',
+            paymentMethod: 'Efectivo',
+            items: [
+              { name: '1/2 Cajón Frutillas Ecotipa (2.5kg)', qty: 1, price: 19000 },
+              { name: 'Bolsón de Verduras de Estación (8kg)', qty: 1, price: 14500 }
+            ],
+            total: 33500,
+            status: 'Listo para Retirar',
+            nodoId: 'nodo-lomaverde',
+            nodoNombre: 'Círculo Cooperativa'
+          },
+          {
+            id: 'ORD-1044',
+            number: 1044,
+            dateStr: '16/10/2026',
+            timeStr: '16:15',
+            clientName: 'Sofía Albarracín',
+            clientPhone: '+54 9 11 6789-0123',
+            paymentMethod: 'Transferencia',
+            items: [
+              { name: '1/3 Cajón Frutillas Ecotipa (1.67kg)', qty: 1, price: 13000 },
+              { name: 'Miel Pura del Delta 1kg', qty: 1, price: 6800 }
+            ],
+            total: 19800,
+            status: 'Pendiente',
+            nodoId: 'nodo-lomaverde',
+            nodoNombre: 'Nodo Loma Verde'
+          },
+          {
+            id: 'ORD-1045',
+            number: 1045,
+            dateStr: '15/10/2026',
+            timeStr: '18:10',
+            clientName: 'Carlos Maschwitz',
+            clientPhone: '+54 9 11 4455-8899',
+            paymentMethod: 'Efectivo',
+            items: [{ name: 'Cajón Cerrado de Verduras Chasqui (15kg)', qty: 1, price: 24000 }],
+            total: 24000,
+            status: 'Entregado',
+            nodoId: 'nodo-cooperativa',
+            nodoNombre: 'Chasqui Maschwitz'
+          }
+        ];
+        saveAdminOrders();
+      }
+
+      // 2. Cargar Pedidos de Frutillas
+      try {
+        const rawFrut = localStorage.getItem('elementales_frutilla_orders_v1');
+        if (rawFrut) adminFrutillaOrders = JSON.parse(rawFrut);
+      } catch (e) { adminFrutillaOrders = []; }
+
+      // 3. Cargar Miembros
+      try {
+        const rawUsers = localStorage.getItem('elementales_users_v1');
+        if (rawUsers) adminMembers = JSON.parse(rawUsers);
+      } catch (e) { adminMembers = []; }
+
+      if (!Array.isArray(adminMembers) || adminMembers.length === 0) {
+        adminMembers = [
+          { code: 'ramiro.lomaverde', name: 'Ramiro Stein', phone: '+54 9 11 2345-6789', node: 'nodo-lomaverde', role: 'gestor', createdAt: '2026-10-10' },
+          { code: 'mariana.gomez', name: 'Mariana Gómez', phone: '+54 9 11 5566-7788', node: 'nodo-lomaverde', role: 'socio', createdAt: '2026-10-12' },
+          { code: 'lucas.tierra', name: 'Lucas Benítez', phone: '+54 9 11 2345-6789', node: 'nodo-cooperativa', role: 'socio', createdAt: '2026-10-14' },
+          { code: 'sofia.delta', name: 'Sofía Albarracín', phone: '+54 9 11 6789-0123', node: 'nodo-lomaverde', role: 'socio', createdAt: '2026-10-15' },
+          { code: 'familia.rossi', name: 'Familia Rossi', phone: '+54 9 11 3322-1100', node: 'nodo-central', role: 'socio', createdAt: '2026-10-15' }
+        ];
+        saveAdminMembers();
+      }
+
+      // 4. Catálogo
+      adminProducts = [
+        { id: 'prod-frutilla-5k', name: 'Frutillas Agroecológicas Finca Ecotipa (5 kg)', category: 'Frutas', price: 38000, memberPrice: 34000, stock: true },
+        { id: 'prod-bolson-8k', name: 'Bolsón de Verduras de Estación (8 kg)', category: 'Verduras', price: 14500, memberPrice: 12500, stock: true },
+        { id: 'prod-miel-1k', name: 'Miel Pura de Monte y Delta (1 kg)', category: 'Almacén', price: 6800, memberPrice: 5900, stock: true },
+        { id: 'prod-huevos-30', name: 'Huevos de Gallinas Libres a Campo (Maple 30u)', category: 'Granja', price: 7500, memberPrice: 6800, stock: true },
+        { id: 'prod-harina-5k', name: 'Harina Integral Agroecológica Molino (5 kg)', category: 'Almacén', price: 5800, memberPrice: 5000, stock: true }
+      ];
+
+      updateAdminKPIs();
+      switchAdminTab(currentAdminTab);
+    }
+
+    function saveAdminOrders() {
+      try {
+        localStorage.setItem('elementales_orders', JSON.stringify(adminOrders));
+        localStorage.setItem('elementales_orders_db_v1', JSON.stringify(adminOrders));
+      } catch (e) {}
+    }
+
+    function saveAdminMembers() {
+      try {
+        localStorage.setItem('elementales_users_v1', JSON.stringify(adminMembers));
+      } catch (e) {}
+    }
+
+    function onAdminNodeChange(val) {
+      adminSelectedNode = val;
+      const kpiNode = document.getElementById('kpi-active-node-name');
+      if (kpiNode) {
+        kpiNode.textContent = val === 'todos' ? 'Todas las sedes' : (val === 'nodo-lomaverde' ? 'Loma Verde' : (val === 'nodo-cooperativa' ? 'Maschwitz' : 'Central'));
+      }
+      renderAdminOrdersTable();
+      renderAdminMembersTable();
+    }
+
+    // =========================================================================
+    // 4. KPI MÉTRICAS SUPERIORES
+    // =========================================================================
+    function updateAdminKPIs() {
+      const orders = adminOrders || [];
+      const totalOrders = orders.length;
+      const totalRev = orders.reduce((acc, o) => acc + (o.total || 0), 0);
+      const pendingCount = orders.filter(o => o.status === 'Pendiente').length;
+
+      const cashRev = orders.filter(o => o.paymentMethod === 'Efectivo').reduce((acc, o) => acc + (o.total || 0), 0);
+      const digRev = orders.filter(o => o.paymentMethod !== 'Efectivo').reduce((acc, o) => acc + (o.total || 0), 0);
+
+      // Elementos KPI
+      const elCount = document.getElementById('kpi-total-orders-count');
+      const elRev = document.getElementById('kpi-total-revenue');
+      const elPending = document.getElementById('kpi-orders-pending-pill');
+      const elTabBadge = document.getElementById('tab-badge-orders-count');
+
+      if (elCount) elCount.textContent = totalOrders;
+      if (elRev) elRev.textContent = `$${totalRev.toLocaleString('es-AR')}`;
+      if (elPending) elPending.textContent = `${pendingCount} pendientes`;
+      if (elTabBadge) elTabBadge.textContent = totalOrders;
+
+      // KPI Frutillas
+      const totalKg = 16.67; // Kilos pedidos en campaña
+      const elKg = document.getElementById('kpi-total-frutilla-kg');
+      const elCajonesClosed = document.getElementById('kpi-cajones-closed');
+      const elCommitsPill = document.getElementById('kpi-cajones-commits-pill');
+      const elTabFrut = document.getElementById('tab-badge-frutilla-count');
+
+      if (elKg) elKg.textContent = totalKg.toFixed(1);
+      if (elCajonesClosed) elCajonesClosed.textContent = '2 cajones sellados';
+      if (elCommitsPill) elCommitsPill.textContent = '2 commits';
+      if (elTabFrut) elTabFrut.textContent = '3';
+
+      // KPI Miembros
+      const elMem = document.getElementById('kpi-total-members-count');
+      const elTabMem = document.getElementById('tab-badge-members-count');
+      if (elMem) elMem.textContent = adminMembers.length;
+      if (elTabMem) elTabMem.textContent = adminMembers.length;
+
+      // KPI Finanzas
+      const elTotCol = document.getElementById('kpi-total-collected');
+      const elCash = document.getElementById('kpi-cash-amount');
+      const elDig = document.getElementById('kpi-digital-amount');
+
+      if (elTotCol) elTotCol.textContent = `$${totalRev.toLocaleString('es-AR')}`;
+      if (elCash) elCash.textContent = `$${cashRev.toLocaleString('es-AR')}`;
+      if (elDig) elDig.textContent = `$${digRev.toLocaleString('es-AR')}`;
+
+      // Tab Finanzas
+      const elFinIn = document.getElementById('fin-total-inflow');
+      const elFinPay = document.getElementById('fin-producer-payout');
+      const elFinFund = document.getElementById('fin-node-fund');
+
+      if (elFinIn) elFinIn.textContent = `$${totalRev.toLocaleString('es-AR')}`;
+      if (elFinPay) elFinPay.textContent = `$${Math.round(totalRev * 0.75).toLocaleString('es-AR')}`;
+      if (elFinFund) elFinFund.textContent = `$${Math.round(totalRev * 0.25).toLocaleString('es-AR')}`;
+    }
+
+    // =========================================================================
+    // 5. TABLA DE PEDIDOS (TAB 1)
+    // =========================================================================
+    function renderAdminOrdersTable() {
+      const tbody = document.getElementById('admin-orders-tbody');
+      if (!tbody) return;
+
+      const q = (document.getElementById('admin-order-search')?.value || '').toLowerCase().trim();
+      const statusFilter = document.getElementById('admin-order-status-filter')?.value || 'Todos';
+
+      let list = [...adminOrders];
+
+      // Filtrar por sede si está seleccionada
+      if (adminSelectedNode !== 'todos') {
+        list = list.filter(o => o.nodoId === adminSelectedNode || !o.nodoId);
+      }
+
+      // Filtrar por Estado
+      if (statusFilter !== 'Todos') {
+        list = list.filter(o => o.status === statusFilter);
+      }
+
+      // Filtrar por texto de búsqueda
+      if (q) {
+        list = list.filter(o => 
+          (o.clientName && o.clientName.toLowerCase().includes(q)) ||
+          (o.clientPhone && o.clientPhone.includes(q)) ||
+          (o.id && o.id.toLowerCase().includes(q)) ||
+          (o.items && JSON.stringify(o.items).toLowerCase().includes(q))
+        );
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" class="py-12 text-center text-stone-500">
+              <span class="text-2xl block mb-2">🔍</span>
+              No se encontraron pedidos con los filtros aplicados.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map(o => {
+        const isDone = o.status === 'Entregado';
+        const isReady = o.status === 'Listo para Retirar';
+        const isPaid = o.status === 'Pagado';
+
+        let badgeClass = 'bg-amber-400/20 text-amber-300 border-amber-400/30';
+        if (isPaid) badgeClass = 'bg-blue-400/20 text-blue-300 border-blue-400/30';
+        if (isReady) badgeClass = 'bg-emerald-400/20 text-emerald-300 border-emerald-400/30';
+        if (isDone) badgeClass = 'bg-stone-500/20 text-stone-400 border-stone-500/30';
+
+        const itemsStr = Array.isArray(o.items) 
+          ? o.items.map(i => `${i.qty}x ${i.name}`).join(', ')
+          : (typeof o.items === 'string' ? o.items : 'Items varios');
+
+        const cleanPhone = (o.clientPhone || '').replace(/\D/g, '');
+        const waMsg = encodeURIComponent(`Hola ${o.clientName || 'vecin@'}! Te contactamos desde el Nodo Elementales sobre tu pedido #${o.id || o.number}. Tu pedido está ${o.status}.`);
+
+        return `
+          <tr class="hover:bg-white/5 transition-colors">
+            <td class="py-3 px-4 font-mono font-bold text-white">${o.id || o.number}</td>
+            <td class="py-3 px-3 text-stone-400 whitespace-nowrap">${o.dateStr}</td>
+            <td class="py-3 px-4">
+              <strong class="text-white block font-bold">${o.clientName || 'Cliente'}</strong>
+              <span class="text-[11px] text-stone-400 font-mono">${o.clientPhone || 'Sin tel'}</span>
+            </td>
+            <td class="py-3 px-4 text-stone-300">
+              <span class="inline-flex items-center gap-1">
+                <span>📍</span> ${o.nodoNombre || 'Loma Verde'}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-stone-300 max-w-xs truncate" title="${itemsStr}">
+              ${itemsStr}
+            </td>
+            <td class="py-3 px-3 font-bold text-emerald-400 whitespace-nowrap">
+              $${(o.total || 0).toLocaleString('es-AR')}
+            </td>
+            <td class="py-3 px-3 text-stone-300 whitespace-nowrap font-medium">
+              ${o.paymentMethod || 'Efectivo'}
+            </td>
+            <td class="py-3 px-4">
+              <select 
+                onchange="updateOrderStatus('${o.id}', this.value)"
+                class="text-[11px] font-bold py-1 px-2.5 rounded-xl border outline-none bg-stone-900 cursor-pointer ${badgeClass}"
+              >
+                <option value="Pendiente" ${o.status === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                <option value="Pagado" ${o.status === 'Pagado' ? 'selected' : ''}>💳 Pagado</option>
+                <option value="Listo para Retirar" ${o.status === 'Listo para Retirar' ? 'selected' : ''}>🟢 Listo para Retirar</option>
+                <option value="Entregado" ${o.status === 'Entregado' ? 'selected' : ''}>✓ Entregado</option>
+              </select>
+            </td>
+            <td class="py-3 px-4 text-right">
+              ${cleanPhone ? `
+                <a 
+                  href="https://wa.me/${cleanPhone}?text=${waMsg}" 
+                  target="_blank" 
+                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 font-bold text-[11px] text-decoration-none transition-all"
+                  title="Abrir chat de WhatsApp"
+                >
+                  <span>💬 WhatsApp</span>
+                </a>
+              ` : '<span class="text-stone-500">-</span>'}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const o = adminOrders.find(item => item.id === orderId);
+      if (o) {
+        o.status = newStatus;
+        saveAdminOrders();
+        updateAdminKPIs();
+        renderAdminOrdersTable();
+      }
+    }
+
+    // Exportar a CSV para abrir en Excel
+    function exportOrdersCSV() {
+      const orders = adminOrders || [];
+      if (orders.length === 0) {
+        alert('No hay pedidos registrados para exportar.');
+        return;
+      }
+
+      let csv = 'ID,Fecha,Cliente,Telefono,Productos,Total,Metodo_Pago,Estado,Nodo\n';
+      orders.forEach(o => {
+        const items = Array.isArray(o.items) ? o.items.map(i => `${i.qty}x ${i.name}`).join(' | ') : (o.items || '');
+        const cleanName = (o.clientName || '').replace(/,/g, ' ');
+        const cleanItems = items.replace(/,/g, ' ');
+        csv += `${o.id || o.number},${o.dateStr},${cleanName},${o.clientPhone || ''},${cleanItems},${o.total || 0},${o.paymentMethod || ''},${o.status || ''},${o.nodoNombre || ''}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Pedidos_Elementales_${new Date().toISOString().slice(0,10)}.csv`;
+      link.click();
+    }
+
+    // =========================================================================
+    // 6. FRUTILLAS & CAJONES BLOCKCHAIN (TAB 2)
+    // =========================================================================
+    function renderAdminFrutillas() {
+      // Participantes del cajón en curso
+      const partGrid = document.getElementById('current-cajon-participants-grid');
+      if (partGrid) {
+        partGrid.innerHTML = `
+          <div class="bg-white/10 p-3 rounded-2xl border border-white/10">
+            <div class="flex items-center justify-between text-xs">
+              <strong class="text-white font-bold">Lucas Benítez</strong>
+              <span class="text-emerald-400 font-mono font-bold">2.5 kg (1/2 cajón)</span>
+            </div>
+            <span class="text-[10px] text-stone-400 block mt-1">Círculo Cooperativa · $19.000</span>
+          </div>
+
+          <div class="bg-white/10 p-3 rounded-2xl border border-white/10">
+            <div class="flex items-center justify-between text-xs">
+              <strong class="text-white font-bold">Sofía Albarracín</strong>
+              <span class="text-emerald-400 font-mono font-bold">1.67 kg (1/3 cajón)</span>
+            </div>
+            <span class="text-[10px] text-stone-400 block mt-1">Nodo Loma Verde · $13.000</span>
+          </div>
+
+          <div class="bg-amber-400/10 border border-dashed border-amber-400/40 p-3 rounded-2xl flex flex-col justify-center items-center text-center">
+            <span class="text-[11px] font-bold text-amber-300">¡Falta 0.83 kg para cerrar!</span>
+            <span class="text-[10px] text-stone-400">Equivale a 1/6 de cajón</span>
+          </div>
+        `;
+      }
+
+      // Historial de commits de cajones
+      const histList = document.getElementById('cajones-commits-history-list');
+      if (histList) {
+        histList.innerHTML = `
+          <div class="bg-black/30 border border-emerald-500/30 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full">✓ CAJÓN SELLADO</span>
+                <span class="font-mono text-xs text-stone-400">Hash: 0x7F2A...9C14</span>
+              </div>
+              <h5 class="text-sm font-bold text-white">Bloque #001 · 5.00 kg Frutillas Agroecológicas</h5>
+              <p class="text-xs text-stone-400 mt-0.5">Participantes: Mariana Gómez (2.5 kg), Roberto Paez (1.67 kg), Elena S. (0.83 kg)</p>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-sm font-bold text-emerald-400 block">$38.000</span>
+              <span class="text-[10px] text-stone-400">16/10/2026 · Confirmado Finca</span>
+            </div>
+          </div>
+
+          <div class="bg-black/30 border border-emerald-500/30 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full">✓ CAJÓN SELLADO</span>
+                <span class="font-mono text-xs text-stone-400">Hash: 0x3B8E...4A02</span>
+              </div>
+              <h5 class="text-sm font-bold text-white">Bloque #002 · 5.00 kg Frutillas Agroecológicas</h5>
+              <p class="text-xs text-stone-400 mt-0.5">Participantes: Familia Rossi (1 cajón completo de 5 kg)</p>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-sm font-bold text-emerald-400 block">$38.000</span>
+              <span class="text-[10px] text-stone-400">15/10/2026 · Confirmado Finca</span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function commitCurrentCajon() {
+      if (confirm('¿Confirmar el sellado y commit de este cajón de 5 kg con Finca Ecotipa?')) {
+        try {
+          if (typeof confetti === 'function') confetti({ particleCount: 60, spread: 80 });
+        } catch (e) {}
+        alert('✓ Commit de cajón generado exitosamente con Hash criptográfico. Abriendo nuevo cajón colaborativo...');
+      }
+    }
+
+    // =========================================================================
+    // 7. TABLA DE MIEMBROS & CLAVES (TAB 3)
+    // =========================================================================
+    function renderAdminMembersTable() {
+      const tbody = document.getElementById('admin-members-tbody');
+      if (!tbody) return;
+
+      const q = (document.getElementById('admin-member-search')?.value || '').toLowerCase().trim();
+      let list = [...adminMembers];
+
+      if (adminSelectedNode !== 'todos') {
+        list = list.filter(m => m.node === adminSelectedNode || !m.node);
+      }
+
+      if (q) {
+        list = list.filter(m => 
+          (m.name && m.name.toLowerCase().includes(q)) ||
+          (m.code && m.code.toLowerCase().includes(q)) ||
+          (m.phone && m.phone.includes(q))
+        );
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-8 text-center text-stone-500">
+              No se encontraron miembros con esa búsqueda.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map(m => {
+        const cleanPhone = (m.phone || '').replace(/\D/g, '');
+        const waMsg = encodeURIComponent(`Hola ${m.name}! Te escribimos desde la coordinación del Nodo Elementales.`);
+
+        return `
+          <tr class="hover:bg-white/5 transition-colors">
+            <td class="py-3 px-4 font-mono font-black text-sky-300">@${(m.code || '').replace(/^@/, '')}</td>
+            <td class="py-3 px-4 font-bold text-white">${m.name || 'Sin nombre'}</td>
+            <td class="py-3 px-4 text-stone-300 font-mono">${m.phone || 'Sin tel'}</td>
+            <td class="py-3 px-4 text-stone-300">
+              <span>📍 ${m.node === 'nodo-cooperativa' ? 'Chasqui Maschwitz' : (m.node === 'nodo-central' ? 'Central Vicente López' : 'Loma Verde')}</span>
+            </td>
+            <td class="py-3 px-3 text-stone-400 whitespace-nowrap">${m.createdAt || '15/10/2026'}</td>
+            <td class="py-3 px-3">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${m.role === 'gestor' ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30' : 'bg-blue-400/20 text-blue-300 border border-blue-400/30'}">
+                ${m.role === 'gestor' ? '👑 Gestor' : '💧 Socio'}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right">
+              ${cleanPhone ? `
+                <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="text-xs text-emerald-400 hover:text-emerald-300 font-bold inline-flex items-center gap-1 text-decoration-none">
+                  <span>Chat ↗</span>
+                </a>
+              ` : '<span class="text-stone-500">-</span>'}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 8. CÍRCULOS BARRIALES (TAB 4)
+    // =========================================================================
+    function renderAdminCirculos() {
+      const container = document.getElementById('admin-circulos-grid');
+      if (!container) return;
+
+      const circles = [
+        { name: 'Círculo Cooperativa Loma Verde', node: 'Loma Verde', address: 'Rawson 3450', families: 18, time: 'Viernes 17:30 a 20:00', guardian: 'Ramiro Stein' },
+        { name: 'Círculo Los Ciruelos', node: 'Loma Verde', address: 'Calle Los Ciruelos y Colectora', families: 12, time: 'Sábados 10:00 a 13:00', guardian: 'VRDE Club' },
+        { name: 'Círculo Chasqui Quintas', node: 'Chasqui Maschwitz', address: 'Quintas Campesinas', families: 24, time: 'Viernes 09:00 a 15:00', guardian: 'Carlos M.' },
+        { name: 'Círculo Vicente López Central', node: 'Central Vicente López', address: 'Av. Maipú 2140', families: 15, time: 'Jueves 16:00 a 19:30', guardian: 'Equipo Central' }
+      ];
+
+      container.innerHTML = circles.map(c => `
+        <div class="bg-white/5 border border-white/10 rounded-3xl p-5 hover:border-amber-400/50 transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-amber-300 bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-300/30">
+                ${c.node}
+              </span>
+              <span class="text-xs font-bold text-stone-400">${c.families} familias</span>
+            </div>
+            <h4 class="text-base font-black text-white font-heading">${c.name}</h4>
+            <p class="text-xs text-stone-400 mt-1">📍 ${c.address}</p>
+            <p class="text-xs text-stone-400 mt-0.5">⏰ ${c.time}</p>
+            <p class="text-[11px] text-stone-500 mt-1">👤 Coordina: ${c.guardian}</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+            <span class="text-emerald-400 font-bold">● Círculo Abierto</span>
+            <button type="button" onclick="alert('Enlace del círculo copiado al portapapeles!')" class="text-stone-300 hover:text-white font-bold cursor-pointer">Compartir 🔗</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // =========================================================================
+    // 9. CATÁLOGO & PRECIOS (TAB 5)
+    // =========================================================================
+    function renderAdminProductsTable() {
+      const tbody = document.getElementById('admin-products-tbody');
+      if (!tbody) return;
+
+      tbody.innerHTML = adminProducts.map(p => `
+        <tr class="hover:bg-white/5 transition-colors">
+          <td class="py-3 px-4 font-bold text-white">${p.name}</td>
+          <td class="py-3 px-4 text-stone-400">${p.category}</td>
+          <td class="py-3 px-3 font-bold text-emerald-400">$${p.price.toLocaleString('es-AR')}</td>
+          <td class="py-3 px-3 font-bold text-sky-400">$${p.memberPrice.toLocaleString('es-AR')}</td>
+          <td class="py-3 px-3">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.stock ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+              ${p.stock ? 'Disponible' : 'Pausado'}
+            </span>
+          </td>
+          <td class="py-3 px-4 text-right">
+            <button type="button" onclick="toggleProductStock('${p.id}')" class="text-xs text-stone-400 hover:text-white font-bold px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 cursor-pointer">
+              ${p.stock ? 'Pausar' : 'Activar'}
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleProductStock(id) {
+      const p = adminProducts.find(item => item.id === id);
+      if (p) {
+        p.stock = !p.stock;
+        renderAdminProductsTable();
+      }
+    }
+
+    // =========================================================================
+    // 10. MODALES & CREACIÓN
+    // =========================================================================
+    function openNewOrderModal() { document.getElementById('modal-new-order')?.classList.remove('hidden'); }
+    function closeNewOrderModal() { document.getElementById('modal-new-order')?.classList.add('hidden'); }
+
+    function handleCreateManualOrder(e) {
+      if (e) e.preventDefault();
+      const name = document.getElementById('manual-order-name')?.value.trim();
+      const phone = document.getElementById('manual-order-phone')?.value.trim();
+      const items = document.getElementById('manual-order-items')?.value.trim();
+      const total = parseFloat(document.getElementById('manual-order-total')?.value || 0);
+      const payment = document.getElementById('manual-order-payment')?.value || 'Efectivo';
+
+      const newOrder = {
+        id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
+        number: Date.now(),
+        dateStr: new Date().toLocaleDateString('es-AR'),
+        timeStr: new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+        clientName: name,
+        clientPhone: phone,
+        items: items,
+        total: total,
+        paymentMethod: payment,
+        status: 'Pagado',
+        nodoId: adminSelectedNode === 'todos' ? 'nodo-lomaverde' : adminSelectedNode,
+        nodoNombre: 'Nodo Loma Verde'
+      };
+
+      adminOrders.unshift(newOrder);
+      saveAdminOrders();
+      updateAdminKPIs();
+      renderAdminOrdersTable();
+      closeNewOrderModal();
+
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 40, spread: 60 });
+      } catch (err) {}
+      alert(`✓ Pedido #${newOrder.id} registrado con éxito.`);
+    }
+
+    function openNewMemberModal() { document.getElementById('modal-new-member')?.classList.remove('hidden'); }
+    function closeNewMemberModal() { document.getElementById('modal-new-member')?.classList.add('hidden'); }
+
+    function handleCreateManualMember(e) {
+      if (e) e.preventDefault();
+      const code = document.getElementById('manual-member-code')?.value.trim().toLowerCase().replace(/[^a-z0-9._-]/g, '');
+      const name = document.getElementById('manual-member-name')?.value.trim();
+      const phone = document.getElementById('manual-member-phone')?.value.trim();
+      const node = document.getElementById('manual-member-node')?.value || 'nodo-lomaverde';
+
+      const exists = adminMembers.some(m => m.code === code);
+      if (exists) {
+        alert('Este código ya está en uso. Por favor elegí otro código único.');
+        return;
+      }
+
+      const newMember = {
+        code: code,
+        name: name,
+        phone: phone,
+        node: node,
+        role: 'socio',
+        createdAt: new Date().toISOString().slice(0, 10)
+      };
+
+      adminMembers.unshift(newMember);
+      saveAdminMembers();
+      updateAdminKPIs();
+      renderAdminMembersTable();
+      closeNewMemberModal();
+
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 40, spread: 60 });
+      } catch (err) {}
+      alert(`✓ Miembro @${code} registrado con éxito.`);
+    }
+
+    function openNewCircleModal() {
+      const name = prompt('Nombre del nuevo Círculo Barrial:');
+      if (name) {
+        alert(`✓ Círculo "${name}" creado exitosamente.`);
+      }
+    }
+
+    function openNewProductModal() {
+      const name = prompt('Nombre del nuevo producto agroecológico:');
+      if (name) {
+        const price = prompt('Precio unitario ($):', '15000');
+        adminProducts.push({
+          id: 'prod-' + Date.now(),
+          name: name,
+          category: 'Almacén',
+          price: parseInt(price, 10) || 10000,
+          memberPrice: Math.round((parseInt(price, 10) || 10000) * 0.9),
+          stock: true
+        });
+        renderAdminProductsTable();
+      }
+    }
+
+    // Auto-arranque
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuthState();
+    });
   </script>
 </body>
 </html>
