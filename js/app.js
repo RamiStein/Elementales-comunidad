@@ -6571,6 +6571,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  if (window.location.hash === '#prosumidores' || urlParams.get('view') === 'prosumidores') {
+    window.location.href = 'prosumidores.html';
+    return;
+  }
+
   if (window.location.hash === '#asociar-nodo' || urlParams.get('view') === 'asociar-nodo') {
     goToNodeAssociation(AppState.userRole || 'socio');
     if (typeof updateHeaderUI === 'function') updateHeaderUI();

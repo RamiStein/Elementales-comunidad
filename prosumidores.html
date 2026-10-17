@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Base de Prosumidores | Comunidad de Consumo Consciente · Elementales.store</title>
+  <meta name="description" content="Registro y base de datos de vecinos y familias prosumidoras interesadas en comprar alimentos agroecológicos en la red Elementales." />
+  <meta name="theme-color" content="#1db954" />
+
+  <!-- Fuentes: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              brown: '#a6634f',
+              peach: '#fcf4f0',
+              accent: '#d99a86',
+              green: '#1db954',
+              darkgreen: '#15803d'
+            }
+          },
+          fontFamily: {
+            heading: ['Outfit', 'sans-serif'],
+            body: ['Outfit', 'sans-serif'],
+            tech: ['Space Grotesk', 'sans-serif'],
+            'mono-code': ['ui-monospace', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Font Awesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body { -webkit-tap-highlight-color: transparent; }
+    .tab-active { border-bottom: 3px solid #1db954; color: #15803d; font-weight: 800; }
+    
+    /* Scrollbar sutil */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f5f0ec; }
+    ::-webkit-scrollbar-thumb { background: #d99a86; border-radius: 999px; }
+  </style>
+</head>
+<body class="bg-[#fcfaf8] font-body text-stone-800 min-h-screen flex flex-col justify-between selection:bg-[#c0826d] selection:text-white relative pb-20">
+
+  <!-- Fondo Claro con Geometría Sagrada Sutil -->
+  <div class="fixed inset-0 pointer-events-none opacity-40 bg-[radial-gradient(#eddcd5_1px,transparent_1px)] [background-size:24px_24px]"></div>
+  <div class="fixed inset-0 pointer-events-none bg-gradient-to-b from-[#fcfaf8]/40 via-transparent to-[#fcfaf8]/90"></div>
+
+  <!-- ========================================================================= -->
+  <!-- CABECERA PRINCIPAL (STICKY)                                              -->
+  <!-- ========================================================================= -->
+  <header class="relative z-50 w-full border-b border-stone-200 bg-white/95 backdrop-blur-md sticky top-0 shadow-xs">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      
+      <!-- Logo y Título -->
+      <a href="index.html" class="flex items-center gap-2.5 text-decoration-none group">
+        <div class="w-10 h-10 rounded-2xl bg-[#fcf4f0] border border-[#eddcd5] p-1.5 flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs">
+          <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-full h-full object-contain" alt="Elementales" />
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[9px] font-black uppercase tracking-widest text-[#a6634f] font-mono-code bg-[#fcf4f0] px-2 py-0.5 rounded-full border border-[#eddcd5]">
+              RED DE COMPRAS
+            </span>
+          </div>
+          <h1 class="text-base sm:text-lg font-black text-stone-900 leading-tight font-heading">
+            Base de <span class="text-[#a6634f]">Prosumidores</span>
+          </h1>
+        </div>
+      </a>
+
+      <!-- Contador de Registros & Accesos -->
+      <div class="flex items-center gap-2">
+        <span id="counter-badge" class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full text-xs font-bold font-mono shadow-2xs flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>0 Prosumidores</span>
+        </span>
+
+        <a href="index.html" class="hidden sm:inline-flex items-center gap-1 text-xs font-bold text-stone-600 hover:text-stone-900 px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 border border-stone-200 transition-colors text-decoration-none shadow-2xs">
+          <span>🛒</span> <span>Tienda</span>
+        </a>
+
+        <a href="gestionelemental.html" class="hidden sm:inline-flex items-center gap-1 text-xs font-bold text-amber-800 hover:text-amber-900 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-colors text-decoration-none shadow-2xs">
+          <span>🔐</span> <span>Admin</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- BARRA DE PESTAÑAS (NUEVO REGISTRO / BASE DE DATOS)                        -->
+  <!-- ========================================================================= -->
+  <div class="bg-white/95 backdrop-blur-md border-b border-stone-200 sticky top-[61px] z-40 shadow-xs">
+    <div class="flex max-w-lg mx-auto">
+      <button 
+        type="button" 
+        onclick="switchTab('registro')" 
+        id="tab-registro" 
+        class="flex-1 py-3 text-center text-xs sm:text-sm tab-active transition-all cursor-pointer flex items-center justify-center gap-2"
+      >
+        <i class="fas fa-user-plus text-base text-[#1db954]"></i>
+        <span>🌱 Nuevo Prosumidor</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="switchTab('base')" 
+        id="tab-base" 
+        class="flex-1 py-3 text-center text-xs sm:text-sm text-stone-500 hover:text-stone-800 transition-all cursor-pointer flex items-center justify-center gap-2 font-bold"
+      >
+        <i class="fas fa-database text-base"></i>
+        <span>📋 Base de Datos</span>
+        <span id="tab-counter-pill" class="bg-stone-100 text-stone-700 text-[10px] px-1.5 py-0.5 rounded-full font-mono">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- VISTA 1: FORMULARIO DE ALTA DE PROSUMIDOR                                 -->
+  <!-- ========================================================================= -->
+  <main id="view-registro" class="relative z-10 max-w-lg mx-auto w-full p-4 block animate-fade-in my-auto">
+    
+    <div class="bg-white rounded-3xl p-5 sm:p-7 shadow-sm border border-stone-200/90 mb-6">
+      
+      <!-- Banner de Modo Edición (oculto por defecto) -->
+      <div id="editing-banner" class="hidden mb-5 p-3.5 bg-blue-50 border border-blue-200 rounded-2xl flex items-center justify-between">
+        <div class="flex items-center gap-2 text-xs text-blue-900 font-bold">
+          <i class="fas fa-pen text-blue-600"></i>
+          <span>Modo Edición: <span id="editing-target-name" class="underline"></span></span>
+        </div>
+        <button type="button" onclick="cancelEditProsumidor()" class="text-xs text-red-600 font-bold hover:underline cursor-pointer">✕ Cancelar</button>
+      </div>
+
+      <!-- Encabezado de la Ficha -->
+      <div class="mb-5 pb-4 border-b border-stone-100">
+        <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#fcf4f0] px-2.5 py-1 rounded-full border border-[#eddcd5] inline-block mb-1.5 font-mono-code">
+          FICHA DE INTERÉS Y COMPRAS COMUNITARIAS
+        </span>
+        <h2 class="text-xl sm:text-2xl font-black text-stone-900 font-heading">
+          Ingreso de Prosumidor
+        </h2>
+        <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+          Registrá los datos y preferencias del vecino interesado en sumarse a comprar cosechas y productos en Elementales.
+        </p>
+      </div>
+
+      <!-- Formulario Central -->
+      <form id="prosumidor-form" onsubmit="saveProsumidor(event)" class="space-y-4 text-xs sm:text-sm">
+        <input type="hidden" id="p-editing-id" value="" />
+
+        <!-- 1. Nombre Completo o Familia -->
+        <div>
+          <label for="p-nombre" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1 flex items-center justify-between">
+            <span>👤 Nombre Completo o Familia *</span>
+            <span class="text-[10px] font-normal text-stone-400">Requerido</span>
+          </label>
+          <input 
+            type="text" 
+            id="p-nombre" 
+            required 
+            placeholder="Ej. Familia Morales o Ramiro Stein" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3 text-sm font-bold text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
+          />
+        </div>
+
+        <!-- 2. Teléfono WhatsApp y Correo -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="p-telefono" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1 flex items-center justify-between">
+              <span>📱 Teléfono / WhatsApp *</span>
+              <span class="text-[10px] font-normal text-emerald-600 font-bold">Para avisos</span>
+            </label>
+            <input 
+              type="tel" 
+              id="p-telefono" 
+              required 
+              placeholder="Ej. 11 3456 7890" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3 text-sm font-bold text-stone-900 focus:outline-none transition-all placeholder:text-stone-400 font-mono"
+            />
+          </div>
+
+          <div>
+            <label for="p-email" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1">
+              <span>✉️ Correo (Opcional)</span>
+            </label>
+            <input 
+              type="email" 
+              id="p-email" 
+              placeholder="correo@ejemplo.com" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3 text-sm font-bold text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
+            />
+          </div>
+        </div>
+
+        <!-- 3. Nodo de Retiro de Preferencia y Ubicación -->
+        <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200 space-y-3">
+          <label class="block text-xs font-black uppercase tracking-wider text-stone-700">
+            <i class="fas fa-map-marker-alt mr-1 text-[#a6634f]"></i> Nodo de Preferencia & Barrio
+          </label>
+          
+          <div>
+            <select 
+              id="p-nodo" 
+              class="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-stone-800 outline-none cursor-pointer focus:border-[#a6634f]"
+            >
+              <option value="nodo-lomaverde">📍 Sede Loma Verde (Escobar - Colectora y Rawson)</option>
+              <option value="nodo-cooperativa">📍 Chasqui Maschwitz (Punto Central Quinteros)</option>
+              <option value="nodo-central">📍 Central Vicente López (Av. Maipú)</option>
+              <option value="circulo-ciruelos">📍 Círculo Barrial Los Ciruelos (Loma Verde)</option>
+              <option value="otro">📍 Otro barrio / Quiero armar un Círculo en mi zona</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <input 
+              type="text" 
+              id="p-barrio" 
+              placeholder="Barrio / Localidad (ej. Loma Verde)" 
+              class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-xs font-medium text-stone-800 outline-none focus:border-[#a6634f]"
+            />
+            <input 
+              type="text" 
+              id="p-direccion" 
+              placeholder="Dirección o punto de cercanía (opcional)" 
+              class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-xs font-medium text-stone-800 outline-none focus:border-[#a6634f]"
+            />
+          </div>
+        </div>
+
+        <!-- 4. Alimentos y Cosechas de Interés (Selección Múltiple) -->
+        <div>
+          <label class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-2">
+            🌾 ¿Qué alimentos le interesa comprar? (Seleccioná los que apliquen)
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 bg-[#fcfaf8] hover:bg-stone-50 cursor-pointer transition-colors">
+              <input type="checkbox" name="intereses" value="Frutillas Agroecológicas (Cajón o Fracción)" class="accent-[#1db954] w-4 h-4 rounded" />
+              <span>🍓 Frutillas Agroecológicas</span>
+            </label>
+
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 bg-[#fcfaf8] hover:bg-stone-50 cursor-pointer transition-colors">
+              <input type="checkbox" name="intereses" value="Bolsón de Verduras de Huerta" class="accent-[#1db954] w-4 h-4 rounded" />
+              <span>🥬 Bolsón de Verduras</span>
+            </label>
+
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 bg-[#fcfaf8] hover:bg-stone-50 cursor-pointer transition-colors">
+              <input type="checkbox" name="intereses" value="Huevos de Granja Libres a Campo" class="accent-[#1db954] w-4 h-4 rounded" />
+              <span>🥚 Huevos de Campo</span>
+            </label>
+
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 bg-[#fcfaf8] hover:bg-stone-50 cursor-pointer transition-colors">
+              <input type="checkbox" name="intereses" value="Miel Pura de Monte y Delta" class="accent-[#1db954] w-4 h-4 rounded" />
+              <span>🍯 Miel Pura del Delta</span>
+            </label>
+
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 bg-[#fcfaf8] hover:bg-stone-50 cursor-pointer transition-colors">
+              <input type="checkbox" name="intereses" value="Harinas, Granos & Legumbres" class="accent-[#1db954] w-4 h-4 rounded" />
+              <span>🌾 Harinas & Legumbres</span>
+            </label>
+
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 bg-[#fcfaf8] hover:bg-stone-50 cursor-pointer transition-colors">
+              <input type="checkbox" name="intereses" value="Quesos y Lácteos Artesanales" class="accent-[#1db954] w-4 h-4 rounded" />
+              <span>🧀 Quesos Artesanales</span>
+            </label>
+
+            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 bg-[#fcfaf8] hover:bg-stone-50 cursor-pointer transition-colors sm:col-span-2">
+              <input type="checkbox" name="intereses" value="Catálogo Semanal Completo" class="accent-[#1db954] w-4 h-4 rounded" />
+              <span>📦 Todo el Catálogo Semanal</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 5. Modalidad y Frecuencia de Compra -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="p-modalidad" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1">
+              🤝 Modalidad de Participación
+            </label>
+            <select 
+              id="p-modalidad" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2.5 text-xs font-bold text-stone-800 outline-none cursor-pointer focus:border-[#a6634f]"
+            >
+              <option value="Retiro individual en sede">🚶 Retiro individual en Nodo</option>
+              <option value="Sumarse a un Círculo Barrial">👥 Sumarse a Círculo de Vecinos</option>
+              <option value="Quiere armar un Círculo nuevo">🌟 Armar un Círculo en su cuadra</option>
+              <option value="Cajones Colaborativos cerrados">🍓 Cajones cerrados compartidos</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="p-frecuencia" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1">
+              ⏰ Frecuencia de Compra Deseada
+            </label>
+            <select 
+              id="p-frecuencia" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2.5 text-xs font-bold text-stone-800 outline-none cursor-pointer focus:border-[#a6634f]"
+            >
+              <option value="Semanal">Semanal (Verduras y frescos)</option>
+              <option value="Quincenal">Quincenal</option>
+              <option value="Mensual">Mensual / Compras programadas</option>
+              <option value="Ocasional">Ocasional / Eventual</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 6. Notas Rápidas y Preferencias Dietarias -->
+        <div>
+          <label for="p-notas" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1 flex items-center justify-between">
+            <span>📝 Notas, Preferencias o Restricciones</span>
+            <span class="text-[10px] text-stone-400">Dietas, días, etc.</span>
+          </label>
+          <textarea 
+            id="p-notas" 
+            rows="2" 
+            placeholder="Ej: Familia de 4 personas, celíacos, prefieren retirar los viernes después de las 18 hs..." 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-2.5 text-xs font-medium text-stone-900 focus:outline-none transition-all placeholder:text-stone-400"
+          ></textarea>
+        </div>
+
+        <!-- 7. Foto / Avatar del Prosumidor (Cámara o Galería) -->
+        <div>
+          <label class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1.5 flex items-center justify-between">
+            <span><i class="fas fa-camera text-[#a6634f] mr-1"></i> Foto o Avatar (Opcional)</span>
+            <span class="text-[10px] text-stone-400">Para la ficha</span>
+          </label>
+
+          <input type="file" id="p-foto-galeria" accept="image/*" class="hidden" onchange="previewProsumidorImage(this)" />
+          <input type="file" id="p-foto-camara" accept="image/*" capture="environment" class="hidden" onchange="previewProsumidorImage(this)" />
+
+          <!-- Placeholder cuando NO hay foto -->
+          <div id="foto-placeholder" class="bg-[#fcfaf8] border-2 border-dashed border-stone-300 rounded-2xl p-4 text-center hover:border-[#a6634f] transition-all">
+            <p class="text-xs text-stone-500 mb-2.5">Subí una foto familiar o sacá una foto en el punto de encuentro</p>
+            <div class="flex items-center justify-center gap-2">
+              <button 
+                type="button" 
+                onclick="document.getElementById('p-foto-galeria').click()" 
+                class="bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 font-bold py-2 px-3 rounded-xl shadow-2xs flex items-center gap-1.5 text-xs transition-all active:scale-95 cursor-pointer"
+              >
+                <i class="fas fa-images text-[#a6634f]"></i> Galería
+              </button>
+              <button 
+                type="button" 
+                onclick="document.getElementById('p-foto-camara').click()" 
+                class="bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 font-bold py-2 px-3 rounded-xl shadow-2xs flex items-center gap-1.5 text-xs transition-all active:scale-95 cursor-pointer"
+              >
+                <i class="fas fa-camera text-emerald-600"></i> Cámara
+              </button>
+            </div>
+          </div>
+
+          <!-- Preview cuando SÍ hay foto -->
+          <div id="foto-preview-container" class="hidden relative rounded-2xl overflow-hidden border border-stone-300 shadow-sm bg-stone-900 mt-2">
+            <img id="foto-preview" src="" class="w-full h-44 object-cover" alt="Preview prosumidor" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none"></div>
+            <div class="absolute bottom-2.5 left-2.5 right-2.5 flex justify-between items-center gap-2">
+              <div class="flex gap-1.5">
+                <button type="button" onclick="document.getElementById('p-foto-galeria').click()" class="bg-white/90 hover:bg-white text-stone-800 text-[11px] font-bold py-1.5 px-2.5 rounded-lg shadow-sm">
+                  Cambiar
+                </button>
+              </div>
+              <button type="button" onclick="removeProsumidorImage()" class="bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold py-1.5 px-2.5 rounded-lg shadow-sm flex items-center gap-1">
+                <i class="fas fa-trash-alt text-[10px]"></i> Quitar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción Guardar / Cancelar -->
+        <div class="pt-3 flex gap-2">
+          <button 
+            type="button" 
+            id="btn-cancel-edit" 
+            onclick="cancelEditProsumidor()" 
+            class="hidden px-4 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs py-3.5 rounded-2xl transition-colors cursor-pointer"
+          >
+            Cancelar
+          </button>
+
+          <button 
+            type="submit" 
+            id="btn-submit-form" 
+            class="flex-1 bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+          >
+            <i class="fas fa-save"></i>
+            <span id="btn-submit-text">Guardar Ficha de Prosumidor</span>
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- VISTA 2: BASE DE DATOS DE PROSUMIDORES                                    -->
+  <!-- ========================================================================= -->
+  <main id="view-base" class="relative z-10 max-w-4xl mx-auto w-full p-4 hidden animate-fade-in my-auto">
+    
+    <!-- Barra Superior de Herramientas y Exportaciones -->
+    <div class="bg-white border border-stone-200 rounded-3xl p-4 sm:p-5 shadow-xs mb-5">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div>
+          <h2 class="text-lg sm:text-xl font-black text-stone-900 font-heading">
+            Padrón de Prosumidores de la Red
+          </h2>
+          <p class="text-xs text-stone-500">
+            Vecinos y familias que desean comprar en los nodos y círculos de Elementales.
+          </p>
+        </div>
+
+        <!-- Botones de Backup y Sincronización -->
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="handleImportFile(this)" />
+          
+          <!-- Exportar Excel CSV -->
+          <button 
+            type="button" 
+            onclick="exportProsumidoresCSV()" 
+            class="text-xs bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 px-3 py-2 rounded-xl font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer active:scale-98"
+            title="Descargar lista completa en Excel (CSV)"
+          >
+            <i class="fas fa-file-excel text-emerald-600"></i>
+            <span>Excel</span>
+          </button>
+
+          <!-- Compartir WhatsApp / JSON -->
+          <button 
+            type="button" 
+            onclick="shareOrExportData()" 
+            class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer active:scale-98"
+            title="Compartir padrón por WhatsApp o archivo"
+          >
+            <i class="fab fa-whatsapp"></i>
+            <span>Compartir</span>
+          </button>
+
+          <!-- Importar JSON -->
+          <button 
+            type="button" 
+            onclick="document.getElementById('import-file-input').click()" 
+            class="text-xs bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 px-2.5 py-2 rounded-xl font-bold transition-all shadow-2xs cursor-pointer"
+            title="Importar archivo JSON de respaldo"
+          >
+            <i class="fas fa-file-import mr-1 text-[#a6634f]"></i>
+            <span>Importar</span>
+          </button>
+
+          <!-- Copiar texto -->
+          <button 
+            type="button" 
+            onclick="openCopyModal()" 
+            class="text-xs bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 px-2.5 py-2 rounded-xl font-bold transition-all shadow-2xs cursor-pointer"
+            title="Copiar texto para WhatsApp"
+          >
+            <i class="fas fa-copy"></i>
+          </button>
+
+          <!-- Pegar texto -->
+          <button 
+            type="button" 
+            onclick="openPasteModal()" 
+            class="text-xs bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 px-2.5 py-2 rounded-xl font-bold transition-all shadow-2xs cursor-pointer"
+            title="Pegar texto copiado desde otro celular"
+          >
+            <i class="fas fa-paste"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Buscador en Tiempo Real y Filtros -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-stone-100">
+        
+        <!-- Input búsqueda -->
+        <div class="relative sm:col-span-2">
+          <input 
+            type="text" 
+            id="search-input" 
+            oninput="filterProsumidores()" 
+            placeholder="Buscar por nombre, WhatsApp, barrio o alimento..." 
+            class="w-full bg-[#fcfaf8] border border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-xl px-3.5 py-2.5 pl-9 text-xs sm:text-sm font-medium text-stone-900 placeholder:text-stone-400 outline-none transition-all shadow-2xs"
+          />
+          <span class="absolute left-3 top-3 text-stone-400 text-xs">🔍</span>
+        </div>
+
+        <!-- Filtro por Nodo -->
+        <div>
+          <select 
+            id="filter-node" 
+            onchange="filterProsumidores()" 
+            class="w-full bg-white border border-stone-200 text-xs font-bold text-stone-700 rounded-xl px-3 py-2.5 outline-none cursor-pointer shadow-2xs"
+          >
+            <option value="todos">🌐 Todos los Nodos</option>
+            <option value="nodo-lomaverde">📍 Sede Loma Verde</option>
+            <option value="nodo-cooperativa">📍 Chasqui Maschwitz</option>
+            <option value="nodo-central">📍 Central Vicente López</option>
+            <option value="circulo-ciruelos">📍 Círculo Los Ciruelos</option>
+            <option value="otro">📍 Otros Barrios</option>
+          </select>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Lista Dinámica de Fichas de Prosumidores -->
+    <div id="prosumidores-list" class="space-y-3.5">
+      <!-- Inyectado dinámicamente -->
+      <div id="db-empty" class="text-center text-stone-400 py-12 bg-white rounded-3xl border border-dashed border-stone-200">
+        <i class="fas fa-seedling text-4xl mb-3 text-stone-300"></i>
+        <p class="font-bold text-stone-600">No hay prosumidores registrados con esos filtros.</p>
+        <p class="text-xs text-stone-400 mt-1">Hacé click en "Nuevo Prosumidor" para registrar el primero.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: SELECTOR DE WHATSAPP / CONTACTO DIRECTO                            -->
+  <!-- ========================================================================= -->
+  <div id="modal-whatsapp-choice" class="fixed inset-0 bg-stone-950/60 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity" onclick="if(event.target === this) closeWhatsAppModal()">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-6 shadow-2xl animate-in slide-in-from-bottom duration-200" onclick="event.stopPropagation()">
+      
+      <!-- Header del Modal -->
+      <div class="flex justify-between items-start mb-4 pb-3 border-b border-stone-100">
+        <div class="flex items-center gap-3">
+          <span class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl shrink-0 border border-emerald-100">
+            <i class="fab fa-whatsapp"></i>
+          </span>
+          <div>
+            <h3 class="font-heading font-black text-lg text-stone-900 leading-tight" id="wsp-choice-nombre">Prosumidor</h3>
+            <p class="text-xs text-stone-500" id="wsp-choice-nodo"><i class="fas fa-map-marker-alt text-[10px] mr-1 text-[#a6634f]"></i>Nodo</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeWhatsAppModal()" class="text-stone-400 hover:text-stone-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-stone-100 text-xl font-bold cursor-pointer">✕</button>
+      </div>
+
+      <!-- Número Info -->
+      <div class="bg-emerald-50/70 border border-emerald-100 rounded-2xl p-3 mb-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-emerald-800 font-black uppercase tracking-wider block">Contacto WhatsApp</span>
+          <span class="font-mono font-bold text-stone-900 text-sm" id="wsp-choice-num-display">11 3456 7890</span>
+        </div>
+        <button type="button" onclick="copyWspChoiceNumber()" class="text-emerald-700 hover:text-emerald-900 bg-white border border-emerald-200 px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer">
+          <i class="fas fa-copy"></i> Copiar
+        </button>
+      </div>
+
+      <p class="text-xs text-stone-600 font-bold mb-3">¿Cómo deseás iniciar la conversación?</p>
+
+      <!-- Opciones de WhatsApp -->
+      <div class="space-y-2.5 mb-4">
+        
+        <!-- Opción 1: WhatsApp Business -->
+        <button 
+          type="button" 
+          onclick="executeWhatsAppLaunch('business')" 
+          class="w-full flex items-center justify-between p-3.5 bg-gradient-to-r from-teal-800 to-emerald-900 hover:from-teal-900 hover:to-emerald-950 text-white rounded-2xl shadow-md active:scale-[0.98] transition-all text-left cursor-pointer"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-2xl text-white shrink-0">
+              <i class="fab fa-whatsapp"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm">WhatsApp Business</span>
+                <span class="bg-amber-400 text-teal-950 text-[10px] font-black px-1.5 py-0.5 rounded shadow-xs">EMPRESA</span>
+              </div>
+              <span class="text-xs text-teal-100/90 block">Abrir desde tu app WhatsApp Business</span>
+            </div>
+          </div>
+          <i class="fas fa-chevron-right text-teal-200 text-xs"></i>
+        </button>
+
+        <!-- Opción 2: WhatsApp Común / Personal -->
+        <button 
+          type="button" 
+          onclick="executeWhatsAppLaunch('personal')" 
+          class="w-full flex items-center justify-between p-3.5 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white rounded-2xl shadow-md active:scale-[0.98] transition-all text-left cursor-pointer"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-2xl text-white shrink-0">
+              <i class="fab fa-whatsapp"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm">WhatsApp Clásico</span>
+                <span class="bg-white/20 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">PERSONAL</span>
+              </div>
+              <span class="text-xs text-green-100/90 block">Abrir desde tu aplicación normal</span>
+            </div>
+          </div>
+          <i class="fas fa-chevron-right text-green-100 text-xs"></i>
+        </button>
+
+        <!-- Opción 3: Enlace Web Directo wa.me -->
+        <button 
+          type="button" 
+          onclick="executeWhatsAppLaunch('universal')" 
+          class="w-full flex items-center justify-between p-3 bg-stone-50 hover:bg-stone-100 border border-stone-200 text-stone-800 rounded-2xl active:scale-[0.98] transition-all text-left cursor-pointer"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-stone-200 text-stone-700 flex items-center justify-center text-sm shrink-0">
+              <i class="fas fa-external-link-alt"></i>
+            </div>
+            <div>
+              <span class="font-bold text-xs text-stone-900 block">Enlace Web Directo (wa.me)</span>
+              <span class="text-[11px] text-stone-500 block">Abre el navegador o tu cliente web predeterminado</span>
+            </div>
+          </div>
+          <i class="fas fa-chevron-right text-stone-400 text-xs"></i>
+        </button>
+
+      </div>
+
+      <!-- Botones Secundarios -->
+      <div class="flex gap-2 pt-2 border-t border-stone-100">
+        <button 
+          type="button" 
+          onclick="executeWhatsAppLaunch('call')" 
+          class="flex-1 py-2.5 px-3 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+        >
+          <i class="fas fa-phone text-xs text-[#a6634f]"></i> Llamada tradicional
+        </button>
+        <button 
+          type="button" 
+          onclick="closeWhatsAppModal()" 
+          class="flex-1 py-2.5 px-3 bg-stone-100 hover:bg-stone-200 text-stone-600 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+        >
+          Cancelar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: VER / COPIAR BACKUP                                                -->
+  <!-- ========================================================================= -->
+  <div id="modal-copy-backup" class="fixed inset-0 bg-stone-950/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center pb-2 border-b border-stone-100">
+        <h3 class="font-heading font-black text-lg text-stone-900 flex items-center gap-2">
+          <i class="fas fa-copy text-[#a6634f]"></i>
+          <span>Copiar Padrón de Prosumidores</span>
+        </h3>
+        <button type="button" onclick="closeCopyModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg cursor-pointer">✕</button>
+      </div>
+      <p class="text-xs text-stone-500 leading-relaxed">
+        Copiá el texto de abajo para enviártelo por WhatsApp, guardarlo en un documento o pegarlo en otra computadora:
+      </p>
+      <textarea id="copy-textarea" rows="8" class="w-full text-xs font-mono bg-[#fcfaf8] border border-stone-200 rounded-2xl p-3 focus:outline-none focus:border-[#a6634f] select-all" readonly></textarea>
+      <div class="flex gap-2">
+        <button type="button" onclick="doCopyText()" id="btn-do-copy" class="flex-1 bg-[#1db954] hover:bg-[#16a34a] text-white font-black py-3 rounded-2xl transition-colors text-xs cursor-pointer shadow-xs">
+          <i class="fas fa-clipboard mr-1"></i> Copiar al Portapapeles
+        </button>
+        <button type="button" onclick="closeCopyModal()" class="px-4 py-3 bg-stone-100 text-stone-700 font-bold rounded-2xl text-xs cursor-pointer">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: PEGAR BACKUP                                                       -->
+  <!-- ========================================================================= -->
+  <div id="modal-paste-backup" class="fixed inset-0 bg-stone-950/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center pb-2 border-b border-stone-100">
+        <h3 class="font-heading font-black text-lg text-stone-900 flex items-center gap-2">
+          <i class="fas fa-paste text-[#a6634f]"></i>
+          <span>Pegar Padrón de Prosumidores</span>
+        </h3>
+        <button type="button" onclick="closePasteModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg cursor-pointer">✕</button>
+      </div>
+      <p class="text-xs text-stone-500 leading-relaxed">
+        Pegá aquí el texto o código JSON que copiaste desde otro celular o compu:
+      </p>
+      <textarea id="paste-textarea" rows="8" class="w-full text-xs font-mono bg-[#fcfaf8] border border-stone-200 rounded-2xl p-3 focus:outline-none focus:border-[#a6634f]" placeholder="Pegá el código de prosumidores aquí..."></textarea>
+      <div class="flex gap-2">
+        <button type="button" onclick="doPasteText()" class="flex-1 bg-[#1db954] hover:bg-[#16a34a] text-white font-black py-3 rounded-2xl transition-colors text-xs cursor-pointer shadow-xs">
+          <i class="fas fa-check mr-1"></i> Importar Prosumidores
+        </button>
+        <button type="button" onclick="closePasteModal()" class="px-4 py-3 bg-stone-100 text-stone-700 font-bold rounded-2xl text-xs cursor-pointer">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie de Página -->
+  <footer class="relative z-10 w-full py-4 text-center text-xs text-stone-500 border-t border-stone-200 bg-white/70">
+    <p>Red Comunitaria Elementales · Registro de Prosumidores & Compras de Cercanía</p>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT: LÓGICA DE BASE DE DATOS LOCAL, FIREBASE Y WHATSAPP           -->
+  <!-- ========================================================================= -->
+  <script>
+    // Clave de almacenamiento local exclusiva para Prosumidores
+    const STORAGE_KEY = 'elementales_prosumidores_db';
+    let prosumidoresDB = [];
+    let currentImageBase64 = null;
+    let selectedWspProsumidor = null;
+
+    // Semilla de prosumidores si la base está vacía
+    const SEED_PROSUMIDORES = [
+      {
+        id: 'pros-101',
+        nombre: 'Familia Rossi',
+        telefono: '+54 9 11 3322 1100',
+        email: 'rossi.familia@gmail.com',
+        nodo: 'nodo-lomaverde',
+        nodoNombre: 'Sede Loma Verde',
+        barrio: 'Loma Verde',
+        direccion: 'Calle Los Ciruelos y Colectora',
+        intereses: ['Frutillas Agroecológicas (Cajón o Fracción)', 'Bolsón de Verduras de Huerta', 'Miel Pura de Monte y Delta'],
+        modalidad: 'Sumarse a un Círculo Barrial',
+        frecuencia: 'Semanal',
+        notas: 'Somos 4 personas, interesados en retirar los viernes a la tarde. Muy entusiasmados con las frutillas.',
+        foto: null,
+        estado: 'Nuevo',
+        fecha: '2026-10-16'
+      },
+      {
+        id: 'pros-102',
+        nombre: 'Mariana Gómez',
+        telefono: '+54 9 11 5566 7788',
+        email: 'mariana.gomez@yahoo.com.ar',
+        nodo: 'nodo-lomaverde',
+        nodoNombre: 'Sede Loma Verde',
+        barrio: 'Loma Verde Centro',
+        direccion: 'Calle Las Acacias 420',
+        intereses: ['Frutillas Agroecológicas (Cajón o Fracción)', 'Huevos de Granja Libres a Campo'],
+        modalidad: 'Cajones Colaborativos cerrados',
+        frecuencia: 'Semanal',
+        notas: 'Queremos sumarnos a compras de 1/2 cajón de frutillas.',
+        foto: null,
+        estado: 'Contactado',
+        fecha: '2026-10-15'
+      },
+      {
+        id: 'pros-103',
+        nombre: 'Lucas Benítez',
+        telefono: '+54 9 11 2345 6789',
+        email: 'lucas.benitez@coop.org',
+        nodo: 'nodo-cooperativa',
+        nodoNombre: 'Chasqui Maschwitz',
+        barrio: 'Maschwitz',
+        direccion: 'Cerca de la Estación Maschwitz',
+        intereses: ['Bolsón de Verduras de Huerta', 'Harinas, Granos & Legumbres', 'Catálogo Semanal Completo'],
+        modalidad: 'Quiere armar un Círculo nuevo',
+        frecuencia: 'Quincenal',
+        notas: 'Coordinador barrial con ganas de nuclear 8 familias para compartir un punto de retiro.',
+        foto: null,
+        estado: 'Activo',
+        fecha: '2026-10-14'
+      },
+      {
+        id: 'pros-104',
+        nombre: 'Sofía Albarracín',
+        telefono: '+54 9 11 6789 0123',
+        email: 'sofia.albarracin@live.com',
+        nodo: 'nodo-central',
+        nodoNombre: 'Central Vicente López',
+        barrio: 'La Lucila',
+        direccion: 'Rawson y Díaz Vélez',
+        intereses: ['Quesos y Lácteos Artesanales', 'Miel Pura de Monte y Delta', 'Frutillas Agroecológicas (Cajón o Fracción)'],
+        modalidad: 'Retiro individual en sede',
+        frecuencia: 'Semanal',
+        notas: 'Retiro en bicicleta por el nodo Vicente López.',
+        foto: null,
+        estado: 'Nuevo',
+        fecha: '2026-10-16'
+      }
+    ];
+
+    // Cargar al iniciar
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDB();
+      updateCounterBadges();
+      renderProsumidoresList();
+    });
+
+    function loadDB() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          prosumidoresDB = JSON.parse(raw);
+        } else {
+          prosumidoresDB = [...SEED_PROSUMIDORES];
+          saveDB();
+        }
+      } catch (err) {
+        prosumidoresDB = [...SEED_PROSUMIDORES];
+      }
+    }
+
+    function saveDB() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(prosumidoresDB));
+      } catch (err) {
+        console.error('Error guardando en localStorage:', err);
+      }
+    }
+
+    function updateCounterBadges() {
+      const count = prosumidoresDB.length;
+      const counterBadge = document.getElementById('counter-badge');
+      const tabPill = document.getElementById('tab-counter-pill');
+
+      const text = `${count} Prosumidor${count === 1 ? '' : 'es'}`;
+      if (counterBadge) counterBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>${text}</span>`;
+      if (tabPill) tabPill.textContent = count;
+    }
+
+    // =========================================================================
+    // NAVEGACIÓN ENTRE TABS
+    // =========================================================================
+    function switchTab(tab) {
+      const viewReg = document.getElementById('view-registro');
+      const viewBase = document.getElementById('view-base');
+      const tabReg = document.getElementById('tab-registro');
+      const tabBase = document.getElementById('tab-base');
+
+      if (tab === 'registro') {
+        viewReg.classList.remove('hidden');
+        viewBase.classList.add('hidden');
+        tabReg.className = 'flex-1 py-3 text-center text-xs sm:text-sm tab-active transition-all cursor-pointer flex items-center justify-center gap-2 font-black';
+        tabBase.className = 'flex-1 py-3 text-center text-xs sm:text-sm text-stone-500 hover:text-stone-800 transition-all cursor-pointer flex items-center justify-center gap-2 font-bold';
+      } else {
+        viewReg.classList.add('hidden');
+        viewBase.classList.remove('hidden');
+        tabReg.className = 'flex-1 py-3 text-center text-xs sm:text-sm text-stone-500 hover:text-stone-800 transition-all cursor-pointer flex items-center justify-center gap-2 font-bold';
+        tabBase.className = 'flex-1 py-3 text-center text-xs sm:text-sm tab-active transition-all cursor-pointer flex items-center justify-center gap-2 font-black';
+        renderProsumidoresList();
+      }
+    }
+
+    // =========================================================================
+    // IMÁGENES & PREVIEW
+    // =========================================================================
+    function previewProsumidorImage(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          compressBase64(e.target.result, 800, 0.7).then(compressed => {
+            currentImageBase64 = compressed;
+            document.getElementById('foto-preview').src = compressed;
+            document.getElementById('foto-placeholder').classList.add('hidden');
+            document.getElementById('foto-preview-container').classList.remove('hidden');
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function removeProsumidorImage() {
+      currentImageBase64 = null;
+      document.getElementById('p-foto-galeria').value = '';
+      document.getElementById('p-foto-camara').value = '';
+      document.getElementById('foto-preview').src = '';
+      document.getElementById('foto-placeholder').classList.remove('hidden');
+      document.getElementById('foto-preview-container').classList.add('hidden');
+    }
+
+    async function compressBase64(base64Str, maxDim = 800, quality = 0.7) {
+      if (!base64Str || typeof base64Str !== 'string') return base64Str;
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width;
+          let h = img.height;
+          if (w > h) {
+            if (w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
+          } else {
+            if (h > maxDim) { h = Math.round((h * maxDim) / h); h = maxDim; }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = () => resolve(base64Str);
+        img.src = base64Str;
+      });
+    }
+
+    // =========================================================================
+    // GUARDAR / EDITAR PROSUMIDOR
+    // =========================================================================
+    function saveProsumidor(e) {
+      if (e) e.preventDefault();
+
+      const editingId = document.getElementById('p-editing-id').value;
+      const nombre = document.getElementById('p-nombre').value.trim();
+      const telefono = document.getElementById('p-telefono').value.trim();
+      const email = document.getElementById('p-email').value.trim();
+      const nodo = document.getElementById('p-nodo').value;
+      const barrio = document.getElementById('p-barrio').value.trim();
+      const direccion = document.getElementById('p-direccion').value.trim();
+      const modalidad = document.getElementById('p-modalidad').value;
+      const frecuencia = document.getElementById('p-frecuencia').value;
+      const notas = document.getElementById('p-notas').value.trim();
+
+      // Recopilar checkboxes de intereses
+      const checkedBoxes = document.querySelectorAll('input[name="intereses"]:checked');
+      const intereses = Array.from(checkedBoxes).map(cb => cb.value);
+
+      const nodoNombres = {
+        'nodo-lomaverde': 'Sede Loma Verde',
+        'nodo-cooperativa': 'Chasqui Maschwitz',
+        'nodo-central': 'Central Vicente López',
+        'circulo-ciruelos': 'Círculo Los Ciruelos',
+        'otro': 'Otro Barrio'
+      };
+
+      if (!nombre || !telefono) {
+        alert('Por favor completá nombre y teléfono/WhatsApp.');
+        return;
+      }
+
+      if (editingId) {
+        // Actualizar registro existente
+        const idx = prosumidoresDB.findIndex(p => p.id === editingId);
+        if (idx !== -1) {
+          prosumidoresDB[idx] = {
+            ...prosumidoresDB[idx],
+            nombre,
+            telefono,
+            email,
+            nodo,
+            nodoNombre: nodoNombres[nodo] || 'Sede Loma Verde',
+            barrio,
+            direccion,
+            intereses,
+            modalidad,
+            frecuencia,
+            notas,
+            foto: currentImageBase64 || prosumidoresDB[idx].foto
+          };
+        }
+        cancelEditProsumidor();
+      } else {
+        // Crear nuevo registro
+        const newProsumidor = {
+          id: 'pros-' + Date.now(),
+          nombre,
+          telefono,
+          email,
+          nodo,
+          nodoNombre: nodoNombres[nodo] || 'Sede Loma Verde',
+          barrio,
+          direccion,
+          intereses,
+          modalidad,
+          frecuencia,
+          notas,
+          foto: currentImageBase64,
+          estado: 'Nuevo',
+          fecha: new Date().toISOString().slice(0, 10)
+        };
+        prosumidoresDB.unshift(newProsumidor);
+      }
+
+      saveDB();
+      updateCounterBadges();
+      resetForm();
+
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 70 });
+      } catch (err) {}
+
+      // Pasar a la pestaña de base de datos
+      switchTab('base');
+    }
+
+    function resetForm() {
+      document.getElementById('prosumidor-form').reset();
+      document.getElementById('p-editing-id').value = '';
+      removeProsumidorImage();
+      document.getElementById('btn-submit-text').textContent = 'Guardar Ficha de Prosumidor';
+      document.getElementById('btn-cancel-edit').classList.add('hidden');
+      document.getElementById('editing-banner').classList.add('hidden');
+    }
+
+    function editProsumidor(id) {
+      const p = prosumidoresDB.find(item => item.id === id);
+      if (!p) return;
+
+      switchTab('registro');
+
+      document.getElementById('p-editing-id').value = p.id;
+      document.getElementById('p-nombre').value = p.nombre || '';
+      document.getElementById('p-telefono').value = p.telefono || '';
+      document.getElementById('p-email').value = p.email || '';
+      document.getElementById('p-nodo').value = p.nodo || 'nodo-lomaverde';
+      document.getElementById('p-barrio').value = p.barrio || '';
+      document.getElementById('p-direccion').value = p.direccion || '';
+      document.getElementById('p-modalidad').value = p.modalidad || 'Retiro individual en sede';
+      document.getElementById('p-frecuencia').value = p.frecuencia || 'Semanal';
+      document.getElementById('p-notas').value = p.notas || '';
+
+      // Tildar intereses
+      const checkboxes = document.querySelectorAll('input[name="intereses"]');
+      checkboxes.forEach(cb => {
+        cb.checked = (p.intereses || []).includes(cb.value);
+      });
+
+      // Foto
+      if (p.foto) {
+        currentImageBase64 = p.foto;
+        document.getElementById('foto-preview').src = p.foto;
+        document.getElementById('foto-placeholder').classList.add('hidden');
+        document.getElementById('foto-preview-container').classList.remove('hidden');
+      } else {
+        removeProsumidorImage();
+      }
+
+      document.getElementById('editing-target-name').textContent = p.nombre;
+      document.getElementById('editing-banner').classList.remove('hidden');
+      document.getElementById('btn-submit-text').textContent = 'Actualizar Ficha';
+      document.getElementById('btn-cancel-edit').classList.remove('hidden');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEditProsumidor() {
+      resetForm();
+    }
+
+    function deleteProsumidor(id) {
+      const p = prosumidoresDB.find(item => item.id === id);
+      const name = p ? p.nombre : 'este prosumidor';
+      if (confirm(`¿Estás seguro de que querés eliminar la ficha de ${name}?`)) {
+        prosumidoresDB = prosumidoresDB.filter(item => item.id !== id);
+        saveDB();
+        updateCounterBadges();
+        renderProsumidoresList();
+      }
+    }
+
+    function updateProsumidorEstado(id, nuevoEstado) {
+      const p = prosumidoresDB.find(item => item.id === id);
+      if (p) {
+        p.estado = nuevoEstado;
+        saveDB();
+      }
+    }
+
+    // =========================================================================
+    // RENDERIZADO DEL LISTADO DE PROSUMIDORES
+    // =========================================================================
+    function filterProsumidores() {
+      renderProsumidoresList();
+    }
+
+    function renderProsumidoresList() {
+      const container = document.getElementById('prosumidores-list');
+      if (!container) return;
+
+      const q = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+      const nodeFilter = document.getElementById('filter-node')?.value || 'todos';
+
+      let list = [...prosumidoresDB];
+
+      // Filtro de Nodo
+      if (nodeFilter !== 'todos') {
+        list = list.filter(p => p.nodo === nodeFilter);
+      }
+
+      // Filtro de Texto
+      if (q) {
+        list = list.filter(p => 
+          (p.nombre && p.nombre.toLowerCase().includes(q)) ||
+          (p.telefono && p.telefono.includes(q)) ||
+          (p.email && p.email.toLowerCase().includes(q)) ||
+          (p.barrio && p.barrio.toLowerCase().includes(q)) ||
+          (p.direccion && p.direccion.toLowerCase().includes(q)) ||
+          (p.notas && p.notas.toLowerCase().includes(q)) ||
+          (p.intereses && p.intereses.join(' ').toLowerCase().includes(q))
+        );
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="text-center text-stone-400 py-12 bg-white rounded-3xl border border-dashed border-stone-200">
+            <i class="fas fa-search text-3xl mb-3 text-stone-300"></i>
+            <p class="font-bold text-stone-700">No se encontraron prosumidores con esos criterios.</p>
+            <p class="text-xs text-stone-400 mt-1">Probá cambiando la búsqueda o el nodo seleccionado.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(p => {
+        const cleanPhone = (p.telefono || '').replace(/\D/g, '');
+        const initials = (p.nombre || 'P')
+          .split(' ')
+          .map(w => w[0])
+          .slice(0, 2)
+          .join('')
+          .toUpperCase();
+
+        const interesesHtml = (p.intereses && p.intereses.length > 0)
+          ? p.intereses.map(i => `<span class="bg-[#fcf4f0] text-[#a6634f] border border-[#eddcd5] px-2 py-0.5 rounded-full text-[10px] font-bold">${i}</span>`).join(' ')
+          : '<span class="text-stone-400 text-[10px]">Interés general en la feria</span>';
+
+        let estadoBadge = 'bg-amber-50 text-amber-800 border-amber-200';
+        if (p.estado === 'Contactado') estadoBadge = 'bg-blue-50 text-blue-800 border-blue-200';
+        if (p.estado === 'Activo') estadoBadge = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+
+        return `
+          <div class="bg-white border border-stone-200/90 rounded-3xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all">
+            
+            <!-- Fila Superior: Avatar + Nombre + Estado + Acciones -->
+            <div class="flex items-start justify-between gap-3 mb-3">
+              
+              <div class="flex items-center gap-3">
+                ${p.foto ? `
+                  <img src="${p.foto}" class="w-12 h-12 rounded-2xl object-cover border border-stone-200 shadow-2xs" alt="${p.nombre}" />
+                ` : `
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#fcf4f0] to-[#eddcd5] text-[#a6634f] font-black font-mono text-sm flex items-center justify-center border border-[#eddcd5] shadow-2xs">
+                    ${initials}
+                  </div>
+                `}
+                <div>
+                  <h3 class="font-black text-stone-900 text-base sm:text-lg leading-tight font-heading">${p.nombre}</h3>
+                  <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                    <span class="text-xs text-stone-600 font-mono font-bold">${p.telefono}</span>
+                    <span class="text-stone-300">•</span>
+                    <span class="text-xs text-stone-500 font-medium">📍 ${p.nodoNombre || 'Sede Loma Verde'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Selector de Estado -->
+              <div class="shrink-0">
+                <select 
+                  onchange="updateProsumidorEstado('${p.id}', this.value)" 
+                  class="text-[11px] font-bold py-1 px-2.5 rounded-xl border outline-none bg-white cursor-pointer ${estadoBadge}"
+                >
+                  <option value="Nuevo" ${p.estado === 'Nuevo' ? 'selected' : ''}>🌱 Nuevo</option>
+                  <option value="Contactado" ${p.estado === 'Contactado' ? 'selected' : ''}>💬 Contactado</option>
+                  <option value="Activo" ${p.estado === 'Activo' ? 'selected' : ''}>✓ Activo</option>
+                </select>
+              </div>
+
+            </div>
+
+            <!-- Intereses y Modalidad -->
+            <div class="mb-3">
+              <span class="text-[10px] font-bold text-stone-400 block mb-1">INTERÉS EN ALIMENTOS:</span>
+              <div class="flex flex-wrap gap-1.5">
+                ${interesesHtml}
+              </div>
+            </div>
+
+            <!-- Datos adicionales: Barrio, frecuencia, notas -->
+            <div class="bg-stone-50 rounded-2xl p-3 text-xs space-y-1 mb-3.5 border border-stone-100">
+              <div class="flex flex-wrap items-center justify-between gap-1 text-stone-600">
+                <span><strong>Modalidad:</strong> ${p.modalidad || 'Retiro individual'}</span>
+                <span><strong>Frecuencia:</strong> ${p.frecuencia || 'Semanal'}</span>
+                ${p.barrio ? `<span><strong>Barrio:</strong> ${p.barrio}</span>` : ''}
+              </div>
+              ${p.notas ? `
+                <div class="pt-1 text-stone-500 italic border-t border-stone-200/60 mt-1">
+                  "${p.notas}"
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Botones de Acción (WhatsApp / Editar / Eliminar) -->
+            <div class="flex items-center justify-between pt-2 border-t border-stone-100">
+              
+              <div class="flex items-center gap-1.5">
+                <button 
+                  type="button" 
+                  onclick="openWhatsAppModal('${p.id}')" 
+                  class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-xs hover:shadow-md flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                >
+                  <i class="fab fa-whatsapp text-sm"></i>
+                  <span>WhatsApp</span>
+                </button>
+
+                ${cleanPhone ? `
+                  <a 
+                    href="tel:${cleanPhone}" 
+                    class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs transition-colors" 
+                    title="Llamada tradicional"
+                  >
+                    <i class="fas fa-phone"></i>
+                  </a>
+                ` : ''}
+              </div>
+
+              <div class="flex items-center gap-1">
+                <button 
+                  type="button" 
+                  onclick="editProsumidor('${p.id}')" 
+                  class="p-2 text-stone-500 hover:text-stone-900 rounded-xl hover:bg-stone-100 text-xs font-bold transition-colors cursor-pointer" 
+                  title="Editar ficha"
+                >
+                  <i class="fas fa-pen"></i>
+                </button>
+                <button 
+                  type="button" 
+                  onclick="deleteProsumidor('${p.id}')" 
+                  class="p-2 text-stone-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 text-xs transition-colors cursor-pointer" 
+                  title="Eliminar ficha"
+                >
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // MODAL WHATSAPP & APERTURA
+    // =========================================================================
+    function openWhatsAppModal(id) {
+      const p = prosumidoresDB.find(item => item.id === id);
+      if (!p) return;
+      selectedWspProsumidor = p;
+
+      document.getElementById('wsp-choice-nombre').textContent = p.nombre;
+      document.getElementById('wsp-choice-nodo').innerHTML = `<i class="fas fa-map-marker-alt text-[10px] mr-1 text-[#a6634f]"></i>${p.nodoNombre || 'Sede Loma Verde'}`;
+      document.getElementById('wsp-choice-num-display').textContent = p.telefono || 'Sin número';
+
+      const modal = document.getElementById('modal-whatsapp-choice');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeWhatsAppModal() {
+      const modal = document.getElementById('modal-whatsapp-choice');
+      if (modal) modal.classList.add('hidden');
+      selectedWspProsumidor = null;
+    }
+
+    function copyWspChoiceNumber() {
+      if (!selectedWspProsumidor) return;
+      const clean = (selectedWspProsumidor.telefono || '').replace(/\D/g, '');
+      navigator.clipboard.writeText(clean).then(() => {
+        alert('Número copiado al portapapeles: ' + clean);
+      });
+    }
+
+    function executeWhatsAppLaunch(type) {
+      if (!selectedWspProsumidor) return;
+      const p = selectedWspProsumidor;
+      let clean = (p.telefono || '').replace(/\D/g, '');
+
+      // Formato para Argentina si arranca con 15 o sin 549
+      if (clean.length === 10 && clean.startsWith('11')) {
+        clean = '549' + clean;
+      } else if (clean.length === 11 && clean.startsWith('15')) {
+        clean = '54911' + clean.slice(2);
+      } else if (clean.length === 10 && !clean.startsWith('54')) {
+        clean = '549' + clean;
+      }
+
+      const interesPrincipal = (p.intereses && p.intereses.length > 0) ? p.intereses[0] : 'alimentos agroecológicos';
+      const msg = encodeURIComponent(`¡Hola ${p.nombre}! Te escribimos desde el ${p.nodoNombre || 'Nodo'} de Elementales. Vimos que te interesa sumarte a las compras de ${interesPrincipal}. ¿Te gustaría que te contemos cómo funciona la entrega de esta semana?`);
+
+      if (type === 'call') {
+        window.location.href = `tel:${clean}`;
+        closeWhatsAppModal();
+        return;
+      }
+
+      if (type === 'business') {
+        // Esquema para WhatsApp Business
+        const intentUrl = `intent://send?phone=${clean}&text=${msg}#Intent;scheme=whatsapp-smb;package=com.whatsapp.w4b;end`;
+        window.location.href = intentUrl;
+        setTimeout(() => {
+          window.open(`https://wa.me/${clean}?text=${msg}`, '_blank');
+        }, 1200);
+      } else if (type === 'personal') {
+        const intentUrl = `intent://send?phone=${clean}&text=${msg}#Intent;scheme=whatsapp;package=com.whatsapp;end`;
+        window.location.href = intentUrl;
+        setTimeout(() => {
+          window.open(`https://wa.me/${clean}?text=${msg}`, '_blank');
+        }, 1200);
+      } else {
+        // Enlace universal wa.me
+        window.open(`https://wa.me/${clean}?text=${msg}`, '_blank');
+      }
+
+      // Marcar como contactado
+      updateProsumidorEstado(p.id, 'Contactado');
+      closeWhatsAppModal();
+      renderProsumidoresList();
+    }
+
+    // =========================================================================
+    // EXPORTACIÓN EXCEL (CSV) & RESPALDOS
+    // =========================================================================
+    function exportProsumidoresCSV() {
+      if (prosumidoresDB.length === 0) {
+        alert('No hay prosumidores registrados para exportar.');
+        return;
+      }
+
+      let csv = 'ID,Nombre,Telefono,Email,Nodo,Barrio,Direccion,Intereses,Modalidad,Frecuencia,Estado,Notas,Fecha_Registro\n';
+      prosumidoresDB.forEach(p => {
+        const cleanNombre = (p.nombre || '').replace(/,/g, ' ');
+        const cleanIntereses = (p.intereses || []).join(' | ').replace(/,/g, ' ');
+        const cleanNotas = (p.notas || '').replace(/[\n\r,]/g, ' ');
+        csv += `${p.id},${cleanNombre},${p.telefono || ''},${p.email || ''},${p.nodoNombre || ''},${p.barrio || ''},${p.direccion || ''},${cleanIntereses},${p.modalidad || ''},${p.frecuencia || ''},${p.estado || ''},${cleanNotas},${p.fecha || ''}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `elementales_prosumidores_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function shareOrExportData() {
+      const jsonStr = JSON.stringify(prosumidoresDB, null, 2);
+      const filename = `elementales_prosumidores_${new Date().toISOString().slice(0, 10)}.json`;
+      const file = new File([jsonStr], filename, { type: 'application/json' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({
+          files: [file],
+          title: 'Padrón de Prosumidores Elementales',
+          text: `Base de datos de ${prosumidoresDB.length} prosumidores de la Red Elementales.`
+        }).catch(err => console.log('Compartir cancelado:', err));
+      } else {
+        // Descargar archivo JSON
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    function handleImportFile(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (Array.isArray(imported)) {
+            // Unir sin duplicar por ID o Teléfono
+            let added = 0;
+            imported.forEach(item => {
+              if (item.id && !prosumidoresDB.some(p => p.id === item.id || (p.telefono && p.telefono === item.telefono))) {
+                prosumidoresDB.push(item);
+                added++;
+              }
+            });
+            saveDB();
+            updateCounterBadges();
+            renderProsumidoresList();
+            alert(`✓ Se importaron ${added} nuevos prosumidores.`);
+          } else {
+            alert('El archivo no contiene un formato de lista válido.');
+          }
+        } catch (err) {
+          alert('Error al leer el archivo JSON: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+      input.value = '';
+    }
+
+    function openCopyModal() {
+      document.getElementById('copy-textarea').value = JSON.stringify(prosumidoresDB, null, 2);
+      document.getElementById('modal-copy-backup').classList.remove('hidden');
+    }
+
+    function closeCopyModal() {
+      document.getElementById('modal-copy-backup').classList.add('hidden');
+    }
+
+    function doCopyText() {
+      const textarea = document.getElementById('copy-textarea');
+      textarea.select();
+      navigator.clipboard.writeText(textarea.value).then(() => {
+        const btn = document.getElementById('btn-do-copy');
+        btn.innerHTML = '<i class="fas fa-check mr-1"></i> ¡Copiado!';
+        setTimeout(() => {
+          btn.innerHTML = '<i class="fas fa-clipboard mr-1"></i> Copiar al Portapapeles';
+          closeCopyModal();
+        }, 1200);
+      });
+    }
+
+    function openPasteModal() {
+      document.getElementById('paste-textarea').value = '';
+      document.getElementById('modal-paste-backup').classList.remove('hidden');
+    }
+
+    function closePasteModal() {
+      document.getElementById('modal-paste-backup').classList.add('hidden');
+    }
+
+    function doPasteText() {
+      const text = document.getElementById('paste-textarea').value.trim();
+      if (!text) return alert('Por favor pegá el texto primero.');
+
+      try {
+        const imported = JSON.parse(text);
+        if (Array.isArray(imported)) {
+          let added = 0;
+          imported.forEach(item => {
+            if (item.id && !prosumidoresDB.some(p => p.id === item.id || (p.telefono && p.telefono === item.telefono))) {
+              prosumidoresDB.push(item);
+              added++;
+            }
+          });
+          saveDB();
+          updateCounterBadges();
+          renderProsumidoresList();
+          closePasteModal();
+          alert(`✓ Se importaron ${added} prosumidores exitosamente.`);
+        } else {
+          alert('El formato no es válido.');
+        }
+      } catch (err) {
+        alert('Error al procesar el texto: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
