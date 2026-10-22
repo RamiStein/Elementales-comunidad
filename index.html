@@ -1277,6 +1277,249 @@
 
       </div>
 
+
+      <!-- ========================================================================= -->
+      <!-- COMPRAS ABIERTAS (ESTÉTICA SPOTIFY / NETFLIX)                             -->
+      <!-- ========================================================================= -->
+      <div class="max-w-3xl mx-auto mt-10">
+        
+        <!-- Título sutil de sección estilo Spotify / Netflix -->
+        <div class="flex items-center justify-between mb-3.5 px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-stone-600 font-mono">
+              Compras abiertas
+            </h3>
+          </div>
+          <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+            ● 1 Campaña Activa
+          </span>
+        </div>
+
+        <!-- Cuadrícula de tarjetas estéticas (Cards cuadradas / modulares) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          
+          <!-- 1. COMPRA COMUNITARIA FRUTILLA (Cierre 23/10 - 15hs, Entrega Viernes 23 en Loma Verde) -->
+          <a 
+            href="frutilla.html" 
+            class="group relative rounded-3xl overflow-hidden border-2 border-rose-300 hover:border-rose-500 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between p-5 sm:p-6 bg-[#1a0f12] text-white min-h-[250px] text-decoration-none"
+            title="Ir a la Compra Comunitaria de Frutillas Finca Ecotipa"
+          >
+            <!-- Imagen de fondo con gradiente inmersivo estilo Netflix -->
+            <div class="absolute inset-0 z-0">
+              <img 
+                src="public/assets/frutillas_ecotipa.jpg" 
+                alt="Frutillas Ecotipa" 
+                class="w-full h-full object-cover opacity-50 group-hover:scale-105 group-hover:opacity-65 transition-all duration-500 filter brightness-90"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-[#140b0d] via-[#1a0f12]/80 to-transparent"></div>
+              <div class="absolute inset-0 bg-gradient-to-r from-[#140b0d]/90 via-transparent to-transparent"></div>
+            </div>
+
+            <!-- Contenido superior: Badges -->
+            <div class="relative z-10 flex items-center justify-between gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/90 text-white text-[11px] font-black uppercase tracking-wider shadow-sm backdrop-blur-xs">
+                <span>🍓</span>
+                <span>Finca Ecotipa</span>
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-400/50 text-emerald-300 text-[10px] font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                Abierta
+              </span>
+            </div>
+
+            <!-- Contenido central e inferior: Título e Info -->
+            <div class="relative z-10 mt-6">
+              <h4 class="text-xl sm:text-2xl font-black text-white font-heading tracking-tight leading-snug group-hover:text-rose-200 transition-colors">
+                Compra comunitaria frutilla
+              </h4>
+              <p class="text-xs text-stone-300 mt-1 line-clamp-2">
+                Frutillas agroecológicas seleccionadas en origen directo de Finca Ecotipa. Cajón cooperativo de 5 kg.
+              </p>
+
+              <!-- Cronograma estético tipo píldoras -->
+              <div class="mt-4 pt-3 border-t border-white/15 space-y-2 text-xs">
+                <div class="flex items-center gap-2 text-rose-200 font-medium">
+                  <span class="shrink-0 text-sm">⏰</span>
+                  <span>Cierre compra: <strong class="text-white font-black">23/10 - 15hs</strong></span>
+                </div>
+                <div class="flex items-center gap-2 text-emerald-200 font-medium">
+                  <span class="shrink-0 text-sm">🚚</span>
+                  <span>Entrega: <strong class="text-white font-black">Viernes 23 en Loma Verde</strong></span>
+                </div>
+              </div>
+
+              <!-- Botón CTA integrado -->
+              <div class="mt-4 flex items-center justify-between">
+                <span class="text-[11px] font-mono text-rose-300/80">/frutilla.html</span>
+                <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 group-hover:bg-rose-500 text-white text-xs font-black shadow-md transition-all group-hover:translate-x-1">
+                  <span>Sumarme al Cajón</span>
+                  <span>→</span>
+                </span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 2. COMPRA LUNAR ABIERTA (Almacén Cooperativo al Costo) -->
+          <div 
+            onclick="selectTierraModalidad('lunar')"
+            class="group relative rounded-3xl overflow-hidden border-2 border-indigo-300/60 hover:border-indigo-400 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-br from-[#121320] via-[#1b1a2e] to-[#141221] text-white min-h-[250px] cursor-pointer"
+            title="Ir a la Compra Lunar Abierta"
+          >
+            <div class="flex items-center justify-between gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-950/90 border border-indigo-400/40 text-indigo-300 text-[11px] font-black uppercase tracking-wider shadow-sm">
+                <span>🌕</span>
+                <span>Ciclo Lunar Activo</span>
+              </span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-400/50 text-emerald-300 text-[10px] font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                Abierta
+              </span>
+            </div>
+
+            <div class="mt-6">
+              <h4 class="text-xl sm:text-2xl font-black text-white font-heading tracking-tight leading-snug group-hover:text-amber-200 transition-colors">
+                Almacén Comunitario Lunar
+              </h4>
+              <p class="text-xs text-stone-300 mt-1">
+                Granos, harinas integrales, legumbres, miel pura y yerba orgánica al costo cooperativo de red (-25%).
+              </p>
+
+              <div class="mt-4 pt-3 border-t border-white/15 space-y-2 text-xs">
+                <div class="flex items-center gap-2 text-indigo-200 font-medium">
+                  <span class="shrink-0 text-sm">🗓️</span>
+                  <span>Ciclo: <strong class="text-white font-black">Luna Nueva a Luna Llena</strong></span>
+                </div>
+                <div class="flex items-center gap-2 text-amber-200 font-medium">
+                  <span class="shrink-0 text-sm">📍</span>
+                  <span>Retiro coordinado: <strong class="text-white font-black">Nodo Loma Verde</strong></span>
+                </div>
+              </div>
+
+              <div class="mt-4 flex items-center justify-between">
+                <span class="text-[11px] font-mono text-indigo-300/80">/lomaverde/tierra/luanar</span>
+                <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 group-hover:bg-indigo-500 text-white text-xs font-black shadow-md transition-all group-hover:translate-x-1">
+                  <span>Ver Almacén</span>
+                  <span>→</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- FUTURAS COMPRAS (ESTÉTICA SPOTIFY / NETFLIX)                              -->
+      <!-- ========================================================================= -->
+      <div class="max-w-3xl mx-auto mt-8 mb-4">
+        
+        <!-- Título sutil de sección estilo Spotify / Netflix -->
+        <div class="flex items-center justify-between mb-3.5 px-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+            <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-stone-600 font-mono">
+              Futuras compras
+            </h3>
+          </div>
+          <span class="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
+            🗓️ Próximas Fechas
+          </span>
+        </div>
+
+        <!-- Cuadrícula de tarjetas estéticas cuadradas con la info -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          
+          <!-- Card 1: Compra semanal (Abre sábado 24 de octubre 12hs, Cierra domingo 00hs) -->
+          <div 
+            onclick="selectTierraModalidad('semanal')"
+            class="group relative rounded-3xl p-5 sm:p-6 bg-gradient-to-br from-[#fffef9] via-[#fffbf0] to-[#fef6e2] border-2 border-amber-200 hover:border-amber-400 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[230px] cursor-pointer"
+            title="Ver detalles de la Compra Semanal"
+          >
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-black uppercase tracking-wider">
+                  <span>☀️</span>
+                  <span>Ciclo Semanal</span>
+                </span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100/80 border border-amber-300 text-amber-800 text-[10px] font-bold">
+                  Próxima Apertura
+                </span>
+              </div>
+
+              <h4 class="text-lg sm:text-xl font-black text-stone-900 font-heading tracking-tight leading-snug group-hover:text-amber-800 transition-colors">
+                Compra semanal
+              </h4>
+              <p class="text-xs text-stone-600 mt-1 leading-relaxed">
+                Bolsones de verdura fresca de estación, frutas de quinteros y huevos pastoriles de granja.
+              </p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-amber-200/80 space-y-2 text-xs">
+              <div class="flex items-center gap-2 text-stone-700 font-medium">
+                <span class="w-5 text-center text-sm">🚀</span>
+                <span>Abre compra: <strong class="text-stone-900 font-black">Sábado 24 de octubre, 12hs</strong></span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-700 font-medium">
+                <span class="w-5 text-center text-sm">⏳</span>
+                <span>Cierra compra: <strong class="text-amber-900 font-black">Domingo 00hs</strong></span>
+              </div>
+              <div class="pt-2 flex items-center justify-between text-[11px]">
+                <span class="text-stone-400 font-mono">/lomaverde/tierra/semanal</span>
+                <span class="font-bold text-amber-800 group-hover:underline flex items-center gap-1">
+                  Ver productos →
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Verdura de huerta (Cierra compra sábado 21hs) -->
+          <div 
+            onclick="selectTierraModalidad('semanal')"
+            class="group relative rounded-3xl p-5 sm:p-6 bg-gradient-to-br from-[#f8fcf5] via-[#f1f8eb] to-[#e7f3dc] border-2 border-emerald-200 hover:border-emerald-400 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[230px] cursor-pointer"
+            title="Ver detalles de Verdura de Huerta"
+          >
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 text-[11px] font-black uppercase tracking-wider">
+                  <span>🥬</span>
+                  <span>Huerta Viva</span>
+                </span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100/80 border border-emerald-300 text-emerald-800 text-[10px] font-bold">
+                  Cosecha Barrial
+                </span>
+              </div>
+
+              <h4 class="text-lg sm:text-xl font-black text-stone-900 font-heading tracking-tight leading-snug group-hover:text-emerald-800 transition-colors">
+                Verdura de huerta
+              </h4>
+              <p class="text-xs text-stone-600 mt-1 leading-relaxed">
+                Hojas verdes recién cortadas de bancales biodinámicos, rúcula, acelga criolla y aromáticas vivas.
+              </p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-emerald-200/80 space-y-2 text-xs">
+              <div class="flex items-center gap-2 text-stone-700 font-medium">
+                <span class="w-5 text-center text-sm">⏳</span>
+                <span>Cierra compra: <strong class="text-emerald-900 font-black">Sábado 21hs</strong></span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-700 font-medium">
+                <span class="w-5 text-center text-sm">🌱</span>
+                <span>Entrega: <strong class="text-stone-900 font-black">Cosecha fresca del día</strong></span>
+              </div>
+              <div class="pt-2 flex items-center justify-between text-[11px]">
+                <span class="text-stone-400 font-mono">Bancales Loma Verde</span>
+                <span class="font-bold text-emerald-800 group-hover:underline flex items-center gap-1">
+                  Sumarme al pedido →
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
     </div>
 
     <!-- ========================================================================= -->
