@@ -1046,18 +1046,41 @@
     <!-- ========================================================================= -->
     <div id="tierra-selector-screen" class="tierra-selector-screen mb-10 animate-fade-in">
       
-      <!-- Encabezado de Selección -->
-      <div class="text-center max-w-2xl mx-auto mb-8 pt-2">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#edf3e3] border border-[#8ca15d]/40 text-[#556930] text-xs font-bold mb-3 shadow-2xs">
-          <span>🌱</span>
-          <span id="tierra-selector-node-label">Elemento Tierra · Red Comunitaria Loma Verde</span>
+      <!-- Banner Principal del Elemento Tierra (Tienda Comunitaria & Soberanía Alimentaria) -->
+      <div id="tierra-generic-header" class="max-w-3xl mx-auto p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-white via-[#f7f9f2] to-[#ecf2e1] border-2 border-[#8ca15d]/40 mb-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div class="flex items-center gap-5">
+          <!-- Logo Oficial del Elemento Tierra Agrandado (Rombo Sagrado con Hoja Verde) -->
+          <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-[#edf3e3] border-2 border-[#8ca15d]/50 overflow-hidden shrink-0 flex items-center justify-center p-2.5 shadow-sm">
+            <img src="public/assets/brand/tierra_clean.png" class="w-full h-full object-contain filter drop-shadow-xs" alt="Elemento Tierra" />
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="text-[10px] font-black uppercase tracking-wider text-[#697d41] bg-white/95 px-2.5 py-0.5 rounded-full border border-[#8ca15d]/30 font-mono">
+                🌱 Elemento Tierra
+              </span>
+              <span class="text-xs font-bold text-stone-500" id="tierra-selector-node-label">Red Comunitaria Loma Verde</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight font-heading leading-tight">
+              Tienda Comunitaria & Soberanía Alimentaria
+            </h1>
+            <p class="text-xs sm:text-sm text-stone-600 mt-1.5 leading-relaxed max-w-xl">
+              Alimentos agroecológicos sin agrotóxicos y producción artesanal. Elegí entre compras comunitarias al costo por ciclo lunar, cosecha semanal o huerta viva.
+            </p>
+          </div>
         </div>
-        <h2 class="text-2xl sm:text-4xl font-black text-stone-900 font-heading tracking-tight">
-          Elegí tu Modalidad de Compra
-        </h2>
-        <p class="text-xs sm:text-sm text-stone-600 mt-2 leading-relaxed max-w-xl mx-auto">
-          Dos ritmos sagrados para nutrir a la familia con alimentos agroecológicos vivos, al costo cooperativo y de cercanía.
-        </p>
+
+        <div class="flex items-center gap-2 shrink-0 self-start md:self-center">
+          <!-- Botón Volver al Home del Nodo -->
+          <button 
+            type="button" 
+            onclick="navigateTo('barrio')" 
+            class="bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 hover:border-stone-400 text-xs sm:text-sm font-black px-4 py-2.5 rounded-full shadow-xs flex items-center gap-2 transition-all cursor-pointer active:scale-95"
+            title="Volver al Home del Nodo"
+          >
+            <span>🏠</span>
+            <span>Home del Nodo</span>
+          </button>
+        </div>
       </div>
 
       <!-- Cuadrícula de las 2 Opciones (Lunar Arriba, Semanal Abajo) -->
@@ -1551,90 +1574,17 @@
         <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
           <button 
             type="button" 
-            id="tierra-other-mode-btn"
-            class="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
-          >
-            <span>☀️</span>
-            <span>Pasar a Compra Semanal</span>
-          </button>
-          <button 
-            type="button" 
             onclick="returnToTierraSelector()" 
-            class="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
-            title="Volver a la pantalla de selección"
+            class="px-4 py-2.5 rounded-xl bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            title="Volver a la pantalla de selección de compras"
           >
             <span>←</span>
-            <span>Elegir Otra Modalidad</span>
+            <span>Volver a Compras Abiertas</span>
           </button>
         </div>
       </div>
 
-    <!-- BANNER DESTACADO FRUTILLAS FINCA ECOTIPA (ESTÉTICA ELEMENTALES) -->
-    <div class="mb-5 p-4 rounded-3xl bg-gradient-to-r from-[#fcf4f0] via-[#f7f9f2] to-[#edf3e3] border-2 border-[#eddcd5] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl bg-[#a6634f] text-white flex items-center justify-center text-2xl shrink-0 shadow-sm">
-          🍓
-        </div>
-        <div>
-          <div class="flex items-center gap-2 mb-0.5">
-            <span class="text-[10px] font-black uppercase tracking-wider bg-[#a6634f] text-white px-2 py-0.5 rounded-full">
-              ELEMENTO TIERRA · FINCA ECOTIPA
-            </span>
-            <span class="text-xs font-black text-stone-900 font-heading">
-              Cajón x 5 KG Agroecológico ($44.000)
-            </span>
-          </div>
-          <p class="text-xs text-stone-600 leading-snug">
-            Pedí cajón entero o sumate con <strong>½</strong> o <strong>⅓</strong> en compras compartidas con commits en tiempo real.
-          </p>
-        </div>
-      </div>
-      <a href="frutilla.html" class="shrink-0 w-full sm:w-auto text-center px-4 py-2.5 rounded-xl bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-xs transition-all shadow-xs text-decoration-none">
-        Sumarme al Cajón de Frutillas →
-      </a>
-    </div>
 
-    <!-- Header del Elemento Tierra con Logo Oficial -->
-    <div id="tierra-generic-header" class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-white via-[#f7f9f2] to-[#ecf2e1] border-2 border-[#8ca15d]/40 mb-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
-      <div class="flex items-center gap-4">
-        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#edf3e3] border border-[#8ca15d]/50 overflow-hidden shrink-0 flex items-center justify-center p-1.5 shadow-xs">
-          <img src="public/assets/brand/tierra_logo.jpg" class="w-full h-full object-contain" alt="Elemento Tierra" />
-        </div>
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-[10px] font-black uppercase tracking-wider text-[#697d41] bg-white/90 px-2.5 py-0.5 rounded-full border border-[#8ca15d]/30">
-              🌱 Elemento Tierra
-            </span>
-            <span class="text-xs font-bold text-stone-500">Tienda & Pedidos Colectivos</span>
-          </div>
-          <h1 class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">
-            Tienda Comunitaria & Soberanía Alimentaria
-          </h1>
-          <p class="text-xs sm:text-sm text-stone-600 max-w-xl mt-1 leading-relaxed">
-            Alimentos agroecológicos sin agrotóxicos y producción artesanal. Elegí entre compra inmediata en Rawson 3450, cosecha semanal de huerta o compras comunitarias al costo por ciclo lunar.
-          </p>
-        </div>
-      </div>
-
-      <div class="flex flex-wrap items-center gap-2 shrink-0">
-        <button 
-          type="button" 
-          onclick="navigateTo('barrio')" 
-          class="bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
-          title="Volver al Home del Nodo"
-        >
-          <span>🏠</span>
-          <span>Home del Nodo</span>
-        </button>
-        <button 
-          onclick="openCustomProductModal()" 
-          class="bg-[#8ca15d] hover:bg-[#778b4b] text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all transform active:scale-95"
-        >
-          <span>➕</span>
-          <span>Ítem Libre / Personalizado</span>
-        </button>
-      </div>
-    </div>
 
     <!-- TABS INTERNOS DEL ELEMENTO TIERRA -->
     <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-4 scrollbar-none border-b border-stone-200/70" id="tierra-subnav-tabs">
@@ -1666,37 +1616,7 @@
           <!-- Inyectado por JS -->
         </div>
       </div>
-      <!-- Selector de Modalidad de Compra (Local, Semanal, Lunar) -->
-      <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-200 shadow-xs mb-4">
-        <div class="flex items-center justify-between mb-2.5">
-          <span class="text-xs font-bold uppercase tracking-wider text-stone-600 flex items-center gap-1.5">
-            <span>⚖️ Escala de Precios Red Elemental</span>
-          </span>
-          <span id="catalog-mode-badge" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-800 border border-stone-200">
-            🏪 Local / Feria
-          </span>
-        </div>
-        <div id="catalog-modes-grid" class="grid grid-cols-3 gap-2">
-          <button onclick="setCatalogMode('local')" id="btn-mode-local" class="mode-btn active">
-            <span class="text-lg">🏪</span>
-            <span class="font-extrabold text-xs">Local</span>
-            <span class="text-[10px] text-stone-500 font-medium">Feria Rawson 3450</span>
-          </button>
-          <button onclick="setCatalogMode('semanal')" id="btn-mode-semanal" class="mode-btn">
-            <span class="text-lg">🥬</span>
-            <span class="font-extrabold text-xs">Semanal</span>
-            <span class="text-[10px] text-emerald-600 font-bold">-10% Socio CsC</span>
-          </button>
-          <button onclick="setCatalogMode('lunar')" id="btn-mode-lunar" class="mode-btn">
-            <span class="text-lg">🌕</span>
-            <span class="font-extrabold text-xs">Lunar</span>
-            <span class="text-[10px] text-[#a6634f] font-bold">-25% Costo Red</span>
-          </button>
-        </div>
-        <p id="catalog-mode-description" class="text-[11px] text-stone-600 mt-2 text-center bg-stone-50 py-1.5 px-2 rounded-xl border border-stone-200/60">
-          Precios regulares de feria para público visitante.
-        </p>
-      </div>
+
 
       <!-- Buscador de Productos -->
       <div class="mb-4 relative">

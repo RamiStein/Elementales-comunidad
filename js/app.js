@@ -710,24 +710,14 @@ function selectTierraModalidad(mode, updateUrl = true) {
   const iconEl = document.getElementById('tierra-active-mode-icon');
   const titleEl = document.getElementById('tierra-active-mode-title');
   const descEl = document.getElementById('tierra-active-mode-desc');
-  const otherBtn = document.getElementById('tierra-other-mode-btn');
-
   if (normalizedMode === 'lunar') {
     if (iconEl) iconEl.innerHTML = '🌕';
     if (titleEl) titleEl.innerText = 'Compra Lunar · Almacén y Ciclos Comunitarios';
     if (descEl) descEl.innerText = 'Precios al costo de red (-25%) para compras programadas y alimentos no perecederos.';
-    if (otherBtn) {
-      otherBtn.innerHTML = '<span>☀️</span><span>Pasar a Compra Semanal</span>';
-      otherBtn.onclick = () => selectTierraModalidad('semanal');
-    }
   } else {
     if (iconEl) iconEl.innerHTML = '☀️';
     if (titleEl) titleEl.innerText = 'Compra Semanal · Huerta Fresca y Cosecha Viva';
     if (descEl) descEl.innerText = 'Cosecha fresca semanal de quinteros y huertas agroecológicas de cercanía (-10% socios CsC).';
-    if (otherBtn) {
-      otherBtn.innerHTML = '<span>🌕</span><span>Pasar a Compra Lunar</span>';
-      otherBtn.onclick = () => selectTierraModalidad('lunar');
-    }
   }
 
   // Renderizar catálogo
