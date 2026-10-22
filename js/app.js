@@ -262,6 +262,7 @@ const AppState = {
 
   // Sistema Multimodo & Membresía CsC (Red Elemental)
   catalogMode: 'local', // 'local' | 'semanal' | 'lunar'
+  tierraSubMode: null, // null (muestra selector lunar/semanal) | 'lunar' | 'semanal'
   activeNodeId: 'nodo-lomaverde',
   userRole: 'visitante', // 'visitante' | 'socio'
   userPlan: 'plan-raices',
@@ -692,6 +693,98 @@ const AppState = {
   }
 };
 
+// --- MODALIDADES DE COMPRA DEL ELEMENTO TIERRA (LUNAR vs SEMANAL) ---
+function selectTierraModalidad(mode, updateUrl = true) {
+  if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
+  const normalizedMode = (mode === 'luanar' || mode === 'lunar') ? 'lunar' : 'semanal';
+  AppState.tierraSubMode = normalizedMode;
+  AppState.catalogMode = normalizedMode;
+
+  // Ocultar selector y revelar catálogo
+  const selector = document.getElementById('tierra-selector-screen');
+  const catalog = document.getElementById('tierra-catalog-wrapper');
+  if (selector) selector.classList.add('hidden');
+  if (catalog) catalog.classList.remove('hidden');
+
+  // Actualizar banner superior de modalidad activa
+  const iconEl = document.getElementById('tierra-active-mode-icon');
+  const titleEl = document.getElementById('tierra-active-mode-title');
+  const descEl = document.getElementById('tierra-active-mode-desc');
+  const otherBtn = document.getElementById('tierra-other-mode-btn');
+
+  if (normalizedMode === 'lunar') {
+    if (iconEl) iconEl.innerHTML = '🌕';
+    if (titleEl) titleEl.innerText = 'Compra Lunar · Almacén y Ciclos Comunitarios';
+    if (descEl) descEl.innerText = 'Precios al costo de red (-25%) para compras programadas y alimentos no perecederos.';
+    if (otherBtn) {
+      otherBtn.innerHTML = '<span>☀️</span><span>Pasar a Compra Semanal</span>';
+      otherBtn.onclick = () => selectTierraModalidad('semanal');
+    }
+  } else {
+    if (iconEl) iconEl.innerHTML = '☀️';
+    if (titleEl) titleEl.innerText = 'Compra Semanal · Huerta Fresca y Cosecha Viva';
+    if (descEl) descEl.innerText = 'Cosecha fresca semanal de quinteros y huertas agroecológicas de cercanía (-10% socios CsC).';
+    if (otherBtn) {
+      otherBtn.innerHTML = '<span>🌕</span><span>Pasar a Compra Lunar</span>';
+      otherBtn.onclick = () => selectTierraModalidad('lunar');
+    }
+  }
+
+  // Renderizar catálogo
+  if (typeof renderOrderCatalog === 'function') {
+    renderOrderCatalog();
+  }
+
+  // Sincronizar URL limpia
+  const nodeSlug = (AppState.activeNodeId || 'nodo-lomaverde').replace(/^nodo-/, '');
+  const urlSub = (normalizedMode === 'lunar') ? 'luanar' : 'semanal';
+  const targetPath = '/' + nodeSlug + '/tierra/' + urlSub;
+
+  if (updateUrl && window.history) {
+    try {
+      const stateObj = { view: 'tierra', tierraMode: normalizedMode, nodeId: AppState.activeNodeId, circuloId: null };
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState(stateObj, '', targetPath);
+      } else {
+        window.history.replaceState(stateObj, '', targetPath);
+      }
+    } catch (e) {}
+  }
+}
+
+function returnToTierraSelector(updateUrl = true) {
+  if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
+  AppState.tierraSubMode = null;
+
+  const selector = document.getElementById('tierra-selector-screen');
+  const catalog = document.getElementById('tierra-catalog-wrapper');
+  if (selector) selector.classList.remove('hidden');
+  if (catalog) catalog.classList.add('hidden');
+
+  const nodeSlug = (AppState.activeNodeId || 'nodo-lomaverde').replace(/^nodo-/, '');
+  const nodeLabel = document.getElementById('tierra-selector-node-label');
+  if (nodeLabel) {
+    const nodeName = AppState.activeNodeId === 'nodo-lucila' ? 'La Lucila' : 'Loma Verde';
+    nodeLabel.innerText = 'Elemento Tierra · Red Comunitaria ' + nodeName;
+  }
+  const lunarUrlLabel = document.getElementById('tierra-lunar-url-label');
+  if (lunarUrlLabel) lunarUrlLabel.innerText = '/' + nodeSlug + '/tierra/luanar';
+  const semanalUrlLabel = document.getElementById('tierra-semanal-url-label');
+  if (semanalUrlLabel) semanalUrlLabel.innerText = '/' + nodeSlug + '/tierra/semanal';
+
+  const targetPath = '/' + nodeSlug + '/tierra';
+  if (updateUrl && window.history) {
+    try {
+      const stateObj = { view: 'tierra', tierraMode: null, nodeId: AppState.activeNodeId, circuloId: null };
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState(stateObj, '', targetPath);
+      } else {
+        window.history.replaceState(stateObj, '', targetPath);
+      }
+    } catch (e) {}
+  }
+}
+
 // --- NAVEGACIÓN Y VISTAS ---
 // --- NAVEGACIÓN Y VISTAS ---
 // --- NAVEGACIÓN Y VISTAS ---
@@ -803,9 +896,20 @@ function navigateTo(viewName, updateHistory = true) {
           targetPath = '/circulo/' + cSlug;
           stateObj = { view: 'tierra', nodeId: AppState.activeNodeId, circuloId: activeC.id };
         } else {
-          targetPath = '/nodo/' + nodeSlug;
-          stateObj = { view: 'tierra', nodeId: AppState.activeNodeId, circuloId: null };
+          if (AppState.tierraSubMode === 'lunar') {
+            targetPath = '/' + nodeSlug + '/tierra/luanar';
+            stateObj = { view: 'tierra', tierraMode: 'lunar', nodeId: AppState.activeNodeId, circuloId: null };
+          } else if (AppState.tierraSubMode === 'semanal') {
+            targetPath = '/' + nodeSlug + '/tierra/semanal';
+            stateObj = { view: 'tierra', tierraMode: 'semanal', nodeId: AppState.activeNodeId, circuloId: null };
+          } else {
+            targetPath = '/' + nodeSlug + '/tierra';
+            stateObj = { view: 'tierra', tierraMode: null, nodeId: AppState.activeNodeId, circuloId: null };
+          }
         }
+      } else if (['agua', 'fuego', 'aire', 'eter'].includes(viewName)) {
+        targetPath = '/' + nodeSlug + '/' + viewName;
+        stateObj = { view: viewName, nodeId: AppState.activeNodeId, circuloId: null };
       } else {
         targetPath = '/nodo/' + nodeSlug;
         stateObj = { view: viewName, nodeId: AppState.activeNodeId, circuloId: null };
@@ -853,6 +957,11 @@ function navigateTo(viewName, updateHistory = true) {
   } else if (viewName === 'circulos') {
     renderCirculosView();
   } else if (viewName === 'tierra') {
+    if (!AppState.tierraSubMode) {
+      returnToTierraSelector(false);
+    } else {
+      selectTierraModalidad(AppState.tierraSubMode, false);
+    }
     switchTierraTab('tienda');
     renderOrderCatalog();
     renderFloatingCart();
@@ -6477,6 +6586,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Detección de rutas limpias para los 5 Elementos (/lomaverde/tierra, /lomaverde/tierra/luanar, /lomaverde/agua, etc.)
+  let requestedElementView = null;
+  let requestedTierraMode = null;
+  const knownNodesList = ['lomaverde', 'nodo-lomaverde', 'lucila', 'nodo-lucila', 'cooperativa', 'chasqui', 'nodo-cooperativa'];
+  const knownElementsList = ['tierra', 'agua', 'fuego', 'aire', 'eter'];
+
+  if (knownNodesList.includes(pathParts[0])) {
+    pathNodo = pathParts[0].startsWith('nodo-') ? pathParts[0] : ('nodo-' + pathParts[0]);
+    if (knownElementsList.includes(pathParts[1])) {
+      requestedElementView = pathParts[1];
+      if (pathParts[1] === 'tierra' && pathParts[2]) {
+        requestedTierraMode = pathParts[2];
+      }
+    }
+  } else if (knownElementsList.includes(pathParts[0])) {
+    requestedElementView = pathParts[0];
+    if (pathParts[0] === 'tierra' && pathParts[1]) {
+      requestedTierraMode = pathParts[1];
+    }
+  }
+
+  // Parámetros query de respaldo (ej. redirección desde 404.html o server.py)
+  if (!requestedElementView && urlParams.get('view') && knownElementsList.includes(urlParams.get('view').toLowerCase())) {
+    requestedElementView = urlParams.get('view').toLowerCase();
+  }
+  if (!requestedTierraMode && urlParams.get('modo')) {
+    requestedTierraMode = urlParams.get('modo').toLowerCase();
+  }
+  if (urlParams.get('nodo')) {
+    const rawN = urlParams.get('nodo').toLowerCase();
+    pathNodo = rawN.startsWith('nodo-') ? rawN : ('nodo-' + rawN);
+  }
+
   const circuloParam = urlParams.get('c') || urlParams.get('circulo') || pathCirculo || (window.location.hash.includes('c=') ? window.location.hash.split('c=')[1] : null) || (window.location.hash.includes('circulo=') ? window.location.hash.split('circulo=')[1] : null);
   const isCirculosPilot = urlParams.has('circulos') || urlParams.get('seccion') === 'circulos' || window.location.hash === '#circulos';
   const nodoParam = urlParams.get('nodo') || pathNodo;
@@ -6542,6 +6684,32 @@ document.addEventListener('DOMContentLoaded', () => {
     renderOrderCatalog();
 
     handleDirectCajonOpening(cajonParam, shareParam);
+    return;
+  }
+
+  // Si se solicita directamente uno de los 5 Elementos por URL (/lomaverde/tierra, /lomaverde/tierra/luanar, etc.)
+  if (requestedElementView) {
+    sessionStorage.setItem('elementales_authenticated', 'true');
+    if (pathNodo) {
+      AppState.activeNodeId = pathNodo;
+      localStorage.setItem('elementales_active_node', pathNodo);
+    }
+    updateRoleUI();
+    updateNodeUI();
+
+    if (requestedElementView === 'tierra') {
+      if (requestedTierraMode === 'luanar' || requestedTierraMode === 'lunar') {
+        selectTierraModalidad('lunar', true);
+      } else if (requestedTierraMode === 'semanal') {
+        selectTierraModalidad('semanal', true);
+      } else {
+        returnToTierraSelector(true);
+      }
+      navigateTo('tierra', true);
+    } else {
+      navigateTo(requestedElementView, true);
+    }
+    if (typeof updateHeaderUI === 'function') updateHeaderUI();
     return;
   }
 
@@ -6626,6 +6794,13 @@ window.addEventListener('popstate', (e) => {
         CirculosManager.setActiveCircleId(null);
       }
     }
+    if (state.view === 'tierra') {
+      if (state.tierraMode) {
+        selectTierraModalidad(state.tierraMode, false);
+      } else {
+        returnToTierraSelector(false);
+      }
+    }
     navigateTo(state.view, false);
     if (state.view === 'landing') {
       selectLandingNode(AppState.activeNodeId || 'nodo-lomaverde');
@@ -6644,6 +6819,27 @@ window.addEventListener('popstate', (e) => {
   }
 
   const parts = path.split('/');
+
+  // Rutas de 5 Elementos (/lomaverde/tierra, /lomaverde/tierra/luanar, /lomaverde/agua, etc.)
+  const popElements = ['tierra', 'agua', 'fuego', 'aire', 'eter'];
+  const popNodes = ['lomaverde', 'nodo-lomaverde', 'lucila', 'nodo-lucila', 'cooperativa', 'chasqui'];
+  if (popNodes.includes(parts[0]) && parts[1] && popElements.includes(parts[1])) {
+    const matchedNode = parts[0].startsWith('nodo-') ? parts[0] : ('nodo-' + parts[0]);
+    AppState.activeNodeId = matchedNode;
+    localStorage.setItem('elementales_active_node', matchedNode);
+    updateNodeUI();
+    if (parts[1] === 'tierra') {
+      if (parts[2] === 'luanar' || parts[2] === 'lunar') {
+        selectTierraModalidad('lunar', false);
+      } else if (parts[2] === 'semanal') {
+        selectTierraModalidad('semanal', false);
+      } else {
+        returnToTierraSelector(false);
+      }
+    }
+    navigateTo(parts[1], false);
+    return;
+  }
 
   // Rutas con prefijo /nodo/...
   if (parts[0] === 'nodo' && parts[1]) {

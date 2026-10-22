@@ -1041,6 +1041,291 @@
       </div>
     </div>
 
+    <!-- ========================================================================= -->
+    <!-- PANTALLA PRINCIPAL DE SELECCIÓN: COMPRA LUNAR vs COMPRA SEMANAL          -->
+    <!-- ========================================================================= -->
+    <div id="tierra-selector-screen" class="tierra-selector-screen mb-10 animate-fade-in">
+      
+      <!-- Encabezado de Selección -->
+      <div class="text-center max-w-2xl mx-auto mb-8 pt-2">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#edf3e3] border border-[#8ca15d]/40 text-[#556930] text-xs font-bold mb-3 shadow-2xs">
+          <span>🌱</span>
+          <span id="tierra-selector-node-label">Elemento Tierra · Red Comunitaria Loma Verde</span>
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-black text-stone-900 font-heading tracking-tight">
+          Elegí tu Modalidad de Compra
+        </h2>
+        <p class="text-xs sm:text-sm text-stone-600 mt-2 leading-relaxed max-w-xl mx-auto">
+          Dos ritmos sagrados para nutrir a la familia con alimentos agroecológicos vivos, al costo cooperativo y de cercanía.
+        </p>
+      </div>
+
+      <!-- Cuadrícula de las 2 Opciones (Lunar Arriba, Semanal Abajo) -->
+      <div class="grid grid-cols-1 gap-6 max-w-3xl mx-auto">
+
+        <!-- 1. COMPRA LUNAR (DIBUJO DE LA LUNA A LA IZQUIERDA, TEXTO A LA DERECHA) -->
+        <div 
+          onclick="selectTierraModalidad('lunar')"
+          class="group relative rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-[#12131c] via-[#1a1b2a] to-[#12111d] text-white border-2 border-indigo-400/40 hover:border-indigo-400 shadow-xl hover:shadow-2xl hover:shadow-indigo-950/50 transition-all duration-300 cursor-pointer flex flex-col sm:flex-row items-center gap-6 sm:gap-8 overflow-hidden"
+          title="Ingresar a la Compra Lunar"
+        >
+          <!-- Resplandor místico de fondo -->
+          <div class="absolute -right-20 -top-20 w-64 h-64 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none group-hover:bg-indigo-500/25 transition-all"></div>
+          <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-slate-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          <!-- LADO IZQUIERDO: DIBUJO ILUSTRATIVO DE LA LUNA -->
+          <div class="shrink-0 w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-gradient-to-br from-[#0c0d14] via-[#161826] to-[#1a1c2e] p-2 flex items-center justify-center border border-indigo-500/30 shadow-2xl group-hover:scale-105 group-hover:border-indigo-400 transition-all relative">
+            <svg class="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(165,180,252,0.4)]" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Halo exterior de la Luna -->
+              <circle cx="80" cy="80" r="70" fill="url(#moonAura)" opacity="0.45" />
+              <!-- Círculo lunar principal -->
+              <circle cx="80" cy="80" r="54" fill="url(#moonBody)" stroke="#c7d2fe" stroke-width="1.5" />
+              <!-- Sombra creciente / fase lunar artística -->
+              <path d="M80 26C98 42 108 60 108 80C108 100 98 118 80 134C109.823 134 134 109.823 134 80C134 50.1766 109.823 26 80 26Z" fill="#1e1b4b" opacity="0.35" />
+              <!-- Cráteres lunares detallados con sombras y luces -->
+              <ellipse cx="64" cy="62" rx="9" ry="8" fill="#94a3b8" opacity="0.45" />
+              <ellipse cx="63" cy="61" rx="8" ry="7" fill="#64748b" opacity="0.35" />
+              <circle cx="62" cy="60" r="2" fill="#f8fafc" opacity="0.6" />
+
+              <ellipse cx="94" cy="74" rx="11" ry="9" fill="#94a3b8" opacity="0.4" />
+              <ellipse cx="93" cy="73" rx="10" ry="8" fill="#64748b" opacity="0.3" />
+
+              <circle cx="72" cy="98" r="7" fill="#94a3b8" opacity="0.4" />
+              <circle cx="71" cy="97" r="6" fill="#64748b" opacity="0.3" />
+
+              <circle cx="52" cy="82" r="5" fill="#94a3b8" opacity="0.35" />
+              <circle cx="98" cy="52" r="6" fill="#94a3b8" opacity="0.35" />
+              <circle cx="82" cy="42" r="3.5" fill="#94a3b8" opacity="0.35" />
+              
+              <!-- Estrellas y destellos celestiales alrededor -->
+              <path d="M30 40L32 46L38 48L32 50L30 56L28 50L22 48L28 46Z" fill="#fef08a" opacity="0.8" />
+              <path d="M128 32L129.5 37L134.5 38.5L129.5 40L128 45L126.5 40L121.5 38.5L126.5 37Z" fill="#e0e7ff" opacity="0.85" />
+              <path d="M132 118L133.5 122L137.5 123.5L133.5 125L132 129L130.5 125L126.5 123.5L130.5 122Z" fill="#fef08a" opacity="0.75" />
+              <circle cx="24" cy="110" r="1.5" fill="#ffffff" opacity="0.7" />
+              <circle cx="140" cy="75" r="1.5" fill="#ffffff" opacity="0.8" />
+              <circle cx="38" cy="130" r="1.2" fill="#c7d2fe" opacity="0.7" />
+
+              <defs>
+                <radialGradient id="moonAura" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(80 80) rotate(90) scale(70)">
+                  <stop stop-color="#818cf8" stop-opacity="0.6"/>
+                  <stop offset="0.6" stop-color="#4f46e5" stop-opacity="0.2"/>
+                  <stop offset="1" stop-color="#312e81" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="moonBody" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(68 64) rotate(52) scale(68)">
+                  <stop stop-color="#ffffff"/>
+                  <stop offset="0.35" stop-color="#f1f5f9"/>
+                  <stop offset="0.7" stop-color="#cbd5e1"/>
+                  <stop offset="1" stop-color="#94a3b8"/>
+                </radialGradient>
+              </defs>
+            </svg>
+          </div>
+
+          <!-- LADO DERECHO: TEXTO COMPRA LUNAR -->
+          <div class="flex-1 text-center sm:text-left">
+            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1.5">
+              <span class="text-[10px] font-black uppercase tracking-widest text-indigo-300 bg-indigo-950/80 px-2.5 py-0.5 rounded-full border border-indigo-400/40 font-mono-code">
+                🌕 CICLO ASTRONÓMICO · RED ELEMENTALES
+              </span>
+              <span class="text-[10px] font-black text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-400/30">
+                -25% AHORRO DE RED
+              </span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-black text-white font-heading tracking-tight group-hover:text-amber-200 transition-colors">
+              Compra Lunar
+            </h3>
+
+            <p class="text-xs sm:text-sm text-stone-300 mt-2 leading-relaxed">
+              Compras comunitarias organizadas al costo por ciclo de luna nueva a luna llena. Abastecimiento cooperativo de alimentos no perecederos: harinas integrales, legumbres, miel pura de monte, aceites agroecológicos, yerbas orgánicas y frutos secos.
+            </p>
+
+            <div class="mt-3 flex flex-wrap items-center justify-center sm:justify-start gap-2 text-[11px] text-indigo-200 font-medium">
+              <span class="flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-xl border border-white/10">📦 Pedidos al Costo Base</span>
+              <span class="flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-xl border border-white/10">🌾 Almacén & Granos</span>
+              <span class="flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-xl border border-white/10">🗓️ Retiro Mensual Programado</span>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-center sm:justify-between">
+              <span class="text-xs text-stone-400 hidden sm:inline font-mono" id="tierra-lunar-url-label">/lomaverde/tierra/luanar</span>
+              <span class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-indigo-600 group-hover:bg-indigo-500 text-white font-black text-xs shadow-md transition-all group-hover:translate-x-1">
+                <span>Ingresar a la Compra Lunar</span>
+                <span>→</span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- 2. COMPRA SEMANAL (IMAGEN DEL SOL A LA IZQUIERDA, TEXTO A LA DERECHA) -->
+        <div 
+          onclick="selectTierraModalidad('semanal')"
+          class="group relative rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-[#fffdf7] via-[#fef9ec] to-[#fef0cf] text-stone-900 border-2 border-amber-300 hover:border-amber-500 shadow-xl hover:shadow-2xl hover:shadow-amber-200/50 transition-all duration-300 cursor-pointer flex flex-col sm:flex-row items-center gap-6 sm:gap-8 overflow-hidden"
+          title="Ingresar a la Compra Semanal"
+        >
+          <!-- Resplandor solar de fondo -->
+          <div class="absolute -right-20 -top-20 w-64 h-64 bg-amber-400/20 rounded-full blur-3xl pointer-events-none group-hover:bg-amber-400/30 transition-all"></div>
+          <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-orange-300/15 rounded-full blur-3xl pointer-events-none"></div>
+
+          <!-- LADO IZQUIERDO: IMAGEN ILUSTRATIVA DEL SOL -->
+          <div class="shrink-0 w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-gradient-to-br from-[#fffbeb] via-[#fef3c7] to-[#fed7aa] p-2 flex items-center justify-center border-2 border-amber-300 shadow-xl group-hover:scale-105 group-hover:border-amber-500 transition-all relative">
+            <svg class="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(245,158,11,0.45)]" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Halo exterior del Sol -->
+              <circle cx="80" cy="80" r="70" fill="url(#sunAura)" opacity="0.5" />
+              
+              <!-- Rayos solares geométricos y radiantes -->
+              <g stroke="#d97706" stroke-width="2" stroke-linecap="round">
+                <!-- Rayos cardinales e intercardinales principales -->
+                <path d="M80 12V26" stroke="#b45309" stroke-width="3.5" />
+                <path d="M80 134V148" stroke="#b45309" stroke-width="3.5" />
+                <path d="M12 80H26" stroke="#b45309" stroke-width="3.5" />
+                <path d="M134 80H148" stroke="#b45309" stroke-width="3.5" />
+
+                <!-- Diagonales -->
+                <path d="M32 32L42 42" stroke="#d97706" stroke-width="3" />
+                <path d="M118 118L128 128" stroke="#d97706" stroke-width="3" />
+                <path d="M32 128L42 118" stroke="#d97706" stroke-width="3" />
+                <path d="M118 42L128 32" stroke="#d97706" stroke-width="3" />
+
+                <!-- Rayos secundarios intermedios -->
+                <path d="M54 22L60 34" stroke="#f59e0b" stroke-width="2.5" />
+                <path d="M106 22L100 34" stroke="#f59e0b" stroke-width="2.5" />
+                <path d="M54 138L60 126" stroke="#f59e0b" stroke-width="2.5" />
+                <path d="M106 138L100 126" stroke="#f59e0b" stroke-width="2.5" />
+
+                <path d="M22 54L34 60" stroke="#f59e0b" stroke-width="2.5" />
+                <path d="M22 106L34 100" stroke="#f59e0b" stroke-width="2.5" />
+                <path d="M138 54L126 60" stroke="#f59e0b" stroke-width="2.5" />
+                <path d="M138 106L126 100" stroke="#f59e0b" stroke-width="2.5" />
+              </g>
+
+              <!-- Corona solar exterior decorativa -->
+              <circle cx="80" cy="80" r="48" fill="url(#sunCorona)" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 3" />
+              
+              <!-- Disco central del Sol -->
+              <circle cx="80" cy="80" r="38" fill="url(#sunBody)" stroke="#f59e0b" stroke-width="2" />
+              
+              <!-- Anillos de energía y geometría solar interna -->
+              <circle cx="80" cy="80" r="26" fill="url(#sunCenter)" stroke="#d97706" stroke-width="1" opacity="0.8" />
+              <circle cx="80" cy="80" r="14" fill="#fef08a" opacity="0.9" />
+
+              <!-- Destellos de luz viva -->
+              <circle cx="70" cy="68" r="5" fill="#ffffff" opacity="0.65" />
+              <circle cx="92" cy="74" r="3" fill="#ffffff" opacity="0.5" />
+
+              <defs>
+                <radialGradient id="sunAura" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(80 80) rotate(90) scale(70)">
+                  <stop stop-color="#f59e0b" stop-opacity="0.6"/>
+                  <stop offset="0.6" stop-color="#fbbf24" stop-opacity="0.25"/>
+                  <stop offset="1" stop-color="#fef08a" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="sunCorona" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(80 80) scale(48)">
+                  <stop stop-color="#fef08a" stop-opacity="0.4"/>
+                  <stop offset="1" stop-color="#f59e0b" stop-opacity="0.15"/>
+                </radialGradient>
+                <radialGradient id="sunBody" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(72 68) scale(44)">
+                  <stop stop-color="#fffbeb"/>
+                  <stop offset="0.3" stop-color="#fef08a"/>
+                  <stop offset="0.75" stop-color="#f59e0b"/>
+                  <stop offset="1" stop-color="#d97706"/>
+                </radialGradient>
+                <radialGradient id="sunCenter" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(76 74) scale(26)">
+                  <stop stop-color="#ffffff"/>
+                  <stop offset="0.4" stop-color="#fef08a"/>
+                  <stop offset="1" stop-color="#f59e0b"/>
+                </radialGradient>
+              </defs>
+            </svg>
+          </div>
+
+          <!-- LADO DERECHO: TEXTO COMPRA SEMANAL -->
+          <div class="flex-1 text-center sm:text-left">
+            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1.5">
+              <span class="text-[10px] font-black uppercase tracking-widest text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono-code">
+                ☀️ COSECHA DE LA SEMANA · HUERTA VIVA
+              </span>
+              <span class="text-[10px] font-black text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300">
+                -10% SOCIOS CSC
+              </span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-black text-stone-900 font-heading tracking-tight group-hover:text-amber-800 transition-colors">
+              Compra Semanal
+            </h3>
+
+            <p class="text-xs sm:text-sm text-stone-700 mt-2 leading-relaxed">
+              Cosecha viva semanal de quinteros y huertas agroecológicas de cercanía. Bolsones de verduras frescas de estación, hortalizas de hoja recién cortadas, frutas, huevos pastoriles de campo, panificados de masa madre y lácteos artesanales.
+            </p>
+
+            <div class="mt-3 flex flex-wrap items-center justify-center sm:justify-start gap-2 text-[11px] text-amber-900 font-medium">
+              <span class="flex items-center gap-1 bg-amber-100/70 px-2.5 py-1 rounded-xl border border-amber-200">🥬 Huerta & Frescos</span>
+              <span class="flex items-center gap-1 bg-amber-100/70 px-2.5 py-1 rounded-xl border border-amber-200">🧺 Bolsones de Estación</span>
+              <span class="flex items-center gap-1 bg-amber-100/70 px-2.5 py-1 rounded-xl border border-amber-200">🚚 Entregas Semanales</span>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-amber-200/60 flex items-center justify-center sm:justify-between">
+              <span class="text-xs text-stone-500 hidden sm:inline font-mono" id="tierra-semanal-url-label">/lomaverde/tierra/semanal</span>
+              <span class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#1db954] group-hover:bg-[#16a34a] text-white font-black text-xs shadow-md transition-all group-hover:translate-x-1">
+                <span>Ingresar a la Compra Semanal</span>
+                <span>→</span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- CONTENEDOR DEL CATÁLOGO TIERRA (VISIBLE AL ELEGIR MODALIDAD LUNAR/SEMANAL) -->
+    <!-- ========================================================================= -->
+    <div id="tierra-catalog-wrapper" class="tierra-catalog-wrapper hidden">
+
+      <!-- Barra Superior de Modalidad Activa con Botón de Regreso al Selector -->
+      <div id="tierra-active-mode-banner" class="mb-5 p-4 rounded-3xl bg-gradient-to-r from-[#fcf4f0] via-white to-[#f7f4ee] border-2 border-[#eddcd5] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+        <div class="flex items-center gap-3">
+          <div id="tierra-active-mode-icon" class="w-11 h-11 rounded-2xl bg-[#a6634f] text-white flex items-center justify-center text-xl shrink-0 shadow-xs">
+            🌕
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-[#a6634f] bg-[#fcf4f0] px-2.5 py-0.5 rounded-full border border-[#eddcd5]">
+                MODALIDAD ACTIVA
+              </span>
+              <h3 id="tierra-active-mode-title" class="text-base sm:text-lg font-black text-stone-900 font-heading">
+                Compra Lunar · Almacén y Ciclos Comunitarios
+              </h3>
+            </div>
+            <p id="tierra-active-mode-desc" class="text-xs text-stone-600 mt-0.5">
+              Precios al costo de red (-25%) para compras programadas y alimentos no perecederos.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
+          <button 
+            type="button" 
+            id="tierra-other-mode-btn"
+            class="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+          >
+            <span>☀️</span>
+            <span>Pasar a Compra Semanal</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="returnToTierraSelector()" 
+            class="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            title="Volver a la pantalla de selección"
+          >
+            <span>←</span>
+            <span>Elegir Otra Modalidad</span>
+          </button>
+        </div>
+      </div>
+
     <!-- BANNER DESTACADO FRUTILLAS FINCA ECOTIPA (ESTÉTICA ELEMENTALES) -->
     <div class="mb-5 p-4 rounded-3xl bg-gradient-to-r from-[#fcf4f0] via-[#f7f9f2] to-[#edf3e3] border-2 border-[#eddcd5] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
       <div class="flex items-center gap-3">
@@ -1257,7 +1542,11 @@
         </div>
       </div>
     </div>
+    <!-- /#tierra-panel-huerta -->
   </div>
+  <!-- /#tierra-catalog-wrapper -->
+</div>
+<!-- /#view-tierra -->
 
   <!-- ========================================================================= -->
   <!-- 0.C VISTA: ELEMENTO AGUA (LINKEDIN BARRIAL & COMUNIDAD DE OFICIOS) -->

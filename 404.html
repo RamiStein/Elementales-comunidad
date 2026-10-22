@@ -6,7 +6,7 @@
   <title>Elementales | Red Comunitaria</title>
   <script>
     (function() {
-      // Enrutador inteligente instantáneo para GitHub Pages y URLs limpias (/circulo/..., /nodo/..., /cajon/..., etc.)
+      // Enrutador inteligente instantáneo para GitHub Pages y URLs limpias (/circulo/..., /nodo/..., /lomaverde/tierra/..., etc.)
       var fullPath = (window.location.pathname || '').replace(/^\/+|\/+$/g, '');
       var search = window.location.search || '';
       var hash = window.location.hash || '';
@@ -14,15 +14,20 @@
       var parts = fullPath.split('/');
       var first = (parts[0] || '').toLowerCase();
       var second = (parts[1] || '').toLowerCase();
+      var third = (parts[2] || '').toLowerCase();
       var queryJoin = search ? '&' + search.replace(/^\?/, '') : '';
 
-      // Rutas para Landings Exclusivas de Gestión y Miembro Elemental
+      // Rutas para Landings Exclusivas de Gestión, Miembro Elemental y Prosumidores
       if (first === 'gestionelemental' || first === 'gestionelemental.html') {
         window.location.replace('/gestionelemental.html' + (search || '') + (hash || ''));
         return;
       }
       if (first === 'miembroelemental' || first === 'miembroelemental.html') {
         window.location.replace('/miembroelemental.html' + (search || '') + (hash || ''));
+        return;
+      }
+      if (first === 'prosumidores' || first === 'prosumidores.html') {
+        window.location.replace('/prosumidores.html' + (search || '') + (hash || ''));
         return;
       }
 
@@ -33,7 +38,7 @@
         window.location.replace('/frutilla.html' + finalQ + (hash || ''));
         return;
       }
-      if ((first === 'circulo' || first === 'c') && (parts[2] || '').toLowerCase() === 'frutilla') {
+      if ((first === 'circulo' || first === 'c') && third === 'frutilla') {
         var finalQ = '?circulo=' + encodeURIComponent(second) + (search ? '&' + search.replace(/^\?/, '') : '');
         window.location.replace('/frutilla.html' + finalQ + (hash || ''));
         return;
@@ -41,6 +46,24 @@
       if (second === 'frutilla') {
         var finalQ = '?circulo=' + encodeURIComponent(first) + (search ? '&' + search.replace(/^\?/, '') : '');
         window.location.replace('/frutilla.html' + finalQ + (hash || ''));
+        return;
+      }
+
+      // Rutas de 5 Elementos (/lomaverde/tierra, /lomaverde/tierra/luanar, /lomaverde/agua, etc.)
+      var validNodes = ['lomaverde', 'nodo-lomaverde', 'lucila', 'nodo-lucila', 'cooperativa', 'chasqui'];
+      var validElements = ['tierra', 'agua', 'fuego', 'aire', 'eter'];
+
+      if (validNodes.indexOf(first) !== -1 && validElements.indexOf(second) !== -1) {
+        var modoParam = third ? '&modo=' + encodeURIComponent(third) : '';
+        localStorage.setItem('elementales_active_node', first.indexOf('nodo-') === 0 ? first : 'nodo-' + first);
+        window.location.replace('/?nodo=' + encodeURIComponent(first) + '&view=' + encodeURIComponent(second) + modoParam + queryJoin + (hash || ''));
+        return;
+      }
+
+      if (validElements.indexOf(first) !== -1) {
+        var modoParam = second ? '&modo=' + encodeURIComponent(second) : '';
+        localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+        window.location.replace('/?nodo=lomaverde&view=' + encodeURIComponent(first) + modoParam + queryJoin + (hash || ''));
         return;
       }
 
@@ -76,7 +99,7 @@
         localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
         window.location.replace('/?nodo=lomaverde' + (search ? '&' + search.replace(/^\?/, '') : '') + (hash || ''));
         return;
-      } else if (first && !first.includes('.')) {
+      } else if (first && first.indexOf('.') === -1) {
         // Círculo directo (ej: /los-robles)
         window.location.replace('/?c=' + encodeURIComponent(first) + queryJoin + (hash || ''));
         return;

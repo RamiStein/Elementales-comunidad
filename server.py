@@ -121,6 +121,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.path = f"/gestionelemental.html?{query_part}" if query_part else "/gestionelemental.html"
             elif first in ['miembroelemental', 'miembroelemental.html']:
                 self.path = f"/miembroelemental.html?{query_part}" if query_part else "/miembroelemental.html"
+            elif first in ['prosumidores', 'prosumidores.html']:
+                self.path = f"/prosumidores.html?{query_part}" if query_part else "/prosumidores.html"
+            elif first in ['lomaverde', 'nodo-lomaverde', 'lucila', 'nodo-lucila', 'cooperativa', 'chasqui'] and second in ['tierra', 'agua', 'fuego', 'aire', 'eter']:
+                modo = f"&modo={third}" if third else ""
+                self.path = f"/?nodo={first}&view={second}{modo}&{query_part}" if query_part else f"/?nodo={first}&view={second}{modo}"
+            elif first in ['tierra', 'agua', 'fuego', 'aire', 'eter']:
+                modo = f"&modo={second}" if second else ""
+                self.path = f"/?nodo=lomaverde&view={first}{modo}&{query_part}" if query_part else f"/?nodo=lomaverde&view={first}{modo}"
             elif first == 'frutilla':
                 circ = second if second else ''
                 q = f"circulo={circ}" if circ else ""
