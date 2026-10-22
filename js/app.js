@@ -399,6 +399,12 @@ const AppState = {
   },
 
   getActiveProducts() {
+    if (typeof VrdeSync !== 'undefined' && this.tierraSubMode) {
+      const vrdeProds = VrdeSync.getActiveProductsForMode(this.tierraSubMode);
+      if (Array.isArray(vrdeProds) && vrdeProds.length > 0) {
+        return vrdeProds;
+      }
+    }
     return (typeof CAJONES_CENTRAL_COOPERATIVA !== 'undefined') ? CAJONES_CENTRAL_COOPERATIVA : [];
   },
 
@@ -696,9 +702,9 @@ const AppState = {
 // --- MODALIDADES DE COMPRA DEL ELEMENTO TIERRA (LUNAR vs SEMANAL) ---
 function selectTierraModalidad(mode, updateUrl = true) {
   if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
-  const normalizedMode = (mode === 'luanar' || mode === 'lunar') ? 'lunar' : 'semanal';
+  const normalizedMode = (mode === 'luanar' || mode === 'lunar') ? 'lunar' : ((mode === 'semanal') ? 'semanal' : mode);
   AppState.tierraSubMode = normalizedMode;
-  AppState.catalogMode = normalizedMode;
+  AppState.catalogMode = (normalizedMode === 'lunar') ? 'lunar' : 'semanal';
 
   // Ocultar selector y revelar catálogo
   const selector = document.getElementById('tierra-selector-screen');
@@ -710,7 +716,13 @@ function selectTierraModalidad(mode, updateUrl = true) {
   const iconEl = document.getElementById('tierra-active-mode-icon');
   const titleEl = document.getElementById('tierra-active-mode-title');
   const descEl = document.getElementById('tierra-active-mode-desc');
-  if (normalizedMode === 'lunar') {
+
+  let camp = (typeof VrdeSync !== 'undefined') ? VrdeSync.getCampaign(normalizedMode) : null;
+  if (camp) {
+    if (iconEl) iconEl.innerHTML = camp.icono || (normalizedMode === 'lunar' ? '🌕' : '☀️');
+    if (titleEl) titleEl.innerText = camp.nombre;
+    if (descEl) descEl.innerText = camp.descripcion || 'Difundí la compra a tus familiares y amigos';
+  } else if (normalizedMode === 'lunar') {
     if (iconEl) iconEl.innerHTML = '🌕';
     if (titleEl) titleEl.innerText = 'Compra Lunar - Ciclos Comunitarios';
     if (descEl) descEl.innerText = 'Difundí la compra a tus familiares y amigos';
@@ -750,6 +762,10 @@ function returnToTierraSelector(updateUrl = true) {
   const catalog = document.getElementById('tierra-catalog-wrapper');
   if (selector) selector.classList.remove('hidden');
   if (catalog) catalog.classList.add('hidden');
+
+  if (typeof renderTierraCampaignsCards === 'function') {
+    renderTierraCampaignsCards();
+  }
 
   const nodeSlug = (AppState.activeNodeId || 'nodo-lomaverde').replace(/^nodo-/, '');
   const nodeLabel = document.getElementById('tierra-selector-node-label');
@@ -1084,9 +1100,15 @@ function renderOrderCatalog() {
     }
   }
 
-  // Renderizar filtros de categorías de cajones
+  // Renderizar filtros de categorías de alimentos dinámicos
   if (categoriesContainer) {
-    const activeCategories = ['Todos', 'Frutas Agroecológicas', 'Verduras & Huerta'];
+    const allProdsList = AppState.getActiveProducts();
+    const categoriesSet = new Set(['Todos']);
+    allProdsList.forEach(p => {
+      const c = p.categoria || p.category;
+      if (c) categoriesSet.add(c);
+    });
+    const activeCategories = Array.from(categoriesSet);
 
     if (!activeCategories.includes(AppState.activeCategory)) {
       AppState.activeCategory = 'Todos';
@@ -8716,4 +8738,357 @@ function sendConsolidatedToWhatsApp() {
   const cId = window.activeCirculoTableroId || (typeof CirculosManager !== 'undefined' ? CirculosManager.getActiveCircleId() : null);
   if (!cId) return;
   sendCircleOrderToWhatsApp(cId);
+}
+
+
+// =========================================================================
+// RENDERIZADO DINÁMICO DE COMPRAS ABIERTAS Y FUTURAS (VRDE CLUB SYNC)
+// =========================================================================
+function renderTierraCampaignsCards() {
+  if (typeof VrdeSync === 'undefined') return;
+  const campaigns = VrdeSync.getCampaigns();
+  const enabledCamps = campaigns.filter(c => c.habilitadoEnNodo !== false);
+  const nodeSlug = (AppState.activeNodeId || 'nodo-lomaverde').replace(/^nodo-/, '');
+
+  // 1. COMPRAS ABIERTAS
+  const abiertasGrid = document.getElementById('tierra-compras-abiertas-grid');
+  const abiertasBadge = document.getElementById('tierra-compras-abiertas-count-badge');
+  if (abiertasGrid) {
+    const abiertas = enabledCamps.filter(c => c.estado === 'abierta');
+    if (abiertasBadge) {
+      abiertasBadge.textContent = `● ${abiertas.length} Campañas Activas`;
+    }
+
+    if (abiertas.length === 0) {
+      abiertasGrid.innerHTML = `
+        <div class="col-span-full py-8 text-center bg-white border border-stone-200 rounded-3xl p-6">
+          <p class="text-stone-500 font-bold text-sm">No hay compras abiertas en este momento para este nodo.</p>
+        </div>
+      `;
+    } else {
+      abiertasGrid.innerHTML = abiertas.map(camp => {
+        if (camp.slug === 'lunar' || camp.tipo === 'lunar') {
+          return `
+            <div 
+              onclick="selectTierraModalidad('lunar')"
+              class="group relative rounded-3xl overflow-hidden border-2 border-indigo-400/50 hover:border-indigo-400 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-br from-[#121320] via-[#1b1a2e] to-[#141221] text-white min-h-[260px] cursor-pointer"
+              title="Ingresar a la Compra Lunar - Ciclos Comunitarios"
+            >
+              <div class="absolute -right-16 -top-16 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none group-hover:bg-indigo-500/30 transition-all"></div>
+              
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-950/90 border border-indigo-400/40 text-indigo-300 text-[11px] font-black uppercase tracking-wider shadow-sm">
+                    <span>🌕</span>
+                    <span>${escapeHtml(camp.badge || 'Luna Nueva a Luna Llena')}</span>
+                  </span>
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-400/50 text-emerald-300 text-[10px] font-bold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    Abierta Ahora
+                  </span>
+                </div>
+
+                <div class="flex items-start gap-4 mt-2">
+                  <div class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-[#0c0d14] via-[#161826] to-[#1a1c2e] p-1.5 flex items-center justify-center border border-indigo-500/30 shadow-md group-hover:scale-105 group-hover:border-indigo-400 transition-all text-3xl">
+                    🌕
+                  </div>
+                  <div>
+                    <h4 class="text-xl sm:text-2xl font-black text-white font-heading tracking-tight leading-snug group-hover:text-amber-200 transition-colors">
+                      ${escapeHtml(camp.nombre)}
+                    </h4>
+                    <span class="text-xs font-semibold text-indigo-300 block">${escapeHtml(camp.subtitulo || 'Ciclos Comunitarios')}</span>
+                  </div>
+                </div>
+
+                <p class="text-xs text-stone-300 mt-3 leading-relaxed">
+                  ${escapeHtml(camp.descripcion || '')}
+                </p>
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-white/15 space-y-2 text-xs">
+                <div class="flex items-center gap-2 text-indigo-200 font-medium">
+                  <span class="shrink-0 text-sm">🌕</span>
+                  <span>Ciclo: <strong class="text-white font-black">${escapeHtml(camp.cierre || 'Abastecimiento programado')}</strong></span>
+                </div>
+                <div class="flex items-center gap-2 text-amber-200 font-medium">
+                  <span class="shrink-0 text-sm">📍</span>
+                  <span>Retiro: <strong class="text-white font-black">${escapeHtml(camp.entrega || 'Nodo Loma Verde')}</strong></span>
+                </div>
+                <div class="mt-3 pt-2 flex items-center justify-between">
+                  <span class="text-[11px] font-mono text-indigo-300/80">/${nodeSlug}/tierra/lunar</span>
+                  <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 group-hover:bg-indigo-500 text-white text-xs font-black shadow-md transition-all group-hover:translate-x-1">
+                    <span>Ingresar a la Compra Lunar</span>
+                    <span>→</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        if (camp.slug === 'frutilla' || camp.id === 'camp-frutilla') {
+          return `
+            <a 
+              href="${camp.url || 'frutilla.html'}" 
+              class="group relative rounded-3xl overflow-hidden border-2 border-rose-300 hover:border-rose-500 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between p-5 sm:p-6 bg-[#1a0f12] text-white min-h-[260px] text-decoration-none"
+              title="Ir a la Compra Comunitaria de Frutillas"
+            >
+              <div class="absolute inset-0 z-0">
+                <img 
+                  src="public/assets/frutillas_ecotipa.jpg" 
+                  alt="Frutillas" 
+                  class="w-full h-full object-cover opacity-50 group-hover:scale-105 group-hover:opacity-65 transition-all duration-500 filter brightness-90"
+                  onerror="this.style.display='none'"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-[#140b0d] via-[#1a0f12]/80 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-[#140b0d]/90 via-transparent to-transparent"></div>
+              </div>
+
+              <div class="relative z-10 flex items-center justify-between gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/90 text-white text-[11px] font-black uppercase tracking-wider shadow-sm backdrop-blur-xs">
+                  <span>🍓</span>
+                  <span>${escapeHtml(camp.badge || 'Finca Ecotipa')}</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-400/50 text-emerald-300 text-[10px] font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                  Abierta
+                </span>
+              </div>
+
+              <div class="relative z-10 mt-6">
+                <h4 class="text-xl sm:text-2xl font-black text-white font-heading tracking-tight leading-snug group-hover:text-rose-200 transition-colors">
+                  ${escapeHtml(camp.nombre)}
+                </h4>
+                <p class="text-xs text-stone-300 mt-1 line-clamp-2">
+                  ${escapeHtml(camp.descripcion || '')}
+                </p>
+
+                <div class="mt-4 pt-3 border-t border-white/15 space-y-2 text-xs">
+                  <div class="flex items-center gap-2 text-rose-200 font-medium">
+                    <span class="shrink-0 text-sm">⏰</span>
+                    <span>Cierre compra: <strong class="text-white font-black">${escapeHtml(camp.cierre || 'Consultar')}</strong></span>
+                  </div>
+                  <div class="flex items-center gap-2 text-emerald-200 font-medium">
+                    <span class="shrink-0 text-sm">🚚</span>
+                    <span>Entrega: <strong class="text-white font-black">${escapeHtml(camp.entrega || 'Loma Verde')}</strong></span>
+                  </div>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between">
+                  <span class="text-[11px] font-mono text-rose-300/80">${camp.url || '/frutilla.html'}</span>
+                  <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 group-hover:bg-rose-500 text-white text-xs font-black shadow-md transition-all group-hover:translate-x-1">
+                    <span>Sumarme al Cajón</span>
+                    <span>→</span>
+                  </span>
+                </div>
+              </div>
+            </a>
+          `;
+        }
+
+        return `
+          <div 
+            onclick="selectTierraModalidad('${camp.slug || 'semanal'}')"
+            class="group relative rounded-3xl overflow-hidden border-2 border-emerald-300 hover:border-emerald-500 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-br from-[#0e1d15] via-[#14261d] to-[#0c1811] text-white min-h-[260px] cursor-pointer"
+          >
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/90 border border-emerald-400/40 text-emerald-300 text-[11px] font-black uppercase tracking-wider shadow-sm">
+                  <span>${camp.icono || '🌾'}</span>
+                  <span>${escapeHtml(camp.badge || camp.origen || 'Compra Abierta')}</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-400/50 text-emerald-300 text-[10px] font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                  Abierta Ahora
+                </span>
+              </div>
+
+              <div class="flex items-start gap-4 mt-2">
+                <div class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-emerald-900/60 border border-emerald-500/30 flex items-center justify-center text-3xl shadow-md">
+                  ${camp.icono || '🌾'}
+                </div>
+                <div>
+                  <h4 class="text-xl sm:text-2xl font-black text-white font-heading tracking-tight leading-snug group-hover:text-emerald-200 transition-colors">
+                    ${escapeHtml(camp.nombre)}
+                  </h4>
+                  <span class="text-xs font-semibold text-emerald-300 block">${escapeHtml(camp.subtitulo || '')}</span>
+                </div>
+              </div>
+
+              <p class="text-xs text-stone-300 mt-3 leading-relaxed">
+                ${escapeHtml(camp.descripcion || '')}
+              </p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/15 space-y-2 text-xs">
+              <div class="flex items-center gap-2 text-emerald-200 font-medium">
+                <span class="shrink-0 text-sm">⏳</span>
+                <span>Cierre: <strong class="text-white font-black">${escapeHtml(camp.cierre || 'Consultar')}</strong></span>
+              </div>
+              <div class="flex items-center gap-2 text-emerald-200 font-medium">
+                <span class="shrink-0 text-sm">🚚</span>
+                <span>Entrega: <strong class="text-white font-black">${escapeHtml(camp.entrega || 'Loma Verde')}</strong></span>
+              </div>
+              <div class="mt-3 pt-2 flex items-center justify-between">
+                <span class="text-[11px] font-mono text-emerald-300/80">/${nodeSlug}/tierra/${camp.slug}</span>
+                <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 group-hover:bg-emerald-500 text-white text-xs font-black shadow-md transition-all group-hover:translate-x-1">
+                  <span>Ver alimentos</span>
+                  <span>→</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // 2. FUTURAS COMPRAS
+  const futurasGrid = document.getElementById('tierra-futuras-compras-grid');
+  const futurasBadge = document.getElementById('tierra-futuras-compras-count-badge');
+  if (futurasGrid) {
+    const futuras = enabledCamps.filter(c => c.estado === 'futura');
+    if (futurasBadge) {
+      futurasBadge.textContent = `🗓️ ${futuras.length} Próximas Fechas`;
+    }
+
+    if (futuras.length === 0) {
+      futurasGrid.innerHTML = `
+        <div class="col-span-full py-8 text-center bg-white border border-stone-200 rounded-3xl p-6">
+          <p class="text-stone-500 font-bold text-sm">No hay futuras compras programadas por el momento.</p>
+        </div>
+      `;
+    } else {
+      futurasGrid.innerHTML = futuras.map(camp => {
+        if (camp.slug === 'semanal' || camp.tipo === 'semanal') {
+          return `
+            <div 
+              onclick="selectTierraModalidad('semanal')"
+              class="group relative rounded-3xl p-5 sm:p-6 bg-gradient-to-br from-[#fffef9] via-[#fffbf0] to-[#fef6e2] border-2 border-amber-200 hover:border-amber-400 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[260px] cursor-pointer"
+              title="Ver detalles de la Compra Semanal"
+            >
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-black uppercase tracking-wider">
+                    <span>☀️</span>
+                    <span>${escapeHtml(camp.badge || 'Ciclo Semanal')}</span>
+                  </span>
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100/80 border border-amber-300 text-amber-800 text-[10px] font-bold">
+                    Próxima Apertura
+                  </span>
+                </div>
+
+                <div class="flex items-start gap-4 mt-2">
+                  <div class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-[#fffbeb] via-[#fef3c7] to-[#fed7aa] p-1.5 flex items-center justify-center border-2 border-amber-300 shadow-md group-hover:scale-105 group-hover:border-amber-500 transition-all text-3xl">
+                    ☀️
+                  </div>
+                  <div>
+                    <h4 class="text-xl sm:text-2xl font-black text-stone-900 font-heading tracking-tight leading-snug group-hover:text-amber-800 transition-colors">
+                      ${escapeHtml(camp.nombre)}
+                    </h4>
+                    <span class="text-xs font-semibold text-amber-800 block">${escapeHtml(camp.subtitulo || 'Huerta & Frescos')}</span>
+                  </div>
+                </div>
+
+                <p class="text-xs text-stone-600 mt-3 leading-relaxed">
+                  ${escapeHtml(camp.descripcion || '')}
+                </p>
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-amber-200/80 space-y-2 text-xs">
+                <div class="flex items-center gap-2 text-stone-700 font-medium">
+                  <span class="w-5 text-center text-sm">🚀</span>
+                  <span>Abre compra: <strong class="text-stone-900 font-black">${escapeHtml(camp.apertura || 'Sábado 12hs')}</strong></span>
+                </div>
+                <div class="flex items-center gap-2 text-stone-700 font-medium">
+                  <span class="w-5 text-center text-sm">⏳</span>
+                  <span>Cierra compra: <strong class="text-amber-900 font-black">${escapeHtml(camp.cierre || 'Domingo 00hs')}</strong></span>
+                </div>
+                <div class="pt-2 flex items-center justify-between text-[11px]">
+                  <span class="text-stone-400 font-mono">/${nodeSlug}/tierra/semanal</span>
+                  <span class="font-bold text-amber-800 group-hover:underline flex items-center gap-1">
+                    Ver productos →
+                  </span>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div 
+            onclick="selectTierraModalidad('${camp.slug || 'semanal'}')"
+            class="group relative rounded-3xl p-5 sm:p-6 bg-gradient-to-br from-[#f8fcf5] via-[#f1f8eb] to-[#e7f3dc] border-2 border-emerald-200 hover:border-emerald-400 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[260px] cursor-pointer"
+            title="Ver detalles de ${escapeHtml(camp.nombre)}"
+          >
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 text-[11px] font-black uppercase tracking-wider">
+                  <span>${camp.icono || '🥬'}</span>
+                  <span>${escapeHtml(camp.badge || 'Cosecha Barrial')}</span>
+                </span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100/80 border border-emerald-300 text-emerald-800 text-[10px] font-bold">
+                  Próxima Apertura
+                </span>
+              </div>
+
+              <div class="flex items-start gap-4 mt-2">
+                <div class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-emerald-50 border-2 border-emerald-300 flex items-center justify-center text-3xl shadow-xs group-hover:scale-105 transition-all">
+                  ${camp.icono || '🥬'}
+                </div>
+                <div>
+                  <h4 class="text-xl sm:text-2xl font-black text-stone-900 font-heading tracking-tight leading-snug group-hover:text-emerald-800 transition-colors">
+                    ${escapeHtml(camp.nombre)}
+                  </h4>
+                  <span class="text-xs font-semibold text-emerald-800 block">${escapeHtml(camp.subtitulo || '')}</span>
+                </div>
+              </div>
+
+              <p class="text-xs text-stone-600 mt-3 leading-relaxed">
+                ${escapeHtml(camp.descripcion || '')}
+              </p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-emerald-200/80 space-y-2 text-xs">
+              <div class="flex items-center gap-2 text-stone-700 font-medium">
+                <span class="w-5 text-center text-sm">⏳</span>
+                <span>Cierra compra: <strong class="text-emerald-900 font-black">${escapeHtml(camp.cierre || 'Consultar')}</strong></span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-700 font-medium">
+                <span class="w-5 text-center text-sm">🌱</span>
+                <span>Entrega: <strong class="text-stone-900 font-black">${escapeHtml(camp.entrega || 'Loma Verde')}</strong></span>
+              </div>
+              <div class="pt-2 flex items-center justify-between text-[11px]">
+                <span class="text-stone-400 font-mono">/${nodeSlug}/tierra/${camp.slug}</span>
+                <span class="font-bold text-emerald-800 group-hover:underline flex items-center gap-1">
+                  Sumarme al pedido →
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+}
+
+// Auto-sincronización con eventos de VRDE Club
+if (typeof window !== 'undefined') {
+  window.addEventListener('elementales_vrde_updated', () => {
+    if (typeof renderTierraCampaignsCards === 'function') {
+      renderTierraCampaignsCards();
+    }
+    if (typeof renderOrderCatalog === 'function' && AppState.tierraSubMode) {
+      renderOrderCatalog();
+    }
+  });
+
+  // Render inicial en carga
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      if (typeof renderTierraCampaignsCards === 'function') {
+        renderTierraCampaignsCards();
+      }
+    }, 100);
+  });
 }

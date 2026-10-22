@@ -1096,13 +1096,13 @@
               Compras abiertas
             </h3>
           </div>
-          <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+          <span id="tierra-compras-abiertas-count-badge" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
             ● 2 Campañas Activas
           </span>
         </div>
 
         <!-- Cuadrícula de tarjetas estéticas (Cards cuadradas / modulares) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+        <div id="tierra-compras-abiertas-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           
           <!-- 1. COMPRA LUNAR (Ciclos Comunitarios · Almacén al Costo de Red) -->
           <div 
@@ -1271,13 +1271,13 @@
               Futuras compras
             </h3>
           </div>
-          <span class="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
+          <span id="tierra-futuras-compras-count-badge" class="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
             🗓️ Próximas Fechas
           </span>
         </div>
 
         <!-- Cuadrícula de tarjetas estéticas cuadradas con la info -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+        <div id="tierra-futuras-compras-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           
           <!-- Card 1: Compra semanal (Abre sábado 24 de octubre 12hs, Cierra domingo 00hs) -->
           <div 
@@ -5972,6 +5972,7 @@
 
   <!-- Scripts -->
   <script src="js/vrde-api.js" charset="UTF-8"></script>
+  <script src="js/vrde-sync.js" charset="UTF-8"></script>
   <script src="js/circulos.js" charset="UTF-8"></script>
   <script src="js/products-data.js" charset="UTF-8"></script>
   <script src="js/barrio-data.js" charset="UTF-8"></script>

@@ -354,6 +354,17 @@
         <span>💰</span>
         <span>Caja Chica & Finanzas</span>
       </button>
+
+      <button 
+        type="button" 
+        id="admin-tab-btn-vrde"
+        onclick="switchAdminTab('vrde')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-500 hover:text-stone-900 hover:bg-stone-100 shrink-0 flex items-center gap-2 font-bold"
+      >
+        <span>🌐</span>
+        <span>Sincronización VRDE Club</span>
+        <span id="tab-badge-vrde-count" class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">4</span>
+      </button>
     </div>
 
     <!-- ======================================================================= -->
@@ -701,7 +712,171 @@
 
     </div>
 
-  </main>
+    <!-- ======================================================================= -->
+    <!-- TAB 7: SINCRONIZACIÓN VRDE CLUB (FEDERACIÓN DE COMPRAS COLECTIVAS)      -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-vrde" class="admin-panel-content hidden space-y-6">
+      
+      <!-- Banner Federativo VRDE Club -->
+      <div class="bg-gradient-to-br from-emerald-50/70 via-white to-stone-50 border-2 border-emerald-500/30 rounded-3xl p-6 sm:p-7 shadow-xs">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-3xl shadow-md shrink-0">
+              🌐
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
+                  ● Conexión Federada
+                </span>
+                <span class="text-xs font-bold text-stone-500">vrde.club</span>
+              </div>
+              <h3 class="text-xl sm:text-2xl font-black text-stone-900 font-heading">
+                Sincronización VRDE Club · Prestador de Servicios
+              </h3>
+              <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl leading-relaxed">
+                Elementales Loma Verde está conectado como prestador de servicios en la red fractal de <strong>VRDE Club (Provider ID: 1)</strong>. 
+                Gestioná qué compras colectivas se habilitan para tus prosumidores, curá qué alimentos se publican a los vecinos y proponé nuevas compras comunitarias a la red.
+              </p>
+            </div>
+          </div>
+
+          <!-- Acciones Principales -->
+          <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0">
+            <button 
+              type="button" 
+              onclick="handleSyncVrdeNow()" 
+              id="btn-sync-vrde"
+              class="px-4 py-2.5 rounded-2xl bg-white hover:bg-stone-50 text-stone-800 border border-stone-200 text-xs font-black shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center gap-2"
+              title="Sincronizar catálogo con vrde.club"
+            >
+              <span id="sync-vrde-spinner" class="text-base">🔄</span>
+              <span>Sincronizar VRDE</span>
+            </button>
+
+            <button 
+              type="button" 
+              onclick="openNewVrdeCampaignModal()" 
+              class="px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center gap-2"
+              title="Proponer una nueva compra comunitaria desde Loma Verde a VRDE Club"
+            >
+              <span class="text-base">➕</span>
+              <span>Proponer Compra a la Red</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Metadatos de Red -->
+        <div class="mt-5 pt-4 border-t border-emerald-100/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex flex-wrap items-center gap-4">
+            <div class="flex items-center gap-1.5 text-stone-700">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="font-bold">Estado:</span>
+              <span class="text-emerald-800 font-black">Enlace Activo (vrde.club)</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-stone-700">
+              <span class="text-stone-400 font-mono">|</span>
+              <span class="font-bold">ID Prestador:</span>
+              <span class="font-mono bg-stone-100 px-2 py-0.5 rounded-md text-stone-800 font-bold">1</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-stone-700">
+              <span class="text-stone-400 font-mono">|</span>
+              <span class="font-bold">Nodo Local:</span>
+              <span class="font-black text-stone-900">Loma Verde (Escobar)</span>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-stone-500 font-medium">
+            Última actualización: <strong id="vrde-sync-time-label" class="text-stone-700 font-mono">Recién sincronizado</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Métricas KPIs de VRDE Club -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white border border-stone-200 rounded-3xl p-5 shadow-xs">
+          <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider block mb-1">Campañas en Red</span>
+          <span id="vrde-kpi-total-camps" class="text-2xl sm:text-3xl font-black text-stone-900 font-heading">4</span>
+          <p class="text-[11px] text-stone-400 mt-1">Disponibles en VRDE Club</p>
+        </div>
+
+        <div class="bg-white border border-emerald-200 rounded-3xl p-5 shadow-xs bg-emerald-50/20">
+          <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block mb-1">Activas en Loma Verde</span>
+          <span id="vrde-kpi-active-camps" class="text-2xl sm:text-3xl font-black text-emerald-900 font-heading">4</span>
+          <p class="text-[11px] text-stone-400 mt-1">Visibles para la comunidad</p>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-3xl p-5 shadow-xs">
+          <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider block mb-1">Alimentos Curados</span>
+          <span id="vrde-kpi-total-curated-prods" class="text-2xl sm:text-3xl font-black text-stone-900 font-heading">14</span>
+          <p class="text-[11px] text-stone-400 mt-1">Habilitados en catálogo</p>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-3xl p-5 shadow-xs">
+          <span class="text-[11px] font-bold text-indigo-700 uppercase tracking-wider block mb-1">Ahorro Red Directo</span>
+          <span class="text-2xl sm:text-3xl font-black text-indigo-900 font-heading">-25%</span>
+          <p class="text-[11px] text-stone-400 mt-1">Al costo directo campesino</p>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros de Campañas -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white border border-stone-200 rounded-2xl p-3 shadow-xs">
+        <div class="flex flex-wrap items-center gap-1.5 text-xs font-bold" id="vrde-filter-tabs">
+          <button 
+            type="button" 
+            onclick="setVrdeFilter('todos')" 
+            id="vrde-filter-btn-todos" 
+            class="px-3.5 py-1.5 rounded-xl bg-stone-900 text-white shadow-2xs cursor-pointer transition-all"
+          >
+            Todas las Compras
+          </button>
+          <button 
+            type="button" 
+            onclick="setVrdeFilter('abiertas')" 
+            id="vrde-filter-btn-abiertas" 
+            class="px-3.5 py-1.5 rounded-xl bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer transition-all flex items-center gap-1.5"
+          >
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Compras Abiertas</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="setVrdeFilter('futuras')" 
+            id="vrde-filter-btn-futuras" 
+            class="px-3.5 py-1.5 rounded-xl bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer transition-all flex items-center gap-1.5"
+          >
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span>Futuras Compras</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="setVrdeFilter('centrales')" 
+            id="vrde-filter-btn-centrales" 
+            class="px-3.5 py-1.5 rounded-xl bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer transition-all flex items-center gap-1.5"
+          >
+            <span>🌕☀️ VRDE Central (Lunar / Semanal)</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="setVrdeFilter('nodos')" 
+            id="vrde-filter-btn-nodos" 
+            class="px-3.5 py-1.5 rounded-xl bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer transition-all flex items-center gap-1.5"
+          >
+            <span>📍 Compras de Nodos</span>
+          </button>
+        </div>
+
+        <div class="text-xs text-stone-500">
+          Mostrando <strong id="vrde-camps-count-label" class="text-stone-800">4</strong> compras comunitarias
+        </div>
+      </div>
+
+      <!-- Grid de Campañas de la Red VRDE -->
+      <div id="admin-vrde-campaigns-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- Renderizado dinámicamente vía renderAdminVrdeSync() -->
+      </div>
+
+    </div>
 
   <!-- ========================================================================= -->
   <!-- MODAL: NUEVO PEDIDO MOSTRADOR                                             -->
@@ -795,12 +970,286 @@
     </div>
   </div>
 
+  <!-- ========================================================================= -->
+  <!-- MODAL: CURAR ALIMENTOS DISPONIBLES POR COMPRA EN VRDE CLUB               -->
+  <!-- ========================================================================= -->
+  <div id="modal-curate-vrde-products" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      
+      <!-- Encabezado Modal -->
+      <div class="p-6 border-b border-stone-200 bg-stone-50/70 flex items-start justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300 font-mono">
+              Curación de Alimentos
+            </span>
+            <span id="curate-camp-badge" class="text-xs font-bold text-stone-500">VRDE Club</span>
+          </div>
+          <h3 id="curate-camp-title" class="font-black text-xl text-stone-900 font-heading">
+            Curar Catálogo de Alimentos
+          </h3>
+          <p class="text-xs text-stone-600 mt-1 max-w-xl">
+            Tildá qué alimentos provistos por los productores de VRDE Club querés habilitar para los vecinos de <strong>Loma Verde</strong>. Los productos destildados quedarán pausados para tu comunidad.
+          </p>
+        </div>
+        <button 
+          type="button" 
+          onclick="closeCurateProductsModal()" 
+          class="text-stone-400 hover:text-stone-700 font-bold text-lg p-2 rounded-xl hover:bg-stone-100 cursor-pointer transition-all"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Barra de Filtros y Acciones Masivas -->
+      <div class="p-4 bg-white border-b border-stone-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="relative flex-1 min-w-[200px]">
+          <input 
+            type="text" 
+            id="curate-search-input" 
+            oninput="filterCurateProductsList()" 
+            placeholder="Buscar alimento o productor en esta compra..." 
+            class="w-full bg-stone-50 border border-stone-200 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-800 font-medium outline-none"
+          />
+        </div>
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            onclick="toggleAllCurateProducts(true)" 
+            class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300 border border-stone-200 font-bold text-stone-700 cursor-pointer transition-all"
+          >
+            ✓ Habilitar Todos
+          </button>
+          <button 
+            type="button" 
+            onclick="toggleAllCurateProducts(false)" 
+            class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-rose-50 hover:text-rose-800 hover:border-rose-300 border border-stone-200 font-bold text-stone-700 cursor-pointer transition-all"
+          >
+            ✕ Desmarcar Todos
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de Productos Toggleables (Scrollable) -->
+      <div class="p-6 overflow-y-auto space-y-3 flex-1" id="curate-products-list">
+        <!-- Renderizado dinámicamente -->
+      </div>
+
+      <!-- Pie del Modal -->
+      <div class="p-4 sm:p-5 bg-stone-50 border-t border-stone-200 flex items-center justify-between gap-3 text-xs">
+        <div class="text-stone-500">
+          <span id="curate-selection-count" class="font-black text-emerald-800">0</span> alimentos seleccionados para Loma Verde
+        </div>
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            onclick="closeCurateProductsModal()" 
+            class="px-4 py-2.5 rounded-xl bg-white hover:bg-stone-100 text-stone-600 border border-stone-200 font-bold cursor-pointer transition-all"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="button" 
+            onclick="saveCuratedProductsFromModal()" 
+            class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black cursor-pointer shadow-xs hover:shadow-md transition-all flex items-center gap-1.5"
+          >
+            <span>✓</span>
+            <span>Guardar Selección de Alimentos</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: PROPONER NUEVA COMPRA COLECTIVA A LA RED VRDE CLUB                 -->
+  <!-- ========================================================================= -->
+  <div id="modal-new-vrde-campaign" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      
+      <!-- Encabezado Modal -->
+      <div class="p-6 border-b border-stone-200 bg-stone-50/70 flex items-start justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300 font-mono">
+              Iniciativa Barrial Loma Verde
+            </span>
+            <span class="text-xs font-bold text-stone-500">vrde.club</span>
+          </div>
+          <h3 class="font-black text-xl text-stone-900 font-heading">
+            Proponer Compra a la Red VRDE Club
+          </h3>
+          <p class="text-xs text-stone-600 mt-1">
+            Como prestador de servicios (ID: 1), Loma Verde puede originar compras comunitarias para que los vecinos del nodo (y de toda la red) se sumen a comprar en escala.
+          </p>
+        </div>
+        <button 
+          type="button" 
+          onclick="closeNewVrdeCampaignModal()" 
+          class="text-stone-400 hover:text-stone-700 font-bold text-lg p-2 rounded-xl hover:bg-stone-100 cursor-pointer transition-all"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Formulario de Propuesta -->
+      <form onsubmit="handleCreateVrdeCampaign(event)" class="p-6 overflow-y-auto space-y-4 text-xs flex-1">
+        
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Nombre de la Compra Colectiva *</label>
+          <input 
+            type="text" 
+            id="new-vrde-camp-name" 
+            required 
+            placeholder="ej. Compra Comunitaria de Frutillas Finca Ecotipa" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3.5 py-2.5 text-stone-900 font-bold outline-none"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Estado de Publicación *</label>
+            <select id="new-vrde-camp-estado" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none">
+              <option value="abierta">🟢 Compra Abierta (Recibe pedidos ahora)</option>
+              <option value="futura">🗓️ Futura Compra (Próxima apertura)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Periodicidad / Modalidad *</label>
+            <select id="new-vrde-camp-tipo" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none">
+              <option value="abierta">📦 Campaña Específica / Abierta</option>
+              <option value="semanal">☀️ Ciclo Semanal</option>
+              <option value="lunar">🌕 Ciclo Lunar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+          <div class="sm:col-span-2">
+            <label class="block font-bold text-stone-700 mb-1">Productor / Cooperativa Responsable *</label>
+            <input 
+              type="text" 
+              id="new-vrde-camp-producer" 
+              required 
+              placeholder="ej. Finca Ecotipa (Loma Verde)" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Emoji / Ícono</label>
+            <input 
+              type="text" 
+              id="new-vrde-camp-icon" 
+              value="🍓" 
+              class="w-full bg-white text-center text-lg border border-stone-300 rounded-xl px-3 py-1.5 text-stone-900 font-bold outline-none"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Apertura / Inicio</label>
+            <input 
+              type="text" 
+              id="new-vrde-camp-apertura" 
+              value="Abierta ahora" 
+              placeholder="ej. Abierta ahora o Sábado 12hs" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Cierre de Pedidos *</label>
+            <input 
+              type="text" 
+              id="new-vrde-camp-cierre" 
+              required 
+              placeholder="ej. 23/10 - 15hs" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 font-bold outline-none"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Fecha y Lugar de Entrega *</label>
+          <input 
+            type="text" 
+            id="new-vrde-camp-entrega" 
+            required 
+            placeholder="ej. Viernes 23 en Loma Verde" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 font-bold outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Descripción Breve para la Comunidad</label>
+          <textarea 
+            id="new-vrde-camp-desc" 
+            rows="2" 
+            placeholder="ej. Frutillas agroecológicas seleccionadas en origen directo de Finca Ecotipa. Cajón cooperativo de 5 kg." 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+          ></textarea>
+        </div>
+
+        <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-stone-800 text-xs">Alimento Principal de la Compra</span>
+            <span class="text-[10px] text-stone-500">Podés agregar más luego desde "Curar Alimentos"</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] font-bold text-stone-600 mb-0.5">Nombre del Producto</label>
+              <input 
+                type="text" 
+                id="new-vrde-camp-prod-name" 
+                placeholder="ej. Cajón Frutillas Agroecológicas (5 kg)" 
+                class="w-full bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 text-stone-900 font-medium"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-stone-600 mb-0.5">Precio Socio ($)</label>
+              <input 
+                type="number" 
+                id="new-vrde-camp-prod-price" 
+                placeholder="34000" 
+                class="w-full bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 text-stone-900 font-bold"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-2 border-t border-stone-100">
+          <button 
+            type="button" 
+            onclick="closeNewVrdeCampaignModal()" 
+            class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold cursor-pointer transition-all"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black cursor-pointer shadow-xs hover:shadow-md transition-all flex items-center gap-1.5"
+          >
+            <span>🌐</span>
+            <span>Publicar Compra en VRDE Club</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
   <!-- Pie de Página -->
   <footer class="relative z-10 w-full py-4 text-center text-xs text-stone-500 border-t border-stone-200 bg-white/60 no-print">
     <p>Red Comunitaria Elementales · Centro de Mando Administrativo</p>
   </footer>
 
   <!-- SCRIPT CENTRAL DEL PANEL DE GESTIÓN -->
+  <script src="js/vrde-sync.js"></script>
   <script src="js/db.js"></script>
   <script>
     // =========================================================================
@@ -912,6 +1361,7 @@
       if (tabName === 'circulos') renderAdminCirculos();
       if (tabName === 'catalogo') renderAdminProductsTable();
       if (tabName === 'finanzas') renderAdminFinances();
+      if (tabName === 'vrde') renderAdminVrdeSync();
     }
 
     // =========================================================================
@@ -1032,6 +1482,14 @@
         { id: 'prod-huevos-30', name: 'Huevos de Gallinas Libres a Campo (Maple 30u)', category: 'Granja', price: 7500, memberPrice: 6800, stock: true },
         { id: 'prod-harina-5k', name: 'Harina Integral Agroecológica Molino (5 kg)', category: 'Almacén', price: 5800, memberPrice: 5000, stock: true }
       ];
+
+      // 5. Inicializar Sincronización VRDE Club
+      if (typeof VrdeSync !== 'undefined') {
+        const camps = VrdeSync.getCampaigns();
+        const activeCount = camps.filter(c => c.habilitadoEnNodo !== false).length;
+        const badgeTab = document.getElementById('tab-badge-vrde-count');
+        if (badgeTab) badgeTab.textContent = activeCount;
+      }
 
       updateAdminKPIs();
       switchAdminTab(currentAdminTab);
@@ -1584,6 +2042,497 @@
         });
         renderAdminProductsTable();
       }
+    }
+
+    // =========================================================================
+    // 9. SINCRONIZACIÓN Y CURACIÓN VRDE CLUB (PRESTADOR FEDERADO)
+    // =========================================================================
+    let vrdeCurrentFilter = 'todos';
+    let activeCurateCampId = null;
+    let activeCurateProductsTemp = [];
+
+    function renderAdminVrdeSync() {
+      if (typeof VrdeSync === 'undefined') return;
+      const campaigns = VrdeSync.getCampaigns();
+      const grid = document.getElementById('admin-vrde-campaigns-grid');
+      if (!grid) return;
+
+      // Actualizar KPIs de VRDE
+      const totalCamps = campaigns.length;
+      const activeCamps = campaigns.filter(c => c.habilitadoEnNodo !== false).length;
+      let totalCuratedProds = 0;
+      campaigns.forEach(c => {
+        if (Array.isArray(c.productos)) {
+          totalCuratedProds += c.productos.filter(p => p.enabled !== false).length;
+        }
+      });
+
+      const elTotal = document.getElementById('vrde-kpi-total-camps');
+      if (elTotal) elTotal.textContent = totalCamps;
+      const elActive = document.getElementById('vrde-kpi-active-camps');
+      if (elActive) elActive.textContent = activeCamps;
+      const elProds = document.getElementById('vrde-kpi-total-curated-prods');
+      if (elProds) elProds.textContent = totalCuratedProds;
+
+      const badgeTab = document.getElementById('tab-badge-vrde-count');
+      if (badgeTab) badgeTab.textContent = activeCamps;
+
+      // Filtrar según pestaña
+      const filtered = campaigns.filter(c => {
+        if (vrdeCurrentFilter === 'abiertas') return c.estado === 'abierta';
+        if (vrdeCurrentFilter === 'futuras') return c.estado === 'futura';
+        if (vrdeCurrentFilter === 'centrales') return c.esCentral === true;
+        if (vrdeCurrentFilter === 'nodos') return c.esCentral === false;
+        return true;
+      });
+
+      const countLabel = document.getElementById('vrde-camps-count-label');
+      if (countLabel) countLabel.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center bg-white border border-stone-200 rounded-3xl p-6">
+            <span class="text-4xl block mb-2">🔍</span>
+            <h4 class="font-bold text-stone-700 text-base">No hay compras con este filtro</h4>
+            <p class="text-xs text-stone-500 mt-1">Probá cambiando a "Todas las Compras" o proponé una nueva compra a la red.</p>
+            <button onclick="setVrdeFilter('todos')" class="mt-4 px-4 py-2 rounded-xl bg-stone-900 text-white font-bold text-xs cursor-pointer">
+              Ver Todas las Compras
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(camp => {
+        const isEnabled = camp.habilitadoEnNodo !== false;
+        const prods = Array.isArray(camp.productos) ? camp.productos : [];
+        const enabledProds = prods.filter(p => p.enabled !== false);
+        const isOpen = camp.estado === 'abierta';
+
+        return `
+          <div class="bg-white border ${isEnabled ? 'border-stone-200' : 'border-stone-200 opacity-75'} rounded-3xl p-5 sm:p-6 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between">
+            <div>
+              <!-- Header Badges -->
+              <div class="flex items-center justify-between gap-2 mb-3.5">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  ${camp.esCentral ? `
+                    <span class="bg-indigo-50 text-indigo-800 border border-indigo-200 text-[10px] px-2.5 py-0.5 rounded-full font-bold">
+                      🌐 VRDE Club Central
+                    </span>
+                  ` : `
+                    <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] px-2.5 py-0.5 rounded-full font-bold">
+                      📍 ${escapeHtml(camp.origen || 'Nodo Comunitario')}
+                    </span>
+                  `}
+                  <span class="bg-stone-100 text-stone-600 border border-stone-200 text-[10px] px-2 py-0.5 rounded-full font-mono uppercase">
+                    ${camp.tipo || 'abierta'}
+                  </span>
+                </div>
+
+                <div>
+                  ${isOpen ? `
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-extrabold">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Abierta
+                    </span>
+                  ` : `
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold">
+                      🗓️ Próxima Apertura
+                    </span>
+                  `}
+                </div>
+              </div>
+
+              <!-- Título & Emoji -->
+              <div class="flex items-start gap-3.5 mt-1">
+                <div class="w-12 h-12 rounded-2xl bg-stone-50 border border-stone-200 text-2xl flex items-center justify-center shrink-0 shadow-2xs">
+                  ${camp.icono || '🌾'}
+                </div>
+                <div>
+                  <h4 class="font-black text-base sm:text-lg text-stone-900 font-heading leading-snug">
+                    ${escapeHtml(camp.nombre)}
+                  </h4>
+                  <span class="text-xs font-semibold text-stone-500 block">
+                    ${escapeHtml(camp.subtitulo || camp.badge || '')}
+                  </span>
+                </div>
+              </div>
+
+              <p class="text-xs text-stone-600 mt-2.5 leading-relaxed">
+                ${escapeHtml(camp.descripcion || '')}
+              </p>
+
+              <!-- Cronograma -->
+              <div class="mt-4 p-3 bg-stone-50/70 border border-stone-100 rounded-2xl space-y-1.5 text-xs">
+                <div class="flex items-center gap-2 text-stone-700">
+                  <span class="w-4 text-center">⏳</span>
+                  <span>Cierre: <strong class="text-stone-900 font-bold">${escapeHtml(camp.cierre || 'Consultar')}</strong></span>
+                </div>
+                <div class="flex items-center gap-2 text-stone-700">
+                  <span class="w-4 text-center">🚚</span>
+                  <span>Entrega: <strong class="text-emerald-800 font-bold">${escapeHtml(camp.entrega || 'Loma Verde')}</strong></span>
+                </div>
+              </div>
+
+              <!-- Preview de Alimentos Disponibles -->
+              <div class="mt-4 pt-3 border-t border-stone-100">
+                <div class="flex items-center justify-between text-xs mb-2">
+                  <span class="font-bold text-stone-700">Alimentos Provistos (${prods.length})</span>
+                  <span class="text-[11px] font-bold ${enabledProds.length > 0 ? 'text-emerald-700' : 'text-rose-600'}">
+                    ${enabledProds.length} habilitados para Loma Verde
+                  </span>
+                </div>
+
+                <div class="space-y-1.5">
+                  ${prods.slice(0, 3).map(p => `
+                    <div class="flex items-center justify-between text-[11px] bg-white border border-stone-100 p-2 rounded-xl">
+                      <div class="flex items-center gap-2 truncate">
+                        <span>${p.emoji || '🌾'}</span>
+                        <span class="font-medium text-stone-800 truncate">${escapeHtml(p.name)}</span>
+                      </div>
+                      <div class="flex items-center gap-2 shrink-0">
+                        <span class="font-mono text-stone-400 text-[10px]">Costo VRDE: $${(p.costVRDE || p.costoBase || 0).toLocaleString()}</span>
+                        <span class="font-bold font-mono text-emerald-800">$${(p.priceSocio || p.price || 0).toLocaleString()}</span>
+                        <span class="text-[10px] ${p.enabled !== false ? 'text-emerald-600' : 'text-stone-300'} font-bold">
+                          ${p.enabled !== false ? '✓' : '✕'}
+                        </span>
+                      </div>
+                    </div>
+                  `).join('')}
+                  ${prods.length > 3 ? `
+                    <div class="text-center text-[10px] text-stone-400 font-bold pt-0.5">
+                      + ${prods.length - 3} alimentos más en esta compra
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Botones de Acción Inferiores -->
+            <div class="mt-5 pt-4 border-t border-stone-100 flex flex-wrap items-center justify-between gap-2.5">
+              
+              <!-- Switch de Habilitación en Loma Verde -->
+              <div>
+                ${isEnabled ? `
+                  <button 
+                    type="button" 
+                    onclick="toggleVrdeCampaignInNode('${camp.id}')"
+                    class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer transition-all active:scale-95"
+                    title="Click para pausar esta compra en Loma Verde"
+                  >
+                    <span>✓</span>
+                    <span>Habilitada en Loma Verde</span>
+                  </button>
+                ` : `
+                  <button 
+                    type="button" 
+                    onclick="toggleVrdeCampaignInNode('${camp.id}')"
+                    class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 border border-stone-200 font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                    title="Click para habilitar esta compra en Loma Verde"
+                  >
+                    <span>⏸</span>
+                    <span>Pausada en Loma Verde</span>
+                  </button>
+                `}
+              </div>
+
+              <!-- Curar Alimentos & Link a Tienda -->
+              <div class="flex items-center gap-2">
+                <button 
+                  type="button" 
+                  onclick="openCurateProductsModal('${camp.id}')"
+                  class="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-stone-800 border border-stone-200 font-black text-xs flex items-center gap-1.5 shadow-2xs hover:shadow-xs cursor-pointer transition-all"
+                  title="Configurar y seleccionar qué productos se publican"
+                >
+                  <span>⚙️</span>
+                  <span>Curar Alimentos (${enabledProds.length}/${prods.length})</span>
+                </button>
+
+                <a 
+                  href="${camp.url || '#'}" 
+                  target="_blank" 
+                  class="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 hover:text-stone-900 text-xs font-bold transition-all cursor-pointer"
+                  title="Ver cómo se visualiza en la tienda comunitaria"
+                >
+                  ↗
+                </a>
+              </div>
+
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setVrdeFilter(filterType) {
+      vrdeCurrentFilter = filterType;
+      document.querySelectorAll('#vrde-filter-tabs button').forEach(b => {
+        b.className = 'px-3.5 py-1.5 rounded-xl bg-stone-100 text-stone-600 hover:bg-stone-200 cursor-pointer transition-all flex items-center gap-1.5';
+      });
+
+      const activeBtn = document.getElementById(`vrde-filter-btn-${filterType}`);
+      if (activeBtn) {
+        activeBtn.className = 'px-3.5 py-1.5 rounded-xl bg-stone-900 text-white shadow-2xs cursor-pointer transition-all flex items-center gap-1.5';
+      }
+
+      renderAdminVrdeSync();
+    }
+
+    function toggleVrdeCampaignInNode(campId) {
+      if (typeof VrdeSync === 'undefined') return;
+      const updated = VrdeSync.toggleCampaignInNode(campId);
+      if (updated) {
+        renderAdminVrdeSync();
+        try {
+          if (typeof confetti === 'function' && updated.habilitadoEnNodo) {
+            confetti({ particleCount: 25, spread: 50, origin: { y: 0.7 } });
+          }
+        } catch (e) {}
+      }
+    }
+
+    // Curar Alimentos Modal
+    function openCurateProductsModal(campId) {
+      if (typeof VrdeSync === 'undefined') return;
+      activeCurateCampId = campId;
+      const camp = VrdeSync.getCampaign(campId);
+      if (!camp) return;
+
+      activeCurateProductsTemp = JSON.parse(JSON.stringify(camp.productos || []));
+
+      const titleEl = document.getElementById('curate-camp-title');
+      if (titleEl) titleEl.textContent = `Curar Catálogo: ${camp.nombre}`;
+      const badgeEl = document.getElementById('curate-camp-badge');
+      if (badgeEl) badgeEl.textContent = camp.origen || 'VRDE Club';
+
+      const searchInput = document.getElementById('curate-search-input');
+      if (searchInput) searchInput.value = '';
+
+      renderCurateProductsList();
+
+      const modal = document.getElementById('modal-curate-vrde-products');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeCurateProductsModal() {
+      const modal = document.getElementById('modal-curate-vrde-products');
+      if (modal) modal.classList.add('hidden');
+      activeCurateCampId = null;
+      activeCurateProductsTemp = [];
+    }
+
+    function renderCurateProductsList(searchQuery = '') {
+      const container = document.getElementById('curate-products-list');
+      if (!container) return;
+
+      const q = searchQuery.toLowerCase().trim();
+      const filtered = activeCurateProductsTemp.filter(p => {
+        if (!q) return true;
+        return (p.name && p.name.toLowerCase().includes(q)) ||
+               (p.producer && p.producer.toLowerCase().includes(q)) ||
+               (p.category && p.category.toLowerCase().includes(q));
+      });
+
+      const enabledCount = activeCurateProductsTemp.filter(p => p.enabled !== false).length;
+      const countEl = document.getElementById('curate-selection-count');
+      if (countEl) countEl.textContent = enabledCount;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="py-10 text-center text-stone-500">
+            <span class="text-3xl block mb-2">🔍</span>
+            <p class="font-bold">No se encontraron productos con esa búsqueda</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(prod => {
+        const isChecked = prod.enabled !== false;
+        const cost = prod.costVRDE || prod.costoBase || 0;
+        const price = prod.priceSocio || prod.price || 0;
+        const margin = price > cost ? price - cost : 0;
+        const marginPct = cost > 0 ? Math.round((margin / cost) * 100) : 0;
+
+        return `
+          <div class="p-3.5 rounded-2xl border transition-all ${isChecked ? 'bg-emerald-50/20 border-emerald-300 shadow-2xs' : 'bg-stone-50 border-stone-200 opacity-60'} flex items-center justify-between gap-3">
+            
+            <div class="flex items-center gap-3 min-w-0">
+              <!-- Checkbox Toggle -->
+              <input 
+                type="checkbox" 
+                ${isChecked ? 'checked' : ''} 
+                onchange="toggleCurateProductItem('${prod.id}')"
+                class="w-5 h-5 rounded-lg text-emerald-600 focus:ring-emerald-500 border-stone-300 cursor-pointer shrink-0"
+              />
+
+              <!-- Emoji / Foto -->
+              <div class="w-10 h-10 rounded-xl bg-white border border-stone-200 text-xl flex items-center justify-center shrink-0 shadow-2xs">
+                ${prod.emoji || '🌾'}
+              </div>
+
+              <!-- Info de Producto -->
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <h5 class="font-black text-stone-900 text-xs sm:text-sm truncate">
+                    ${escapeHtml(prod.name)}
+                  </h5>
+                  <span class="text-[10px] bg-stone-100 text-stone-600 border border-stone-200 px-2 py-0.2 rounded-full font-bold shrink-0">
+                    ${escapeHtml(prod.category || 'Almacén')}
+                  </span>
+                </div>
+                <div class="flex items-center gap-3 text-[11px] text-stone-500 mt-0.5">
+                  <span>👨‍🌾 <strong class="text-stone-700">${escapeHtml(prod.producer || 'VRDE Club')}</strong></span>
+                  <span>•</span>
+                  <span>Unidad: <strong>${escapeHtml(prod.unit || '1 unidad')}</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Precios y Márgenes -->
+            <div class="flex items-center gap-3 shrink-0 text-right">
+              <div class="hidden sm:block">
+                <span class="text-[10px] text-stone-400 block font-mono">Costo Red VRDE</span>
+                <span class="font-mono font-bold text-stone-600 text-xs">$${cost.toLocaleString()}</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-emerald-800 block font-bold">Precio Socio Sugerido</span>
+                <span class="font-mono font-black text-emerald-900 text-sm">$${price.toLocaleString()}</span>
+              </div>
+              <div class="hidden md:block">
+                <span class="text-[10px] px-2 py-0.5 rounded-md font-mono font-bold ${marginPct > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-200 text-stone-600'}">
+                  +${marginPct}%
+                </span>
+              </div>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleCurateProductItem(prodId) {
+      const prod = activeCurateProductsTemp.find(p => p.id === prodId);
+      if (prod) {
+        prod.enabled = (prod.enabled === false) ? true : false;
+        renderCurateProductsList(document.getElementById('curate-search-input')?.value || '');
+      }
+    }
+
+    function toggleAllCurateProducts(selectAll) {
+      activeCurateProductsTemp.forEach(p => {
+        p.enabled = selectAll;
+      });
+      renderCurateProductsList(document.getElementById('curate-search-input')?.value || '');
+    }
+
+    function filterCurateProductsList() {
+      const q = document.getElementById('curate-search-input')?.value || '';
+      renderCurateProductsList(q);
+    }
+
+    function saveCuratedProductsFromModal() {
+      if (!activeCurateCampId || typeof VrdeSync === 'undefined') return;
+      VrdeSync.updateCampaignProducts(activeCurateCampId, activeCurateProductsTemp);
+      closeCurateProductsModal();
+      renderAdminVrdeSync();
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 35, spread: 60 });
+      } catch (e) {}
+      alert('✓ Selección de alimentos guardada con éxito.');
+    }
+
+    // Proponer Nueva Compra Modal
+    function openNewVrdeCampaignModal() {
+      const modal = document.getElementById('modal-new-vrde-campaign');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeNewVrdeCampaignModal() {
+      const modal = document.getElementById('modal-new-vrde-campaign');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function handleCreateVrdeCampaign(e) {
+      if (e) e.preventDefault();
+      if (typeof VrdeSync === 'undefined') return;
+
+      const name = document.getElementById('new-vrde-camp-name')?.value.trim();
+      const estado = document.getElementById('new-vrde-camp-estado')?.value || 'abierta';
+      const tipo = document.getElementById('new-vrde-camp-tipo')?.value || 'abierta';
+      const producer = document.getElementById('new-vrde-camp-producer')?.value.trim() || 'Productores de Loma Verde';
+      const icon = document.getElementById('new-vrde-camp-icon')?.value.trim() || '🌾';
+      const apertura = document.getElementById('new-vrde-camp-apertura')?.value.trim() || 'Abierta ahora';
+      const cierre = document.getElementById('new-vrde-camp-cierre')?.value.trim() || 'Próximo ciclo';
+      const entrega = document.getElementById('new-vrde-camp-entrega')?.value.trim() || 'Nodo Loma Verde';
+      const desc = document.getElementById('new-vrde-camp-desc')?.value.trim() || 'Compra comunitaria organizada en Loma Verde.';
+
+      const prodName = document.getElementById('new-vrde-camp-prod-name')?.value.trim();
+      const prodPrice = parseInt(document.getElementById('new-vrde-camp-prod-price')?.value, 10) || 0;
+
+      const prods = [];
+      if (prodName && prodPrice > 0) {
+        prods.push({
+          id: 'vrde-prod-' + Date.now(),
+          name: prodName,
+          cleanName: prodName,
+          producer: producer,
+          category: 'Almacén',
+          unit: '1 unidad',
+          costVRDE: Math.round(prodPrice * 0.8),
+          priceSocio: prodPrice,
+          priceRetail: Math.round(prodPrice * 1.15),
+          emoji: icon,
+          enabled: true,
+          esCajon: false
+        });
+      }
+
+      VrdeSync.addCampaign({
+        nombre: name,
+        subtitulo: `${producer} · Iniciativa Barrial Loma Verde`,
+        tipo: tipo,
+        estado: estado,
+        icono: icon,
+        badge: producer,
+        descripcion: desc,
+        apertura: apertura,
+        cierre: cierre,
+        entrega: entrega,
+        url: '/lomaverde/tierra',
+        productos: prods
+      });
+
+      closeNewVrdeCampaignModal();
+      renderAdminVrdeSync();
+
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 70 });
+      } catch (err) {}
+      alert(`✓ Compra "${name}" publicada con éxito en VRDE Club.`);
+    }
+
+    async function handleSyncVrdeNow() {
+      const spinner = document.getElementById('sync-vrde-spinner');
+      if (spinner) spinner.classList.add('animate-spin');
+
+      if (typeof VrdeSync !== 'undefined') {
+        const res = await VrdeSync.syncWithVrdeClub();
+        const timeLabel = document.getElementById('vrde-sync-time-label');
+        if (timeLabel) {
+          const now = new Date();
+          timeLabel.textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} hs (Sincronizado)`;
+        }
+        renderAdminVrdeSync();
+      }
+
+      setTimeout(() => {
+        if (spinner) spinner.classList.remove('animate-spin');
+        try {
+          if (typeof confetti === 'function') confetti({ particleCount: 20, spread: 40 });
+        } catch (e) {}
+      }, 500);
     }
 
     // Auto-arranque
