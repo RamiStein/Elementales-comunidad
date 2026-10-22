@@ -703,6 +703,13 @@ const AppState = {
 function selectTierraModalidad(mode, updateUrl = true) {
   if (typeof sounds !== 'undefined' && sounds.playPop) sounds.playPop();
   const normalizedMode = (mode === 'luanar' || mode === 'lunar') ? 'lunar' : ((mode === 'semanal') ? 'semanal' : mode);
+
+  if (normalizedMode === 'lunar') {
+    const nodeSlug = (AppState.activeNodeId || 'nodo-lomaverde').replace(/^nodo-/, '');
+    window.location.href = /compralunar/nodos/;
+    return;
+  }
+
   AppState.tierraSubMode = normalizedMode;
   AppState.catalogMode = (normalizedMode === 'lunar') ? 'lunar' : 'semanal';
 
@@ -6711,7 +6718,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (requestedElementView === 'tierra') {
       if (requestedTierraMode === 'luanar' || requestedTierraMode === 'lunar') {
-        selectTierraModalidad('lunar', true);
+        const nodeSlug = (AppState.activeNodeId || 'nodo-lomaverde').replace(/^nodo-/, '');
+        window.location.replace('/compralunar/nodos/' + nodeSlug);
+        return;
       } else if (requestedTierraMode === 'semanal') {
         selectTierraModalidad('semanal', true);
       } else {
@@ -6842,7 +6851,8 @@ window.addEventListener('popstate', (e) => {
     updateNodeUI();
     if (parts[1] === 'tierra') {
       if (parts[2] === 'luanar' || parts[2] === 'lunar') {
-        selectTierraModalidad('lunar', false);
+        window.location.replace('/compralunar/nodos/' + parts[0].replace(/^nodo-/, ''));
+        return;
       } else if (parts[2] === 'semanal') {
         selectTierraModalidad('semanal', false);
       } else {

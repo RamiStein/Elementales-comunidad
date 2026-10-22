@@ -106,6 +106,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(response_bytes)
             return
 
+        self.rewrite_spa_path()
+        return super().do_GET()
+
+    def do_HEAD(self):
+        self.rewrite_spa_path()
+        return super().do_HEAD()
+
+    def rewrite_spa_path(self):
         # Soporte para URLs limpias (SPA): si no existe el archivo estático, redirigir internamente a index.html
         path_without_query = self.path.split('?')[0].split('#')[0]
         full_path = self.translate_path(path_without_query)
@@ -123,14 +131,22 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.path = f"/miembroelemental.html?{query_part}" if query_part else "/miembroelemental.html"
             elif first in ['prosumidores', 'prosumidores.html']:
                 self.path = f"/prosumidores.html?{query_part}" if query_part else "/prosumidores.html"
+            elif first == 'compralunar':
+                self.path = f"/compralunar.html?{query_part}" if query_part else "/compralunar.html"
             elif first in ['lomaverde', 'nodo-lomaverde', 'lucila', 'nodo-lucila', 'cooperativa', 'chasqui'] and second in ['tierra', 'agua', 'fuego', 'aire', 'eter']:
                 third_norm = 'lunar' if third == 'luanar' else third
-                modo = f"&modo={third_norm}" if third_norm else ""
-                self.path = f"/?nodo={first}&view={second}{modo}&{query_part}" if query_part else f"/?nodo={first}&view={second}{modo}"
+                if second == 'tierra' and third_norm == 'lunar':
+                    self.path = f"/compralunar.html?nodo={first}&{query_part}" if query_part else f"/compralunar.html?nodo={first}"
+                else:
+                    modo = f"&modo={third_norm}" if third_norm else ""
+                    self.path = f"/?nodo={first}&view={second}{modo}&{query_part}" if query_part else f"/?nodo={first}&view={second}{modo}"
             elif first in ['tierra', 'agua', 'fuego', 'aire', 'eter']:
                 second_norm = 'lunar' if second == 'luanar' else second
-                modo = f"&modo={second_norm}" if second_norm else ""
-                self.path = f"/?nodo=lomaverde&view={first}{modo}&{query_part}" if query_part else f"/?nodo=lomaverde&view={first}{modo}"
+                if first == 'tierra' and second_norm == 'lunar':
+                    self.path = f"/compralunar.html?nodo=lomaverde&{query_part}" if query_part else "/compralunar.html?nodo=lomaverde"
+                else:
+                    modo = f"&modo={second_norm}" if second_norm else ""
+                    self.path = f"/?nodo=lomaverde&view={first}{modo}&{query_part}" if query_part else f"/?nodo=lomaverde&view={first}{modo}"
             elif first == 'frutilla':
                 circ = second if second else ''
                 q = f"circulo={circ}" if circ else ""
@@ -161,7 +177,6 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.path = f"/?c={clean_slug}&{query_part}" if query_part else f"/?c={clean_slug}"
             else:
                 self.path = '/index.html'
-        return super().do_GET()
 
     def do_POST(self):
         if self.path.startswith('/api/'):

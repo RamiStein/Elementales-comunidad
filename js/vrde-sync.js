@@ -41,7 +41,7 @@ const VrdeSync = {
       cierre: 'Cierre ciclo lunar: 30 de Octubre',
       entrega: 'Entrega comunitaria: Primer sábado de Noviembre',
       habilitadoEnNodo: true,
-      url: '/lomaverde/tierra/lunar',
+      url: '/compralunar',
       productos: [
         {
           id: 'vrde-prod-harina-5k',

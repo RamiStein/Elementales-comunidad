@@ -31,6 +31,12 @@
         return;
       }
 
+      // Rutas para Landing Exclusiva de Compra Lunar (/compralunar, /compralunar/nodos, /compralunar/nodos/{slug})
+      if (first === 'compralunar' || first === 'compralunar.html') {
+        window.location.replace('/compralunar.html' + (search || '') + (hash || ''));
+        return;
+      }
+
       // Rutas para Landing Exclusiva de Frutillas (/frutilla, /circulo/{slug}/frutilla, /frutilla/{slug})
       if (first === 'frutilla') {
         var circ = second ? 'circulo=' + encodeURIComponent(second) : '';
@@ -55,6 +61,11 @@
 
       if (validNodes.indexOf(first) !== -1 && validElements.indexOf(second) !== -1) {
         var normalizedMode = (third === 'luanar' || third === 'lunar') ? 'lunar' : third;
+        if (second === 'tierra' && normalizedMode === 'lunar') {
+          localStorage.setItem('elementales_active_node', first.indexOf('nodo-') === 0 ? first : 'nodo-' + first);
+          window.location.replace('/compralunar.html?nodo=' + encodeURIComponent(first) + queryJoin + (hash || ''));
+          return;
+        }
         var modoParam = normalizedMode ? '&modo=' + encodeURIComponent(normalizedMode) : '';
         localStorage.setItem('elementales_active_node', first.indexOf('nodo-') === 0 ? first : 'nodo-' + first);
         window.location.replace('/?nodo=' + encodeURIComponent(first) + '&view=' + encodeURIComponent(second) + modoParam + queryJoin + (hash || ''));
@@ -63,6 +74,11 @@
 
       if (validElements.indexOf(first) !== -1) {
         var normalizedMode = (second === 'luanar' || second === 'lunar') ? 'lunar' : second;
+        if (first === 'tierra' && normalizedMode === 'lunar') {
+          localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
+          window.location.replace('/compralunar.html?nodo=lomaverde' + queryJoin + (hash || ''));
+          return;
+        }
         var modoParam = normalizedMode ? '&modo=' + encodeURIComponent(normalizedMode) : '';
         localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
         window.location.replace('/?nodo=lomaverde&view=' + encodeURIComponent(first) + modoParam + queryJoin + (hash || ''));
