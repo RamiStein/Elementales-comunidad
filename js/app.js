@@ -712,12 +712,12 @@ function selectTierraModalidad(mode, updateUrl = true) {
   const descEl = document.getElementById('tierra-active-mode-desc');
   if (normalizedMode === 'lunar') {
     if (iconEl) iconEl.innerHTML = '🌕';
-    if (titleEl) titleEl.innerText = 'Compra Lunar · Almacén y Ciclos Comunitarios';
-    if (descEl) descEl.innerText = 'Precios al costo de red (-25%) para compras programadas y alimentos no perecederos.';
+    if (titleEl) titleEl.innerText = 'Compra Lunar - Ciclos Comunitarios';
+    if (descEl) descEl.innerText = 'Difundí la compra a tus familiares y amigos';
   } else {
     if (iconEl) iconEl.innerHTML = '☀️';
-    if (titleEl) titleEl.innerText = 'Compra Semanal · Huerta Fresca y Cosecha Viva';
-    if (descEl) descEl.innerText = 'Cosecha fresca semanal de quinteros y huertas agroecológicas de cercanía (-10% socios CsC).';
+    if (titleEl) titleEl.innerText = 'Compra Semanal - Huerta y Cosecha Viva';
+    if (descEl) descEl.innerText = 'Difundí la compra a tus familiares y amigos';
   }
 
   // Renderizar catálogo
@@ -727,7 +727,7 @@ function selectTierraModalidad(mode, updateUrl = true) {
 
   // Sincronizar URL limpia
   const nodeSlug = (AppState.activeNodeId || 'nodo-lomaverde').replace(/^nodo-/, '');
-  const urlSub = (normalizedMode === 'lunar') ? 'luanar' : 'semanal';
+  const urlSub = (normalizedMode === 'lunar') ? 'lunar' : 'semanal';
   const targetPath = '/' + nodeSlug + '/tierra/' + urlSub;
 
   if (updateUrl && window.history) {
@@ -758,7 +758,7 @@ function returnToTierraSelector(updateUrl = true) {
     nodeLabel.innerText = 'Elemento Tierra · Red Comunitaria ' + nodeName;
   }
   const lunarUrlLabel = document.getElementById('tierra-lunar-url-label');
-  if (lunarUrlLabel) lunarUrlLabel.innerText = '/' + nodeSlug + '/tierra/luanar';
+  if (lunarUrlLabel) lunarUrlLabel.innerText = '/' + nodeSlug + '/tierra/lunar';
   const semanalUrlLabel = document.getElementById('tierra-semanal-url-label');
   if (semanalUrlLabel) semanalUrlLabel.innerText = '/' + nodeSlug + '/tierra/semanal';
 
@@ -887,7 +887,7 @@ function navigateTo(viewName, updateHistory = true) {
           stateObj = { view: 'tierra', nodeId: AppState.activeNodeId, circuloId: activeC.id };
         } else {
           if (AppState.tierraSubMode === 'lunar') {
-            targetPath = '/' + nodeSlug + '/tierra/luanar';
+            targetPath = '/' + nodeSlug + '/tierra/lunar';
             stateObj = { view: 'tierra', tierraMode: 'lunar', nodeId: AppState.activeNodeId, circuloId: null };
           } else if (AppState.tierraSubMode === 'semanal') {
             targetPath = '/' + nodeSlug + '/tierra/semanal';

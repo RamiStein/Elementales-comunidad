@@ -49,19 +49,21 @@
         return;
       }
 
-      // Rutas de 5 Elementos (/lomaverde/tierra, /lomaverde/tierra/luanar, /lomaverde/agua, etc.)
+      // Rutas de 5 Elementos (/lomaverde/tierra, /lomaverde/tierra/lunar, /lomaverde/agua, etc.)
       var validNodes = ['lomaverde', 'nodo-lomaverde', 'lucila', 'nodo-lucila', 'cooperativa', 'chasqui'];
       var validElements = ['tierra', 'agua', 'fuego', 'aire', 'eter'];
 
       if (validNodes.indexOf(first) !== -1 && validElements.indexOf(second) !== -1) {
-        var modoParam = third ? '&modo=' + encodeURIComponent(third) : '';
+        var normalizedMode = (third === 'luanar' || third === 'lunar') ? 'lunar' : third;
+        var modoParam = normalizedMode ? '&modo=' + encodeURIComponent(normalizedMode) : '';
         localStorage.setItem('elementales_active_node', first.indexOf('nodo-') === 0 ? first : 'nodo-' + first);
         window.location.replace('/?nodo=' + encodeURIComponent(first) + '&view=' + encodeURIComponent(second) + modoParam + queryJoin + (hash || ''));
         return;
       }
 
       if (validElements.indexOf(first) !== -1) {
-        var modoParam = second ? '&modo=' + encodeURIComponent(second) : '';
+        var normalizedMode = (second === 'luanar' || second === 'lunar') ? 'lunar' : second;
+        var modoParam = normalizedMode ? '&modo=' + encodeURIComponent(normalizedMode) : '';
         localStorage.setItem('elementales_active_node', 'nodo-lomaverde');
         window.location.replace('/?nodo=lomaverde&view=' + encodeURIComponent(first) + modoParam + queryJoin + (hash || ''));
         return;
