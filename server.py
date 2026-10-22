@@ -117,7 +117,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             second = parts[1].lower() if len(parts) > 1 else ''
             third = parts[2].lower() if len(parts) > 2 else ''
 
-            if first in ['gestionelemental', 'gestionelemental.html']:
+            if first in ['admin', 'gestion', 'administracion', 'gestionelemental', 'gestionelemental.html']:
                 self.path = f"/gestionelemental.html?{query_part}" if query_part else "/gestionelemental.html"
             elif first in ['miembroelemental', 'miembroelemental.html']:
                 self.path = f"/miembroelemental.html?{query_part}" if query_part else "/miembroelemental.html"
@@ -239,6 +239,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
 if __name__ == "__main__":
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    if hasattr(sys.stderr, 'reconfigure'):
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
     web_dir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(web_dir)
     ensure_db()
@@ -255,11 +259,17 @@ if __name__ == "__main__":
     print(f"💾 Archivo de Base de Datos: {DB_FILE}")
     print("=" * 60)
     print("Presiona Ctrl+C para detener el servidor.")
+    sys.stdout.flush()
 
-    try:
-        webbrowser.open(url_local)
-    except Exception:
-        pass
+    import threading
+    def start_secondary_listener(p):
+        try:
+            with socketserver.TCPServer(("", p), Handler) as srv:
+                srv.serve_forever()
+        except Exception:
+            pass
+    t_sec = threading.Thread(target=start_secondary_listener, args=(8000,), daemon=True)
+    t_sec.start()
 
     with socketserver.TCPServer(("", PORT), Handler) as httpd:
         try:

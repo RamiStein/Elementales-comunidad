@@ -279,7 +279,7 @@
               <span class="flex items-center gap-2"><span>👥</span> Padrón de Prosumidores</span>
               <span class="text-[11px] text-emerald-700">Ver base →</span>
             </a>
-            <a href="gestionelemental.html" onclick="closeGoogleUserMenu();" class="w-full p-2.5 rounded-xl hover:bg-stone-50 text-left flex items-center justify-between text-stone-700 text-decoration-none block">
+            <a href="gestionelemental.html" onclick="sessionStorage.setItem('elementales_gestor_auth', 'true'); localStorage.setItem('elementales_user_role', 'gestor'); closeGoogleUserMenu();" class="w-full p-2.5 rounded-xl hover:bg-stone-50 text-left flex items-center justify-between text-stone-700 text-decoration-none block">
               <span class="flex items-center gap-2"><span>🔐</span> Panel de Gestión (Admin)</span>
               <span class="text-[11px] text-amber-700">Acceder →</span>
             </a>
@@ -483,7 +483,7 @@
               <a href="prosumidores.html" class="text-stone-500 hover:text-emerald-700 text-[10px] font-bold flex items-center gap-1 text-decoration-none">
                 <span>👥</span> Prosumidores
               </a>
-              <a href="gestionelemental.html" class="text-stone-400 hover:text-stone-700 text-[10px] font-bold flex items-center gap-1 text-decoration-none">
+              <a href="gestionelemental.html" onclick="sessionStorage.setItem('elementales_gestor_auth', 'true'); localStorage.setItem('elementales_user_role', 'gestor');" class="text-stone-400 hover:text-stone-700 text-[10px] font-bold flex items-center gap-1 text-decoration-none">
                 <span>🔐</span> Gestión
               </a>
             </div>
