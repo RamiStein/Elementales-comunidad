@@ -564,12 +564,7 @@
           🌕
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <span id="cart-total-items-label" class="font-black text-sm text-white">0 alimentos</span>
-            <span id="cart-total-savings-pill" class="text-[10px] font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.2 rounded-full">
-              Ahorro aplicado
-            </span>
-          </div>
+          <span id="cart-total-items-label" class="font-black text-xs sm:text-sm text-stone-200 block">0 alimentos</span>
           <span id="cart-total-price-label" class="font-mono font-black text-lg sm:text-xl text-emerald-400 block">$0</span>
         </div>
       </div>
@@ -678,107 +673,213 @@
   <!-- MODAL: CHECKOUT & CIERRE DE PEDIDO LUNAR                                  -->
   <!-- ========================================================================= -->
   <div id="modal-lunar-checkout" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
       
-      <!-- Encabezado Modal -->
-      <div class="p-5 sm:p-6 border-b border-stone-200 bg-stone-50/70 flex items-start justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
-              Compra Lunar · Ciclo 30/10
-            </span>
+      <!-- ========================================== -->
+      <!-- VISTA 1: FORMULARIO DE CHECKOUT Y REGISTRO -->
+      <!-- ========================================== -->
+      <div id="lunar-checkout-view-form" class="flex flex-col h-full max-h-[92vh]">
+        <!-- Encabezado Modal -->
+        <div class="p-5 sm:p-6 border-b border-stone-200 bg-stone-50/70 flex items-start justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
+                Compra Lunar · Ciclo 30/10
+              </span>
+            </div>
+            <h3 class="font-black text-xl text-stone-900 font-heading">
+              Resumen de tu Canasta Lunar
+            </h3>
+            <p class="text-xs text-stone-500 mt-0.5">
+              Completá tus datos para agendar el pedido y retirar en <strong id="checkout-node-summary-label">Nodo Loma Verde</strong>.
+            </p>
           </div>
-          <h3 class="font-black text-xl text-stone-900 font-heading">
-            Resumen de tu Canasta Lunar
-          </h3>
-          <p class="text-xs text-stone-500 mt-0.5">
-            Completá tus datos para agendar el pedido y retirar en <strong id="checkout-node-summary-label">Nodo Loma Verde</strong>.
-          </p>
+          <button type="button" onclick="closeLunarCheckoutModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
         </div>
-        <button type="button" onclick="closeLunarCheckoutModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+
+        <!-- Cuerpo del Checkout (Scrollable) -->
+        <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+          
+          <!-- Lista de Items en Carrito -->
+          <div class="border border-stone-200 rounded-2xl p-4 bg-stone-50/50 space-y-2.5" id="checkout-items-list">
+            <!-- Renderizado dinámicamente -->
+          </div>
+
+          <!-- Total a Abonar (Sin Ahorro) -->
+          <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl flex items-center justify-between text-xs">
+            <div>
+              <span class="text-stone-500 font-semibold block text-[11px] uppercase tracking-wider font-mono">Total a Abonar:</span>
+              <span id="checkout-total-price" class="font-heading font-black text-2xl text-emerald-950 block leading-tight">$0</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[11px] text-stone-500 font-semibold block uppercase tracking-wider font-mono">Punto de Retiro:</span>
+              <span id="checkout-node-sublabel" class="font-black text-stone-800 text-xs block">Nodo Loma Verde</span>
+            </div>
+          </div>
+
+          <!-- Formulario de Contacto -->
+          <form id="lunar-checkout-form" onsubmit="handleConfirmLunarOrder(event)" class="space-y-3">
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">Nombre Completo / Familia *</label>
+              <input 
+                type="text" 
+                id="lunar-order-name" 
+                required 
+                placeholder="ej. Mariana Gómez" 
+                class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
+              <input 
+                type="tel" 
+                id="lunar-order-phone" 
+                required 
+                placeholder="ej. 11 2345 6789" 
+                class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">Método de Pago</label>
+              <select id="lunar-order-payment" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none">
+                <option value="Transferencia">📱 Transferencia MP / Alias del Nodo</option>
+                <option value="Efectivo">💵 Efectivo al momento de retirar</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">Notas o Círculo Barrial (Opcional)</label>
+              <input 
+                type="text" 
+                id="lunar-order-notes" 
+                placeholder="ej. Retiro junto con Círculo Las Magnolias" 
+                class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+              />
+            </div>
+
+            <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+              <button 
+                type="button" 
+                onclick="closeLunarCheckoutModal()" 
+                class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold cursor-pointer transition-all"
+              >
+                Seguir Comprando
+              </button>
+              <button 
+                type="submit" 
+                id="btn-lunar-submit"
+                class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-black cursor-pointer shadow-xs hover:shadow-md transition-all flex items-center gap-2 font-heading"
+              >
+                <span>📝</span>
+                <span>Registrar Pedido</span>
+              </button>
+            </div>
+          </form>
+
+        </div>
       </div>
 
-      <!-- Cuerpo del Checkout (Scrollable) -->
-      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
-        
-        <!-- Lista de Items en Carrito -->
-        <div class="border border-stone-200 rounded-2xl p-4 bg-stone-50/50 space-y-2.5" id="checkout-items-list">
-          <!-- Renderizado dinámicamente -->
+      <!-- ========================================================================= -->
+      <!-- VISTA 2: PANTALLA CLARA DE PEDIDO REGISTRADO Y BOTÓN DE WHATSAPP         -->
+      <!-- ========================================================================= -->
+      <div id="lunar-checkout-view-success" class="hidden flex flex-col h-full max-h-[92vh]">
+        <!-- Encabezado de Éxito -->
+        <div class="p-5 sm:p-6 border-b border-stone-200 bg-emerald-50/50 flex items-start justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-2xl font-bold shrink-0 shadow-2xs">
+              ✓
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
+                  Confirmación de Compra
+                </span>
+                <span id="success-order-id-badge" class="font-mono text-[11px] font-bold text-stone-600 bg-white px-2 py-0.5 rounded-md border border-stone-200">
+                  #LUNAR-0000
+                </span>
+              </div>
+              <h3 class="font-black text-xl text-stone-900 font-heading">
+                ¡Pedido Registrado con Éxito!
+              </h3>
+            </div>
+          </div>
+          <button type="button" onclick="closeLunarCheckoutModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
         </div>
 
-        <!-- Totales y Ahorro -->
-        <div class="p-4 bg-emerald-50/40 border border-emerald-200 rounded-2xl flex items-center justify-between text-xs">
-          <div>
-            <span class="text-stone-600 block">Total a Abonar:</span>
-            <span id="checkout-total-price" class="font-mono font-black text-xl text-emerald-900">$0</span>
-          </div>
-          <div class="text-right">
-            <span class="text-[10px] text-emerald-800 font-bold block">Ahorro Comunitario:</span>
-            <span id="checkout-total-savings" class="font-mono font-bold text-emerald-700 text-sm">-$0</span>
-          </div>
-        </div>
-
-        <!-- Formulario de Contacto -->
-        <form id="lunar-checkout-form" onsubmit="handleConfirmLunarOrder(event)" class="space-y-3">
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">Nombre Completo / Familia *</label>
-            <input 
-              type="text" 
-              id="lunar-order-name" 
-              required 
-              placeholder="ej. Mariana Gómez" 
-              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
-            />
+        <!-- Contenido del Detalle del Pedido Registrado (Scrollable) -->
+        <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+          
+          <div class="text-center max-w-sm mx-auto space-y-1">
+            <p class="text-sm font-bold text-stone-900">
+              ¡Muchas gracias, <span id="success-client-name" class="text-emerald-800 font-black">Ramiro</span>!
+            </p>
+            <p class="text-xs text-stone-500 leading-relaxed">
+              Tu orden quedó guardada y agendada para el retiro en <strong id="success-node-name" class="text-stone-800">Nodo Loma Verde</strong>.
+            </p>
           </div>
 
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
-            <input 
-              type="tel" 
-              id="lunar-order-phone" 
-              required 
-              placeholder="ej. 11 2345 6789" 
-              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
-            />
+          <!-- Resumen Completo y Claro del Pedido -->
+          <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 text-xs space-y-3">
+            
+            <div class="flex items-center justify-between pb-2.5 border-b border-stone-200">
+              <div>
+                <span class="text-[10px] text-stone-400 font-mono uppercase block font-bold">Entrega Comunitaria:</span>
+                <span id="success-delivery-date" class="font-bold text-stone-800 text-xs">Sábado 1 de Noviembre</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] text-stone-400 font-mono uppercase block font-bold">Total a Pagar:</span>
+                <span id="success-total-price" class="font-mono font-black text-xl text-emerald-900">$0</span>
+              </div>
+            </div>
+
+            <!-- Desglose de Alimentos Solicitados -->
+            <div>
+              <span class="text-[10px] text-stone-400 font-mono uppercase block font-bold mb-1.5">Alimentos Solicitados:</span>
+              <div id="success-items-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                <!-- Items renderizados aquí -->
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-stone-200 text-[11px] text-stone-600 space-y-1.5">
+              <p>📍 <strong>Punto de Retiro:</strong> <span id="success-location-label">Calle Congreve & Arrayanes</span></p>
+              <p>💳 <strong>Método de Pago:</strong> <span id="success-payment-label">Transferencia</span></p>
+              <p id="success-notes-row" class="hidden">📝 <strong>Notas:</strong> <span id="success-notes-label"></span></p>
+            </div>
           </div>
 
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">Método de Pago Preferido</label>
-            <select id="lunar-order-payment" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none">
-              <option value="Transferencia">📱 Transferencia MP / Alias del Nodo</option>
-              <option value="Efectivo">💵 Efectivo al momento de retirar</option>
-            </select>
-          </div>
+          <!-- Bloque de Enviar Mensaje a WhatsApp -->
+          <div class="space-y-2.5 pt-2">
+            <div class="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-3 text-center">
+              <p class="text-xs text-emerald-950 font-semibold leading-relaxed">
+                El pedido ya está registrado. Ahora podés enviar el mensaje a WhatsApp para confirmar la compra con el coordinador:
+              </p>
+            </div>
 
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">Notas o Círculo Barrial (Opcional)</label>
-            <input 
-              type="text" 
-              id="lunar-order-notes" 
-              placeholder="ej. Retiro junto con Círculo Las Magnolias" 
-              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
-            />
-          </div>
+            <button 
+              type="button" 
+              id="success-btn-whatsapp"
+              onclick="sendOrderViaWhatsApp()"
+              class="w-full py-3.5 px-6 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] active:scale-98 text-white font-black text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2.5 font-heading"
+            >
+              <span class="text-xl">💬</span>
+              <span>Enviar Pedido a WhatsApp</span>
+              <span class="text-lg font-normal">→</span>
+            </button>
 
-          <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
             <button 
               type="button" 
               onclick="closeLunarCheckoutModal()" 
-              class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold cursor-pointer transition-all"
+              class="w-full py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold cursor-pointer transition-colors text-center"
             >
-              Seguir Comprando
-            </button>
-            <button 
-              type="submit" 
-              class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black cursor-pointer shadow-xs hover:shadow-md transition-all flex items-center gap-2"
-            >
-              <span>🌕</span>
-              <span>Enviar Pedido Lunar</span>
+              Volver a la Tienda
             </button>
           </div>
-        </form>
 
+        </div>
       </div>
+
     </div>
   </div>
 
@@ -798,7 +899,8 @@
         location: 'Calle Congreve & Arrayanes, Loma Verde (Escobar)',
         deliveryDate: 'Sábado 1 de Noviembre',
         icon: '🌿',
-        badge: 'Sede Activa'
+        badge: 'Sede Activa',
+        phone: '5491133445566'
       },
       'chasqui': {
         id: 'nodo-cooperativa',
@@ -808,7 +910,8 @@
         location: 'Espacio Cultural & Almacén Chasqui, Maschwitz',
         deliveryDate: 'Domingo 2 de Noviembre',
         icon: '🌾',
-        badge: 'Cooperativa'
+        badge: 'Cooperativa',
+        phone: '5491123456789'
       },
       'central': {
         id: 'nodo-central',
@@ -818,7 +921,8 @@
         location: 'Punto de acopio costero Florida / V. López',
         deliveryDate: 'Primer fin de semana de Noviembre',
         icon: '🌊',
-        badge: 'Corredor Río'
+        badge: 'Corredor Río',
+        phone: '5491123456789'
       }
     };
 
@@ -1416,10 +1520,10 @@
                   <div class="flex items-center gap-2">
                     <h4 class="font-bold text-stone-900 text-sm">Mayorista <span class="text-xs text-stone-500 font-normal">(6 a 19 un.)</span></h4>
                     <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.2 rounded-full border border-emerald-200 font-mono">
-                      -15% Ahorro
+                      Escala +6 un.
                     </span>
                   </div>
-                  <span class="text-xs text-stone-500 block mt-0.5">Compra Colectiva / Familiar +6 un.</span>
+                  <span class="text-xs text-stone-500 block mt-0.5">Compra Colectiva / Familiar</span>
                 </div>
                 <div class="text-right">
                   <span class="tier-price font-heading font-black text-xl sm:text-2xl text-stone-900">
@@ -1437,10 +1541,10 @@
                   <div class="flex items-center gap-2">
                     <h4 class="font-bold text-stone-900 text-sm">Distribuidor <span class="text-xs text-stone-500 font-normal">(+20 un.)</span></h4>
                     <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.2 rounded-full border border-emerald-300 font-mono">
-                      -25% Costo de Red
+                      Escala +20 un.
                     </span>
                   </div>
-                  <span class="text-xs text-stone-500 block mt-0.5">Gran Volumen / Reventa +20 un.</span>
+                  <span class="text-xs text-stone-500 block mt-0.5">Gran Volumen / Círculo Barrial</span>
                 </div>
                 <div class="text-right">
                   <span class="tier-price font-heading font-black text-xl sm:text-2xl text-stone-900">
@@ -1571,18 +1675,13 @@
       floatingEl.classList.remove('hidden');
 
       let totalPrice = 0;
-      let totalMinoristaPrice = 0;
-
       entries.forEach(([id, qty]) => {
         const prod = LUNAR_PRODUCTS.find(p => p.id === id);
         if (prod) {
           const unitPrice = getProductUnitPrice(prod, qty);
           totalPrice += unitPrice * qty;
-          totalMinoristaPrice += prod.prices.minorista * qty;
         }
       });
-
-      const totalSavings = totalMinoristaPrice - totalPrice;
 
       const itemsLabel = document.getElementById('cart-total-items-label');
       if (itemsLabel) {
@@ -1593,21 +1692,13 @@
       if (priceLabel) {
         priceLabel.textContent = `$${totalPrice.toLocaleString('es-AR')}`;
       }
-
-      const savingsPill = document.getElementById('cart-total-savings-pill');
-      if (savingsPill) {
-        if (totalSavings > 0) {
-          savingsPill.textContent = `Ahorro de red: -$${totalSavings.toLocaleString('es-AR')}`;
-          savingsPill.classList.remove('hidden');
-        } else {
-          savingsPill.classList.add('hidden');
-        }
-      }
     }
 
     // =========================================================================
-    // 8. MODALES Y CIERRE DE PEDIDO
+    // 8. MODALES Y CIERRE DE PEDIDO (FLUJO EN DOS PASOS: REGISTRO + WHATSAPP)
     // =========================================================================
+    let currentOrderWaUrl = '';
+
     function openProducerStoryModal(prodId) {
       const prod = LUNAR_PRODUCTS.find(p => p.id === prodId);
       if (!prod) return;
@@ -1637,11 +1728,14 @@
       const listContainer = document.getElementById('checkout-items-list');
       if (!modal || !listContainer) return;
 
+      // Asegurar que la vista inicial del modal sea el formulario de registro
+      document.getElementById('lunar-checkout-view-form')?.classList.remove('hidden');
+      document.getElementById('lunar-checkout-view-success')?.classList.add('hidden');
+
       const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
       if (entries.length === 0) return;
 
       let totalPrice = 0;
-      let totalSavings = 0;
 
       listContainer.innerHTML = entries.map(([id, qty]) => {
         const prod = LUNAR_PRODUCTS.find(p => p.id === id);
@@ -1650,33 +1744,32 @@
         const unitPrice = getProductUnitPrice(prod, qty);
         const itemTotal = unitPrice * qty;
         totalPrice += itemTotal;
-        const savingsItem = (prod.prices.minorista - unitPrice) * qty;
-        totalSavings += savingsItem;
 
         let tierName = 'Minorista';
         if (qty >= 20) tierName = 'Distribuidor (+20)';
         else if (qty >= 6) tierName = 'Mayorista (+6)';
 
         return `
-          <div class="flex items-center justify-between text-xs py-1.5 border-b border-stone-200 last:border-b-0">
+          <div class="flex items-center justify-between text-xs py-2 border-b border-stone-200 last:border-b-0">
             <div>
-              <strong class="text-stone-900 block font-bold">${prod.name}</strong>
-              <span class="text-[11px] text-stone-500">${qty}x ${prod.unit} • Escala: <strong class="text-emerald-700">${tierName}</strong></span>
+              <strong class="text-stone-900 block font-bold text-[13px]">${prod.name}</strong>
+              <span class="text-[11px] text-stone-500">${qty}x ${prod.unit} • Escala: <strong class="text-stone-700">${tierName}</strong></span>
             </div>
             <div class="text-right">
-              <span class="font-mono font-bold text-stone-900 block">$${itemTotal.toLocaleString('es-AR')}</span>
-              ${savingsItem > 0 ? `<span class="text-[10px] text-emerald-700 font-bold block">-$${savingsItem.toLocaleString('es-AR')}</span>` : ''}
+              <span class="font-mono font-bold text-stone-900 block text-sm">$${itemTotal.toLocaleString('es-AR')}</span>
             </div>
           </div>
         `;
       }).join('');
 
       document.getElementById('checkout-total-price').textContent = `$${totalPrice.toLocaleString('es-AR')}`;
-      document.getElementById('checkout-total-savings').textContent = `-$${totalSavings.toLocaleString('es-AR')}`;
 
       // Nodo activo en el resumen
       const node = LUNAR_NODOS[selectedNodeSlug] || LUNAR_NODOS['lomaverde'];
-      document.getElementById('checkout-node-summary-label').textContent = node.name;
+      const nodeLabel1 = document.getElementById('checkout-node-summary-label');
+      if (nodeLabel1) nodeLabel1.textContent = node.name;
+      const nodeLabel2 = document.getElementById('checkout-node-sublabel');
+      if (nodeLabel2) nodeLabel2.textContent = node.name;
 
       // Autocompletar datos si existen en sesión
       try {
@@ -1690,7 +1783,13 @@
     }
 
     function closeLunarCheckoutModal() {
-      document.getElementById('modal-lunar-checkout')?.classList.add('hidden');
+      const modal = document.getElementById('modal-lunar-checkout');
+      if (modal) modal.classList.add('hidden');
+      // Dejar preparado el formulario para la próxima apertura
+      setTimeout(() => {
+        document.getElementById('lunar-checkout-view-form')?.classList.remove('hidden');
+        document.getElementById('lunar-checkout-view-success')?.classList.add('hidden');
+      }, 300);
     }
 
     function handleConfirmLunarOrder(e) {
@@ -1700,6 +1799,10 @@
       const node = LUNAR_NODOS[selectedNodeSlug] || LUNAR_NODOS['lomaverde'];
       const payment = document.getElementById('lunar-order-payment')?.value || 'Transferencia';
       const notes = document.getElementById('lunar-order-notes')?.value.trim() || '';
+
+      if (!name || !phone) {
+        return;
+      }
 
       const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
       if (entries.length === 0) return;
@@ -1754,7 +1857,16 @@
         localStorage.setItem('elementales_user_phone', phone);
       } catch (err) {}
 
-      // Generar mensaje para WhatsApp
+      // Intentar sincronización con backend local si está en ejecución
+      try {
+        fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newOrder)
+        }).catch(() => {});
+      } catch (e) {}
+
+      // Generar mensaje para WhatsApp con formato limpio (sin mención de ahorro)
       const itemsText = orderItems.map(i => `• ${i.qty}x ${i.name} -> $${i.total.toLocaleString('es-AR')}`).join('\n');
       const waText = encodeURIComponent(
 `🌕 *NUEVO PEDIDO - COMPRA LUNAR ELEMENTALES*
@@ -1771,26 +1883,81 @@ ${itemsText}
 
 *TOTAL A ABONAR:* $${totalAmount.toLocaleString('es-AR')}
 ----------------------------------------
-_Pedido enviado desde elementales.store/compralunar/nodos/${node.slug}_`
+_Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
       );
 
-      // Limpiar carrito lunar
+      // Guardar URL de WhatsApp para cuando el usuario presione el botón
+      const coordPhone = node.phone || '5491133445566';
+      currentOrderWaUrl = `https://wa.me/${coordPhone}?text=${waText}`;
+
+      // Rellenar datos en la pantalla de éxito
+      const clientNameEl = document.getElementById('success-client-name');
+      if (clientNameEl) clientNameEl.textContent = name;
+
+      const orderBadgeEl = document.getElementById('success-order-id-badge');
+      if (orderBadgeEl) orderBadgeEl.textContent = `#${newOrder.id}`;
+
+      const nodeNameEl = document.getElementById('success-node-name');
+      if (nodeNameEl) nodeNameEl.textContent = node.name;
+
+      const deliveryDateEl = document.getElementById('success-delivery-date');
+      if (deliveryDateEl) deliveryDateEl.textContent = node.deliveryDate;
+
+      const totalPriceEl = document.getElementById('success-total-price');
+      if (totalPriceEl) totalPriceEl.textContent = `$${totalAmount.toLocaleString('es-AR')}`;
+
+      const locationEl = document.getElementById('success-location-label');
+      if (locationEl) locationEl.textContent = node.location;
+
+      const paymentEl = document.getElementById('success-payment-label');
+      if (paymentEl) paymentEl.textContent = payment;
+
+      const notesRow = document.getElementById('success-notes-row');
+      const notesEl = document.getElementById('success-notes-label');
+      if (notesRow && notesEl) {
+        if (notes) {
+          notesEl.textContent = notes;
+          notesRow.classList.remove('hidden');
+        } else {
+          notesRow.classList.add('hidden');
+        }
+      }
+
+      const successList = document.getElementById('success-items-list');
+      if (successList) {
+        successList.innerHTML = orderItems.map(i => `
+          <div class="flex items-center justify-between text-xs py-1 border-b border-stone-200/60 last:border-b-0">
+            <span class="text-stone-800 font-semibold">${i.qty}x ${i.name}</span>
+            <span class="font-mono font-bold text-stone-900">$${i.total.toLocaleString('es-AR')}</span>
+          </div>
+        `).join('');
+      }
+
+      // Vaciar carrito
       lunarCart = {};
       saveLunarCart();
       updateFloatingCart();
-      closeLunarCheckoutModal();
 
+      // Confetti de celebración
       try {
         if (typeof confetti === 'function') {
-          confetti({ particleCount: 70, spread: 80, origin: { y: 0.5 } });
+          confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
         }
       } catch (err) {}
 
-      // Abrir WhatsApp con el pedido armado
-      const waUrl = `https://wa.me/5491123456789?text=${waText}`;
-      window.open(waUrl, '_blank');
+      // Mostrar pantalla de confirmación dentro del modal (SIN alert y SIN salto automático a WhatsApp)
+      document.getElementById('lunar-checkout-view-form')?.classList.add('hidden');
+      const successView = document.getElementById('lunar-checkout-view-success');
+      if (successView) {
+        successView.classList.remove('hidden');
+        successView.scrollTop = 0;
+      }
+    }
 
-      alert(`✓ ¡Gracias ${name}! Tu Pedido #${newOrder.id} de la Compra Lunar fue registrado. Se abrirá WhatsApp para enviar tu pedido al coordinador de ${node.name}.`);
+    function sendOrderViaWhatsApp() {
+      if (currentOrderWaUrl) {
+        window.open(currentOrderWaUrl, '_blank');
+      }
     }
 
     // =========================================================================
