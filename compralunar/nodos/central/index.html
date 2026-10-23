@@ -700,6 +700,13 @@
         <!-- Cuerpo del Checkout (Scrollable) -->
         <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
           
+          <div class="flex items-center justify-between pb-0.5">
+            <span class="font-bold text-stone-700 text-xs">Alimentos en tu canasta:</span>
+            <button type="button" onclick="clearLunarCart()" class="text-[11px] text-stone-400 hover:text-rose-600 underline cursor-pointer transition-colors">
+              Vaciar canasta
+            </button>
+          </div>
+
           <!-- Lista de Items en Carrito -->
           <div class="border border-stone-200 rounded-2xl p-4 bg-stone-50/50 space-y-2.5" id="checkout-items-list">
             <!-- Renderizado dinámicamente -->
@@ -1207,7 +1214,18 @@
     // Cargar carrito persistido
     try {
       const savedCart = localStorage.getItem('elementales_lunar_cart');
-      if (savedCart) lunarCart = JSON.parse(savedCart);
+      if (savedCart) {
+        lunarCart = JSON.parse(savedCart);
+        // Si hay productos en la canasta, enfocar el primer producto que tiene unidades
+        const inCartIds = Object.keys(lunarCart).filter(k => lunarCart[k] > 0);
+        if (inCartIds.length > 0) {
+          const match = LUNAR_PRODUCTS.find(p => p.id === inCartIds[0]);
+          if (match) {
+            activeProductId = match.id;
+            activeCategoryId = match.categoryId;
+          }
+        }
+      }
     } catch (e) { lunarCart = {}; }
 
     // ROUTER SPA DE LA COMPRA LUNAR
@@ -1376,14 +1394,22 @@
 
       container.innerHTML = prods.map(prod => {
         const isActive = prod.id === activeProductId;
+        const inCartQty = lunarCart[prod.id] || 0;
+        const badge = inCartQty > 0 ? `
+          <span class="inline-flex items-center justify-center px-1.5 py-0.2 rounded-full text-[10px] font-mono font-black ml-1.5 ${isActive ? 'bg-white text-emerald-800' : 'bg-emerald-600 text-white shadow-2xs'}">
+            ${inCartQty}
+          </span>
+        ` : '';
+
         return `
           <button 
             type="button" 
             id="pill-${prod.id}"
             onclick="selectActiveProduct('${prod.id}')"
-            class="product-pill px-4 py-2 rounded-full border text-xs sm:text-sm font-bold whitespace-nowrap cursor-pointer shadow-2xs ${isActive ? 'active' : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'}"
+            class="product-pill px-4 py-2 rounded-full border text-xs sm:text-sm font-bold whitespace-nowrap cursor-pointer shadow-2xs inline-flex items-center ${isActive ? 'active' : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'}"
           >
-            ${prod.name}
+            <span>${prod.name}</span>
+            ${badge}
           </button>
         `;
       }).join('');
@@ -1422,6 +1448,28 @@
 
       const prod = LUNAR_PRODUCTS.find(p => p.id === activeProductId) || LUNAR_PRODUCTS[0];
       const qty = lunarCart[prod.id] || 0;
+
+      // Otros productos presentes en la canasta
+      const otherInCart = Object.entries(lunarCart).filter(([id, q]) => id !== prod.id && q > 0);
+      let otherNoticeHtml = '';
+      if (otherInCart.length > 0) {
+        const otherDesc = otherInCart.map(([id, q]) => {
+          const p = LUNAR_PRODUCTS.find(x => x.id === id);
+          return `${q}x ${p ? p.name.split(' ')[0] : 'alimento'}`;
+        }).join(', ');
+        const firstOtherId = otherInCart[0][0];
+        otherNoticeHtml = `
+          <div class="mt-3 p-2.5 rounded-2xl bg-stone-100/90 border border-stone-200 text-stone-600 text-xs flex items-center justify-between gap-2 max-w-md mx-auto">
+            <div class="flex items-center gap-2 truncate">
+              <span>🧺</span>
+              <span class="truncate">Otros en tu canasta: <strong class="text-stone-800">${otherDesc}</strong></span>
+            </div>
+            <button type="button" onclick="selectActiveProduct('${firstOtherId}')" class="text-emerald-700 hover:text-emerald-900 font-bold underline shrink-0 cursor-pointer text-xs">
+              Ver
+            </button>
+          </div>
+        `;
+      }
 
       let activeTier = 'minorista';
       if (qty >= 20) {
@@ -1574,6 +1622,20 @@
 
             <!-- Selector de Cantidad (Stepper Redondo) -->
             <div class="pt-4 flex flex-col items-center justify-center gap-2">
+              
+              <div class="text-center mb-0.5">
+                ${qty > 0 ? `
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold font-mono shadow-2xs">
+                    <span>✓</span>
+                    <span>${qty} ${prod.unit} en tu canasta</span>
+                  </span>
+                ` : `
+                  <span class="text-xs text-stone-400 font-semibold">
+                    Cantidad de este alimento: <strong class="text-stone-700">0</strong>
+                  </span>
+                `}
+              </div>
+
               <div class="flex items-center gap-6">
                 
                 <button 
@@ -1605,9 +1667,11 @@
 
               </div>
 
-              <span class="text-[11px] text-stone-400 font-medium">
-                Elegí la cantidad para este formato
+              <span class="text-[11px] text-stone-400 font-medium text-center">
+                Elegí cuántas unidades de <strong>${prod.name}</strong> querés sumar
               </span>
+
+              ${otherNoticeHtml}
             </div>
 
           </div>
@@ -1685,7 +1749,13 @@
 
       const itemsLabel = document.getElementById('cart-total-items-label');
       if (itemsLabel) {
-        itemsLabel.textContent = `${totalUnits} ${totalUnits === 1 ? 'unidad' : 'unidades'} en tu canasta`;
+        if (entries.length === 1) {
+          const singleProd = LUNAR_PRODUCTS.find(p => p.id === entries[0][0]);
+          const shortName = singleProd ? singleProd.name.split(' ')[0] : 'alimento';
+          itemsLabel.textContent = `${totalUnits} ${totalUnits === 1 ? 'unidad' : 'unidades'} de ${shortName}`;
+        } else {
+          itemsLabel.textContent = `${totalUnits} unidades en total (${entries.length} alimentos)`;
+        }
       }
 
       const priceLabel = document.getElementById('cart-total-price-label');
@@ -1723,6 +1793,30 @@
       document.getElementById('modal-circulos-info')?.classList.add('hidden');
     }
 
+    function removeItemFromCart(prodId) {
+      delete lunarCart[prodId];
+      saveLunarCart();
+      renderProductsPills();
+      renderActiveProductShowcase();
+      updateFloatingCart();
+
+      const remaining = Object.keys(lunarCart).length;
+      if (remaining === 0) {
+        closeLunarCheckoutModal();
+      } else {
+        openLunarCheckoutModal();
+      }
+    }
+
+    function clearLunarCart() {
+      lunarCart = {};
+      saveLunarCart();
+      renderProductsPills();
+      renderActiveProductShowcase();
+      updateFloatingCart();
+      closeLunarCheckoutModal();
+    }
+
     function openLunarCheckoutModal() {
       const modal = document.getElementById('modal-lunar-checkout');
       const listContainer = document.getElementById('checkout-items-list');
@@ -1750,13 +1844,21 @@
         else if (qty >= 6) tierName = 'Mayorista (+6)';
 
         return `
-          <div class="flex items-center justify-between text-xs py-2 border-b border-stone-200 last:border-b-0">
-            <div>
-              <strong class="text-stone-900 block font-bold text-[13px]">${prod.name}</strong>
+          <div class="flex items-center justify-between text-xs py-2 border-b border-stone-200 last:border-b-0 gap-3">
+            <div class="flex-1 truncate">
+              <strong class="text-stone-900 block font-bold text-[13px] truncate">${prod.name}</strong>
               <span class="text-[11px] text-stone-500">${qty}x ${prod.unit} • Escala: <strong class="text-stone-700">${tierName}</strong></span>
             </div>
-            <div class="text-right">
-              <span class="font-mono font-bold text-stone-900 block text-sm">$${itemTotal.toLocaleString('es-AR')}</span>
+            <div class="text-right shrink-0 flex items-center gap-2">
+              <span class="font-mono font-bold text-stone-900 text-sm">$${itemTotal.toLocaleString('es-AR')}</span>
+              <button 
+                type="button" 
+                onclick="removeItemFromCart('${prod.id}')" 
+                class="w-6 h-6 rounded-full bg-stone-100 hover:bg-rose-100 hover:text-rose-700 text-stone-400 flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
+                title="Quitar este alimento de la canasta"
+              >
+                ✕
+              </button>
             </div>
           </div>
         `;
