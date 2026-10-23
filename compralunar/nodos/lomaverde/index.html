@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <base href="/" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compra Lunar · Sincronizarnos en el tiempo para recuperar la comunidad</title>
+  <meta name="description" content="Compra Lunar colectiva organizada por Elementales Comunidad. Alimentos agroecológicos nobles al costo de red directa campesina en escala minorista, mayorista y distribuidor." />
+
+  <!-- Google Fonts: Outfit, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Outfit', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              cream: '#fdfbf7',
+              earth: '#a6634f',
+              forest: '#2d6a4f',
+              emerald: '#10b981',
+              night: '#0a0b14',
+              gold: '#d97706',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      background-color: #fcfaf8;
+      color: #1c1917;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-heading {
+      font-family: 'Outfit', sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f0ee;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #d6d3d1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a8a29e;
+    }
+
+    /* Botones de categorías estilo VRDE Club */
+    .vrde-cat-card {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .vrde-cat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.12);
+    }
+    .vrde-cat-card.active {
+      border-color: #0f172a;
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.85), 0 8px 20px -4px rgba(0,0,0,0.2);
+    }
+
+    /* Píldoras del carrusel */
+    .product-pill {
+      transition: all 0.2s ease;
+    }
+    .product-pill.active {
+      background-color: #10b981;
+      color: #ffffff;
+      border-color: #10b981;
+      font-weight: 700;
+    }
+
+    /* Escalas comerciales (Minorista, Mayorista, Distribuidor) */
+    .tier-card {
+      transition: all 0.2s ease;
+    }
+    .tier-card.active {
+      border-color: #10b981;
+      background-color: #f0fdf4;
+      box-shadow: 0 0 0 2px #10b981;
+    }
+    .tier-card.active .tier-price {
+      color: #059669;
+    }
+
+    /* Animación de entrada suave */
+    .fade-enter {
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-100 selection:text-emerald-900 pb-28">
+
+  <!-- ========================================================================= -->
+  <!-- 1. HEADER: ELEMENTALES COMUNIDAD (SOLO EL LOGO A LA IZQUIERDA Y NADA MÁS) -->
+  <!-- ========================================================================= -->
+  <header class="w-full bg-white/95 backdrop-blur-md border-b border-stone-200 sticky top-0 z-40 px-4 sm:px-8 py-3.5 transition-all">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <a href="/compralunar" onclick="handleLogoClick(event)" class="flex items-center gap-3 text-decoration-none group" title="Elementales Comunidad · Compra Lunar">
+        <img 
+          src="public/assets/brand/comunidad_full_clean.png" 
+          alt="Elementales Comunidad" 
+          class="h-8 sm:h-10 object-contain group-hover:opacity-90 transition-opacity filter drop-shadow-2xs" 
+          onerror="this.src='public/assets/brand/comunidad_emblem_clean.png'"
+        />
+      </a>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- VISTA 1: LANDING INICIAL (URL: /compralunar)                              -->
+  <!-- ========================================================================= -->
+  <div id="view-compralunar-landing" class="lunar-view w-full max-w-5xl mx-auto px-4 sm:px-6 pt-5 space-y-8 sm:space-y-10 fade-enter">
+    
+    <!-- BANNER CON IMAGEN DE LA LUNA EN SUS FASES (NUEVA A LLENA) -->
+    <section class="relative rounded-3xl overflow-hidden border-2 border-indigo-900/50 bg-gradient-to-br from-[#07080f] via-[#101222] to-[#0a0b16] text-white p-6 sm:p-10 shadow-2xl">
+      
+      <!-- Fondos celestiales de nebulosa -->
+      <div class="absolute -right-24 -top-24 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+        
+        <!-- Texto del Banner -->
+        <div class="max-w-xl text-center md:text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-950/90 border border-indigo-400/40 text-indigo-300 text-[11px] font-black uppercase tracking-wider mb-3 font-mono shadow-xs">
+            <span>🌕</span>
+            <span>Ciclos de Soberanía Alimentaria</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl font-black text-white font-heading tracking-tight leading-tight">
+            Compra Lunar · <span class="bg-gradient-to-r from-amber-200 via-indigo-100 to-white bg-clip-text text-transparent">Ciclos Comunitarios</span>
+          </h1>
+
+          <p class="text-sm sm:text-base text-stone-300 mt-3 leading-relaxed">
+            Abastecimiento programado de alimentos nobles al <strong>costo de red directa campesina (-25% a -40%)</strong>. 
+            Una compra colectiva que reúne a los vecinos de la red barrial desde la Luna Nueva hasta la Luna Llena.
+          </p>
+
+          <div class="mt-5 flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs">
+            <span class="inline-flex items-center gap-1.5 text-indigo-200 font-semibold bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
+              <span>⏳</span>
+              <span>Cierre de pedidos: <strong class="text-white font-bold">30 de Octubre</strong></span>
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-emerald-300 font-semibold bg-emerald-950/50 border border-emerald-500/40 px-3 py-1.5 rounded-xl">
+              <span>🚚</span>
+              <span>Entrega unificada: <strong class="text-white font-bold">Primer fin de semana de Noviembre</strong></span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Retrato Artístico de las Fases Lunares (Nueva a Llena) -->
+        <div class="shrink-0 flex items-center justify-center gap-2.5 sm:gap-3.5 p-4 rounded-3xl bg-black/50 border border-indigo-400/30 backdrop-blur-md shadow-2xl">
+          
+          <!-- 1. Luna Nueva -->
+          <div class="flex flex-col items-center gap-1.5 group cursor-default" title="Luna Nueva (Siembra e Inicio)">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#161824] border border-indigo-500/40 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0a0b12] border border-stone-800"></div>
+            </div>
+            <span class="text-[9px] font-mono text-indigo-300/70 font-bold uppercase tracking-wider">Nueva</span>
+          </div>
+
+          <!-- 2. Luna Creciente -->
+          <div class="flex flex-col items-center gap-1.5 group cursor-default" title="Luna Creciente">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#161824] border border-indigo-500/40 flex items-center justify-center shadow-inner relative overflow-hidden group-hover:scale-105 transition-transform">
+              <div class="absolute right-0 top-0 bottom-0 w-4 sm:w-5 bg-gradient-to-l from-indigo-100 to-indigo-300 rounded-r-full"></div>
+            </div>
+            <span class="text-[9px] font-mono text-indigo-300/70 font-bold uppercase tracking-wider">Creciente</span>
+          </div>
+
+          <!-- 3. Cuarto Creciente -->
+          <div class="flex flex-col items-center gap-1.5 group cursor-default" title="Cuarto Creciente">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#161824] border border-indigo-500/40 flex items-center justify-center shadow-inner relative overflow-hidden group-hover:scale-105 transition-transform">
+              <div class="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-white via-indigo-100 to-indigo-300"></div>
+            </div>
+            <span class="text-[9px] font-mono text-indigo-300/70 font-bold uppercase tracking-wider">Cuarto</span>
+          </div>
+
+          <!-- 4. Gibosa Creciente -->
+          <div class="flex flex-col items-center gap-1.5 group cursor-default" title="Gibosa Creciente">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-l from-white to-indigo-200 border border-indigo-300/50 flex items-center justify-center shadow-md relative overflow-hidden group-hover:scale-105 transition-transform">
+              <div class="absolute left-0 top-0 bottom-0 w-3 sm:w-4 bg-[#161824] rounded-r-full"></div>
+            </div>
+            <span class="text-[9px] font-mono text-indigo-300/70 font-bold uppercase tracking-wider">Gibosa</span>
+          </div>
+
+          <!-- 5. Luna Llena -->
+          <div class="flex flex-col items-center gap-1.5 group cursor-default" title="Luna Llena (Cierre, Cosecha y Entrega)">
+            <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-gradient-to-br from-white via-[#f1f5f9] to-[#cbd5e1] border-2 border-indigo-200 shadow-[0_0_25px_rgba(255,255,255,0.85)] flex items-center justify-center relative overflow-hidden group-hover:scale-110 transition-transform">
+              <div class="absolute w-2 h-2 rounded-full bg-stone-400/35 top-2.5 left-2.5"></div>
+              <div class="absolute w-3 h-2.5 rounded-full bg-stone-400/25 bottom-2.5 right-2.5"></div>
+              <div class="absolute w-1.5 h-1.5 rounded-full bg-stone-400/20 top-4 right-3.5"></div>
+            </div>
+            <span class="text-[10px] font-mono text-amber-200 font-black uppercase tracking-wider">Llena 🌕</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN: POR QUÉ SUMARSE A LA COMPRA LUNAR (SINCRONIZARSE EN EL TIEMPO) -->
+    <section class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-10 shadow-xs space-y-8">
+      
+      <!-- Cita inspiradora y encabezado -->
+      <div class="text-center max-w-2xl mx-auto space-y-3">
+        <span class="text-xs font-black uppercase tracking-widest text-[#a6634f] bg-[#fcf4f0] px-3.5 py-1 rounded-full border border-[#eddcd5] inline-block font-mono">
+          FILOSOFÍA DE SOBERANÍA COLECTIVA
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-black text-stone-900 font-heading tracking-tight leading-snug">
+          "Al sincronizarse en el tiempo, las personas recuperamos la comunidad."
+        </h2>
+        <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+          Vivimos bajo la ilusión del consumo inmediato, individual y desarticulado. 
+          La Compra Lunar propone volver a latir con el pulso biológico de la tierra: juntarnos para comprar juntos, abaratar costos y tejer confianza barrial.
+        </p>
+      </div>
+
+      <!-- Cuatro Pilares Fundamentales (Diseño estético de tarjetas) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+        
+        <!-- Pilar 1: Sincronía vs Ansiedad -->
+        <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#fcfaf8] to-white border border-stone-200/90 hover:border-[#a6634f]/40 hover:shadow-sm transition-all space-y-2.5">
+          <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl shadow-2xs">
+            ⏳
+          </div>
+          <h3 class="font-black text-lg text-stone-900 font-heading">
+            Ritmo Natural vs. Consumo Ansioso
+          </h3>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            La tierra no cosecha a demanda las 24 horas del día. Al sincronizar nuestros pedidos una vez al mes con el ciclo de la luna, permitimos que las quintas y molinos campesinos planifiquen cosechas limpias sin desperdicio ni especulación.
+          </p>
+        </div>
+
+        <!-- Pilar 2: Poder Colectivo y Precios al Costo -->
+        <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#fcfaf8] to-white border border-stone-200/90 hover:border-emerald-500/40 hover:shadow-sm transition-all space-y-2.5">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-2xl shadow-2xs">
+            🤝
+          </div>
+          <h3 class="font-black text-lg text-stone-900 font-heading">
+            Escala Distribuidor al Costo Campesino
+          </h3>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            Una sola familia no puede comprar 20 bolsas de lentejas o 50 kilos de harina. Pero 10 vecinos agrupados sí. 
+            Al coordinar la compra en el nodo, todos accedemos al <strong>precio mayorista y distribuidor (-25% a -40%)</strong> pagando precio directo de productor.
+          </p>
+        </div>
+
+        <!-- Pilar 3: Alimentos Vivos y Nobles -->
+        <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#fcfaf8] to-white border border-stone-200/90 hover:border-sky-500/40 hover:shadow-sm transition-all space-y-2.5">
+          <div class="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-200 flex items-center justify-center text-2xl shadow-2xs">
+            🌾
+          </div>
+          <h3 class="font-black text-lg text-stone-900 font-heading">
+            Alimentos que Regeneran el Suelo
+          </h3>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            Legumbres de semilla no transgénica, harinas integrales de molienda campesina a piedra, yerba mate secada a leña sin humo y mieles puras del delta sin filtrar. Comida limpia que nutre la microbiota y cuida a quienes trabajan la tierra.
+          </p>
+        </div>
+
+        <!-- Pilar 4: El Abrazo en el Nodo Barrial -->
+        <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#fcfaf8] to-white border border-stone-200/90 hover:border-indigo-500/40 hover:shadow-sm transition-all space-y-2.5">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-2xl shadow-2xs">
+            🏡
+          </div>
+          <h3 class="font-black text-lg text-stone-900 font-heading">
+            El Encuentro Cara a Cara en el Nodo
+          </h3>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            El día de retiro no es una entrega anónima de delivery en moto: es un momento de encuentro en el punto barrial donde conocemos a nuestros vecinos, compartimos un mate y tejemos la red de apoyo mutuo que sostiene a la comunidad.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- BOTÓN DE LLAMADO A LA ACCIÓN: IR A LA COMPRA LUNAR -->
+      <div class="pt-6 border-t border-stone-100 flex flex-col items-center justify-center gap-3">
+        <button 
+          type="button" 
+          onclick="goToNodeSelection()"
+          class="px-8 sm:px-12 py-4 rounded-2xl bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-base sm:text-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-98 transition-all cursor-pointer flex items-center gap-3 font-heading"
+        >
+          <span>🌕</span>
+          <span>Ir a la Compra Lunar</span>
+          <span class="text-xl">→</span>
+        </button>
+
+        <span class="text-xs text-stone-400 font-medium">
+          Próximo paso: elegir tu nodo de retiro barrial
+        </span>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- VISTA 2: SELECCIÓN DE NODO DE RETIRO (URL: /compralunar/nodos)             -->
+  <!-- ========================================================================= -->
+  <div id="view-compralunar-nodos" class="lunar-view hidden w-full max-w-4xl mx-auto px-4 sm:px-6 pt-5 space-y-6 fade-enter">
+    
+    <!-- Barra superior de retorno -->
+    <div class="flex items-center justify-between">
+      <button 
+        type="button" 
+        onclick="goToLanding()"
+        class="inline-flex items-center gap-2 text-xs font-bold text-stone-500 hover:text-stone-900 bg-white border border-stone-200 px-3.5 py-2 rounded-xl shadow-2xs cursor-pointer transition-all hover:bg-stone-50"
+      >
+        <span>←</span>
+        <span>Volver a la presentación</span>
+      </button>
+
+      <span class="text-[11px] font-mono text-stone-400 font-bold uppercase">
+        Paso 1 de 2 · Nodo de retiro
+      </span>
+    </div>
+
+    <!-- Encabezado de la selección de nodos -->
+    <div class="text-center max-w-xl mx-auto space-y-2">
+      <div class="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-3xl mx-auto shadow-2xs">
+        📍
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-black text-stone-900 font-heading tracking-tight">
+        ¿En qué Nodo vas a retirar tu pedido?
+      </h2>
+      <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+        Elegí la sede más cercana a tu hogar. Tu pedido se agrupará con las compras de los vecinos de ese nodo para abaratar el flete y unificar la entrega comunitaria.
+      </p>
+    </div>
+
+    <!-- Tarjetas de Nodos Barriales -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 pt-2">
+      
+      <!-- 1. Nodo Loma Verde (Sede Principal) -->
+      <div 
+        onclick="selectNodeAndOpenStore('lomaverde')"
+        class="group bg-white border-2 border-stone-200 hover:border-emerald-500 rounded-3xl p-6 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4 hover:-translate-y-1"
+      >
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold font-mono">
+              ● Sede Activa
+            </span>
+            <span class="text-xs text-stone-400 font-mono">Escobar</span>
+          </div>
+
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-2xl flex items-center justify-center font-bold mb-3 group-hover:scale-105 transition-transform">
+            🌿
+          </div>
+
+          <h3 class="font-black text-lg text-stone-900 font-heading leading-tight group-hover:text-emerald-800 transition-colors">
+            Nodo Loma Verde
+          </h3>
+          <p class="text-xs text-stone-500 mt-1">
+            Red Comunitaria Loma Verde · Finca Ecotipa y quintas del corredor norte.
+          </p>
+
+          <div class="mt-4 pt-3 border-t border-stone-100 space-y-1.5 text-xs text-stone-600">
+            <p>📍 <strong>Punto:</strong> Calle Congreve & Arrayanes</p>
+            <p>🚚 <strong>Entrega:</strong> Sábado 1 de Noviembre</p>
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          class="w-full py-2.5 rounded-xl bg-emerald-600 group-hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-2"
+        >
+          <span>Elegir Loma Verde</span>
+          <span>→</span>
+        </button>
+      </div>
+
+      <!-- 2. Nodo Chasqui Maschwitz -->
+      <div 
+        onclick="selectNodeAndOpenStore('chasqui')"
+        class="group bg-white border-2 border-stone-200 hover:border-amber-500 rounded-3xl p-6 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4 hover:-translate-y-1"
+      >
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold font-mono">
+              Cooperativa
+            </span>
+            <span class="text-xs text-stone-400 font-mono">Maschwitz</span>
+          </div>
+
+          <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-800 border border-amber-200 text-2xl flex items-center justify-center font-bold mb-3 group-hover:scale-105 transition-transform">
+            🌾
+          </div>
+
+          <h3 class="font-black text-lg text-stone-900 font-heading leading-tight group-hover:text-amber-800 transition-colors">
+            Chasqui Maschwitz
+          </h3>
+          <p class="text-xs text-stone-500 mt-1">
+            Almacén Cooperativo & Molino Campesino Chasqui.
+          </p>
+
+          <div class="mt-4 pt-3 border-t border-stone-100 space-y-1.5 text-xs text-stone-600">
+            <p>📍 <strong>Punto:</strong> Espacio Cultural Chasqui</p>
+            <p>🚚 <strong>Entrega:</strong> Domingo 2 de Noviembre</p>
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          class="w-full py-2.5 rounded-xl bg-stone-900 group-hover:bg-amber-600 text-white font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-2"
+        >
+          <span>Elegir Chasqui</span>
+          <span>→</span>
+        </button>
+      </div>
+
+      <!-- 3. Nodo Central Vicente López -->
+      <div 
+        onclick="selectNodeAndOpenStore('central')"
+        class="group bg-white border-2 border-stone-200 hover:border-sky-500 rounded-3xl p-6 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4 hover:-translate-y-1"
+      >
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-300 text-[10px] font-bold font-mono">
+              Corredor Río
+            </span>
+            <span class="text-xs text-stone-400 font-mono">Vicente López</span>
+          </div>
+
+          <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-800 border border-sky-200 text-2xl flex items-center justify-center font-bold mb-3 group-hover:scale-105 transition-transform">
+            🌊
+          </div>
+
+          <h3 class="font-black text-lg text-stone-900 font-heading leading-tight group-hover:text-sky-800 transition-colors">
+            Central Vicente López
+          </h3>
+          <p class="text-xs text-stone-500 mt-1">
+            Punto de acopio costero Florida / Olivos / La Lucila.
+          </p>
+
+          <div class="mt-4 pt-3 border-t border-stone-100 space-y-1.5 text-xs text-stone-600">
+            <p>📍 <strong>Punto:</strong> Nodo Costero V. López</p>
+            <p>🚚 <strong>Entrega:</strong> Primer fin de semana Nov.</p>
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          class="w-full py-2.5 rounded-xl bg-stone-900 group-hover:bg-sky-600 text-white font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-2"
+        >
+          <span>Elegir V. López</span>
+          <span>→</span>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- VISTA 3: TIENDA VRDE CLUB POR NODO (URL: /compralunar/nodos/:nombrenodo)   -->
+  <!-- ========================================================================= -->
+  <div id="view-compralunar-store" class="lunar-view hidden w-full max-w-5xl mx-auto px-4 sm:px-6 pt-3 space-y-6 sm:space-y-7 fade-enter">
+    
+    <!-- Barra superior de contexto de nodo seleccionado -->
+    <div class="bg-white border border-stone-200 rounded-2xl p-3 sm:p-4 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center text-lg font-bold">
+          📍
+        </span>
+        <div>
+          <span class="text-stone-400 text-[10px] font-bold block uppercase tracking-wider font-mono">Punto de Retiro Seleccionado:</span>
+          <strong id="store-active-node-name" class="text-sm font-black text-stone-900">Nodo Loma Verde</strong>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-full font-bold">
+          <span>🌕</span>
+          <span>Cierre: 30 de Octubre</span>
+        </span>
+        
+        <button 
+          type="button" 
+          onclick="goToNodeSelection()"
+          class="text-xs font-bold text-stone-500 hover:text-stone-900 underline cursor-pointer"
+        >
+          Cambiar de Nodo
+        </button>
+      </div>
+    </div>
+
+    <!-- CATEGORÍAS ESTILO VRDE CLUB (IMAGEN 1) -->
+    <section>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4" id="vrde-categories-grid">
+        <!-- Renderizado dinámicamente vía renderVrdeCategoryGrid() -->
+      </div>
+    </section>
+
+    <!-- SUB-CARRUSEL HORIZONTAL DE PRODUCTOS (IMAGEN 1) -->
+    <section class="flex items-center gap-2">
+      <button 
+        type="button" 
+        onclick="scrollProductCarousel(-1)" 
+        class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-stone-300 bg-white hover:bg-stone-100 flex items-center justify-center text-stone-700 font-bold shadow-xs transition-all cursor-pointer shrink-0 active:scale-95"
+        title="Anterior producto"
+      >
+        ❮
+      </button>
+
+      <div id="vrde-products-pills-container" class="flex-1 flex items-center gap-2.5 overflow-x-auto py-1 scrollbar-none scroll-smooth">
+        <!-- Píldoras renderizadas dinámicamente -->
+      </div>
+
+      <button 
+        type="button" 
+        onclick="scrollProductCarousel(1)" 
+        class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-stone-300 bg-white hover:bg-stone-100 flex items-center justify-center text-stone-700 font-bold shadow-xs transition-all cursor-pointer shrink-0 active:scale-95"
+        title="Siguiente producto"
+      >
+        ❯
+      </button>
+    </section>
+
+    <!-- FICHA HERO DEL PRODUCTO + ESCALA COMERCIAL (IMAGEN 1 & IMAGEN 2) -->
+    <section id="vrde-product-showcase-wrapper" class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-xs transition-all">
+      <!-- Renderizado dinámicamente vía renderActiveProductShowcase() -->
+    </section>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- BARRA FLOTANTE DE PEDIDO / CHECKOUT (ESTILO ELEMENTALES)                  -->
+  <!-- ========================================================================= -->
+  <div id="floating-lunar-cart" class="hidden fixed bottom-4 inset-x-4 max-w-xl mx-auto z-40 animate-bounce-subtle">
+    <div class="bg-stone-900 text-white rounded-3xl p-3.5 sm:p-4 shadow-2xl border-2 border-emerald-500/40 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow-md shrink-0">
+          🌕
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="cart-total-items-label" class="font-black text-sm text-white">0 alimentos</span>
+            <span id="cart-total-savings-pill" class="text-[10px] font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.2 rounded-full">
+              Ahorro aplicado
+            </span>
+          </div>
+          <span id="cart-total-price-label" class="font-mono font-black text-lg sm:text-xl text-emerald-400 block">$0</span>
+        </div>
+      </div>
+
+      <button 
+        type="button" 
+        onclick="openLunarCheckoutModal()" 
+        class="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 active:scale-95"
+      >
+        <span>Confirmar Pedido</span>
+        <span>→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: HISTORIA Y MAPA DEL PRODUCTOR                                      -->
+  <!-- ========================================================================= -->
+  <div id="modal-producer-story" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full p-6 sm:p-7 text-stone-900 shadow-2xl space-y-4">
+      <div class="flex items-start justify-between pb-3 border-b border-stone-100">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-2xl shadow-2xs">
+            🌱
+          </div>
+          <div>
+            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
+              Trazabilidad Campesina
+            </span>
+            <h3 id="story-producer-title" class="font-black text-lg text-stone-900 font-heading mt-1">
+              Historia del Productor
+            </h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeProducerStoryModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs sm:text-sm text-stone-600 leading-relaxed">
+        <div class="p-3.5 bg-stone-50 border border-stone-200 rounded-2xl space-y-1.5">
+          <p>📍 <strong>Origen & Quinta:</strong> <span id="story-producer-location">Tres Arroyos, Buenos Aires</span></p>
+          <p>🌾 <strong>Práctica Agrícola:</strong> <span id="story-producer-practice">100% Agroecología libre de agrotóxicos y transgénicos</span></p>
+          <p>🤝 <strong>Organización:</strong> <span id="story-producer-coop">Cooperativa de Familias Productoras</span></p>
+        </div>
+        <p id="story-producer-desc">
+          Cultivado con amor en suelos vivos regenerados con abonos orgánicos, sin venenos ni químicos industriales. Tu compra apoya el comercio justo y directo de familias productoras de nuestra tierra.
+        </p>
+      </div>
+
+      <div class="pt-3 border-t border-stone-100 flex justify-end">
+        <button type="button" onclick="closeProducerStoryModal()" class="px-5 py-2.5 rounded-xl bg-stone-900 text-white font-bold text-xs cursor-pointer hover:bg-stone-800">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: CÍRCULOS BARRIALES & PRECIO DISTRIBUIDOR (+20 un.)                 -->
+  <!-- ========================================================================= -->
+  <div id="modal-circulos-info" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full p-6 sm:p-7 text-stone-900 shadow-2xl space-y-4">
+      <div class="flex items-start justify-between pb-3 border-b border-stone-100">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-300 flex items-center justify-center text-2xl shadow-2xs">
+            📦
+          </div>
+          <div>
+            <span class="text-[10px] font-black uppercase tracking-wider text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300 font-mono">
+              Consumo Colectivo
+            </span>
+            <h3 class="font-black text-lg text-stone-900 font-heading mt-1">
+              ¿Cómo acceder al Precio Distribuidor (+20 un)?
+            </h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeCirculosInfoModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs sm:text-sm text-stone-600 leading-relaxed">
+        <p>
+          En la <strong>Compra Lunar de Elementales</strong> no necesitás comprar 20 unidades vos sol@ para tener el mejor precio del país.
+        </p>
+        <div class="p-3.5 bg-amber-50/50 border border-amber-200 rounded-2xl space-y-2 text-stone-700">
+          <p class="font-bold text-amber-900">✨ Creá o sumate a un Círculo Barrial:</p>
+          <ul class="list-disc pl-5 space-y-1 text-xs">
+            <li>Juntate con 3 o 4 familias, vecin@s o amig@s de tu manzana.</li>
+            <li>Cada familia pide sus bolsas (ej. 5 bolsas cada uno).</li>
+            <li>Al sumar más de 20 unidades en total, <strong>todos pagan precio distribuidor</strong>.</li>
+            <li>Se retira todo junto en el Punto Nodo con flete unificado.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-stone-100 flex items-center justify-between">
+        <a href="index.html#circulos" class="text-xs font-bold text-emerald-700 hover:underline">
+          Ver Círculos Barriales activos →
+        </a>
+        <button type="button" onclick="closeCirculosInfoModal()" class="px-5 py-2.5 rounded-xl bg-stone-900 text-white font-bold text-xs cursor-pointer hover:bg-stone-800">
+          ¡Genial!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: CHECKOUT & CIERRE DE PEDIDO LUNAR                                  -->
+  <!-- ========================================================================= -->
+  <div id="modal-lunar-checkout" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      
+      <!-- Encabezado Modal -->
+      <div class="p-5 sm:p-6 border-b border-stone-200 bg-stone-50/70 flex items-start justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
+              Compra Lunar · Ciclo 30/10
+            </span>
+          </div>
+          <h3 class="font-black text-xl text-stone-900 font-heading">
+            Resumen de tu Canasta Lunar
+          </h3>
+          <p class="text-xs text-stone-500 mt-0.5">
+            Completá tus datos para agendar el pedido y retirar en <strong id="checkout-node-summary-label">Nodo Loma Verde</strong>.
+          </p>
+        </div>
+        <button type="button" onclick="closeLunarCheckoutModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+      </div>
+
+      <!-- Cuerpo del Checkout (Scrollable) -->
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+        
+        <!-- Lista de Items en Carrito -->
+        <div class="border border-stone-200 rounded-2xl p-4 bg-stone-50/50 space-y-2.5" id="checkout-items-list">
+          <!-- Renderizado dinámicamente -->
+        </div>
+
+        <!-- Totales y Ahorro -->
+        <div class="p-4 bg-emerald-50/40 border border-emerald-200 rounded-2xl flex items-center justify-between text-xs">
+          <div>
+            <span class="text-stone-600 block">Total a Abonar:</span>
+            <span id="checkout-total-price" class="font-mono font-black text-xl text-emerald-900">$0</span>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-emerald-800 font-bold block">Ahorro Comunitario:</span>
+            <span id="checkout-total-savings" class="font-mono font-bold text-emerald-700 text-sm">-$0</span>
+          </div>
+        </div>
+
+        <!-- Formulario de Contacto -->
+        <form id="lunar-checkout-form" onsubmit="handleConfirmLunarOrder(event)" class="space-y-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Nombre Completo / Familia *</label>
+            <input 
+              type="text" 
+              id="lunar-order-name" 
+              required 
+              placeholder="ej. Mariana Gómez" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
+            <input 
+              type="tel" 
+              id="lunar-order-phone" 
+              required 
+              placeholder="ej. 11 2345 6789" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Método de Pago Preferido</label>
+            <select id="lunar-order-payment" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none">
+              <option value="Transferencia">📱 Transferencia MP / Alias del Nodo</option>
+              <option value="Efectivo">💵 Efectivo al momento de retirar</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Notas o Círculo Barrial (Opcional)</label>
+            <input 
+              type="text" 
+              id="lunar-order-notes" 
+              placeholder="ej. Retiro junto con Círculo Las Magnolias" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+            />
+          </div>
+
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+            <button 
+              type="button" 
+              onclick="closeLunarCheckoutModal()" 
+              class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold cursor-pointer transition-all"
+            >
+              Seguir Comprando
+            </button>
+            <button 
+              type="submit" 
+              class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black cursor-pointer shadow-xs hover:shadow-md transition-all flex items-center gap-2"
+            >
+              <span>🌕</span>
+              <span>Enviar Pedido Lunar</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT CENTRAL DE LA COMPRA LUNAR (ROUTER & SPA) -->
+  <script src="js/vrde-sync.js"></script>
+  <script src="js/db.js"></script>
+  <script>
+    // =========================================================================
+    // 1. DEFINICIÓN DE NODOS DE RETIRO
+    // =========================================================================
+    const LUNAR_NODOS = {
+      'lomaverde': {
+        id: 'nodo-lomaverde',
+        slug: 'lomaverde',
+        name: 'Nodo Loma Verde',
+        shortName: 'Loma Verde',
+        location: 'Calle Congreve & Arrayanes, Loma Verde (Escobar)',
+        deliveryDate: 'Sábado 1 de Noviembre',
+        icon: '🌿',
+        badge: 'Sede Activa'
+      },
+      'chasqui': {
+        id: 'nodo-cooperativa',
+        slug: 'chasqui',
+        name: 'Chasqui Maschwitz',
+        shortName: 'Maschwitz',
+        location: 'Espacio Cultural & Almacén Chasqui, Maschwitz',
+        deliveryDate: 'Domingo 2 de Noviembre',
+        icon: '🌾',
+        badge: 'Cooperativa'
+      },
+      'central': {
+        id: 'nodo-central',
+        slug: 'central',
+        name: 'Central Vicente López',
+        shortName: 'Vicente López',
+        location: 'Punto de acopio costero Florida / V. López',
+        deliveryDate: 'Primer fin de semana de Noviembre',
+        icon: '🌊',
+        badge: 'Corredor Río'
+      }
+    };
+
+    // =========================================================================
+    // 2. CATÁLOGO DE COMPRA LUNAR ESTRUCTURA VRDE CLUB
+    // =========================================================================
+    const LUNAR_CATEGORIES = [
+      { id: 'todos', name: 'Ver Todo', icon: '🌱', gradient: 'from-[#059669] to-[#10b981]', textColor: 'text-white' },
+      { id: 'granos', name: 'Granos & Legumbres', icon: '🌾', gradient: 'from-[#d97706] to-[#fbbf24]', textColor: 'text-white' },
+      { id: 'cacao', name: 'Cacao Silvestre', icon: '🍫', gradient: 'from-[#78350f] to-[#b45309]', textColor: 'text-white' },
+      { id: 'yerba', name: 'Yerba Mate', icon: '🧉', gradient: 'from-[#15803d] to-[#4ade80]', textColor: 'text-white' },
+      { id: 'aceite', name: 'Aceite Oliva', icon: '🫒', gradient: 'from-[#4d7c0f] to-[#a3e635]', textColor: 'text-white' },
+      { id: 'hongos', name: 'Hongos del Delta', icon: '🍄', gradient: 'from-[#991b1b] to-[#f87171]', textColor: 'text-white' },
+      { id: 'granja', name: 'Granja & Mieles', icon: '🍯', gradient: 'from-[#b45309] to-[#f59e0b]', textColor: 'text-white' },
+      { id: 'harinas', name: 'Harinas & Molino', icon: '🍞', gradient: 'from-[#854d0e] to-[#fde047]', textColor: 'text-white' }
+    ];
+
+    const LUNAR_PRODUCTS = [
+      {
+        id: 'lunar-lentejas-1k',
+        categoryId: 'granos',
+        name: 'Lentejas Agroecológicas Salve la Tierra',
+        subtitle: 'Suelo vivo pampeano • Semillas 100% libres de transgénicos (NO OGM)',
+        unit: 'bolsa 1kg',
+        unitLabel: 'Bolsa 1 kg',
+        img: 'https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?auto=format&fit=crop&w=600&q=80',
+        producer: 'Cooperativa Salve la Tierra',
+        location: 'Tres Arroyos, Buenos Aires',
+        practice: 'Agroecología extensiva sin fertilizantes sintéticos ni glifosato',
+        story: 'Las lentejas de Salve la Tierra crecen en rotación con pasturas naturales, fijando nitrógeno y cuidando la fertilidad de la tierra. Un alimento ancestral de alto poder nutritivo.',
+        prices: {
+          minorista: 3500,     // 1 a 5 un.
+          mayorista: 3000,     // 6 a 19 un.
+          distribuidor: 2600   // +20 un.
+        }
+      },
+      {
+        id: 'lunar-garbanzos-1k',
+        categoryId: 'granos',
+        name: 'Garbanzos Agroecológicos Salve la Tierra',
+        subtitle: 'Cosecha limpia agroecológica • Proteína vegetal de alta asimilación',
+        unit: 'bolsa 1kg',
+        unitLabel: 'Bolsa 1 kg',
+        img: 'https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=600&q=80',
+        producer: 'Cooperativa Salve la Tierra',
+        location: 'Buenos Aires',
+        practice: 'Semillas no modificadas con secado natural a campo',
+        story: 'Garbanzo kabuli de calibre grande, ideal para hummus, guisos y harinas caseras. Suave cocción y textura cremosa.',
+        prices: {
+          minorista: 3800,
+          mayorista: 3200,
+          distribuidor: 2800
+        }
+      },
+      {
+        id: 'lunar-arroz-yamani-3k',
+        categoryId: 'granos',
+        name: 'Arroz Yamaní Integral Agroecológico Caupolicán',
+        subtitle: 'Grano entero con salvado natural • Sin pulir, libre de agroquímicos',
+        unit: 'bolsa 3kg',
+        unitLabel: 'Bolsa 3 kg',
+        img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+        producer: 'Molino Río de la Plata',
+        location: 'San Salvador, Entre Ríos',
+        practice: 'Cultivo sustentable en cuenca arrocera sin pesticidas químicos',
+        story: 'Conserva el germen y el salvado natural donde residen todas las vitaminas del complejo B y minerales. Sabor a nuez característico.',
+        prices: {
+          minorista: 4800,
+          mayorista: 4100,
+          distribuidor: 3500
+        }
+      },
+      {
+        id: 'lunar-porotos-negros-1k',
+        categoryId: 'granos',
+        name: 'Porotos Negros Criollos Agroecológicos',
+        subtitle: 'Semilla nativa recuperada • Alto contenido en hierro y fibra viva',
+        unit: 'bolsa 1kg',
+        unitLabel: 'Bolsa 1 kg',
+        img: 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?auto=format&fit=crop&w=600&q=80',
+        producer: 'Red de Semillas Libres del Litoral',
+        location: 'Corrientes / Entre Ríos',
+        practice: 'Policultivo campesino familiar',
+        story: 'Variedad criolla adaptada biológicamente a nuestro clima, sin necesidad de venenos industriales.',
+        prices: {
+          minorista: 3400,
+          mayorista: 2900,
+          distribuidor: 2500
+        }
+      },
+      {
+        id: 'lunar-cacao-polvo-500g',
+        categoryId: 'cacao',
+        name: 'Cacao Puro Silvestre de la Amazonía',
+        subtitle: '100% cacao puro agroforestal • Sin azúcar añadida ni procesos alcalinos',
+        unit: 'frasco 500g',
+        unitLabel: 'Frasco 500 g',
+        img: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=600&q=80',
+        producer: 'Comunidades Agroforestales Nativas',
+        location: 'Cuenca Amazónica',
+        practice: 'Recolección silvestre bajo dosel selvático',
+        story: 'Cacao criollo recolectado en sistemas agroforestales biodinámicos que regeneran la selva.',
+        prices: {
+          minorista: 8500,
+          mayorista: 7200,
+          distribuidor: 6200
+        }
+      },
+      {
+        id: 'lunar-cacao-nibs-250g',
+        categoryId: 'cacao',
+        name: 'Nibs de Cacao Criollo Tostado a Leña',
+        subtitle: 'Superalimento crujiente rico en antioxidantes y teobromina',
+        unit: 'bolsa 250g',
+        unitLabel: 'Bolsa 250 g',
+        img: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80',
+        producer: 'Comunidades Agroforestales Nativas',
+        location: 'Selva Amazónica',
+        practice: 'Tostado suave a leña y descascarillado artesanal',
+        story: 'Trocitos de grano de cacao puro sin agregados. Ideal para batidos, granolas y repostería viva.',
+        prices: {
+          minorista: 6200,
+          mayorista: 5300,
+          distribuidor: 4500
+        }
+      },
+      {
+        id: 'lunar-yerba-barbaqua-2k',
+        categoryId: 'yerba',
+        name: 'Yerba Mate Agroecológica Secado Barbaquá',
+        subtitle: 'Estacionamiento natural 24 meses • Secado tradicional a leña sin humo',
+        unit: 'paquete 2kg',
+        unitLabel: 'Paquete 2 kg',
+        img: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80',
+        producer: 'Cooperativa Ybira Porá',
+        location: 'Andresito, Misiones',
+        practice: 'Agroforestería de monte con sombra natural',
+        story: 'Elaborada por familias de colonos misioneros cuidando la selva paranaense. Estacionada durante dos años para lograr un sabor suave que no produce acidez.',
+        prices: {
+          minorista: 6800,
+          mayorista: 5800,
+          distribuidor: 4900
+        }
+      },
+      {
+        id: 'lunar-yerba-sin-tacc-1k',
+        categoryId: 'yerba',
+        name: 'Yerba Mate Agroecológica Hoja Fina Sin TACC',
+        subtitle: 'Bajo contenido de polvo • Molienda especial de monte nativo',
+        unit: 'paquete 1kg',
+        unitLabel: 'Paquete 1 kg',
+        img: 'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=600&q=80',
+        producer: 'Cooperativa Ybira Porá',
+        location: 'Misiones',
+        practice: 'Certificación libre de gluten y sin agroquímicos',
+        story: 'Selección de hojas maduras cosechadas bajo el ciclo de luna menguante para potenciar su energía vital.',
+        prices: {
+          minorista: 4200,
+          mayorista: 3600,
+          distribuidor: 3100
+        }
+      },
+      {
+        id: 'lunar-aceite-oliva-2l',
+        categoryId: 'aceite',
+        name: 'Aceite de Oliva Extra Virgen Primera Prensión (2 L)',
+        subtitle: 'Acidez menor a 0.2% • Variedades Arauco y Manzanilla en frío',
+        unit: 'bidón 2L',
+        unitLabel: 'Bidón 2 Litros',
+        img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80',
+        producer: 'Finca Los Olivos Traslasierra',
+        location: 'San Javier, Córdoba',
+        practice: 'Olivares centenarios de secano sin pesticidas',
+        story: 'Prensado en frío el mismo día de la cosecha manual. Aceite frutado, fresco y de altísima densidad nutricional.',
+        prices: {
+          minorista: 13500,
+          mayorista: 11500,
+          distribuidor: 9800
+        }
+      },
+      {
+        id: 'lunar-aceite-oliva-500ml',
+        categoryId: 'aceite',
+        name: 'Aceite de Oliva Extra Virgen Vidrio Oscuro (500 ml)',
+        subtitle: 'Cosecha temprana seleccionada a mano • Envasado en origen',
+        unit: 'botella 500ml',
+        unitLabel: 'Botella Vidrio 500 ml',
+        img: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80',
+        producer: 'Finca Los Olivos Traslasierra',
+        location: 'Córdoba',
+        practice: 'Cultivo biodinámico serrano',
+        story: 'Presentación en botella de vidrio oscura para preservar intactos los polifenoles y antioxidantes.',
+        prices: {
+          minorista: 5200,
+          mayorista: 4400,
+          distribuidor: 3800
+        }
+      },
+      {
+        id: 'lunar-girgolas-secas-100g',
+        categoryId: 'hongos',
+        name: 'Gírgolas Secas Agroecológicas del Delta (100g)',
+        subtitle: 'Cultivadas en sustrato de álamo natural • Alto poder umami y proteína',
+        unit: 'bolsa 100g',
+        unitLabel: 'Bolsa 100 g (Equivale a 1kg fresco)',
+        img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+        producer: 'Fungicultura Delta del Paraná',
+        location: 'Islas de Escobar / Campana',
+        practice: 'Fungicultura sustentable sobre madera reciclada',
+        story: 'Hongos deshidratados a baja temperatura. Aportan una profundidad de sabor extraordinaria a arroces, risottos y pastas.',
+        prices: {
+          minorista: 4600,
+          mayorista: 3900,
+          distribuidor: 3300
+        }
+      },
+      {
+        id: 'lunar-miel-delta-1k',
+        categoryId: 'granja',
+        name: 'Miel Pura de Monte y Delta en Panal (1 kg)',
+        subtitle: 'Cosechada en islas vírgenes • Cruda, sin filtrar ni pasteurizar',
+        unit: 'frasco 1kg',
+        unitLabel: 'Frasco Vidrio 1 kg',
+        img: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=600&q=80',
+        producer: 'Apícola Islas del Delta',
+        location: 'Río Paraná de las Palmas, Escobar',
+        practice: 'Apicultura de humedal libre de químicos y azúcar añadida',
+        story: 'Colmenas ubicadas en reservas de biosfera donde las abejas liban flores de monte nativo (sarandí, ceibo y trébol de agua). Pura medicina dulce.',
+        prices: {
+          minorista: 5900,
+          mayorista: 5000,
+          distribuidor: 4200
+        }
+      },
+      {
+        id: 'lunar-polen-seco-250g',
+        categoryId: 'granja',
+        name: 'Polen Seco de Pradera Natural (250g)',
+        subtitle: 'Multivitamínico natural vivo recolectado por abejas de monte',
+        unit: 'frasco 250g',
+        unitLabel: 'Frasco 250 g',
+        img: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=600&q=80',
+        producer: 'Apícola Islas del Delta',
+        location: 'Delta del Paraná',
+        practice: 'Recolección cuidadosa respetando la colmena',
+        story: 'Gránulos dorados cargados de aminoácidos esenciales, enzimas y minerales que vigorizan el organismo.',
+        prices: {
+          minorista: 4500,
+          mayorista: 3800,
+          distribuidor: 3200
+        }
+      },
+      {
+        id: 'lunar-harina-integral-5k',
+        categoryId: 'harinas',
+        name: 'Harina Integral Agroecológica Molida a Piedra (5 kg)',
+        subtitle: 'Grano entero con germen vivo • Molino campesino cooperativo',
+        unit: 'bolsa 5kg',
+        unitLabel: 'Bolsa 5 kg',
+        img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
+        producer: 'Molino Campesino Chasqui',
+        location: 'Maschwitz / Escobar',
+        practice: 'Trigo pan agroecológico molido a piedra lentamente',
+        story: 'Molienda en frío que no quema los nutrientes del cereal. El aroma a pan auténtico y la textura perfecta para fermentación lenta.',
+        prices: {
+          minorista: 5000,
+          mayorista: 4200,
+          distribuidor: 3600
+        }
+      }
+    ];
+
+    // =========================================================================
+    // 3. ESTADO Y ROUTER DE LA APLICACIÓN
+    // =========================================================================
+    let currentLunarView = 'landing'; // 'landing' | 'nodos' | 'store'
+    let selectedNodeSlug = 'lomaverde';
+    let activeCategoryId = 'granos';
+    let activeProductId = 'lunar-lentejas-1k';
+    let lunarCart = {}; // { productId: qty }
+
+    // Cargar carrito persistido
+    try {
+      const savedCart = localStorage.getItem('elementales_lunar_cart');
+      if (savedCart) lunarCart = JSON.parse(savedCart);
+    } catch (e) { lunarCart = {}; }
+
+    // ROUTER SPA DE LA COMPRA LUNAR
+    function navigateLunarRoute(path, updateHistory = true) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryRoute = urlParams.get('route');
+      const queryNode = urlParams.get('nodo');
+
+      let resolvedPath = path || '/compralunar';
+      if (queryRoute) {
+        resolvedPath = '/compralunar/' + queryRoute;
+      }
+      const cleanPath = resolvedPath.replace(/\/+$/, '') || '/compralunar';
+      
+      // Ocultar todas las vistas
+      document.querySelectorAll('.lunar-view').forEach(v => v.classList.add('hidden'));
+
+      let targetPath = '/compralunar';
+
+      if (cleanPath.startsWith('/compralunar/nodos/') || cleanPath.startsWith('/lomaverde/tierra/lunar') || (queryNode && cleanPath.includes('compralunar'))) {
+        // Vista 3: Tienda del Nodo
+        let nodeSlug = 'lomaverde';
+        if (cleanPath.startsWith('/compralunar/nodos/')) {
+          const parts = cleanPath.split('/');
+          nodeSlug = parts[parts.length - 1];
+        } else if (cleanPath.startsWith('/lomaverde/tierra/lunar')) {
+          nodeSlug = 'lomaverde';
+        } else if (queryNode) {
+          nodeSlug = queryNode.replace(/^nodo-/, '');
+        }
+
+        if (!LUNAR_NODOS[nodeSlug]) nodeSlug = 'lomaverde';
+        
+        selectedNodeSlug = nodeSlug;
+        currentLunarView = 'store';
+        
+        const storeView = document.getElementById('view-compralunar-store');
+        if (storeView) storeView.classList.remove('hidden');
+
+        updateStoreNodeHeader();
+        renderVrdeCategoryGrid();
+        renderProductsPills();
+        renderActiveProductShowcase();
+        updateFloatingCart();
+
+        targetPath = `/compralunar/nodos/${nodeSlug}`;
+
+      } else if (cleanPath === '/compralunar/nodos') {
+        // Vista 2: Selector de Nodos
+        currentLunarView = 'nodos';
+        const nodosView = document.getElementById('view-compralunar-nodos');
+        if (nodosView) nodosView.classList.remove('hidden');
+        targetPath = '/compralunar/nodos';
+
+      } else {
+        // Vista 1: Landing Inicial
+        currentLunarView = 'landing';
+        const landingView = document.getElementById('view-compralunar-landing');
+        if (landingView) landingView.classList.remove('hidden');
+        targetPath = '/compralunar';
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (updateHistory && window.history && window.history.pushState) {
+        if (window.location.pathname !== targetPath) {
+          window.history.pushState({ lunarView: currentLunarView, nodeSlug: selectedNodeSlug }, '', targetPath);
+        }
+      }
+    }
+
+    function handleLogoClick(e) {
+      if (e) e.preventDefault();
+      navigateLunarRoute('/compralunar');
+    }
+
+    function goToLanding() {
+      navigateLunarRoute('/compralunar');
+    }
+
+    function goToNodeSelection() {
+      navigateLunarRoute('/compralunar/nodos');
+    }
+
+    function selectNodeAndOpenStore(nodeSlug) {
+      const node = LUNAR_NODOS[nodeSlug] || LUNAR_NODOS['lomaverde'];
+      selectedNodeSlug = node.slug;
+      localStorage.setItem('elementales_active_node', node.id);
+      navigateLunarRoute(`/compralunar/nodos/${node.slug}`);
+
+      try {
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } });
+        }
+      } catch (e) {}
+    }
+
+    function updateStoreNodeHeader() {
+      const node = LUNAR_NODOS[selectedNodeSlug] || LUNAR_NODOS['lomaverde'];
+      const el = document.getElementById('store-active-node-name');
+      if (el) el.textContent = `${node.name} (${node.location})`;
+      const summaryNode = document.getElementById('checkout-node-summary-label');
+      if (summaryNode) summaryNode.textContent = node.name;
+    }
+
+    // =========================================================================
+    // 4. CATEGORÍAS ESTILO VRDE CLUB (IMAGEN 1)
+    // =========================================================================
+    function renderVrdeCategoryGrid() {
+      const container = document.getElementById('vrde-categories-grid');
+      if (!container) return;
+
+      container.innerHTML = LUNAR_CATEGORIES.map(cat => {
+        const isActive = cat.id === activeCategoryId;
+        return `
+          <button 
+            type="button" 
+            onclick="selectVrdeCategory('${cat.id}')"
+            class="vrde-cat-card relative rounded-2xl p-4 text-left border-2 overflow-hidden cursor-pointer flex flex-col justify-between min-h-[72px] sm:min-h-[82px] bg-gradient-to-br ${cat.gradient} ${cat.textColor} ${isActive ? 'active' : 'border-transparent'}"
+          >
+            <span class="font-heading font-black text-xs sm:text-sm tracking-tight leading-snug drop-shadow-xs">
+              ${cat.name}
+            </span>
+            <span class="text-xl sm:text-2xl self-end mt-1 filter drop-shadow-xs">
+              ${cat.icon}
+            </span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectVrdeCategory(catId) {
+      activeCategoryId = catId;
+      renderVrdeCategoryGrid();
+
+      const prods = getProductsForActiveCategory();
+      if (prods.length > 0) {
+        if (!prods.some(p => p.id === activeProductId)) {
+          activeProductId = prods[0].id;
+        }
+      }
+
+      renderProductsPills();
+      renderActiveProductShowcase();
+    }
+
+    function getProductsForActiveCategory() {
+      if (activeCategoryId === 'todos') {
+        return LUNAR_PRODUCTS;
+      }
+      return LUNAR_PRODUCTS.filter(p => p.categoryId === activeCategoryId);
+    }
+
+    // =========================================================================
+    // 5. SUB-CARRUSEL DE PÍLDORAS (IMAGEN 1)
+    // =========================================================================
+    function renderProductsPills() {
+      const container = document.getElementById('vrde-products-pills-container');
+      if (!container) return;
+
+      const prods = getProductsForActiveCategory();
+      if (prods.length === 0) {
+        container.innerHTML = '<span class="text-xs text-stone-400 italic">No hay alimentos en esta categoría</span>';
+        return;
+      }
+
+      container.innerHTML = prods.map(prod => {
+        const isActive = prod.id === activeProductId;
+        return `
+          <button 
+            type="button" 
+            id="pill-${prod.id}"
+            onclick="selectActiveProduct('${prod.id}')"
+            class="product-pill px-4 py-2 rounded-full border text-xs sm:text-sm font-bold whitespace-nowrap cursor-pointer shadow-2xs ${isActive ? 'active' : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'}"
+          >
+            ${prod.name}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectActiveProduct(prodId) {
+      activeProductId = prodId;
+      renderProductsPills();
+      renderActiveProductShowcase();
+
+      const pill = document.getElementById(`pill-${prodId}`);
+      if (pill) {
+        pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+
+    function scrollProductCarousel(direction) {
+      const prods = getProductsForActiveCategory();
+      if (prods.length <= 1) return;
+
+      const currentIndex = prods.findIndex(p => p.id === activeProductId);
+      let nextIndex = currentIndex + direction;
+
+      if (nextIndex < 0) nextIndex = prods.length - 1;
+      if (nextIndex >= prods.length) nextIndex = 0;
+
+      selectActiveProduct(prods[nextIndex].id);
+    }
+
+    // =========================================================================
+    // 6. FICHA HERO Y ESCALA COMERCIAL (IMAGEN 1 & IMAGEN 2)
+    // =========================================================================
+    function renderActiveProductShowcase() {
+      const wrapper = document.getElementById('vrde-product-showcase-wrapper');
+      if (!wrapper) return;
+
+      const prod = LUNAR_PRODUCTS.find(p => p.id === activeProductId) || LUNAR_PRODUCTS[0];
+      const qty = lunarCart[prod.id] || 0;
+
+      let activeTier = 'minorista';
+      if (qty >= 20) {
+        activeTier = 'distribuidor';
+      } else if (qty >= 6) {
+        activeTier = 'mayorista';
+      } else if (qty >= 1) {
+        activeTier = 'minorista';
+      } else {
+        activeTier = 'minorista';
+      }
+
+      wrapper.innerHTML = `
+        <div class="space-y-8 animate-fade-in">
+          
+          <!-- SECCIÓN 1: IDENTIFICACIÓN Y HERO DEL PRODUCTO (IMAGEN 1) -->
+          <div class="flex flex-col items-center text-center max-w-xl mx-auto space-y-3.5">
+            
+            <!-- Imagen circular con halo suave -->
+            <div class="w-44 h-44 sm:w-52 sm:h-52 rounded-full overflow-hidden border-4 border-stone-100 shadow-md p-1 bg-white relative group">
+              <img 
+                src="${prod.img}" 
+                alt="${prod.name}" 
+                class="w-full h-full object-cover rounded-full group-hover:scale-105 transition-transform duration-500" 
+                onerror="this.src='public/assets/frutillas_ecotipa.jpg'"
+              />
+            </div>
+
+            <!-- Píldora de formato/unidad -->
+            <span class="inline-block px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-600 font-bold text-xs">
+              ${prod.unit}
+            </span>
+
+            <!-- Título y subtítulo -->
+            <div>
+              <h2 class="text-xl sm:text-2xl font-black text-stone-900 font-heading tracking-tight leading-tight">
+                ${prod.name}
+              </h2>
+              <p class="text-xs sm:text-sm text-stone-500 mt-1 leading-relaxed">
+                ${prod.subtitle}
+              </p>
+            </div>
+
+            <!-- Botón Ver Historia y Mapa del Productor -->
+            <button 
+              type="button" 
+              onclick="openProducerStoryModal('${prod.id}')"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs shadow-2xs transition-all cursor-pointer active:scale-95"
+            >
+              <span>📖</span>
+              <span>Ver Historia y Mapa del Productor</span>
+            </button>
+
+          </div>
+
+          <!-- SECCIÓN 2: CATEGORÍA COMERCIAL (IMAGEN 2) -->
+          <div class="max-w-2xl mx-auto pt-6 border-t border-stone-100 space-y-4">
+            
+            <!-- Título de sección 2 -->
+            <div class="flex items-center justify-between text-xs font-bold text-stone-500 uppercase tracking-wider font-mono">
+              <span>2. Categoría Comercial</span>
+              <span class="text-emerald-700">Clic para aplicar</span>
+            </div>
+
+            <p class="text-xs text-stone-500 font-medium">
+              Para: <strong class="text-stone-800">${prod.unitLabel}</strong>
+            </p>
+
+            <!-- Tres Tarjetas de Escala Comercial -->
+            <div class="space-y-2.5">
+              
+              <!-- 1. Minorista (1 a 5 un.) -->
+              <div 
+                onclick="applyCommercialTier('${prod.id}', 1)"
+                class="tier-card p-4 rounded-2xl border cursor-pointer flex items-center justify-between gap-4 ${activeTier === 'minorista' && qty > 0 ? 'active' : 'bg-white border-stone-200 hover:border-emerald-300'}"
+              >
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-bold text-stone-900 text-sm">Minorista <span class="text-xs text-stone-500 font-normal">(1 a 5 un.)</span></h4>
+                  </div>
+                  <span class="text-xs text-stone-500 block mt-0.5">Consumo Familiar / Unitario</span>
+                </div>
+                <div class="text-right">
+                  <span class="tier-price font-heading font-black text-xl sm:text-2xl text-stone-900">
+                    $${prod.prices.minorista.toLocaleString('es-AR')}
+                  </span>
+                </div>
+              </div>
+
+              <!-- 2. Mayorista (6 a 19 un.) -->
+              <div 
+                onclick="applyCommercialTier('${prod.id}', 6)"
+                class="tier-card p-4 rounded-2xl border cursor-pointer flex items-center justify-between gap-4 ${activeTier === 'mayorista' ? 'active' : 'bg-white border-stone-200 hover:border-emerald-300'}"
+              >
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-bold text-stone-900 text-sm">Mayorista <span class="text-xs text-stone-500 font-normal">(6 a 19 un.)</span></h4>
+                    <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.2 rounded-full border border-emerald-200 font-mono">
+                      -15% Ahorro
+                    </span>
+                  </div>
+                  <span class="text-xs text-stone-500 block mt-0.5">Compra Colectiva / Familiar +6 un.</span>
+                </div>
+                <div class="text-right">
+                  <span class="tier-price font-heading font-black text-xl sm:text-2xl text-stone-900">
+                    $${prod.prices.mayorista.toLocaleString('es-AR')}
+                  </span>
+                </div>
+              </div>
+
+              <!-- 3. Distribuidor (+20 un.) -->
+              <div 
+                onclick="applyCommercialTier('${prod.id}', 20)"
+                class="tier-card p-4 rounded-2xl border cursor-pointer flex items-center justify-between gap-4 ${activeTier === 'distribuidor' ? 'active' : 'bg-white border-stone-200 hover:border-emerald-300'}"
+              >
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-bold text-stone-900 text-sm">Distribuidor <span class="text-xs text-stone-500 font-normal">(+20 un.)</span></h4>
+                    <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.2 rounded-full border border-emerald-300 font-mono">
+                      -25% Costo de Red
+                    </span>
+                  </div>
+                  <span class="text-xs text-stone-500 block mt-0.5">Gran Volumen / Reventa +20 un.</span>
+                </div>
+                <div class="text-right">
+                  <span class="tier-price font-heading font-black text-xl sm:text-2xl text-stone-900">
+                    $${prod.prices.distribuidor.toLocaleString('es-AR')}
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Caja de Incentivo: ¿Querés precio Distribuidor? Creá un Círculo -->
+            <div 
+              onclick="openCirculosInfoModal()"
+              class="p-4 rounded-2xl border border-dashed border-stone-300 bg-stone-50/70 hover:bg-emerald-50/40 hover:border-emerald-300 transition-all cursor-pointer flex items-center justify-between gap-3 text-xs"
+            >
+              <div class="flex items-center gap-3">
+                <span class="text-xl">📦</span>
+                <div>
+                  <h5 class="font-bold text-stone-900 leading-snug">¿Querés precio Distribuidor?</h5>
+                  <p class="text-stone-500 mt-0.5">Creá un Círculo Barrial y junten las unidades entre amigos o vecinos.</p>
+                </div>
+              </div>
+              <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center shrink-0 shadow-2xs">
+                ➕
+              </span>
+            </div>
+
+            <!-- Selector de Cantidad (Stepper Redondo) -->
+            <div class="pt-4 flex flex-col items-center justify-center gap-2">
+              <div class="flex items-center gap-6">
+                
+                <button 
+                  type="button" 
+                  onclick="changeProductQuantity('${prod.id}', -1)"
+                  class="w-12 h-12 rounded-full border-2 border-stone-300 bg-white hover:bg-stone-100 flex items-center justify-center text-xl font-black text-stone-700 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                  title="Restar 1 unidad"
+                >
+                  −
+                </button>
+
+                <div class="text-center min-w-[120px]">
+                  <span class="font-heading font-black text-3xl sm:text-4xl text-stone-900 block leading-tight">
+                    ${qty}
+                  </span>
+                  <span class="text-xs font-semibold text-stone-500 uppercase tracking-wider block">
+                    ${prod.unit}
+                  </span>
+                </div>
+
+                <button 
+                  type="button" 
+                  onclick="changeProductQuantity('${prod.id}', 1)"
+                  class="w-12 h-12 rounded-full border-2 border-emerald-500 bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center text-xl font-black shadow-md cursor-pointer active:scale-95 transition-all"
+                  title="Sumar 1 unidad"
+                >
+                  +
+                </button>
+
+              </div>
+
+              <span class="text-[11px] text-stone-400 font-medium">
+                Elegí la cantidad para este formato
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 7. LÓGICA DE CANTIDAD Y ESCALAS COMERCIALES
+    // =========================================================================
+    function changeProductQuantity(prodId, delta) {
+      const current = lunarCart[prodId] || 0;
+      let next = current + delta;
+      if (next < 0) next = 0;
+
+      if (next === 0) {
+        delete lunarCart[prodId];
+      } else {
+        lunarCart[prodId] = next;
+      }
+
+      saveLunarCart();
+      renderActiveProductShowcase();
+      updateFloatingCart();
+    }
+
+    function applyCommercialTier(prodId, targetMinQty) {
+      lunarCart[prodId] = targetMinQty;
+      saveLunarCart();
+      renderActiveProductShowcase();
+      updateFloatingCart();
+
+      try {
+        if (typeof confetti === 'function' && targetMinQty >= 6) {
+          confetti({ particleCount: 25, spread: 50, origin: { y: 0.8 } });
+        }
+      } catch (e) {}
+    }
+
+    function saveLunarCart() {
+      try {
+        localStorage.setItem('elementales_lunar_cart', JSON.stringify(lunarCart));
+      } catch (e) {}
+    }
+
+    function getProductUnitPrice(prod, qty) {
+      if (qty >= 20) return prod.prices.distribuidor;
+      if (qty >= 6) return prod.prices.mayorista;
+      return prod.prices.minorista;
+    }
+
+    function updateFloatingCart() {
+      const floatingEl = document.getElementById('floating-lunar-cart');
+      if (!floatingEl) return;
+
+      const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
+      const totalUnits = entries.reduce((acc, [_, qty]) => acc + qty, 0);
+
+      if (totalUnits === 0) {
+        floatingEl.classList.add('hidden');
+        return;
+      }
+
+      floatingEl.classList.remove('hidden');
+
+      let totalPrice = 0;
+      let totalMinoristaPrice = 0;
+
+      entries.forEach(([id, qty]) => {
+        const prod = LUNAR_PRODUCTS.find(p => p.id === id);
+        if (prod) {
+          const unitPrice = getProductUnitPrice(prod, qty);
+          totalPrice += unitPrice * qty;
+          totalMinoristaPrice += prod.prices.minorista * qty;
+        }
+      });
+
+      const totalSavings = totalMinoristaPrice - totalPrice;
+
+      const itemsLabel = document.getElementById('cart-total-items-label');
+      if (itemsLabel) {
+        itemsLabel.textContent = `${totalUnits} ${totalUnits === 1 ? 'unidad' : 'unidades'} en tu canasta`;
+      }
+
+      const priceLabel = document.getElementById('cart-total-price-label');
+      if (priceLabel) {
+        priceLabel.textContent = `$${totalPrice.toLocaleString('es-AR')}`;
+      }
+
+      const savingsPill = document.getElementById('cart-total-savings-pill');
+      if (savingsPill) {
+        if (totalSavings > 0) {
+          savingsPill.textContent = `Ahorro de red: -$${totalSavings.toLocaleString('es-AR')}`;
+          savingsPill.classList.remove('hidden');
+        } else {
+          savingsPill.classList.add('hidden');
+        }
+      }
+    }
+
+    // =========================================================================
+    // 8. MODALES Y CIERRE DE PEDIDO
+    // =========================================================================
+    function openProducerStoryModal(prodId) {
+      const prod = LUNAR_PRODUCTS.find(p => p.id === prodId);
+      if (!prod) return;
+
+      document.getElementById('story-producer-title').textContent = prod.name;
+      document.getElementById('story-producer-location').textContent = `${prod.location} (${prod.producer})`;
+      document.getElementById('story-producer-practice').textContent = prod.practice;
+      document.getElementById('story-producer-desc').textContent = prod.story;
+
+      document.getElementById('modal-producer-story')?.classList.remove('hidden');
+    }
+
+    function closeProducerStoryModal() {
+      document.getElementById('modal-producer-story')?.classList.add('hidden');
+    }
+
+    function openCirculosInfoModal() {
+      document.getElementById('modal-circulos-info')?.classList.remove('hidden');
+    }
+
+    function closeCirculosInfoModal() {
+      document.getElementById('modal-circulos-info')?.classList.add('hidden');
+    }
+
+    function openLunarCheckoutModal() {
+      const modal = document.getElementById('modal-lunar-checkout');
+      const listContainer = document.getElementById('checkout-items-list');
+      if (!modal || !listContainer) return;
+
+      const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
+      if (entries.length === 0) return;
+
+      let totalPrice = 0;
+      let totalSavings = 0;
+
+      listContainer.innerHTML = entries.map(([id, qty]) => {
+        const prod = LUNAR_PRODUCTS.find(p => p.id === id);
+        if (!prod) return '';
+
+        const unitPrice = getProductUnitPrice(prod, qty);
+        const itemTotal = unitPrice * qty;
+        totalPrice += itemTotal;
+        const savingsItem = (prod.prices.minorista - unitPrice) * qty;
+        totalSavings += savingsItem;
+
+        let tierName = 'Minorista';
+        if (qty >= 20) tierName = 'Distribuidor (+20)';
+        else if (qty >= 6) tierName = 'Mayorista (+6)';
+
+        return `
+          <div class="flex items-center justify-between text-xs py-1.5 border-b border-stone-200 last:border-b-0">
+            <div>
+              <strong class="text-stone-900 block font-bold">${prod.name}</strong>
+              <span class="text-[11px] text-stone-500">${qty}x ${prod.unit} • Escala: <strong class="text-emerald-700">${tierName}</strong></span>
+            </div>
+            <div class="text-right">
+              <span class="font-mono font-bold text-stone-900 block">$${itemTotal.toLocaleString('es-AR')}</span>
+              ${savingsItem > 0 ? `<span class="text-[10px] text-emerald-700 font-bold block">-$${savingsItem.toLocaleString('es-AR')}</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('checkout-total-price').textContent = `$${totalPrice.toLocaleString('es-AR')}`;
+      document.getElementById('checkout-total-savings').textContent = `-$${totalSavings.toLocaleString('es-AR')}`;
+
+      // Nodo activo en el resumen
+      const node = LUNAR_NODOS[selectedNodeSlug] || LUNAR_NODOS['lomaverde'];
+      document.getElementById('checkout-node-summary-label').textContent = node.name;
+
+      // Autocompletar datos si existen en sesión
+      try {
+        const userName = localStorage.getItem('elementales_user_name') || '';
+        const userPhone = localStorage.getItem('elementales_user_phone') || '';
+        if (userName) document.getElementById('lunar-order-name').value = userName;
+        if (userPhone) document.getElementById('lunar-order-phone').value = userPhone;
+      } catch (e) {}
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeLunarCheckoutModal() {
+      document.getElementById('modal-lunar-checkout')?.classList.add('hidden');
+    }
+
+    function handleConfirmLunarOrder(e) {
+      if (e) e.preventDefault();
+      const name = document.getElementById('lunar-order-name')?.value.trim();
+      const phone = document.getElementById('lunar-order-phone')?.value.trim();
+      const node = LUNAR_NODOS[selectedNodeSlug] || LUNAR_NODOS['lomaverde'];
+      const payment = document.getElementById('lunar-order-payment')?.value || 'Transferencia';
+      const notes = document.getElementById('lunar-order-notes')?.value.trim() || '';
+
+      const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
+      if (entries.length === 0) return;
+
+      const orderItems = [];
+      let totalAmount = 0;
+
+      entries.forEach(([id, qty]) => {
+        const prod = LUNAR_PRODUCTS.find(p => p.id === id);
+        if (prod) {
+          const unitPrice = getProductUnitPrice(prod, qty);
+          const itemTotal = unitPrice * qty;
+          totalAmount += itemTotal;
+          orderItems.push({
+            id: prod.id,
+            name: `${prod.name} (${prod.unit})`,
+            qty: qty,
+            price: unitPrice,
+            total: itemTotal
+          });
+        }
+      });
+
+      const orderNumber = Math.floor(1000 + Math.random() * 9000);
+      const newOrder = {
+        id: `LUNAR-${orderNumber}`,
+        number: orderNumber,
+        dateStr: new Date().toLocaleDateString('es-AR'),
+        timeStr: new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+        clientName: name,
+        clientPhone: phone,
+        paymentMethod: payment,
+        items: orderItems,
+        total: totalAmount,
+        status: 'Pendiente',
+        nodoId: node.id,
+        nodoNombre: node.name,
+        type: 'lunar',
+        notes: notes
+      };
+
+      // Guardar en persistencia unificada para que el Gestor lo vea en gestionelemental.html
+      try {
+        let allOrders = [];
+        const raw = localStorage.getItem('elementales_orders');
+        if (raw) allOrders = JSON.parse(raw);
+        allOrders.unshift(newOrder);
+        localStorage.setItem('elementales_orders', JSON.stringify(allOrders));
+        localStorage.setItem('elementales_orders_db_v1', JSON.stringify(allOrders));
+
+        localStorage.setItem('elementales_user_name', name);
+        localStorage.setItem('elementales_user_phone', phone);
+      } catch (err) {}
+
+      // Generar mensaje para WhatsApp
+      const itemsText = orderItems.map(i => `• ${i.qty}x ${i.name} -> $${i.total.toLocaleString('es-AR')}`).join('\n');
+      const waText = encodeURIComponent(
+`🌕 *NUEVO PEDIDO - COMPRA LUNAR ELEMENTALES*
+----------------------------------------
+*Orden:* #${newOrder.id}
+*Cliente:* ${name}
+*Teléfono:* ${phone}
+*Retiro:* ${node.name} (${node.location})
+*Entrega:* ${node.deliveryDate}
+*Pago:* ${payment}
+${notes ? `*Notas:* ${notes}\n` : ''}
+*Alimentos solicitados:*
+${itemsText}
+
+*TOTAL A ABONAR:* $${totalAmount.toLocaleString('es-AR')}
+----------------------------------------
+_Pedido enviado desde elementales.store/compralunar/nodos/${node.slug}_`
+      );
+
+      // Limpiar carrito lunar
+      lunarCart = {};
+      saveLunarCart();
+      updateFloatingCart();
+      closeLunarCheckoutModal();
+
+      try {
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 70, spread: 80, origin: { y: 0.5 } });
+        }
+      } catch (err) {}
+
+      // Abrir WhatsApp con el pedido armado
+      const waUrl = `https://wa.me/5491123456789?text=${waText}`;
+      window.open(waUrl, '_blank');
+
+      alert(`✓ ¡Gracias ${name}! Tu Pedido #${newOrder.id} de la Compra Lunar fue registrado. Se abrirá WhatsApp para enviar tu pedido al coordinador de ${node.name}.`);
+    }
+
+    // =========================================================================
+    // INICIALIZACIÓN Y GESTIÓN DE EVENTOS DE HISTORIAL (POPSTATE)
+    // =========================================================================
+    window.addEventListener('popstate', (e) => {
+      navigateLunarRoute(window.location.pathname, false);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Leer ruta actual del navegador
+      const initialPath = window.location.pathname || '/compralunar';
+      navigateLunarRoute(initialPath, false);
+    });
+  </script>
+</body>
+</html>

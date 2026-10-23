@@ -1109,9 +1109,14 @@
     // ROUTER SPA DE LA COMPRA LUNAR
     function navigateLunarRoute(path, updateHistory = true) {
       const urlParams = new URLSearchParams(window.location.search);
+      const queryRoute = urlParams.get('route');
       const queryNode = urlParams.get('nodo');
 
-      const cleanPath = (path || '/compralunar').replace(/\/+$/, '') || '/compralunar';
+      let resolvedPath = path || '/compralunar';
+      if (queryRoute) {
+        resolvedPath = '/compralunar/' + queryRoute;
+      }
+      const cleanPath = resolvedPath.replace(/\/+$/, '') || '/compralunar';
       
       // Ocultar todas las vistas
       document.querySelectorAll('.lunar-view').forEach(v => v.classList.add('hidden'));

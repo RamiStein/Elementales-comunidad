@@ -33,7 +33,9 @@
 
       // Rutas para Landing Exclusiva de Compra Lunar (/compralunar, /compralunar/nodos, /compralunar/nodos/{slug})
       if (first === 'compralunar' || first === 'compralunar.html') {
-        window.location.replace('/compralunar.html' + (search || '') + (hash || ''));
+        var subRoute = parts.slice(1).join('/');
+        var finalQ = subRoute ? '?route=' + encodeURIComponent(subRoute) + (search ? '&' + search.replace(/^\?/, '') : '') : search;
+        window.location.replace('/compralunar.html' + finalQ + (hash || ''));
         return;
       }
 
