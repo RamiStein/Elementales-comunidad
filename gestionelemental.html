@@ -2169,13 +2169,13 @@
               </tr>
             </tbody>
           </table>
-          <script>
-            window.onload = function() { window.print(); }
-          </script>
         </body>
         </html>
       `);
       printWindow.document.close();
+      setTimeout(() => {
+        try { printWindow.print(); } catch (err) {}
+      }, 350);
     }
 
     function exportCompiledProductsCSV() {
