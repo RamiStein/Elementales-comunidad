@@ -231,74 +231,6 @@
   <!-- ========================================================================= -->
   <main id="admin-dashboard-container" class="hidden relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 pb-24 animate-fade-in">
     
-    <!-- TARJETAS DE MÉTRICAS KPI EN TIEMPO REAL (MODO CLARO) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-      
-      <!-- 1. Total Pedidos -->
-      <div class="bg-white border border-stone-200/90 rounded-3xl p-4 sm:p-5 shadow-xs relative overflow-hidden group hover:border-[#a6634f]/50 hover:shadow-md transition-all">
-        <div class="flex items-center justify-between text-xs text-stone-500 font-bold mb-1">
-          <span>📦 PEDIDOS FERIA</span>
-          <span id="kpi-orders-pending-pill" class="text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full">0 pendientes</span>
-        </div>
-        <div class="flex items-baseline gap-2">
-          <span id="kpi-total-orders-count" class="text-2xl sm:text-3xl font-black text-stone-900 font-heading">0</span>
-          <span class="text-xs text-stone-500">pedidos</span>
-        </div>
-        <div class="text-xs font-bold text-emerald-700 mt-1 flex items-center gap-1">
-          <span>Facturación:</span>
-          <span id="kpi-total-revenue">$0</span>
-        </div>
-      </div>
-
-      <!-- 2. Frutillas Ecotipa & Cajones Blockchain -->
-      <div class="bg-white border border-stone-200/90 rounded-3xl p-4 sm:p-5 shadow-xs relative overflow-hidden group hover:border-rose-400/50 hover:shadow-md transition-all">
-        <div class="flex items-center justify-between text-xs text-rose-600 font-bold mb-1">
-          <span>🍓 FRUTILLAS ECOTIPA</span>
-          <span id="kpi-cajones-commits-pill" class="text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full">0 commits</span>
-        </div>
-        <div class="flex items-baseline gap-2">
-          <span id="kpi-total-frutilla-kg" class="text-2xl sm:text-3xl font-black text-stone-900 font-heading">0.0</span>
-          <span class="text-xs text-stone-500">kg pedidos</span>
-        </div>
-        <div class="text-xs font-bold text-stone-600 mt-1 flex items-center justify-between">
-          <span>Cajones cerrados:</span>
-          <strong id="kpi-cajones-closed" class="text-rose-600">0 cajones</strong>
-        </div>
-      </div>
-
-      <!-- 3. Miembros Registrados -->
-      <div class="bg-white border border-stone-200/90 rounded-3xl p-4 sm:p-5 shadow-xs relative overflow-hidden group hover:border-sky-400/50 hover:shadow-md transition-all">
-        <div class="flex items-center justify-between text-xs text-sky-700 font-bold mb-1">
-          <span>👥 COMUNIDAD ELEMENTAL</span>
-          <span class="text-[10px] font-black bg-sky-50 text-sky-700 border border-sky-200 px-2 py-0.5 rounded-full">Claves Únicas</span>
-        </div>
-        <div class="flex items-baseline gap-2">
-          <span id="kpi-total-members-count" class="text-2xl sm:text-3xl font-black text-stone-900 font-heading">0</span>
-          <span class="text-xs text-stone-500">miembros</span>
-        </div>
-        <div class="text-xs font-bold text-stone-600 mt-1 flex items-center justify-between">
-          <span>Sede activa:</span>
-          <strong id="kpi-active-node-name" class="text-sky-700">Loma Verde</strong>
-        </div>
-      </div>
-
-      <!-- 4. Caja Chica & Finanzas -->
-      <div class="bg-white border border-stone-200/90 rounded-3xl p-4 sm:p-5 shadow-xs relative overflow-hidden group hover:border-emerald-400/50 hover:shadow-md transition-all">
-        <div class="flex items-center justify-between text-xs text-emerald-700 font-bold mb-1">
-          <span>💰 CAJA & COBRANZAS</span>
-          <span class="text-[10px] font-black bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">Balance</span>
-        </div>
-        <div class="flex items-baseline gap-2">
-          <span id="kpi-total-collected" class="text-2xl sm:text-3xl font-black text-emerald-700 font-heading">$0</span>
-        </div>
-        <div class="text-[11px] font-medium text-stone-500 mt-1 flex items-center justify-between">
-          <span>Efectivo: <strong id="kpi-cash-amount" class="text-stone-800 font-bold">$0</strong></span>
-          <span>Transf: <strong id="kpi-digital-amount" class="text-blue-700 font-bold">$0</strong></span>
-        </div>
-      </div>
-
-    </div>
-
     <!-- BARRA DE PESTAÑAS DEL ADMIN (ESTILO GOOGLE / MODERN WORKSPACE) -->
     <div class="admin-tabs-nav flex items-center gap-1.5 overflow-x-auto pb-2 mb-6 scrollbar-none border-b border-stone-200 text-xs font-bold">
       <button 
@@ -399,11 +331,22 @@
         <!-- Filtros desplegables y Botones de Acción -->
         <div class="flex flex-wrap items-center gap-2">
           
+          <!-- Filtro por Tipo de Compra (Semanal vs Lunar) -->
+          <select 
+            id="admin-order-type-filter" 
+            onchange="renderAdminOrdersTable()"
+            class="bg-white border border-stone-300 text-xs font-bold text-stone-800 rounded-xl px-3 py-2 outline-none cursor-pointer shadow-2xs hover:border-stone-400 transition-colors"
+          >
+            <option value="todos">🛒 Todos los Tipos</option>
+            <option value="semanal">🌱 Compra Semanal</option>
+            <option value="lunar">🌕 Compra Lunar</option>
+          </select>
+
           <!-- Filtro por Estado -->
           <select 
             id="admin-order-status-filter" 
             onchange="renderAdminOrdersTable()"
-            class="bg-white border border-stone-300 text-xs font-bold text-stone-700 rounded-xl px-3 py-2 outline-none cursor-pointer shadow-2xs"
+            class="bg-white border border-stone-300 text-xs font-bold text-stone-700 rounded-xl px-3 py-2 outline-none cursor-pointer shadow-2xs hover:border-stone-400 transition-colors"
           >
             <option value="Todos">Todos los Estados</option>
             <option value="Pendiente">⏳ Pendiente</option>
@@ -411,6 +354,17 @@
             <option value="Listo para Retirar">🟢 Listo para Retirar</option>
             <option value="Entregado">✓ Entregado</option>
           </select>
+
+          <!-- Compilado por Producto -->
+          <button 
+            type="button" 
+            onclick="openCompiledProductsModal()" 
+            class="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-black border border-amber-300/80 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-98"
+            title="Ver resumen compilado y consolidado de productos pedidos para compras y fraccionamiento"
+          >
+            <span>📋</span>
+            <span>Compilado por Producto</span>
+          </button>
 
           <!-- Exportar Excel (CSV) -->
           <button 
@@ -886,6 +840,148 @@
       </div>
 
     </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: COMPILADO DE PEDIDOS POR ALIMENTO                                   -->
+  <!-- ========================================================================= -->
+  <div id="modal-compiled-products" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      
+      <!-- Encabezado del Modal -->
+      <div class="p-5 sm:p-6 border-b border-stone-200 bg-amber-50/40 flex items-start justify-between gap-4 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center text-2xl font-bold shrink-0 shadow-2xs">
+            📋
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-0.5">
+              <span class="text-[10px] font-black uppercase tracking-wider text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300 font-mono">
+                Logística & Productores
+              </span>
+              <span id="compiled-scope-badge" class="font-mono text-[11px] font-bold text-stone-600 bg-white px-2 py-0.5 rounded-md border border-stone-200">
+                Todos los pedidos
+              </span>
+            </div>
+            <h3 class="font-black text-xl text-stone-900 font-heading">
+              Compilado Consolidado por Producto
+            </h3>
+            <p class="text-xs text-stone-500 mt-0.5">
+              Resumen acumulado de alimentos para fraccionamiento, mesa de entrega y compras directas a productores.
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeCompiledProductsModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+      </div>
+
+      <!-- Barra de Filtros y Métricas Rápidas del Compilado -->
+      <div class="p-4 sm:p-5 border-b border-stone-200 bg-stone-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+        
+        <!-- Filtro rápido dentro del compilado -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-stone-600">Ver:</span>
+          <div class="inline-flex rounded-xl bg-white border border-stone-300 p-0.5 shadow-2xs" id="compiled-filter-pills">
+            <button 
+              type="button" 
+              onclick="setCompiledProductsFilter('todos')" 
+              id="compiled-pill-todos"
+              class="px-3 py-1 rounded-lg text-xs font-bold bg-stone-900 text-white cursor-pointer transition-all"
+            >
+              Todos
+            </button>
+            <button 
+              type="button" 
+              onclick="setCompiledProductsFilter('lunar')" 
+              id="compiled-pill-lunar"
+              class="px-3 py-1 rounded-lg text-xs font-bold text-stone-600 hover:text-stone-900 cursor-pointer transition-all"
+            >
+              🌕 Compra Lunar
+            </button>
+            <button 
+              type="button" 
+              onclick="setCompiledProductsFilter('semanal')" 
+              id="compiled-pill-semanal"
+              class="px-3 py-1 rounded-lg text-xs font-bold text-stone-600 hover:text-stone-900 cursor-pointer transition-all"
+            >
+              🌱 Compra Semanal
+            </button>
+          </div>
+        </div>
+
+        <!-- Acciones del Compilado: Imprimir y CSV -->
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            onclick="printCompiledProductsReport()" 
+            class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-stone-100 text-stone-700 border border-stone-300 font-bold text-xs shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
+            title="Imprimir planilla para mesa de armado y fraccionamiento"
+          >
+            <span>🖨️</span>
+            <span>Imprimir Planilla</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="exportCompiledProductsCSV()" 
+            class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
+            title="Descargar compilado en Excel / CSV"
+          >
+            <span>📥</span>
+            <span>Exportar CSV</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Resumen Numérico Superior -->
+      <div class="grid grid-cols-3 gap-2 px-5 py-3 bg-stone-100/50 border-b border-stone-200 text-center text-xs shrink-0">
+        <div>
+          <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider block font-mono">Alimentos Diferentes</span>
+          <span id="compiled-metric-foods-count" class="font-black text-stone-900 text-base font-heading">0</span>
+        </div>
+        <div>
+          <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider block font-mono">Unidades / Kilos Solicitados</span>
+          <span id="compiled-metric-total-units" class="font-black text-amber-800 text-base font-heading">0</span>
+        </div>
+        <div>
+          <span class="text-[10px] text-stone-400 font-bold uppercase tracking-wider block font-mono">Facturación Consolidada</span>
+          <span id="compiled-metric-total-money" class="font-black text-emerald-800 text-base font-heading">$0</span>
+        </div>
+      </div>
+
+      <!-- Tabla del Compilado (Scrollable) -->
+      <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3">
+        <div class="border border-stone-200 rounded-2xl overflow-hidden shadow-xs bg-white">
+          <table class="w-full text-xs text-left border-collapse min-w-[640px]">
+            <thead>
+              <tr class="bg-stone-50 border-b border-stone-200 text-[10px] font-black uppercase tracking-wider text-stone-500">
+                <th class="py-3 px-3 w-10 text-center">#</th>
+                <th class="py-3 px-4">Alimento / Producto Solicitado</th>
+                <th class="py-3 px-3 text-center">Tipo de Compra</th>
+                <th class="py-3 px-4 text-center font-bold">Cantidad Total</th>
+                <th class="py-3 px-4 text-right">Monto Acumulado</th>
+                <th class="py-3 px-4">Pedidos & Vecinos Solicitantes</th>
+              </tr>
+            </thead>
+            <tbody id="compiled-products-tbody" class="divide-y divide-stone-100">
+              <!-- Renderizado dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pie del Modal -->
+      <div class="p-4 border-t border-stone-200 bg-stone-50 flex items-center justify-between text-xs text-stone-500 shrink-0">
+        <span id="compiled-footer-summary">Calculado en base a los pedidos activos</span>
+        <button 
+          type="button" 
+          onclick="closeCompiledProductsModal()" 
+          class="px-4 py-2 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold cursor-pointer transition-all"
+        >
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- ========================================================================= -->
   <!-- MODAL: NUEVO PEDIDO MOSTRADOR                                             -->
@@ -1629,12 +1725,20 @@
 
       const q = (document.getElementById('admin-order-search')?.value || '').toLowerCase().trim();
       const statusFilter = document.getElementById('admin-order-status-filter')?.value || 'Todos';
+      const typeFilter = document.getElementById('admin-order-type-filter')?.value || 'todos';
 
       let list = [...adminOrders];
 
       // Filtrar por sede si está seleccionada
       if (adminSelectedNode !== 'todos') {
         list = list.filter(o => o.nodoId === adminSelectedNode || !o.nodoId);
+      }
+
+      // Filtrar por Tipo de Compra (Semanal vs Lunar)
+      if (typeFilter === 'lunar') {
+        list = list.filter(o => o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-')));
+      } else if (typeFilter === 'semanal') {
+        list = list.filter(o => o.type !== 'lunar' && (!o.id || !String(o.id).startsWith('LUNAR-')));
       }
 
       // Filtrar por Estado
@@ -1674,6 +1778,11 @@
         if (isReady) badgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
         if (isDone) badgeClass = 'bg-stone-100 text-stone-600 border-stone-300';
 
+        const isLunar = o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-'));
+        const typeBadge = isLunar
+          ? `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-purple-50 text-purple-800 border border-purple-200 px-1.5 py-0.5 rounded-md font-mono mt-1">🌕 Lunar</span>`
+          : `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded-md font-mono mt-1">🌱 Semanal</span>`;
+
         const itemsStr = Array.isArray(o.items) 
           ? o.items.map(i => `${i.qty}x ${i.name}`).join(', ')
           : (typeof o.items === 'string' ? o.items : 'Items varios');
@@ -1683,7 +1792,10 @@
 
         return `
           <tr class="hover:bg-stone-50/80 transition-colors">
-            <td class="py-3 px-4 font-mono font-bold text-stone-900">${o.id || o.number}</td>
+            <td class="py-3 px-4 font-mono font-bold text-stone-900">
+              <span class="block">${o.id || o.number}</span>
+              ${typeBadge}
+            </td>
             <td class="py-3 px-3 text-stone-500 whitespace-nowrap">${o.dateStr}</td>
             <td class="py-3 px-4">
               <strong class="text-stone-900 block font-bold">${o.clientName || 'Cliente'}</strong>
@@ -1749,12 +1861,14 @@
         return;
       }
 
-      let csv = 'ID,Fecha,Cliente,Telefono,Productos,Total,Metodo_Pago,Estado,Nodo\n';
+      let csv = 'ID,Tipo,Fecha,Cliente,Telefono,Productos,Total,Metodo_Pago,Estado,Nodo\n';
       orders.forEach(o => {
+        const isLunar = o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-'));
+        const typeStr = isLunar ? 'Compra Lunar' : 'Compra Semanal';
         const items = Array.isArray(o.items) ? o.items.map(i => `${i.qty}x ${i.name}`).join(' | ') : (o.items || '');
         const cleanName = (o.clientName || '').replace(/,/g, ' ');
         const cleanItems = items.replace(/,/g, ' ');
-        csv += `${o.id || o.number},${o.dateStr},${cleanName},${o.clientPhone || ''},${cleanItems},${o.total || 0},${o.paymentMethod || ''},${o.status || ''},${o.nodoNombre || ''}\n`;
+        csv += `${o.id || o.number},${typeStr},${o.dateStr},${cleanName},${o.clientPhone || ''},${cleanItems},${o.total || 0},${o.paymentMethod || ''},${o.status || ''},${o.nodoNombre || ''}\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1762,6 +1876,363 @@
       const link = document.createElement('a');
       link.setAttribute('href', url);
       link.setAttribute('download', `elementales_pedidos_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // =========================================================================
+    // 5.B COMPILADO CONSOLIDADO POR PRODUCTO (LOGÍSTICA Y ARMADO)
+    // =========================================================================
+    let compiledProductsFilter = 'todos'; // 'todos' | 'lunar' | 'semanal'
+
+    function openCompiledProductsModal() {
+      // Sincronizar filtro inicial con el filtro activo de la tabla principal
+      const mainType = document.getElementById('admin-order-type-filter')?.value || 'todos';
+      compiledProductsFilter = mainType;
+      updateCompiledFilterPillsUI();
+      renderCompiledProductsTable();
+      document.getElementById('modal-compiled-products')?.classList.remove('hidden');
+    }
+
+    function closeCompiledProductsModal() {
+      document.getElementById('modal-compiled-products')?.classList.add('hidden');
+    }
+
+    function setCompiledProductsFilter(filterType) {
+      compiledProductsFilter = filterType;
+      updateCompiledFilterPillsUI();
+      renderCompiledProductsTable();
+    }
+
+    function updateCompiledFilterPillsUI() {
+      ['todos', 'lunar', 'semanal'].forEach(type => {
+        const btn = document.getElementById(`compiled-pill-${type}`);
+        if (!btn) return;
+        if (type === compiledProductsFilter) {
+          btn.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-stone-900 text-white shadow-xs cursor-pointer transition-all';
+        } else {
+          btn.className = 'px-3 py-1 rounded-lg text-xs font-bold text-stone-600 hover:text-stone-900 cursor-pointer transition-all';
+        }
+      });
+      const scopeBadge = document.getElementById('compiled-scope-badge');
+      if (scopeBadge) {
+        if (compiledProductsFilter === 'lunar') scopeBadge.textContent = '🌕 Compra Lunar';
+        else if (compiledProductsFilter === 'semanal') scopeBadge.textContent = '🌱 Compra Semanal';
+        else scopeBadge.textContent = 'Todos los pedidos';
+      }
+    }
+
+    function renderCompiledProductsTable() {
+      const tbody = document.getElementById('compiled-products-tbody');
+      if (!tbody) return;
+
+      let list = [...adminOrders];
+
+      // Filtrar por sede si está seleccionada en el admin
+      if (adminSelectedNode !== 'todos') {
+        list = list.filter(o => o.nodoId === adminSelectedNode || !o.nodoId);
+      }
+
+      // Filtrar por tipo (lunar / semanal)
+      if (compiledProductsFilter === 'lunar') {
+        list = list.filter(o => o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-')));
+      } else if (compiledProductsFilter === 'semanal') {
+        list = list.filter(o => o.type !== 'lunar' && (!o.id || !String(o.id).startsWith('LUNAR-')));
+      }
+
+      // Consolidar por producto
+      const summaryMap = {};
+
+      list.forEach(order => {
+        const isLunar = order.type === 'lunar' || (order.id && String(order.id).startsWith('LUNAR-'));
+        const orderIdStr = String(order.id || order.number);
+        const clientNameStr = order.clientName || 'Cliente';
+
+        if (Array.isArray(order.items)) {
+          order.items.forEach(item => {
+            let name = typeof item === 'string' ? item : (item.name || item.nombre || 'Alimento');
+            let qty = Number(item.qty || item.cantidad || 1) || 1;
+            let price = Number(item.price || item.precio || 0) || 0;
+            let total = Number(item.total || (qty * price)) || 0;
+
+            if (typeof item === 'string') {
+              const match = item.match(/^(\d+)\s*x\s*(.*)$/);
+              if (match) {
+                qty = parseInt(match[1], 10) || 1;
+                name = match[2].trim();
+              }
+            }
+
+            const cleanName = name.trim();
+            if (!summaryMap[cleanName]) {
+              summaryMap[cleanName] = {
+                name: cleanName,
+                totalQty: 0,
+                totalAmount: 0,
+                ordersList: [],
+                isLunar: false,
+                isSemanal: false
+              };
+            }
+
+            summaryMap[cleanName].totalQty += qty;
+            summaryMap[cleanName].totalAmount += total;
+            summaryMap[cleanName].ordersList.push({
+              orderId: orderIdStr,
+              clientName: clientNameStr,
+              qty: qty,
+              isLunar: isLunar
+            });
+
+            if (isLunar) summaryMap[cleanName].isLunar = true;
+            else summaryMap[cleanName].isSemanal = true;
+          });
+        }
+      });
+
+      const compiledArray = Object.values(summaryMap).sort((a, b) => b.totalQty - a.totalQty);
+
+      // Calcular métricas
+      const foodsCount = compiledArray.length;
+      const totalUnits = compiledArray.reduce((acc, p) => acc + p.totalQty, 0);
+      const totalMoney = compiledArray.reduce((acc, p) => acc + p.totalAmount, 0);
+
+      const mCount = document.getElementById('compiled-metric-foods-count');
+      if (mCount) mCount.textContent = foodsCount;
+
+      const mUnits = document.getElementById('compiled-metric-total-units');
+      if (mUnits) mUnits.textContent = `${totalUnits} u.`;
+
+      const mMoney = document.getElementById('compiled-metric-total-money');
+      if (mMoney) mMoney.textContent = `$${totalMoney.toLocaleString('es-AR')}`;
+
+      const footerSummary = document.getElementById('compiled-footer-summary');
+      if (footerSummary) {
+        footerSummary.textContent = `Mostrando ${foodsCount} alimentos compilados a partir de ${list.length} pedidos.`;
+      }
+
+      if (compiledArray.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-12 text-center text-stone-500">
+              <span class="text-3xl block mb-2">🧺</span>
+              No hay alimentos pedidos para los filtros seleccionados.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = compiledArray.map((prod, idx) => {
+        let typeBadge = '';
+        if (prod.isLunar && prod.isSemanal) {
+          typeBadge = '<span class="inline-flex text-[9px] font-black uppercase bg-stone-100 text-stone-700 px-2 py-0.5 rounded-full border border-stone-200">Ambas</span>';
+        } else if (prod.isLunar) {
+          typeBadge = '<span class="inline-flex text-[9px] font-black uppercase bg-purple-50 text-purple-800 px-2 py-0.5 rounded-full border border-purple-200">🌕 Lunar</span>';
+        } else {
+          typeBadge = '<span class="inline-flex text-[9px] font-black uppercase bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-200">🌱 Semanal</span>';
+        }
+
+        const buyersDetails = prod.ordersList.map(o => `
+          <span class="inline-flex items-center gap-1 bg-stone-100 hover:bg-stone-200 text-stone-800 px-2 py-0.5 rounded-md text-[11px] font-mono transition-colors" title="${o.clientName} (${o.qty}x)">
+            <strong>${o.qty}x</strong> ${o.clientName.split(' ')[0]} <span class="text-stone-400">#${o.orderId.replace('LUNAR-', '').replace('ORD-', '')}</span>
+          </span>
+        `).join(' ');
+
+        return `
+          <tr class="hover:bg-amber-50/20 transition-colors">
+            <td class="py-3 px-3 text-center font-mono font-bold text-stone-400 text-[11px]">${idx + 1}</td>
+            <td class="py-3 px-4">
+              <strong class="text-stone-900 block font-bold text-xs sm:text-sm">${prod.name}</strong>
+            </td>
+            <td class="py-3 px-3 text-center whitespace-nowrap">
+              ${typeBadge}
+            </td>
+            <td class="py-3 px-4 text-center whitespace-nowrap">
+              <span class="inline-block px-3 py-1 rounded-xl bg-amber-100 text-amber-950 font-black text-xs sm:text-sm shadow-2xs font-mono">
+                ${prod.totalQty} ${prod.totalQty === 1 ? 'unidad' : 'unidades'}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right font-mono font-black text-emerald-800 text-xs sm:text-sm whitespace-nowrap">
+              $${prod.totalAmount.toLocaleString('es-AR')}
+            </td>
+            <td class="py-3 px-4 text-stone-600 text-xs">
+              <div class="flex flex-wrap gap-1 max-w-sm">
+                ${buyersDetails}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function printCompiledProductsReport() {
+      let list = [...adminOrders];
+      if (adminSelectedNode !== 'todos') {
+        list = list.filter(o => o.nodoId === adminSelectedNode || !o.nodoId);
+      }
+      if (compiledProductsFilter === 'lunar') {
+        list = list.filter(o => o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-')));
+      } else if (compiledProductsFilter === 'semanal') {
+        list = list.filter(o => o.type !== 'lunar' && (!o.id || !String(o.id).startsWith('LUNAR-')));
+      }
+
+      const summaryMap = {};
+      list.forEach(order => {
+        if (Array.isArray(order.items)) {
+          order.items.forEach(item => {
+            let name = typeof item === 'string' ? item : (item.name || item.nombre || 'Alimento');
+            let qty = Number(item.qty || item.cantidad || 1) || 1;
+            let price = Number(item.price || item.precio || 0) || 0;
+            let total = Number(item.total || (qty * price)) || 0;
+
+            if (typeof item === 'string') {
+              const match = item.match(/^(\d+)\s*x\s*(.*)$/);
+              if (match) {
+                qty = parseInt(match[1], 10) || 1;
+                name = match[2].trim();
+              }
+            }
+
+            const cleanName = name.trim();
+            if (!summaryMap[cleanName]) {
+              summaryMap[cleanName] = { name: cleanName, totalQty: 0, totalAmount: 0 };
+            }
+            summaryMap[cleanName].totalQty += qty;
+            summaryMap[cleanName].totalAmount += total;
+          });
+        }
+      });
+
+      const compiledArray = Object.values(summaryMap).sort((a, b) => b.totalQty - a.totalQty);
+      const totalUnits = compiledArray.reduce((acc, p) => acc + p.totalQty, 0);
+      const totalMoney = compiledArray.reduce((acc, p) => acc + p.totalAmount, 0);
+
+      const filterLabel = compiledProductsFilter === 'lunar' ? 'Compra Lunar' : (compiledProductsFilter === 'semanal' ? 'Compra Semanal' : 'Todos los Pedidos');
+      const dateStr = new Date().toLocaleDateString('es-AR');
+
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) return;
+
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Planilla Compilado de Alimentos - Elementales</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; padding: 24px; color: #1c1917; }
+            h1 { font-size: 20px; margin: 0 0 4px 0; font-weight: 800; }
+            .subtitle { font-size: 13px; color: #57534e; margin-bottom: 16px; }
+            .meta { display: flex; justify-content: space-between; border-bottom: 2px solid #e7e5e4; padding-bottom: 12px; margin-bottom: 16px; font-size: 12px; font-weight: 600; }
+            table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+            th { text-align: left; padding: 8px; background: #f5f5f4; border-bottom: 2px solid #d6d3d1; font-weight: 700; text-transform: uppercase; font-size: 10px; }
+            td { padding: 8px; border-bottom: 1px solid #e7e5e4; }
+            .qty { font-weight: 800; font-size: 13px; text-align: center; }
+            .money { text-align: right; font-weight: 700; font-family: monospace; }
+            .total-row { font-weight: 800; background: #fafaf9; font-size: 13px; }
+            @media print { button { display: none; } }
+          </style>
+        </head>
+        <body>
+          <h1>🌾 ELEMENTALES COMUNIDAD · PLANILLA DE COMPILADO</h1>
+          <div class="subtitle">Consolidado para armados, compras a productores y logística comunitaria</div>
+          <div class="meta">
+            <div><strong>Filtro:</strong> ${filterLabel} | <strong>Fecha:</strong> ${dateStr}</div>
+            <div><strong>Pedidos analizados:</strong> ${list.length}</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 30px; text-align: center;">#</th>
+                <th>Alimento / Presentación</th>
+                <th style="text-align: center; width: 120px;">Cantidad Total</th>
+                <th style="text-align: right; width: 120px;">Monto Total</th>
+                <th style="width: 80px; text-align: center;">Check Armado</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${compiledArray.map((p, i) => `
+                <tr>
+                  <td style="text-align: center; color: #78716c;">${i + 1}</td>
+                  <td><strong>${p.name}</strong></td>
+                  <td class="qty">${p.totalQty} u.</td>
+                  <td class="money">$${p.totalAmount.toLocaleString('es-AR')}</td>
+                  <td style="text-align: center;">[ &nbsp; ]</td>
+                </tr>
+              `).join('')}
+              <tr class="total-row">
+                <td colspan="2" style="padding-top: 12px;">TOTALES CONSOLIDADOS (${compiledArray.length} alimentos)</td>
+                <td class="qty" style="padding-top: 12px;">${totalUnits} u.</td>
+                <td class="money" style="padding-top: 12px;">$${totalMoney.toLocaleString('es-AR')}</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <script>
+            window.onload = function() { window.print(); }
+          </script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+
+    function exportCompiledProductsCSV() {
+      let list = [...adminOrders];
+      if (adminSelectedNode !== 'todos') {
+        list = list.filter(o => o.nodoId === adminSelectedNode || !o.nodoId);
+      }
+      if (compiledProductsFilter === 'lunar') {
+        list = list.filter(o => o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-')));
+      } else if (compiledProductsFilter === 'semanal') {
+        list = list.filter(o => o.type !== 'lunar' && (!o.id || !String(o.id).startsWith('LUNAR-')));
+      }
+
+      const summaryMap = {};
+      list.forEach(order => {
+        if (Array.isArray(order.items)) {
+          order.items.forEach(item => {
+            let name = typeof item === 'string' ? item : (item.name || item.nombre || 'Alimento');
+            let qty = Number(item.qty || item.cantidad || 1) || 1;
+            let price = Number(item.price || item.precio || 0) || 0;
+            let total = Number(item.total || (qty * price)) || 0;
+
+            if (typeof item === 'string') {
+              const match = item.match(/^(\d+)\s*x\s*(.*)$/);
+              if (match) {
+                qty = parseInt(match[1], 10) || 1;
+                name = match[2].trim();
+              }
+            }
+
+            const cleanName = name.trim();
+            if (!summaryMap[cleanName]) {
+              summaryMap[cleanName] = { name: cleanName, totalQty: 0, totalAmount: 0 };
+            }
+            summaryMap[cleanName].totalQty += qty;
+            summaryMap[cleanName].totalAmount += total;
+          });
+        }
+      });
+
+      const compiledArray = Object.values(summaryMap).sort((a, b) => b.totalQty - a.totalQty);
+      if (compiledArray.length === 0) {
+        alert('No hay alimentos para exportar.');
+        return;
+      }
+
+      let csv = 'Alimento,Cantidad_Total,Monto_Acumulado\n';
+      compiledArray.forEach(p => {
+        const cleanName = p.name.replace(/,/g, ' ');
+        csv += `${cleanName},${p.totalQty},${p.totalAmount}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `compilado_alimentos_${compiledProductsFilter}_${new Date().toISOString().slice(0, 10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
