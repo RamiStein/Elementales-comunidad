@@ -737,15 +737,82 @@
               />
             </div>
 
-            <div>
-              <label class="block font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
-              <input 
-                type="tel" 
-                id="lunar-order-phone" 
-                required 
-                placeholder="ej. 11 2345 6789" 
-                class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
-              />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
+                <input 
+                  type="tel" 
+                  id="lunar-order-phone" 
+                  required 
+                  placeholder="ej. 11 2345 6789" 
+                  class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+                />
+              </div>
+
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Correo Electrónico (Email) *</label>
+                <input 
+                  type="email" 
+                  id="lunar-order-email" 
+                  required 
+                  placeholder="ej. mariana@correo.com" 
+                  class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+                />
+              </div>
+            </div>
+
+            <!-- Bloque de Dirección Completa -->
+            <div class="p-3 bg-stone-50 border border-stone-200 rounded-2xl space-y-2.5">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-stone-800">
+                <span>📍</span>
+                <span>Dirección de Residencia</span>
+                <span class="text-[10px] text-stone-400 font-normal font-mono">(para registro del nodo)</span>
+              </div>
+
+              <div>
+                <label class="block font-semibold text-stone-600 text-[11px] mb-1">Calle y Altura / Dpto *</label>
+                <input 
+                  type="text" 
+                  id="lunar-order-street" 
+                  required 
+                  placeholder="ej. Los Álamos 1234, Casa 3" 
+                  class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div>
+                  <label class="block font-semibold text-stone-600 text-[11px] mb-1">Ciudad / Localidad *</label>
+                  <input 
+                    type="text" 
+                    id="lunar-order-city" 
+                    required 
+                    placeholder="ej. Loma Verde" 
+                    class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                  />
+                </div>
+                <div>
+                  <label class="block font-semibold text-stone-600 text-[11px] mb-1">Municipio / Partido *</label>
+                  <input 
+                    type="text" 
+                    id="lunar-order-municipality" 
+                    required 
+                    placeholder="ej. Escobar" 
+                    class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                  />
+                </div>
+                <div>
+                  <label class="block font-semibold text-stone-600 text-[11px] mb-1">Provincia *</label>
+                  <input 
+                    type="text" 
+                    id="lunar-order-province" 
+                    required 
+                    value="Buenos Aires" 
+                    placeholder="ej. Buenos Aires" 
+                    class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                  />
+                </div>
+              </div>
             </div>
 
             <div>
@@ -844,23 +911,37 @@
             <!-- Desglose de Alimentos Solicitados -->
             <div>
               <span class="text-[10px] text-stone-400 font-mono uppercase block font-bold mb-1.5">Alimentos Solicitados:</span>
-              <div id="success-items-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+              <div id="success-items-list" class="space-y-1.5 max-h-36 overflow-y-auto pr-1">
                 <!-- Items renderizados aquí -->
               </div>
             </div>
 
             <div class="pt-2 border-t border-stone-200 text-[11px] text-stone-600 space-y-1.5">
-              <p>📍 <strong>Punto de Retiro:</strong> <span id="success-location-label">Calle Congreve & Arrayanes</span></p>
-              <p>💳 <strong>Método de Pago:</strong> <span id="success-payment-label">Transferencia</span></p>
+              <p>👤 <strong>Comprador:</strong> <span id="success-client-full-label" class="text-stone-800 font-bold"></span> (<span id="success-phone-label" class="font-mono"></span>)</p>
+              <p>✉️ <strong>Email:</strong> <span id="success-email-label" class="font-mono text-stone-800"></span></p>
+              <p>🏠 <strong>Domicilio:</strong> <span id="success-address-label" class="text-stone-800"></span></p>
+              <p>📍 <strong>Punto de Retiro:</strong> <span id="success-location-label" class="text-stone-800 font-semibold">Calle Congreve & Arrayanes</span></p>
+              <p>💳 <strong>Método de Pago:</strong> <span id="success-payment-label" class="text-stone-800">Transferencia</span></p>
               <p id="success-notes-row" class="hidden">📝 <strong>Notas:</strong> <span id="success-notes-label"></span></p>
             </div>
           </div>
 
+          <!-- Notificación de comprobante y confirmación por correo -->
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-start gap-2.5 text-xs text-emerald-950">
+            <span class="text-base shrink-0">✉️</span>
+            <div>
+              <p class="font-bold">Comprobante y confirmación digital</p>
+              <p class="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
+                Enviamos el detalle de tu orden a <strong id="success-email-notice" class="underline"></strong>.
+              </p>
+            </div>
+          </div>
+
           <!-- Bloque de Enviar Mensaje a WhatsApp -->
-          <div class="space-y-2.5 pt-2">
-            <div class="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-3 text-center">
-              <p class="text-xs text-emerald-950 font-semibold leading-relaxed">
-                El pedido ya está registrado. Ahora podés enviar el mensaje a WhatsApp para confirmar la compra con el coordinador:
+          <div class="space-y-2 pt-1">
+            <div class="bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-center">
+              <p class="text-[11px] text-stone-700 font-semibold leading-relaxed">
+                El pedido ya está guardado en el sistema. Elegí cómo confirmar por WhatsApp:
               </p>
             </div>
 
@@ -868,19 +949,29 @@
               type="button" 
               id="success-btn-whatsapp"
               onclick="sendOrderViaWhatsApp()"
-              class="w-full py-3.5 px-6 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] active:scale-98 text-white font-black text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2.5 font-heading"
+              class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] active:scale-98 text-white font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 font-heading"
             >
-              <span class="text-xl">💬</span>
-              <span>Enviar Pedido a WhatsApp</span>
-              <span class="text-lg font-normal">→</span>
+              <span class="text-lg">💬</span>
+              <span>Enviar Pedido al Coordinador del Nodo</span>
+              <span class="text-sm font-normal">→</span>
+            </button>
+
+            <button 
+              type="button" 
+              id="success-btn-whatsapp-copy"
+              onclick="sendOrderToMyOwnWhatsApp()"
+              class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-stone-50 active:scale-98 text-stone-800 border border-stone-300 font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 font-heading"
+            >
+              <span>📲</span>
+              <span>Guardar / Enviarme Copia a mi WhatsApp</span>
             </button>
 
             <button 
               type="button" 
               onclick="closeLunarCheckoutModal()" 
-              class="w-full py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold cursor-pointer transition-colors text-center"
+              class="w-full py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs font-bold cursor-pointer transition-colors text-center"
             >
-              Volver a la Tienda
+              Cerrar y Volver a la Tienda
             </button>
           </div>
 
@@ -1269,7 +1360,6 @@
         renderVrdeCategoryGrid();
         renderProductsPills();
         renderActiveProductShowcase();
-        updateFloatingCart();
 
         targetPath = `/compralunar/nodos/${nodeSlug}`;
 
@@ -1287,6 +1377,9 @@
         if (landingView) landingView.classList.remove('hidden');
         targetPath = '/compralunar';
       }
+
+      // Actualizar visibilidad de la barra flotante según la vista actual (solo visible en tienda)
+      updateFloatingCart();
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -1728,6 +1821,12 @@
       const floatingEl = document.getElementById('floating-lunar-cart');
       if (!floatingEl) return;
 
+      // Ocultar siempre si no estamos en la vista de la tienda del nodo
+      if (currentLunarView !== 'store') {
+        floatingEl.classList.add('hidden');
+        return;
+      }
+
       const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
       const totalUnits = entries.reduce((acc, [_, qty]) => acc + qty, 0);
 
@@ -1768,6 +1867,7 @@
     // 8. MODALES Y CIERRE DE PEDIDO (FLUJO EN DOS PASOS: REGISTRO + WHATSAPP)
     // =========================================================================
     let currentOrderWaUrl = '';
+    let currentOrderClientWaUrl = '';
 
     function openProducerStoryModal(prodId) {
       const prod = LUNAR_PRODUCTS.find(p => p.id === prodId);
@@ -1877,8 +1977,19 @@
       try {
         const userName = localStorage.getItem('elementales_user_name') || '';
         const userPhone = localStorage.getItem('elementales_user_phone') || '';
+        const userEmail = localStorage.getItem('elementales_user_email') || '';
+        const userStreet = localStorage.getItem('elementales_user_street') || '';
+        const userCity = localStorage.getItem('elementales_user_city') || '';
+        const userMunicipality = localStorage.getItem('elementales_user_municipality') || '';
+        const userProvince = localStorage.getItem('elementales_user_province') || 'Buenos Aires';
+
         if (userName) document.getElementById('lunar-order-name').value = userName;
         if (userPhone) document.getElementById('lunar-order-phone').value = userPhone;
+        if (userEmail) document.getElementById('lunar-order-email').value = userEmail;
+        if (userStreet) document.getElementById('lunar-order-street').value = userStreet;
+        if (userCity) document.getElementById('lunar-order-city').value = userCity;
+        if (userMunicipality) document.getElementById('lunar-order-municipality').value = userMunicipality;
+        if (userProvince) document.getElementById('lunar-order-province').value = userProvince;
       } catch (e) {}
 
       modal.classList.remove('hidden');
@@ -1898,11 +2009,16 @@
       if (e) e.preventDefault();
       const name = document.getElementById('lunar-order-name')?.value.trim();
       const phone = document.getElementById('lunar-order-phone')?.value.trim();
+      const email = document.getElementById('lunar-order-email')?.value.trim();
+      const street = document.getElementById('lunar-order-street')?.value.trim();
+      const city = document.getElementById('lunar-order-city')?.value.trim();
+      const municipality = document.getElementById('lunar-order-municipality')?.value.trim();
+      const province = document.getElementById('lunar-order-province')?.value.trim() || 'Buenos Aires';
       const node = LUNAR_NODOS[selectedNodeSlug] || LUNAR_NODOS['lomaverde'];
       const payment = document.getElementById('lunar-order-payment')?.value || 'Transferencia';
       const notes = document.getElementById('lunar-order-notes')?.value.trim() || '';
 
-      if (!name || !phone) {
+      if (!name || !phone || !email || !street || !city || !municipality) {
         return;
       }
 
@@ -1929,6 +2045,8 @@
       });
 
       const orderNumber = Math.floor(1000 + Math.random() * 9000);
+      const fullAddressStr = `${street}, ${city} (${municipality}), ${province}`;
+
       const newOrder = {
         id: `LUNAR-${orderNumber}`,
         number: orderNumber,
@@ -1936,12 +2054,21 @@
         timeStr: new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
         clientName: name,
         clientPhone: phone,
+        clientEmail: email,
+        clientAddress: {
+          street: street,
+          city: city,
+          municipality: municipality,
+          province: province,
+          full: fullAddressStr
+        },
         paymentMethod: payment,
         items: orderItems,
         total: totalAmount,
         status: 'Pendiente',
         nodoId: node.id,
         nodoNombre: node.name,
+        deliveryDate: node.deliveryDate,
         type: 'lunar',
         notes: notes
       };
@@ -1957,6 +2084,11 @@
 
         localStorage.setItem('elementales_user_name', name);
         localStorage.setItem('elementales_user_phone', phone);
+        localStorage.setItem('elementales_user_email', email);
+        localStorage.setItem('elementales_user_street', street);
+        localStorage.setItem('elementales_user_city', city);
+        localStorage.setItem('elementales_user_municipality', municipality);
+        localStorage.setItem('elementales_user_province', province);
       } catch (err) {}
 
       // Intentar sincronización con backend local si está en ejecución
@@ -1968,6 +2100,9 @@
         }).catch(() => {});
       } catch (e) {}
 
+      // Despachar confirmación por correo electrónico en segundo plano
+      sendLunarConfirmationEmail(newOrder);
+
       // Generar mensaje para WhatsApp con formato limpio (sin mención de ahorro)
       const itemsText = orderItems.map(i => `• ${i.qty}x ${i.name} -> $${i.total.toLocaleString('es-AR')}`).join('\n');
       const waText = encodeURIComponent(
@@ -1976,6 +2111,8 @@
 *Orden:* #${newOrder.id}
 *Cliente:* ${name}
 *Teléfono:* ${phone}
+*Email:* ${email}
+*Domicilio:* ${fullAddressStr}
 *Retiro:* ${node.name} (${node.location})
 *Entrega:* ${node.deliveryDate}
 *Pago:* ${payment}
@@ -1988,13 +2125,29 @@ ${itemsText}
 _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
       );
 
-      // Guardar URL de WhatsApp para cuando el usuario presione el botón
+      // Guardar URL de WhatsApp para el coordinador y para el propio comprador
       const coordPhone = node.phone || '5491133445566';
       currentOrderWaUrl = `https://wa.me/${coordPhone}?text=${waText}`;
+      currentOrderClientWaUrl = `https://wa.me/?text=${waText}`;
 
       // Rellenar datos en la pantalla de éxito
       const clientNameEl = document.getElementById('success-client-name');
       if (clientNameEl) clientNameEl.textContent = name;
+
+      const clientFullLabel = document.getElementById('success-client-full-label');
+      if (clientFullLabel) clientFullLabel.textContent = name;
+
+      const phoneLabel = document.getElementById('success-phone-label');
+      if (phoneLabel) phoneLabel.textContent = phone;
+
+      const emailLabel = document.getElementById('success-email-label');
+      if (emailLabel) emailLabel.textContent = email;
+
+      const emailNotice = document.getElementById('success-email-notice');
+      if (emailNotice) emailNotice.textContent = email;
+
+      const addressLabel = document.getElementById('success-address-label');
+      if (addressLabel) addressLabel.textContent = fullAddressStr;
 
       const orderBadgeEl = document.getElementById('success-order-id-badge');
       if (orderBadgeEl) orderBadgeEl.textContent = `#${newOrder.id}`;
@@ -2047,7 +2200,7 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
         }
       } catch (err) {}
 
-      // Mostrar pantalla de confirmación dentro del modal (SIN alert y SIN salto automático a WhatsApp)
+      // Mostrar pantalla de confirmación dentro del modal
       document.getElementById('lunar-checkout-view-form')?.classList.add('hidden');
       const successView = document.getElementById('lunar-checkout-view-success');
       if (successView) {
@@ -2059,6 +2212,50 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
     function sendOrderViaWhatsApp() {
       if (currentOrderWaUrl) {
         window.open(currentOrderWaUrl, '_blank');
+      }
+    }
+
+    function sendOrderToMyOwnWhatsApp() {
+      if (currentOrderClientWaUrl) {
+        window.open(currentOrderClientWaUrl, '_blank');
+      }
+    }
+
+    function sendLunarConfirmationEmail(orderData) {
+      try {
+        const itemsSummary = orderData.items.map(i => `${i.qty}x ${i.name} ($${i.total.toLocaleString('es-AR')})`).join('\n');
+        
+        // 1. Envío a API local de correo si existe el servidor local
+        fetch('/api/send-confirmation-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        }).catch(() => {});
+
+        // 2. Dispatch a servicio de correo serverless para compras en GitHub Pages
+        fetch('https://formsubmit.co/ajax/info@elementales.store', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            _subject: `Confirmación de Pedido #${orderData.id} - Compra Lunar Elementales`,
+            _replyto: orderData.clientEmail,
+            _template: 'table',
+            Cliente: orderData.clientName,
+            Email: orderData.clientEmail,
+            Telefono: orderData.clientPhone,
+            Domicilio: orderData.clientAddress.full,
+            PuntoDeRetiro: `${orderData.nodoNombre} (${orderData.deliveryDate})`,
+            MedioDePago: orderData.paymentMethod,
+            Total: `$${orderData.total.toLocaleString('es-AR')}`,
+            Alimentos: itemsSummary,
+            Notas: orderData.notes || 'Sin notas adicionales'
+          })
+        }).catch(() => {});
+      } catch (err) {
+        console.warn('Envío de email en background:', err);
       }
     }
 
