@@ -306,6 +306,17 @@
         <span>Sincronización VRDE Club</span>
         <span id="tab-badge-vrde-count" class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">4</span>
       </button>
+
+      <button 
+        type="button" 
+        id="admin-tab-btn-recordatorios"
+        onclick="switchAdminTab('recordatorios')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-500 hover:text-stone-900 hover:bg-stone-100 shrink-0 flex items-center gap-2 font-bold"
+      >
+        <span>⏰</span>
+        <span>Recordatorios Productores</span>
+        <span id="tab-badge-reminders-count" class="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold hidden">0 hoy</span>
+      </button>
     </div>
 
     <!-- ======================================================================= -->
@@ -313,6 +324,9 @@
     <!-- ======================================================================= -->
     <div id="admin-panel-pedidos" class="admin-panel-content space-y-4">
       
+      <!-- CONTENEDOR DE RECORDATORIO DE PEDIDOS A PRODUCTORES PARA HOY -->
+      <div id="admin-today-reminders-container" class="space-y-3"></div>
+
       <!-- Barra de Filtros y Acciones -->
       <div class="bg-white border border-stone-200 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         
@@ -841,6 +855,88 @@
 
     </div>
 
+    <!-- ======================================================================= -->
+    <!-- TAB 8: RECORDATORIOS DE PEDIDOS A PRODUCTORES (LOGÍSTICA Y CIERRES)     -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-recordatorios" class="admin-panel-content hidden space-y-6">
+      
+      <!-- Banner Principal de Recordatorios -->
+      <div class="bg-gradient-to-r from-amber-50/90 via-white to-orange-50/50 border border-amber-200 rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-3xl shrink-0 shadow-md">
+            ⏰
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-[10px] font-black uppercase tracking-wider text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300 font-mono">
+                Logística & Cierres de Pedidos
+              </span>
+              <span id="reminders-active-count-badge" class="font-mono text-[11px] font-bold text-stone-600 bg-white px-2 py-0.5 rounded-md border border-stone-200">
+                4 productores agendados
+              </span>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-black text-stone-900 font-heading">
+              Recordatorios de Pedidos a Productores
+            </h3>
+            <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl leading-relaxed">
+              Configurá los días y horarios límite de cierre para pedir a cada productor agroecológico (ej. <strong>Hongos todos los lunes</strong>, Frutillas los martes, Granos los miércoles). El sistema te avisará de manera automática en el panel cada día correspondiente.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+          <button 
+            type="button" 
+            onclick="openNewReminderModal()" 
+            class="px-4 py-2.5 rounded-2xl bg-amber-600 hover:bg-amber-700 active:scale-98 text-white font-black text-xs shadow-md transition-all flex items-center gap-2 cursor-pointer font-heading"
+          >
+            <span>➕</span>
+            <span>Nuevo Recordatorio de Productor</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros por Día y Simulador de Prueba -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        
+        <!-- Filtro por Día -->
+        <div class="flex flex-wrap items-center gap-1.5" id="reminders-day-filters">
+          <button type="button" onclick="setRemindersDayFilter('todos')" id="rem-filter-todos" class="px-3.5 py-1.5 rounded-xl bg-stone-900 text-white text-xs font-bold cursor-pointer transition-all">Todos los Días</button>
+          <button type="button" onclick="setRemindersDayFilter(1)" id="rem-filter-1" class="px-3.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold cursor-pointer transition-all">🍄 Lunes (Hongos)</button>
+          <button type="button" onclick="setRemindersDayFilter(2)" id="rem-filter-2" class="px-3.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold cursor-pointer transition-all">🍓 Martes</button>
+          <button type="button" onclick="setRemindersDayFilter(3)" id="rem-filter-3" class="px-3.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold cursor-pointer transition-all">🌾 Miércoles</button>
+          <button type="button" onclick="setRemindersDayFilter(4)" id="rem-filter-4" class="px-3.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold cursor-pointer transition-all">🥬 Jueves</button>
+          <button type="button" onclick="setRemindersDayFilter(5)" id="rem-filter-5" class="px-3.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold cursor-pointer transition-all">Viernes / Otros</button>
+        </div>
+
+        <!-- Selector de Simulación (para probar fácilmente el recordatorio del lunes en cualquier momento) -->
+        <div class="flex items-center gap-2 text-xs bg-stone-50 border border-stone-200 rounded-2xl px-3 py-1.5">
+          <span class="text-stone-500 font-bold flex items-center gap-1">
+            <span>🧪</span>
+            <span>Simular día:</span>
+          </span>
+          <select 
+            id="reminders-simulate-day-select" 
+            onchange="handleSimulateDayChange(this.value)"
+            class="bg-white border border-stone-300 text-stone-800 text-xs font-bold rounded-lg px-2 py-1 outline-none cursor-pointer"
+          >
+            <option value="auto">📅 Automático (Hoy real)</option>
+            <option value="1">🍄 Forzar Hoy = Lunes (Hongos)</option>
+            <option value="2">🍓 Forzar Hoy = Martes (Frutillas)</option>
+            <option value="3">🌾 Forzar Hoy = Miércoles (Granos)</option>
+            <option value="4">🥬 Forzar Hoy = Jueves (Verduras)</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Grid de Recordatorios de Productores -->
+      <div id="admin-reminders-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+        <!-- Renderizado dinámicamente -->
+      </div>
+
+    </div>
+
   <!-- ========================================================================= -->
   <!-- MODAL: COMPILADO DE PEDIDOS POR ALIMENTO                                   -->
   <!-- ========================================================================= -->
@@ -979,6 +1075,133 @@
           Cerrar
         </button>
       </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: NUEVO / EDITAR RECORDATORIO DE PRODUCTOR                           -->
+  <!-- ========================================================================= -->
+  <div id="modal-new-reminder" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      
+      <div class="p-5 sm:p-6 border-b border-stone-200 bg-amber-50/40 flex items-center justify-between gap-4 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center text-xl font-bold shrink-0">
+            ⏰
+          </div>
+          <div>
+            <h3 id="modal-reminder-title" class="font-black text-lg text-stone-900 font-heading">
+              Nuevo Recordatorio de Productor
+            </h3>
+            <p class="text-xs text-stone-500">
+              Configurá el día de cierre semanal para realizar el pedido.
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeNewReminderModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+      </div>
+
+      <form id="form-new-reminder" onsubmit="handleSaveProducerReminder(event)" class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+        <input type="hidden" id="reminder-edit-id" value="" />
+
+        <div class="grid grid-cols-4 gap-3">
+          <div class="col-span-1">
+            <label class="block font-bold text-stone-700 mb-1">Ícono</label>
+            <input 
+              type="text" 
+              id="reminder-icon" 
+              required 
+              value="🍄" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-amber-500 focus:bg-white rounded-xl px-3 py-2 text-center text-lg outline-none"
+            />
+          </div>
+          <div class="col-span-3">
+            <label class="block font-bold text-stone-700 mb-1">Alimento / Producto *</label>
+            <input 
+              type="text" 
+              id="reminder-product-name" 
+              required 
+              placeholder="Ej. Hongos Agroecológicos (Gírgolas, Melena)" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-amber-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 font-semibold outline-none"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Nombre del Productor / Finca *</label>
+          <input 
+            type="text" 
+            id="reminder-producer-name" 
+            required 
+            placeholder="Ej. Finca Fungiarte / Productor Local" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-amber-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Día de Pedido Recurrente *</label>
+            <select id="reminder-day-of-week" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none cursor-pointer">
+              <option value="1">🗓️ Todos los Lunes</option>
+              <option value="2">🗓️ Todos los Martes</option>
+              <option value="3">🗓️ Todos los Miércoles</option>
+              <option value="4">🗓️ Todos los Jueves</option>
+              <option value="5">🗓️ Todos los Viernes</option>
+              <option value="6">🗓️ Todos los Sábados</option>
+              <option value="0">🗓️ Todos los Domingos</option>
+              <option value="quincenal">🗓️ Quincenal (1 y 15)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Horario Límite de Cierre</label>
+            <input 
+              type="text" 
+              id="reminder-deadline" 
+              placeholder="Ej. Antes de las 18:00 hs" 
+              value="Antes de las 18:00 hs"
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-amber-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">WhatsApp del Productor</label>
+          <input 
+            type="tel" 
+            id="reminder-phone" 
+            placeholder="Ej. 5491144556677" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-amber-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none font-mono"
+          />
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Notas operativas (Opcional)</label>
+          <textarea 
+            id="reminder-notes" 
+            rows="2" 
+            placeholder="Ej. Cosechan lunes a la noche. Enviar cantidades consolidadas de la red." 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-amber-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+          ></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+          <button 
+            type="button" 
+            onclick="closeNewReminderModal()" 
+            class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 active:scale-98 text-white font-black cursor-pointer shadow-xs font-heading"
+          >
+            Guardar Recordatorio
+          </button>
+        </div>
+      </form>
 
     </div>
   </div>
@@ -1500,6 +1723,7 @@
       if (tabName === 'catalogo') renderAdminProductsTable();
       if (tabName === 'finanzas') renderAdminFinances();
       if (tabName === 'vrde') renderAdminVrdeSync();
+      if (tabName === 'recordatorios') renderAdminReminders();
     }
 
     // =========================================================================
@@ -1629,6 +1853,7 @@
         if (badgeTab) badgeTab.textContent = activeCount;
       }
 
+      initAdminProducerReminders();
       updateAdminKPIs();
       switchAdminTab(currentAdminTab);
     }
@@ -1722,6 +1947,7 @@
     function renderAdminOrdersTable() {
       const tbody = document.getElementById('admin-orders-tbody');
       if (!tbody) return;
+      renderTodayRemindersBanner();
 
       const q = (document.getElementById('admin-order-search')?.value || '').toLowerCase().trim();
       const statusFilter = document.getElementById('admin-order-status-filter')?.value || 'Todos';
@@ -3047,6 +3273,627 @@
         } catch (e) {}
       }, 500);
     }
+
+
+    // =========================================================================
+    // 12. RECORDATORIOS Y LOGÍSTICA DE PEDIDOS A PRODUCTORES
+    // =========================================================================
+    const DEFAULT_PRODUCER_REMINDERS = [
+      {
+        id: 'rem-hongos',
+        icon: '🍄',
+        productName: 'Hongos Agroecológicos (Gírgolas, Melena, Portobellos)',
+        producerName: 'Finca Fungiarte / Productores del Valle',
+        dayOfWeek: 1, // 1 = Lunes
+        deadline: 'Antes de las 18:00 hs',
+        phone: '5491122334455',
+        notes: 'Cierre semanal obligatorio todos los lunes para cosecha nocturna y entrega viernes.',
+        matchKeywords: ['hongo', 'gírgola', 'girgola', 'melena', 'champiñon', 'champi']
+      },
+      {
+        id: 'rem-frutillas',
+        icon: '🍓',
+        productName: 'Frutillas Agroecológicas Finca Ecotipa',
+        producerName: 'Finca Ecotipa',
+        dayOfWeek: 2, // 2 = Martes
+        deadline: 'Antes de las 13:00 hs',
+        phone: '5491133445566',
+        notes: 'Cierre de pedidos de cajones y fracciones de círculos para cosecha de miércoles.',
+        matchKeywords: ['frutilla']
+      },
+      {
+        id: 'rem-granos',
+        icon: '🌾',
+        productName: 'Granos, Harinas y Legumbres Agroecológicas',
+        producerName: 'Molino Harinas Vivas & Red Granos',
+        dayOfWeek: 3, // 3 = Miércoles
+        deadline: 'Antes de las 15:00 hs',
+        phone: '5491144556677',
+        notes: 'Consolidado semanal de bolsas de 25kg y fraccionados de almacén comunitario.',
+        matchKeywords: ['harina', 'grano', 'legumbre', 'avena', 'arroz', 'lenteja', 'fideo']
+      },
+      {
+        id: 'rem-verduras',
+        icon: '🥬',
+        productName: 'Bolsones y Cajones de Verduras de Estación',
+        producerName: 'Cooperativa Chasqui / Quinta Orgánica',
+        dayOfWeek: 4, // 4 = Jueves
+        deadline: 'Antes de las 12:00 hs',
+        phone: '5491155667788',
+        notes: 'Cantidad total acumulada de bolsones familiares para cosecha del viernes al alba.',
+        matchKeywords: ['bolsón', 'bolson', 'verdura', 'cajón de verdura', 'cajon de verdura']
+      }
+    ];
+
+    const DAYS_OF_WEEK_NAMES = [
+      'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
+    ];
+
+    let adminProducerReminders = [];
+    let adminRemindersCompleted = {}; // Clave: `${remId}_${weekKey}`: boolean
+    let simulatedReminderDay = 'auto'; // 'auto' o '0'..'6'
+    let remindersDayFilter = 'todos'; // 'todos' o 0..6
+
+    function getWeekKey(d) {
+      const now = d || new Date();
+      const date = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+      const dayNum = date.getUTCDay() || 7;
+      date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+      const weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+      return date.getUTCFullYear() + '-W' + String(weekNo).padStart(2, '0');
+    }
+
+    function getEffectiveDayOfWeek() {
+      if (simulatedReminderDay !== 'auto') {
+        return parseInt(simulatedReminderDay, 10);
+      }
+      return new Date().getDay();
+    }
+
+    function initAdminProducerReminders() {
+      try {
+        const raw = localStorage.getItem('elementales_producer_reminders_v1');
+        if (raw) {
+          adminProducerReminders = JSON.parse(raw);
+        }
+      } catch (e) {
+        adminProducerReminders = [];
+      }
+
+      if (!Array.isArray(adminProducerReminders) || adminProducerReminders.length === 0) {
+        adminProducerReminders = JSON.parse(JSON.stringify(DEFAULT_PRODUCER_REMINDERS));
+        saveAdminProducerReminders();
+      }
+
+      try {
+        const rawComp = localStorage.getItem('elementales_reminders_completed_v1');
+        if (rawComp) {
+          adminRemindersCompleted = JSON.parse(rawComp);
+        }
+      } catch (e) {
+        adminRemindersCompleted = {};
+      }
+
+      updateRemindersBadge();
+    }
+
+    function saveAdminProducerReminders() {
+      try {
+        localStorage.setItem('elementales_producer_reminders_v1', JSON.stringify(adminProducerReminders));
+      } catch (e) {}
+    }
+
+    function saveAdminRemindersCompleted() {
+      try {
+        localStorage.setItem('elementales_reminders_completed_v1', JSON.stringify(adminRemindersCompleted));
+      } catch (e) {}
+    }
+
+    function isReminderDueToday(rem) {
+      const effectiveDay = getEffectiveDayOfWeek();
+      if (rem.dayOfWeek === 'quincenal') {
+        const dom = new Date().getDate();
+        return dom === 1 || dom === 15;
+      }
+      return parseInt(rem.dayOfWeek, 10) === effectiveDay;
+    }
+
+    function isReminderDoneThisWeek(remId) {
+      const key = remId + '_' + getWeekKey();
+      return !!adminRemindersCompleted[key];
+    }
+
+    function toggleReminderDoneToday(remId) {
+      const key = remId + '_' + getWeekKey();
+      adminRemindersCompleted[key] = !adminRemindersCompleted[key];
+      saveAdminRemindersCompleted();
+      
+      if (adminRemindersCompleted[key]) {
+        try {
+          if (typeof confetti === 'function') confetti({ particleCount: 35, spread: 60 });
+        } catch (e) {}
+      }
+
+      renderTodayRemindersBanner();
+      renderAdminReminders();
+      updateRemindersBadge();
+    }
+
+    function updateRemindersBadge() {
+      const dueReminders = adminProducerReminders.filter(r => isReminderDueToday(r));
+      const pendingCount = dueReminders.filter(r => !isReminderDoneThisWeek(r.id)).length;
+      
+      const badge = document.getElementById('tab-badge-reminders-count');
+      if (badge) {
+        if (pendingCount > 0) {
+          badge.textContent = pendingCount;
+          badge.className = 'px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-white animate-pulse';
+        } else if (dueReminders.length > 0) {
+          badge.textContent = '✓';
+          badge.className = 'px-1.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-600 text-white';
+        } else {
+          badge.textContent = adminProducerReminders.length;
+          badge.className = 'px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-stone-200 text-stone-700';
+        }
+      }
+
+      const activeBadge = document.getElementById('reminders-active-count-badge');
+      if (activeBadge) {
+        activeBadge.textContent = `${adminProducerReminders.length} productores agendados`;
+      }
+    }
+
+    function calculateReminderOrdersSummary(rem) {
+      const keywords = (rem.matchKeywords && rem.matchKeywords.length > 0)
+        ? rem.matchKeywords
+        : [rem.productName.toLowerCase().split(' ')[0]];
+      
+      let totalQty = 0;
+      const matchedItems = {};
+
+      adminOrders.forEach(ord => {
+        if (ord.status === 'Cancelado') return;
+        (ord.items || []).forEach(it => {
+          const nameLower = (it.name || '').toLowerCase();
+          const match = keywords.some(k => nameLower.includes(k.toLowerCase()));
+          if (match) {
+            const qty = parseFloat(it.qty) || 1;
+            totalQty += qty;
+            matchedItems[it.name] = (matchedItems[it.name] || 0) + qty;
+          }
+        });
+      });
+
+      return {
+        totalQty: totalQty,
+        itemsBreakdown: matchedItems
+      };
+    }
+
+    function renderTodayRemindersBanner() {
+      const container = document.getElementById('admin-today-reminders-container');
+      if (!container) return;
+
+      const dueReminders = adminProducerReminders.filter(r => isReminderDueToday(r));
+      const dayName = DAYS_OF_WEEK_NAMES[getEffectiveDayOfWeek()] || 'Hoy';
+
+      if (dueReminders.length === 0) {
+        if (simulatedReminderDay !== 'auto') {
+          container.innerHTML = `
+            <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3.5 text-xs text-amber-900 flex items-center justify-between gap-3">
+              <span class="flex items-center gap-2">
+                <span>ℹ️</span>
+                <span><strong>Simulación activa (${dayName}):</strong> No hay pedidos a productores agendados para este día.</span>
+              </span>
+              <button onclick="handleSimulateDayChange('auto')" class="text-amber-800 underline font-bold cursor-pointer hover:text-amber-950">Restablecer a Hoy Real</button>
+            </div>
+          `;
+        } else {
+          container.innerHTML = '';
+        }
+        return;
+      }
+
+      let html = '';
+      dueReminders.forEach(rem => {
+        const isDone = isReminderDoneThisWeek(rem.id);
+        const summary = calculateReminderOrdersSummary(rem);
+        const breakdownKeys = Object.keys(summary.itemsBreakdown);
+        const breakdownText = breakdownKeys.length > 0 
+          ? breakdownKeys.map(k => `${summary.itemsBreakdown[k]}x ${k}`).join(', ')
+          : 'Sin ítems detectados en pedidos activos todavía';
+
+        html += `
+          <div class="relative overflow-hidden rounded-3xl border ${isDone ? 'border-emerald-300 bg-emerald-50/50' : 'border-amber-400 bg-gradient-to-r from-amber-500/10 via-amber-50/90 to-orange-50/70'} p-5 sm:p-6 shadow-sm transition-all animate-fade-in">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              
+              <div class="flex items-start gap-4">
+                <div class="w-13 h-13 rounded-2xl ${isDone ? 'bg-emerald-600' : 'bg-amber-500 shadow-md'} text-white flex items-center justify-center text-3xl shrink-0">
+                  ${isDone ? '✓' : rem.icon}
+                </div>
+                <div>
+                  <div class="flex flex-wrap items-center gap-2 mb-1">
+                    <span class="font-mono text-[10px] font-black uppercase tracking-wider ${isDone ? 'bg-emerald-200 text-emerald-950 border border-emerald-400' : 'bg-amber-200 text-amber-950 border border-amber-400'} px-2.5 py-0.5 rounded-full">
+                      ⏰ ${isDone ? 'PEDIDO REALIZADO' : 'HOY ES DÍA DE PEDIDO (' + dayName.toUpperCase() + ')'}
+                    </span>
+                    <span class="text-xs font-bold text-stone-600 bg-white/90 border border-stone-200 px-2 py-0.5 rounded-lg flex items-center gap-1">
+                      <span>⏳</span>
+                      <span>${rem.deadline}</span>
+                    </span>
+                    ${simulatedReminderDay !== 'auto' ? '<span class="text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 px-1.5 py-0.5 rounded-md">Modo Simulación</span>' : ''}
+                  </div>
+
+                  <h4 class="text-lg sm:text-xl font-black text-stone-900 font-heading">
+                    ${rem.productName}
+                  </h4>
+                  
+                  <p class="text-xs font-semibold text-stone-700 mt-0.5 flex flex-wrap items-center gap-2">
+                    <span>🌾 Productor: <strong>${rem.producerName}</strong></span>
+                    ${rem.phone ? `<span class="font-mono text-stone-500">(${rem.phone})</span>` : ''}
+                  </p>
+
+                  <div class="mt-2.5 bg-white/80 border border-stone-200/90 rounded-xl p-2.5 text-xs max-w-2xl">
+                    <div class="flex items-center gap-2 font-bold text-stone-800">
+                      <span>📦</span>
+                      <span>Total pedido por la red:</span>
+                      <span class="font-mono font-black ${summary.totalQty > 0 ? 'text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md' : 'text-stone-500'}">
+                        ${summary.totalQty > 0 ? `${summary.totalQty} unidades / kg acumulados` : '0 registrados'}
+                      </span>
+                    </div>
+                    <p class="text-[11px] text-stone-600 mt-1 truncate">
+                      ${breakdownText}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Acciones Rápidas -->
+              <div class="flex flex-wrap items-center gap-2.5 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-stone-200">
+                <button 
+                  type="button" 
+                  onclick="sendProducerOrderWhatsApp('${rem.id}')" 
+                  class="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold text-xs shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+                  title="Enviar mensaje con consolidado al productor"
+                >
+                  <span>📱</span>
+                  <span>Pedir por WhatsApp</span>
+                </button>
+
+                <button 
+                  type="button" 
+                  onclick="openCompiledProductsModal()" 
+                  class="px-3.5 py-2.5 rounded-2xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 font-bold text-xs shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>📋</span>
+                  <span>Ver Compilado</span>
+                </button>
+
+                <button 
+                  type="button" 
+                  onclick="toggleReminderDoneToday('${rem.id}')" 
+                  class="px-4 py-2.5 rounded-2xl ${isDone ? 'bg-emerald-700 text-white font-black' : 'bg-stone-900 hover:bg-black text-white font-bold'} text-xs shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span>${isDone ? '✓' : '⭕'}</span>
+                  <span>${isDone ? 'Hecho esta semana' : 'Marcar Pedido Hecho'}</span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderAdminReminders() {
+      const grid = document.getElementById('admin-reminders-grid');
+      if (!grid) return;
+
+      const effectiveDay = getEffectiveDayOfWeek();
+      let list = [...adminProducerReminders];
+
+      if (remindersDayFilter !== 'todos') {
+        const filterNum = parseInt(remindersDayFilter, 10);
+        list = list.filter(r => parseInt(r.dayOfWeek, 10) === filterNum);
+      }
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center bg-stone-50 border border-stone-200 rounded-3xl">
+            <span class="text-4xl block mb-2">🗓️</span>
+            <p class="font-bold text-stone-700">No hay recordatorios configurados para el filtro seleccionado.</p>
+            <p class="text-xs text-stone-500 mt-1">Podés crear uno nuevo con el botón superior "Nuevo Recordatorio de Productor".</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      list.forEach(rem => {
+        const isToday = isReminderDueToday(rem);
+        const isDone = isReminderDoneThisWeek(rem.id);
+        const dayLabel = rem.dayOfWeek === 'quincenal' ? 'Quincenal (1 y 15)' : `Todos los ${DAYS_OF_WEEK_NAMES[parseInt(rem.dayOfWeek, 10)] || 'Día'}`;
+        const summary = calculateReminderOrdersSummary(rem);
+
+        html += `
+          <div class="bg-white border ${isToday ? 'border-amber-400 ring-2 ring-amber-400/30' : 'border-stone-200'} rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between gap-4 transition-all hover:shadow-sm">
+            <div>
+              <div class="flex items-start justify-between gap-3 mb-2">
+                <div class="flex items-center gap-3">
+                  <span class="text-3xl">${rem.icon}</span>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${isToday ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-stone-100 text-stone-600'}">
+                        🗓️ ${dayLabel}
+                      </span>
+                      ${isToday ? '<span class="text-[10px] font-black bg-amber-500 text-white px-2 py-0.5 rounded-full animate-pulse">¡HOY!</span>' : ''}
+                    </div>
+                    <h4 class="font-black text-stone-900 text-base sm:text-lg font-heading mt-1">
+                      ${rem.productName}
+                    </h4>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-1">
+                  <button type="button" onclick="openNewReminderModal('${rem.id}')" class="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 cursor-pointer" title="Editar">✏️</button>
+                  <button type="button" onclick="deleteProducerReminder('${rem.id}')" class="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 cursor-pointer" title="Eliminar">🗑️</button>
+                </div>
+              </div>
+
+              <div class="space-y-1.5 text-xs text-stone-600 mt-3 pt-3 border-t border-stone-100">
+                <p class="flex items-center gap-1.5">
+                  <span class="font-bold text-stone-800">Productor / Finca:</span>
+                  <span>${rem.producerName}</span>
+                </p>
+                <p class="flex items-center gap-1.5">
+                  <span class="font-bold text-stone-800">Límite de pedido:</span>
+                  <span class="font-mono text-stone-700">${rem.deadline || 'Sin límite especificado'}</span>
+                </p>
+                ${rem.phone ? `
+                  <p class="flex items-center gap-1.5">
+                    <span class="font-bold text-stone-800">WhatsApp:</span>
+                    <a href="https://wa.me/${rem.phone.replace(/[^0-9]/g, '')}" target="_blank" class="text-emerald-700 hover:underline font-mono">${rem.phone}</a>
+                  </p>
+                ` : ''}
+                ${rem.notes ? `
+                  <p class="text-[11px] text-stone-500 bg-stone-50 p-2 rounded-xl mt-2 italic">
+                    "${rem.notes}"
+                  </p>
+                ` : ''}
+              </div>
+
+              <!-- Resumen de Pedidos Registrados -->
+              <div class="mt-3 bg-amber-50/50 border border-amber-200/60 rounded-xl p-2.5 flex items-center justify-between text-xs">
+                <span class="text-stone-600 font-medium">Acumulado en red esta semana:</span>
+                <span class="font-mono font-black text-amber-900 bg-white px-2 py-0.5 rounded-md border border-amber-200">
+                  ${summary.totalQty} unidades/kg
+                </span>
+              </div>
+            </div>
+
+            <!-- Footer del Card con Estado y Botones -->
+            <div class="pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                <input 
+                  type="checkbox" 
+                  ${isDone ? 'checked' : ''} 
+                  onchange="toggleReminderDoneToday('${rem.id}')"
+                  class="w-4 h-4 text-emerald-600 rounded border-stone-300 focus:ring-emerald-500 cursor-pointer"
+                />
+                <span class="font-bold ${isDone ? 'text-emerald-700' : 'text-stone-500'}">
+                  ${isDone ? '✓ Pedido realizado' : 'Pendiente esta semana'}
+                </span>
+              </label>
+
+              <button 
+                type="button" 
+                onclick="sendProducerOrderWhatsApp('${rem.id}')" 
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                <span>📱</span>
+                <span>WhatsApp Pedido</span>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      grid.innerHTML = html;
+      updateRemindersBadge();
+    }
+
+    function setRemindersDayFilter(day) {
+      remindersDayFilter = day;
+      const buttons = [
+        { id: 'rem-filter-todos', val: 'todos' },
+        { id: 'rem-filter-1', val: 1 },
+        { id: 'rem-filter-2', val: 2 },
+        { id: 'rem-filter-3', val: 3 },
+        { id: 'rem-filter-4', val: 4 },
+        { id: 'rem-filter-5', val: 5 }
+      ];
+
+      buttons.forEach(b => {
+        const el = document.getElementById(b.id);
+        if (el) {
+          if (String(b.val) === String(day)) {
+            el.className = 'px-3.5 py-1.5 rounded-xl bg-stone-900 text-white text-xs font-bold cursor-pointer transition-all shadow-2xs';
+          } else {
+            el.className = 'px-3.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold cursor-pointer transition-all';
+          }
+        }
+      });
+
+      renderAdminReminders();
+    }
+
+    function handleSimulateDayChange(val) {
+      simulatedReminderDay = val;
+      updateRemindersBadge();
+      renderTodayRemindersBanner();
+      renderAdminReminders();
+    }
+
+    function openNewReminderModal(editId) {
+      const modal = document.getElementById('modal-new-reminder');
+      if (!modal) return;
+
+      const editInput = document.getElementById('reminder-edit-id');
+      const title = document.getElementById('modal-reminder-title');
+      const iconInput = document.getElementById('reminder-icon');
+      const prodName = document.getElementById('reminder-product-name');
+      const producerName = document.getElementById('reminder-producer-name');
+      const daySelect = document.getElementById('reminder-day-of-week');
+      const deadline = document.getElementById('reminder-deadline');
+      const phone = document.getElementById('reminder-phone');
+      const notes = document.getElementById('reminder-notes');
+
+      if (editId) {
+        const rem = adminProducerReminders.find(r => r.id === editId);
+        if (rem) {
+          if (editInput) editInput.value = rem.id;
+          if (title) title.textContent = 'Editar Recordatorio de Productor';
+          if (iconInput) iconInput.value = rem.icon || '🍄';
+          if (prodName) prodName.value = rem.productName || '';
+          if (producerName) producerName.value = rem.producerName || '';
+          if (daySelect) daySelect.value = rem.dayOfWeek;
+          if (deadline) deadline.value = rem.deadline || '';
+          if (phone) phone.value = rem.phone || '';
+          if (notes) notes.value = rem.notes || '';
+        }
+      } else {
+        if (editInput) editInput.value = '';
+        if (title) title.textContent = 'Nuevo Recordatorio de Productor';
+        if (iconInput) iconInput.value = '🍄';
+        if (prodName) prodName.value = '';
+        if (producerName) producerName.value = '';
+        if (daySelect) daySelect.value = '1';
+        if (deadline) deadline.value = 'Antes de las 18:00 hs';
+        if (phone) phone.value = '';
+        if (notes) notes.value = '';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeNewReminderModal() {
+      const modal = document.getElementById('modal-new-reminder');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function handleSaveProducerReminder(e) {
+      e.preventDefault();
+      const editId = document.getElementById('reminder-edit-id')?.value;
+      const icon = document.getElementById('reminder-icon')?.value.trim() || '🍄';
+      const productName = document.getElementById('reminder-product-name')?.value.trim();
+      const producerName = document.getElementById('reminder-producer-name')?.value.trim();
+      const dayOfWeek = document.getElementById('reminder-day-of-week')?.value;
+      const deadline = document.getElementById('reminder-deadline')?.value.trim() || 'Antes de las 18:00 hs';
+      const phone = document.getElementById('reminder-phone')?.value.trim() || '';
+      const notes = document.getElementById('reminder-notes')?.value.trim() || '';
+
+      if (!productName || !producerName) {
+        alert('Por favor completá el nombre del alimento y el productor.');
+        return;
+      }
+
+      // Generar palabras clave automáticas a partir del nombre
+      const cleanKeywords = productName.toLowerCase()
+        .replace(/[^a-záéíóúñ0-9\s]/g, '')
+        .split(' ')
+        .filter(w => w.length > 3);
+
+      if (editId) {
+        const idx = adminProducerReminders.findIndex(r => r.id === editId);
+        if (idx !== -1) {
+          adminProducerReminders[idx] = {
+            ...adminProducerReminders[idx],
+            icon,
+            productName,
+            producerName,
+            dayOfWeek: dayOfWeek === 'quincenal' ? 'quincenal' : parseInt(dayOfWeek, 10),
+            deadline,
+            phone,
+            notes,
+            matchKeywords: cleanKeywords
+          };
+        }
+      } else {
+        const newRem = {
+          id: 'rem-' + Date.now(),
+          icon,
+          productName,
+          producerName,
+          dayOfWeek: dayOfWeek === 'quincenal' ? 'quincenal' : parseInt(dayOfWeek, 10),
+          deadline,
+          phone,
+          notes,
+          matchKeywords: cleanKeywords
+        };
+        adminProducerReminders.push(newRem);
+      }
+
+      saveAdminProducerReminders();
+      closeNewReminderModal();
+      renderAdminReminders();
+      renderTodayRemindersBanner();
+      updateRemindersBadge();
+
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 30, spread: 50 });
+      } catch (err) {}
+    }
+
+    function deleteProducerReminder(remId) {
+      const rem = adminProducerReminders.find(r => r.id === remId);
+      const name = rem ? rem.productName : 'este recordatorio';
+      if (!confirm(`¿Eliminar recordatorio de "${name}"?`)) return;
+
+      adminProducerReminders = adminProducerReminders.filter(r => r.id !== remId);
+      saveAdminProducerReminders();
+      renderAdminReminders();
+      renderTodayRemindersBanner();
+      updateRemindersBadge();
+    }
+
+    function sendProducerOrderWhatsApp(remId) {
+      const rem = adminProducerReminders.find(r => r.id === remId);
+      if (!rem) return;
+
+      const summary = calculateReminderOrdersSummary(rem);
+      const breakdownKeys = Object.keys(summary.itemsBreakdown);
+      const dayName = rem.dayOfWeek === 'quincenal' ? 'cierre quincenal' : ('este ' + (DAYS_OF_WEEK_NAMES[parseInt(rem.dayOfWeek, 10)] || 'día'));
+
+      let breakdownStr = '';
+      if (breakdownKeys.length > 0) {
+        breakdownStr = breakdownKeys.map(k => `• ${summary.itemsBreakdown[k]} x ${k}`).join('\n');
+      } else {
+        breakdownStr = `• ${rem.productName} (Solicitar consolidado acumulado)`;
+      }
+
+      const msg = 
+`Hola *${rem.producerName}*! 🌱
+Te escribo desde la red comunitaria *Elementales*.
+Hoy cerramos los pedidos de la red para *${rem.productName}*.
+
+📋 *Resumen de pedidos para ${dayName}:*
+${breakdownStr}
+
+Total estimado: ${summary.totalQty > 0 ? (summary.totalQty + ' unidades/kg') : 'A confirmar con el consolidado'}
+
+Por favor confirmanos recepción del pedido y horario estimado de entrega/cosecha.
+¡Muchas gracias!`;
+
+      const cleanPhone = (rem.phone || '').replace(/[^0-9]/g, '');
+      if (cleanPhone) {
+        window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+      } else {
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+      }
+    }
+
 
     // Auto-arranque
     document.addEventListener('DOMContentLoaded', () => {
