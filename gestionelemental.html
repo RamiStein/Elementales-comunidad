@@ -605,35 +605,164 @@
     <!-- ======================================================================= -->
     <!-- TAB 5: CATÁLOGO & PRECIOS                                               -->
     <!-- ======================================================================= -->
-    <div id="admin-panel-catalogo" class="admin-panel-content hidden space-y-4">
+        <div id="admin-panel-catalogo" class="admin-panel-content hidden space-y-5">
       
-      <div class="bg-white border border-stone-200 rounded-3xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h3 class="text-lg font-black text-stone-900 font-heading">Catálogo de Cosechas & Alimentos</h3>
-          <p class="text-xs text-stone-500">Modificá precios de lista, precios socio y disponibilidad de stock para la feria</p>
+      <!-- Banner Principal del Catálogo Maestro -->
+      <div class="bg-gradient-to-r from-emerald-50/90 via-white to-amber-50/60 border border-emerald-200/90 rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-[#059669] text-white flex items-center justify-center text-3xl shrink-0 shadow-md">
+            🌾
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-900 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
+                Tienda Web Pública & Red Federada
+              </span>
+              <span id="cat-badge-providers" class="font-mono text-[11px] font-bold text-stone-600 bg-white px-2 py-0.5 rounded-md border border-stone-200">
+                🌐 VRDE Club · 🌕 Compra Lunar · 🍓 Productores Locales
+              </span>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-black text-stone-900 font-heading">
+              Catálogo Maestro & Precios de Venta en la Web
+            </h3>
+            <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl leading-relaxed">
+              Control unificado de todos los alimentos publicados en la tienda comunitaria (<a href="/compralunar" target="_blank" class="text-emerald-700 underline font-bold">elementales.store/compralunar</a>). Sacá o poné productos de la web con un clic y ajustá los precios <strong>Minorista</strong>, <strong>Mayorista</strong> y <strong>Distribuidor</strong>.
+            </p>
+          </div>
         </div>
 
-        <button 
-          type="button" 
-          onclick="openNewProductModal()" 
-          class="px-4 py-2.5 rounded-2xl bg-[#1db954] hover:bg-[#16a34a] text-white text-xs font-black shadow-md flex items-center gap-1.5 cursor-pointer"
-        >
-          <span>+</span>
-          <span>Agregar Producto</span>
-        </button>
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+          <button 
+            type="button" 
+            onclick="syncCatalogWithVrde()" 
+            class="px-4 py-2.5 rounded-2xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 font-bold text-xs shadow-2xs transition-all flex items-center gap-2 cursor-pointer"
+            title="Sincronizar y actualizar productos federados desde VRDE Club"
+          >
+            <span class="text-base">🔄</span>
+            <span>Sincronizar VRDE Club</span>
+          </button>
+
+          <button 
+            type="button" 
+            onclick="openNewProductModal()" 
+            class="px-4 py-2.5 rounded-2xl bg-[#059669] hover:bg-[#047857] active:scale-98 text-white font-black text-xs shadow-md transition-all flex items-center gap-2 cursor-pointer font-heading"
+          >
+            <span class="text-base">➕</span>
+            <span>Publicar Nuevo Producto</span>
+          </button>
+        </div>
       </div>
 
+      <!-- Barra de Métricas Rápidas (KPIs de Publicación) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs flex items-center justify-between">
+          <div>
+            <span class="text-[11px] font-bold text-stone-500 uppercase">Total Alimentos</span>
+            <h4 id="cat-kpi-total" class="text-xl font-black text-stone-900 font-heading">0</h4>
+          </div>
+          <span class="text-2xl">📦</span>
+        </div>
+        <div class="bg-white border border-emerald-200 bg-emerald-50/20 rounded-2xl p-4 shadow-2xs flex items-center justify-between">
+          <div>
+            <span class="text-[11px] font-bold text-emerald-800 uppercase">Publicados en Web</span>
+            <h4 id="cat-kpi-active" class="text-xl font-black text-emerald-700 font-heading">0</h4>
+          </div>
+          <span class="text-2xl">🟢</span>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs flex items-center justify-between">
+          <div>
+            <span class="text-[11px] font-bold text-stone-500 uppercase">Pausados / Ocultos</span>
+            <h4 id="cat-kpi-paused" class="text-xl font-black text-stone-600 font-heading">0</h4>
+          </div>
+          <span class="text-2xl">⚪</span>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs flex items-center justify-between">
+          <div>
+            <span class="text-[11px] font-bold text-stone-500 uppercase">Proveedores</span>
+            <h4 id="cat-kpi-providers-count" class="text-xl font-black text-stone-900 font-heading">4</h4>
+          </div>
+          <span class="text-2xl">🤝</span>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros y Búsqueda -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        
+        <!-- Búsqueda en Vivo -->
+        <div class="relative flex-1 max-w-md">
+          <input 
+            type="text" 
+            id="admin-products-search" 
+            oninput="renderAdminProductsTable()" 
+            placeholder="Buscar por nombre, productor, proveedor o variedad..." 
+            class="w-full bg-[#fcfaf8] border border-stone-200 focus:border-emerald-500 focus:bg-white rounded-2xl pl-10 pr-4 py-2 text-xs text-stone-900 placeholder:text-stone-400 outline-none transition-all shadow-2xs"
+          />
+          <span class="absolute left-3.5 top-2.5 text-stone-400 text-xs">🔍</span>
+        </div>
+
+        <!-- Filtros Rápidos -->
+        <div class="flex flex-wrap items-center gap-2">
+          
+          <!-- Filtro por Proveedor -->
+          <select 
+            id="admin-products-provider-filter" 
+            onchange="renderAdminProductsTable()" 
+            class="bg-white border border-stone-200 text-stone-700 font-bold text-xs rounded-2xl px-3 py-2 outline-none cursor-pointer shadow-2xs"
+          >
+            <option value="todos">🌐 Todos los Proveedores</option>
+            <option value="VRDE Club">🌐 VRDE Club (Federados)</option>
+            <option value="Compra Lunar">🌕 Compra Lunar (Salve la Tierra)</option>
+            <option value="Finca Ecotipa">🍓 Finca Ecotipa (Loma Verde)</option>
+            <option value="Cooperativa Chasqui">🥬 Cooperativa Chasqui (Huerta)</option>
+            <option value="Fungicultura Delta">🍄 Fungicultura Delta</option>
+            <option value="Productores Locales">🤝 Otros Productores</option>
+          </select>
+
+          <!-- Filtro por Categoría -->
+          <select 
+            id="admin-products-category-filter" 
+            onchange="renderAdminProductsTable()" 
+            class="bg-white border border-stone-200 text-stone-700 font-bold text-xs rounded-2xl px-3 py-2 outline-none cursor-pointer shadow-2xs"
+          >
+            <option value="todos">📂 Todas las Categorías</option>
+            <option value="aceite">🫒 Aceites de Oliva</option>
+            <option value="granos">🌾 Granos & Legumbres</option>
+            <option value="harinas">🍞 Harinas & Molino</option>
+            <option value="yerba">🧉 Yerba Mate</option>
+            <option value="granja">🍯 Granja & Mieles</option>
+            <option value="cacao">🍫 Cacao Silvestre</option>
+            <option value="hongos">🍄 Hongos del Delta</option>
+            <option value="frutas">🍓 Frutas Agroecológicas</option>
+            <option value="verduras">🥬 Verduras & Huerta</option>
+          </select>
+
+          <!-- Filtro por Estado en Web -->
+          <select 
+            id="admin-products-status-filter" 
+            onchange="renderAdminProductsTable()" 
+            class="bg-white border border-stone-200 text-stone-700 font-bold text-xs rounded-2xl px-3 py-2 outline-none cursor-pointer shadow-2xs"
+          >
+            <option value="todos">Todos los Estados</option>
+            <option value="active">🟢 Solo Publicados en Web</option>
+            <option value="paused">⚪ Solo Pausados (Ocultos)</option>
+          </select>
+
+        </div>
+      </div>
+
+      <!-- Tabla Maestra de Productos Publicados -->
       <div class="bg-white border border-stone-200 rounded-3xl overflow-hidden shadow-xs">
         <div class="overflow-x-auto">
-          <table class="w-full text-xs text-left border-collapse min-w-[650px]">
+          <table class="w-full text-xs text-left border-collapse min-w-[950px]">
             <thead>
               <tr class="bg-stone-50 border-b border-stone-200 text-[10px] font-black uppercase tracking-wider text-stone-500">
-                <th class="py-3.5 px-4">Producto Agroecológico</th>
-                <th class="py-3.5 px-4">Categoría</th>
-                <th class="py-3.5 px-3">Precio Regular</th>
-                <th class="py-3.5 px-3">Precio Socio CsC</th>
-                <th class="py-3.5 px-3">Estado</th>
-                <th class="py-3.5 px-4 text-right">Editar</th>
+                <th class="py-3.5 px-4">Producto & Presentación</th>
+                <th class="py-3.5 px-3">Proveedor / Origen</th>
+                <th class="py-3.5 px-3">Precio Minorista</th>
+                <th class="py-3.5 px-3">Precio Mayorista</th>
+                <th class="py-3.5 px-3">Precio Distribuidor</th>
+                <th class="py-3.5 px-3 text-center">Publicado en Web</th>
+                <th class="py-3.5 px-4 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody id="admin-products-tbody" class="divide-y divide-stone-100">
@@ -1207,6 +1336,355 @@
   </div>
 
   <!-- ========================================================================= -->
+  
+  <!-- ========================================================================= -->
+  <!-- MODAL: EDITAR PRECIOS & PRODUCTO PUBLICADO EN LA WEB                      -->
+  <!-- ========================================================================= -->
+  <div id="modal-edit-master-product" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      
+      <div class="p-5 sm:p-6 border-b border-stone-200 bg-emerald-50/50 flex items-center justify-between gap-4 shrink-0">
+        <div class="flex items-center gap-3">
+          <div id="modal-edit-icon" class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-2xl font-bold shrink-0">
+            🫒
+          </div>
+          <div>
+            <h3 id="modal-edit-prod-title" class="font-black text-lg text-stone-900 font-heading">
+              Modificar Precios de Venta
+            </h3>
+            <p id="modal-edit-prod-subtitle" class="text-xs text-stone-500">
+              Actualizá los 3 precios escalonados publicados en la tienda web.
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeEditProductModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+      </div>
+
+      <form id="form-edit-master-product" onsubmit="handleSaveEditProduct(event)" class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+        <input type="hidden" id="edit-prod-id" value="" />
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Nombre del Alimento / Presentación</label>
+          <input 
+            type="text" 
+            id="edit-prod-name" 
+            required 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 font-bold outline-none"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Proveedor / Red</label>
+            <input 
+              type="text" 
+              id="edit-prod-provider" 
+              required 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+            />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Presentación / Unidad</label>
+            <input 
+              type="text" 
+              id="edit-prod-unit" 
+              required 
+              placeholder="Ej. Botella 1 Litro, Bidón 2L, etc." 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+            />
+          </div>
+        </div>
+
+        <!-- ESCALA DE LOS 3 PRECIOS REQUERIDOS -->
+        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200/90 space-y-3">
+          <span class="text-[11px] font-black uppercase text-stone-500 tracking-wider block">
+            Escala de Precios de Venta en la Tienda ($ ARS)
+          </span>
+
+          <div class="grid grid-cols-3 gap-2.5">
+            <div>
+              <label class="block font-black text-stone-800 text-[11px] mb-1">
+                Minorista ($)
+              </label>
+              <input 
+                type="number" 
+                id="edit-prod-price-minorista" 
+                required 
+                min="0" 
+                step="50" 
+                class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 font-mono font-black text-sm outline-none"
+              />
+              <span class="text-[10px] text-stone-400 block mt-0.5">1 a 5 unidades</span>
+            </div>
+
+            <div>
+              <label class="block font-black text-emerald-800 text-[11px] mb-1">
+                Mayorista ($)
+              </label>
+              <input 
+                type="number" 
+                id="edit-prod-price-mayorista" 
+                required 
+                min="0" 
+                step="50" 
+                class="w-full bg-white border border-emerald-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-emerald-800 font-mono font-black text-sm outline-none"
+              />
+              <span class="text-[10px] text-emerald-600 block mt-0.5">+6 unidades</span>
+            </div>
+
+            <div>
+              <label class="block font-black text-blue-800 text-[11px] mb-1">
+                Distribuidor ($)
+              </label>
+              <input 
+                type="number" 
+                id="edit-prod-price-distribuidor" 
+                required 
+                min="0" 
+                step="50" 
+                class="w-full bg-white border border-blue-300 focus:border-blue-500 rounded-xl px-3 py-2 text-blue-900 font-mono font-black text-sm outline-none"
+              />
+              <span class="text-[10px] text-blue-600 block mt-0.5">+12 o +20 un.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 items-center">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Categoría en Tienda</label>
+            <select id="edit-prod-category" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none cursor-pointer">
+              <option value="aceite">🫒 Aceite Oliva</option>
+              <option value="granos">🌾 Granos & Legumbres</option>
+              <option value="harinas">🍞 Harinas & Molino</option>
+              <option value="yerba">🧉 Yerba Mate</option>
+              <option value="granja">🍯 Granja & Mieles</option>
+              <option value="cacao">🍫 Cacao Silvestre</option>
+              <option value="hongos">🍄 Hongos del Delta</option>
+              <option value="frutas">🍓 Frutas Agroecológicas</option>
+              <option value="verduras">🥬 Verduras & Huerta</option>
+            </select>
+          </div>
+
+          <div class="pt-5">
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-stone-50 border border-stone-200 px-3 py-2 rounded-xl w-full">
+              <input type="checkbox" id="edit-prod-enabled" class="w-4 h-4 text-emerald-600 rounded border-stone-300 focus:ring-emerald-500 cursor-pointer" />
+              <span class="font-bold text-xs text-stone-800">Publicado en la Web</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Subtítulo / Origen / Notas</label>
+          <input 
+            type="text" 
+            id="edit-prod-subtitle" 
+            placeholder="Ej. Extra Virgen 1° Prensa • Olivares centenarios de Villa Mazán, La Rioja" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+          />
+        </div>
+
+        <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+          <button 
+            type="button" 
+            onclick="closeEditProductModal()" 
+            class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="px-5 py-2.5 rounded-xl bg-[#059669] hover:bg-[#047857] active:scale-98 text-white font-black cursor-pointer shadow-xs font-heading"
+          >
+            Guardar Precios y Actualizar Web
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: PUBLICAR NUEVO PRODUCTO EN LA TIENDA WEB                           -->
+  <!-- ========================================================================= -->
+  <div id="modal-new-master-product" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      
+      <div class="p-5 sm:p-6 border-b border-stone-200 bg-emerald-50/50 flex items-center justify-between gap-4 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-2xl font-bold shrink-0">
+            ➕
+          </div>
+          <div>
+            <h3 class="font-black text-lg text-stone-900 font-heading">
+              Publicar Nuevo Alimento en la Web
+            </h3>
+            <p class="text-xs text-stone-500">
+              Ingresá el alimento con sus tres precios de venta (Minorista, Mayorista y Distribuidor).
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeNewProductModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+      </div>
+
+      <form id="form-new-master-product" onsubmit="handleCreateNewProductMaster(event)" class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+        
+        <div class="grid grid-cols-4 gap-3">
+          <div class="col-span-1">
+            <label class="block font-bold text-stone-700 mb-1">Ícono</label>
+            <input 
+              type="text" 
+              id="new-prod-icon" 
+              required 
+              value="🌾" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-center text-lg outline-none"
+            />
+          </div>
+          <div class="col-span-3">
+            <label class="block font-bold text-stone-700 mb-1">Nombre del Alimento *</label>
+            <input 
+              type="text" 
+              id="new-prod-name" 
+              required 
+              placeholder="Ej. Aceite de Oliva Lorenzo Cabrera (1L)" 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 font-semibold outline-none"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Proveedor / Red *</label>
+            <input 
+              type="text" 
+              id="new-prod-provider" 
+              required 
+              value="VRDE Club" 
+              placeholder="VRDE Club, Compra Lunar, etc." 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+            />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Presentación / Formato *</label>
+            <input 
+              type="text" 
+              id="new-prod-unit" 
+              required 
+              placeholder="Ej. Botella 1 Litro, Bidón 2L, etc." 
+              class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+            />
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200/90 space-y-3">
+          <span class="text-[11px] font-black uppercase text-stone-500 tracking-wider block">
+            Escala de Precios de Venta ($ ARS)
+          </span>
+
+          <div class="grid grid-cols-3 gap-2.5">
+            <div>
+              <label class="block font-black text-stone-800 text-[11px] mb-1">
+                Minorista ($) *
+              </label>
+              <input 
+                type="number" 
+                id="new-prod-price-minorista" 
+                required 
+                min="0" 
+                step="50" 
+                value="19700" 
+                class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 font-mono font-black text-sm outline-none"
+              />
+              <span class="text-[10px] text-stone-400 block mt-0.5">1 a 5 un.</span>
+            </div>
+
+            <div>
+              <label class="block font-black text-emerald-800 text-[11px] mb-1">
+                Mayorista ($) *
+              </label>
+              <input 
+                type="number" 
+                id="new-prod-price-mayorista" 
+                required 
+                min="0" 
+                step="50" 
+                value="18700" 
+                class="w-full bg-white border border-emerald-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-emerald-800 font-mono font-black text-sm outline-none"
+              />
+              <span class="text-[10px] text-emerald-600 block mt-0.5">+6 un.</span>
+            </div>
+
+            <div>
+              <label class="block font-black text-blue-800 text-[11px] mb-1">
+                Distribuidor ($) *
+              </label>
+              <input 
+                type="number" 
+                id="new-prod-price-distribuidor" 
+                required 
+                min="0" 
+                step="50" 
+                value="18100" 
+                class="w-full bg-white border border-blue-300 focus:border-blue-500 rounded-xl px-3 py-2 text-blue-900 font-mono font-black text-sm outline-none"
+              />
+              <span class="text-[10px] text-blue-600 block mt-0.5">+12 / +20 un.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 items-center">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Categoría</label>
+            <select id="new-prod-category" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none cursor-pointer">
+              <option value="aceite">🫒 Aceite Oliva</option>
+              <option value="granos">🌾 Granos & Legumbres</option>
+              <option value="harinas">🍞 Harinas & Molino</option>
+              <option value="yerba">🧉 Yerba Mate</option>
+              <option value="granja">🍯 Granja & Mieles</option>
+              <option value="cacao">🍫 Cacao Silvestre</option>
+              <option value="hongos">🍄 Hongos del Delta</option>
+              <option value="frutas">🍓 Frutas Agroecológicas</option>
+              <option value="verduras">🥬 Verduras & Huerta</option>
+            </select>
+          </div>
+
+          <div class="pt-5">
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-stone-50 border border-stone-200 px-3 py-2 rounded-xl w-full">
+              <input type="checkbox" id="new-prod-enabled" checked class="w-4 h-4 text-emerald-600 rounded border-stone-300 focus:ring-emerald-500 cursor-pointer" />
+              <span class="font-bold text-xs text-stone-800">Publicar de inmediato</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Subtítulo / Origen</label>
+          <input 
+            type="text" 
+            id="new-prod-subtitle" 
+            placeholder="Ej. Extra Virgen 1° Prensa • Villa Mazán, La Rioja" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none"
+          />
+        </div>
+
+        <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+          <button 
+            type="button" 
+            onclick="closeNewProductModal()" 
+            class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="px-5 py-2.5 rounded-xl bg-[#059669] hover:bg-[#047857] active:scale-98 text-white font-black cursor-pointer shadow-xs font-heading"
+          >
+            Publicar Producto en la Web
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
   <!-- MODAL: NUEVO PEDIDO MOSTRADOR                                             -->
   <!-- ========================================================================= -->
   <div id="modal-new-order" class="hidden fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-sm flex items-center justify-center p-4">
@@ -1836,14 +2314,8 @@
         saveAdminMembers();
       }
 
-      // 4. Catálogo
-      adminProducts = [
-        { id: 'prod-frutilla-5k', name: 'Frutillas Agroecológicas Finca Ecotipa (5 kg)', category: 'Frutas', price: 38000, memberPrice: 34000, stock: true },
-        { id: 'prod-bolson-8k', name: 'Bolsón de Verduras de Estación (8 kg)', category: 'Verduras', price: 14500, memberPrice: 12500, stock: true },
-        { id: 'prod-miel-1k', name: 'Miel Pura de Monte y Delta (1 kg)', category: 'Almacén', price: 6800, memberPrice: 5900, stock: true },
-        { id: 'prod-huevos-30', name: 'Huevos de Gallinas Libres a Campo (Maple 30u)', category: 'Granja', price: 7500, memberPrice: 6800, stock: true },
-        { id: 'prod-harina-5k', name: 'Harina Integral Agroecológica Molino (5 kg)', category: 'Almacén', price: 5800, memberPrice: 5000, stock: true }
-      ];
+      // 4. Catálogo Maestro de Productos Publicados en la Web
+      initAdminMasterCatalog();
 
       // 5. Inicializar Sincronización VRDE Club
       if (typeof VrdeSync !== 'undefined') {
@@ -2641,38 +3113,799 @@
     }
 
     // =========================================================================
-    // 9. CATÁLOGO & PRECIOS (TAB 5 - MODO CLARO)
+    // 9. CATÁLOGO MAESTRO & PRECIOS DE VENTA EN LA WEB (TAB 5)
     // =========================================================================
+    const DEFAULT_MASTER_CATALOG = [
+      {
+        id: 'vrde-aceite-lorenzo-1l',
+        name: 'Aceite de Oliva Agroecológico Lorenzo Cabrera (Botella 1L)',
+        cleanName: 'Aceite de Oliva Lorenzo Cabrera (1L)',
+        subtitle: 'Extra Virgen 1° Prensa • Olivares centenarios de Villa Mazán, La Rioja',
+        categoryId: 'aceite',
+        categoryName: 'Aceite Oliva',
+        provider: 'VRDE Club',
+        producer: 'Lorenzo Cabrera',
+        location: 'Villa Mazán, La Rioja',
+        practice: 'Arauco • Lote Agroecológico #GAIA-25-A',
+        story: 'Aceite de oliva extra virgen de primera prensa en frío proveniente de olivares centenarios en Villa Mazán, La Rioja. Cosecha manual y prensado artesanal.',
+        unit: 'botella 1L',
+        unitLabel: 'Botella 1 Litro',
+        emoji: '🫒',
+        img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 19700,
+          mayorista: 18700,
+          distribuidor: 18100
+        },
+        enabled: true
+      },
+      {
+        id: 'vrde-aceite-lorenzo-2l',
+        name: 'Aceite de Oliva Agroecológico Lorenzo Cabrera (Bidón 2L - Ahorro)',
+        cleanName: 'Aceite de Oliva Lorenzo Cabrera (2L)',
+        subtitle: 'Extra Virgen 1° Prensa • Formato ahorro familiar en frío',
+        categoryId: 'aceite',
+        categoryName: 'Aceite Oliva',
+        provider: 'VRDE Club',
+        producer: 'Lorenzo Cabrera',
+        location: 'Villa Mazán, La Rioja',
+        practice: 'Arauco • Lote Agroecológico #GAIA-25-A',
+        story: 'Formato ahorro en bidón de 2 litros de primera prensión en frío. Ideal para el consumo mensual de la red comunitaria.',
+        unit: 'bidón 2L',
+        unitLabel: 'Bidón 2 Litros (Ahorro)',
+        emoji: '🫒',
+        img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 37500,
+          mayorista: 35600,
+          distribuidor: 34500
+        },
+        enabled: true
+      },
+      {
+        id: 'vrde-aceite-lorenzo-5l',
+        name: 'Aceite de Oliva Agroecológico Lorenzo Cabrera (Bidón 5L - Familiar)',
+        cleanName: 'Aceite de Oliva Lorenzo Cabrera (5L)',
+        subtitle: 'Extra Virgen 1° Prensa • Bidón familiar de olivares centenarios',
+        categoryId: 'aceite',
+        categoryName: 'Aceite Oliva',
+        provider: 'VRDE Club',
+        producer: 'Lorenzo Cabrera',
+        location: 'Villa Mazán, La Rioja',
+        practice: 'Arauco • Lote Agroecológico #GAIA-25-A',
+        story: 'Bidón familiar de 5 litros con acidez menor a 0.2%. Directo de origen riojano al nodo comunitario.',
+        unit: 'bidón 5L',
+        unitLabel: 'Bidón 5 Litros (Familiar)',
+        emoji: '🫒',
+        img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 89000,
+          mayorista: 84500,
+          distribuidor: 81900
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-lentejas-1k',
+        name: 'Lentejas Agroecológicas Salve la Tierra (1 kg)',
+        cleanName: 'Lentejas Agroecológicas',
+        subtitle: 'Suelo vivo pampeano • Semillas 100% libres de transgénicos (NO OGM)',
+        categoryId: 'granos',
+        categoryName: 'Granos & Legumbres',
+        provider: 'Compra Lunar',
+        producer: 'Cooperativa Salve la Tierra',
+        location: 'Tres Arroyos, Buenos Aires',
+        practice: 'Agroecología extensiva sin fertilizantes sintéticos ni glifosato',
+        story: 'Las lentejas de Salve la Tierra crecen en rotación con pasturas naturales, fijando nitrógeno y cuidando la fertilidad de la tierra.',
+        unit: 'bolsa 1kg',
+        unitLabel: 'Bolsa 1 kg',
+        emoji: '🫘',
+        img: 'https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 3500,
+          mayorista: 3000,
+          distribuidor: 2600
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-garbanzos-1k',
+        name: 'Garbanzos Agroecológicos Salve la Tierra (1 kg)',
+        cleanName: 'Garbanzos Agroecológicos',
+        subtitle: 'Cosecha limpia agroecológica • Proteína vegetal de alta asimilación',
+        categoryId: 'granos',
+        categoryName: 'Granos & Legumbres',
+        provider: 'Compra Lunar',
+        producer: 'Cooperativa Salve la Tierra',
+        location: 'Buenos Aires',
+        practice: 'Semillas no modificadas con secado natural a campo',
+        story: 'Garbanzo kabuli de calibre grande, ideal para hummus, guisos y harinas caseras. Suave cocción y textura cremosa.',
+        unit: 'bolsa 1kg',
+        unitLabel: 'Bolsa 1 kg',
+        emoji: '🫘',
+        img: 'https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 3800,
+          mayorista: 3200,
+          distribuidor: 2800
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-arroz-yamani-3k',
+        name: 'Arroz Yamaní Integral Agroecológico Caupolicán (3 kg)',
+        cleanName: 'Arroz Yamaní Integral',
+        subtitle: 'Grano entero con salvado natural • Sin pulir, libre de agroquímicos',
+        categoryId: 'granos',
+        categoryName: 'Granos & Legumbres',
+        provider: 'VRDE Club',
+        producer: 'Molino Río de la Plata',
+        location: 'Entre Ríos',
+        practice: 'Riego con aguas limpias y secado lento natural',
+        story: 'El arroz yamaní conserva la totalidad del germen y la fibra natural. Digestivo, energético y de sabor sutil a nuez.',
+        unit: 'bolsa 3kg',
+        unitLabel: 'Bolsa 3 kg',
+        emoji: '🍚',
+        img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 4800,
+          mayorista: 4100,
+          distribuidor: 3500
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-porotos-negros-1k',
+        name: 'Porotos Negros Criollos Agroecológicos (1 kg)',
+        cleanName: 'Porotos Negros Criollos',
+        subtitle: 'Variedad criolla nativa • Cosecha manual agroecológica',
+        categoryId: 'granos',
+        categoryName: 'Granos & Legumbres',
+        provider: 'Compra Lunar',
+        producer: 'Red de Semillas Libres del Litoral',
+        location: 'Santa Fe',
+        practice: 'Policultivo campesino en suelo fértil',
+        story: 'Poroto negro mantecoso de rápida cocción. Aporte supremo de hierro y antioxidantes naturales.',
+        unit: 'bolsa 1kg',
+        unitLabel: 'Bolsa 1 kg',
+        emoji: '🫘',
+        img: 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 3400,
+          mayorista: 2900,
+          distribuidor: 2500
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-harina-integral-5k',
+        name: 'Harina Integral Agroecológica Molida a Piedra (5 kg)',
+        cleanName: 'Harina Integral Molida a Piedra',
+        subtitle: 'Molienda lenta que preserva el germen vivo y los minerales',
+        categoryId: 'harinas',
+        categoryName: 'Harinas & Molino',
+        provider: 'VRDE Club',
+        producer: 'Molino Campesino Chasqui',
+        location: 'Chacabuco, Buenos Aires',
+        practice: 'Trigo pan agroecológico sin mejoradores químicos ni blanqueadores',
+        story: 'Harina viva de fuerza balanceada. Perfecta para panes de masa madre, pizzas y repostería nutritiva.',
+        unit: 'bolsa 5kg',
+        unitLabel: 'Bolsa 5 kg',
+        emoji: '🌾',
+        img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 5000,
+          mayorista: 4200,
+          distribuidor: 3600
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-yerba-barbaqua-2k',
+        name: 'Yerba Mate Agroecológica Secado Barbaquá (2 kg)',
+        cleanName: 'Yerba Mate Barbaquá',
+        subtitle: '24 meses de estacionamiento natural • Ahumado suave tradicional',
+        categoryId: 'yerba',
+        categoryName: 'Yerba Mate',
+        provider: 'VRDE Club',
+        producer: 'Cooperativa Ybira Porá',
+        location: 'Oberá, Misiones',
+        practice: 'Monte nativo con sombra biológica sin pesticidas',
+        story: 'Elaborada por familias colonas con secanza lenta a leña noble y estacionamiento en depósito de madera.',
+        unit: 'paquete 2kg',
+        unitLabel: 'Paquete 2 kg',
+        emoji: '🧉',
+        img: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 6800,
+          mayorista: 5800,
+          distribuidor: 4900
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-yerba-sin-tacc-1k',
+        name: 'Yerba Mate Agroecológica Hoja Fina Sin TACC (1 kg)',
+        cleanName: 'Yerba Mate Sin TACC',
+        subtitle: 'Certificada sin TACC • Molienda especial baja en polvo',
+        categoryId: 'yerba',
+        categoryName: 'Yerba Mate',
+        provider: 'Compra Lunar',
+        producer: 'Cooperativa Ybira Porá',
+        location: 'Misiones',
+        practice: 'Lavado con agua de manantial y molienda controlada',
+        story: 'Sabor suave, duradero y rendidor. Sin acidez ni fermentaciones industriales.',
+        unit: 'paquete 1kg',
+        unitLabel: 'Paquete 1 kg',
+        emoji: '🧉',
+        img: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 4200,
+          mayorista: 3600,
+          distribuidor: 3100
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-miel-delta-1k',
+        name: 'Miel Pura de Monte y Delta en Panal (1 kg)',
+        cleanName: 'Miel Pura de Monte y Delta',
+        subtitle: 'Cruda, sin filtrar ni calentar • Cosechada en colmenares isleños',
+        categoryId: 'granja',
+        categoryName: 'Granja & Mieles',
+        provider: 'VRDE Club',
+        producer: 'Apícola Islas del Delta',
+        location: 'Delta del Paraná, Tigre',
+        practice: 'Apicultura de floraciones silvestres de ceibo, sauce y acacia',
+        story: 'Miel viva con su polen y propóleos naturales. Densidad untuosa y aroma floral profundo.',
+        unit: 'frasco 1kg',
+        unitLabel: 'Frasco 1 kg',
+        emoji: '🍯',
+        img: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 5900,
+          mayorista: 5000,
+          distribuidor: 4200
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-polen-seco-250g',
+        name: 'Polen Seco de Pradera Natural (250g)',
+        cleanName: 'Polen Seco de Pradera',
+        subtitle: 'Multifloral secado a baja temperatura • Superalimento proteico',
+        categoryId: 'granja',
+        categoryName: 'Granja & Mieles',
+        provider: 'Compra Lunar',
+        producer: 'Apícola Islas del Delta',
+        location: 'Delta del Paraná',
+        practice: 'Recolección con trampas higiénicas en apiarios aislados',
+        story: 'Concentrado de aminoácidos esenciales, enzimas y vitaminas del complejo B.',
+        unit: 'frasco 250g',
+        unitLabel: 'Frasco 250 g',
+        emoji: '🌾',
+        img: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 4500,
+          mayorista: 3800,
+          distribuidor: 3200
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-cacao-polvo-500g',
+        name: 'Cacao Puro Silvestre de la Amazonía (500g)',
+        cleanName: 'Cacao Puro Silvestre',
+        subtitle: '100% puro cacao agroforestal • Sin alcalinizar, alta teobromina',
+        categoryId: 'cacao',
+        categoryName: 'Cacao Silvestre',
+        provider: 'Compra Lunar',
+        producer: 'Comunidades Agroforestales Nativas',
+        location: 'Comercio Justo / Red Sudamericana',
+        practice: 'Recolección silvestre bajo dosel selvático',
+        story: 'Cacao aromático ceremonial de acidez balanceada y notas frutales intensas.',
+        unit: 'doypack 500g',
+        unitLabel: 'Doypack 500 g',
+        emoji: '🍫',
+        img: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 8500,
+          mayorista: 7200,
+          distribuidor: 6200
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-girgolas-secas-100g',
+        name: 'Gírgolas Secas Agroecológicas del Delta (100g)',
+        cleanName: 'Gírgolas Secas del Delta',
+        subtitle: 'Deshidratadas al sol • Intenso aroma umami para guisos y risottos',
+        categoryId: 'hongos',
+        categoryName: 'Hongos del Delta',
+        provider: 'Fungicultura Delta',
+        producer: 'Fungicultura Delta del Paraná',
+        location: 'Delta de Escobar',
+        practice: 'Cultivadas en sustrato de álamo y sauce regenerativo',
+        story: 'Hongos carnosos cosechados a mano en su punto óptimo de madurez y secados lentamente.',
+        unit: 'paquete 100g',
+        unitLabel: 'Paquete 100 g',
+        emoji: '🍄',
+        img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 4600,
+          mayorista: 3900,
+          distribuidor: 3300
+        },
+        enabled: true
+      },
+      {
+        id: 'prod-frutilla-5k',
+        name: 'Cajón Frutillas Agroecológicas Entero (5 kg)',
+        cleanName: 'Cajón Frutillas Entero (5 kg)',
+        subtitle: 'Frutillas recién cosechadas sin agroquímicos • Cajón cerrado',
+        categoryId: 'frutas',
+        categoryName: 'Frutas Agroecológicas',
+        provider: 'Finca Ecotipa',
+        producer: 'Finca Ecotipa (Loma Verde)',
+        location: 'Loma Verde, Escobar',
+        practice: 'Agroecología periurbana con biopreparados',
+        story: 'Cosecha del día en Loma Verde, sin pesticidas ni cámaras de maduración artificial.',
+        unit: 'cajón 5kg',
+        unitLabel: 'Cajón 5 kg',
+        emoji: '🍓',
+        img: 'public/assets/frutillas_ecotipa.jpg',
+        prices: {
+          minorista: 38000,
+          mayorista: 34000,
+          distribuidor: 30000
+        },
+        enabled: true
+      },
+      {
+        id: 'prod-bolson-8k',
+        name: 'Bolsón de Verduras de Huerta Agroecológica (8 kg)',
+        cleanName: 'Bolsón Verduras Huerta (8 kg)',
+        subtitle: 'Cosecha fresca semanal: verdes de estación, raíces y hortalizas',
+        categoryId: 'verduras',
+        categoryName: 'Verduras & Huerta',
+        provider: 'Cooperativa Chasqui',
+        producer: 'Quintas de Maschwitz & Chasqui',
+        location: 'Ing. Maschwitz, Escobar',
+        practice: 'Bancales vivos con abonos verdes y compost',
+        story: 'Selección de estación directamente del productor familiar al consumidor.',
+        unit: 'bolsón 8kg',
+        unitLabel: 'Bolsón 8 kg',
+        emoji: '🥬',
+        img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 14500,
+          mayorista: 12500,
+          distribuidor: 11000
+        },
+        enabled: true
+      },
+      {
+        id: 'prod-huevos-30',
+        name: 'Huevos de Gallinas Libres Pastoriles (Maple 30u)',
+        cleanName: 'Huevos Pastoriles (Maple 30u)',
+        subtitle: 'Gallinas pastoreando a campo abierto • Yema dorada natural',
+        categoryId: 'granja',
+        categoryName: 'Granja & Mieles',
+        provider: 'Productores Locales',
+        producer: 'Granja La Providencia',
+        location: 'Zárate / Exaltación de la Cruz',
+        practice: 'Pastoreo rotativo y alimentación vegetal sin antibióticos',
+        story: 'Huevos frescos de gallinas respetadas en su comportamiento natural al sol.',
+        unit: 'maple 30u',
+        unitLabel: 'Maple 30 unidades',
+        emoji: '🥚',
+        img: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: 7500,
+          mayorista: 6800,
+          distribuidor: 6000
+        },
+        enabled: true
+      }
+    ];
+
+    function initAdminMasterCatalog() {
+      try {
+        const raw = localStorage.getItem('elementales_master_catalog_v2');
+        if (raw) {
+          adminProducts = JSON.parse(raw);
+        }
+      } catch (e) {
+        adminProducts = [];
+      }
+
+      if (!Array.isArray(adminProducts) || adminProducts.length === 0) {
+        adminProducts = JSON.parse(JSON.stringify(DEFAULT_MASTER_CATALOG));
+        saveAdminMasterCatalog();
+      } else {
+        // Asegurar que Lorenzo Cabrera y productos nuevos existan en el array si fue migrado
+        const hasLorenzo = adminProducts.some(p => p.id && p.id.includes('lorenzo'));
+        if (!hasLorenzo) {
+          const lorenzoProds = DEFAULT_MASTER_CATALOG.filter(p => p.id && p.id.includes('lorenzo'));
+          adminProducts.unshift(...lorenzoProds);
+          saveAdminMasterCatalog();
+        }
+      }
+    }
+
+    function saveAdminMasterCatalog() {
+      try {
+        localStorage.setItem('elementales_master_catalog_v2', JSON.stringify(adminProducts));
+        localStorage.setItem('elementales_products_v1', JSON.stringify(adminProducts));
+        window.dispatchEvent(new CustomEvent('elementales_catalog_updated', { detail: adminProducts }));
+      } catch (e) {
+        console.error('Error guardando catálogo maestro:', e);
+      }
+    }
+
     function renderAdminProductsTable() {
       const tbody = document.getElementById('admin-products-tbody');
       if (!tbody) return;
 
-      tbody.innerHTML = adminProducts.map(p => `
-        <tr class="hover:bg-stone-50/80 transition-colors">
-          <td class="py-3 px-4 font-bold text-stone-900">${p.name}</td>
-          <td class="py-3 px-4 text-stone-500">${p.category}</td>
-          <td class="py-3 px-3 font-bold text-stone-900">$${p.price.toLocaleString('es-AR')}</td>
-          <td class="py-3 px-3 font-bold text-emerald-700">$${p.memberPrice.toLocaleString('es-AR')}</td>
-          <td class="py-3 px-3">
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.stock ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">
-              ${p.stock ? 'Disponible' : 'Pausado'}
-            </span>
-          </td>
-          <td class="py-3 px-4 text-right">
-            <button type="button" onclick="toggleProductStock('${p.id}')" class="text-xs text-stone-600 hover:text-stone-900 font-bold px-2 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 border border-stone-200 cursor-pointer transition-colors shadow-2xs">
-              ${p.stock ? 'Pausar' : 'Activar'}
-            </button>
-          </td>
-        </tr>
-      `).join('');
+      const q = (document.getElementById('admin-products-search')?.value || '').toLowerCase().trim();
+      const providerFilter = document.getElementById('admin-products-provider-filter')?.value || 'todos';
+      const catFilter = document.getElementById('admin-products-category-filter')?.value || 'todos';
+      const statusFilter = document.getElementById('admin-products-status-filter')?.value || 'todos';
+
+      // Actualizar KPIs de publicación
+      const totalCount = adminProducts.length;
+      const activeCount = adminProducts.filter(p => p.enabled !== false).length;
+      const pausedCount = totalCount - activeCount;
+
+      const kpiTotal = document.getElementById('cat-kpi-total');
+      if (kpiTotal) kpiTotal.textContent = totalCount;
+      const kpiActive = document.getElementById('cat-kpi-active');
+      if (kpiActive) kpiActive.textContent = activeCount;
+      const kpiPaused = document.getElementById('cat-kpi-paused');
+      if (kpiPaused) kpiPaused.textContent = pausedCount;
+
+      let list = [...adminProducts];
+
+      // Filtro por proveedor
+      if (providerFilter !== 'todos') {
+        list = list.filter(p => (p.provider || '').toLowerCase().includes(providerFilter.toLowerCase()));
+      }
+
+      // Filtro por categoría
+      if (catFilter !== 'todos') {
+        list = list.filter(p => p.categoryId === catFilter || (p.category || '').toLowerCase().includes(catFilter.toLowerCase()));
+      }
+
+      // Filtro por estado
+      if (statusFilter === 'active') {
+        list = list.filter(p => p.enabled !== false);
+      } else if (statusFilter === 'paused') {
+        list = list.filter(p => p.enabled === false);
+      }
+
+      // Filtro por búsqueda
+      if (q) {
+        list = list.filter(p => 
+          (p.name && p.name.toLowerCase().includes(q)) ||
+          (p.subtitle && p.subtitle.toLowerCase().includes(q)) ||
+          (p.producer && p.producer.toLowerCase().includes(q)) ||
+          (p.provider && p.provider.toLowerCase().includes(q)) ||
+          (p.location && p.location.toLowerCase().includes(q))
+        );
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-12 text-center text-stone-400 bg-stone-50/50">
+              <span class="text-3xl block mb-2">🔍</span>
+              <p class="font-bold text-stone-700">No se encontraron productos con los filtros aplicados.</p>
+              <p class="text-xs text-stone-500 mt-1">Probá cambiando la búsqueda o restableciendo los filtros.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map(p => {
+        const isEnabled = p.enabled !== false;
+        const prices = p.prices || {
+          minorista: p.price || 0,
+          mayorista: p.memberPrice || Math.round((p.price || 0) * 0.9),
+          distribuidor: Math.round((p.price || 0) * 0.8)
+        };
+
+        const providerBadgeClass = (p.provider || '').includes('VRDE') 
+          ? 'bg-blue-50 text-blue-800 border-blue-200'
+          : ((p.provider || '').includes('Lunar') 
+            ? 'bg-amber-50 text-amber-900 border-amber-200' 
+            : 'bg-emerald-50 text-emerald-800 border-emerald-200');
+
+        return `
+          <tr class="hover:bg-stone-50/80 transition-colors ${!isEnabled ? 'opacity-60 bg-stone-50/40' : ''}">
+            
+            <!-- Producto & Presentación -->
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl shrink-0">${p.emoji || '🌾'}</span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-black text-stone-900 text-xs sm:text-sm font-heading">${p.name}</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-stone-100 text-stone-700 border border-stone-200 shrink-0">
+                      ${p.unitLabel || p.unit || 'Unidad'}
+                    </span>
+                  </div>
+                  <p class="text-[11px] text-stone-500 mt-0.5 max-w-sm truncate" title="${p.subtitle || ''}">
+                    ${p.subtitle || p.practice || ''}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <!-- Proveedor / Origen -->
+            <td class="py-3 px-3">
+              <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full border ${providerBadgeClass}">
+                <span>${(p.provider || '').includes('VRDE') ? '🌐' : ((p.provider || '').includes('Lunar') ? '🌕' : '🍓')}</span>
+                <span>${p.provider || 'Red Comunitaria'}</span>
+              </span>
+              <span class="block text-[10px] text-stone-500 font-mono mt-1">${p.location || p.producer || ''}</span>
+            </td>
+
+            <!-- Precio Minorista -->
+            <td class="py-3 px-3">
+              <div class="font-mono font-black text-stone-900 text-xs sm:text-sm">
+                $${Number(prices.minorista || 0).toLocaleString('es-AR')}
+              </div>
+              <span class="text-[10px] text-stone-400">1 a 5 un.</span>
+            </td>
+
+            <!-- Precio Mayorista -->
+            <td class="py-3 px-3">
+              <div class="font-mono font-black text-emerald-700 text-xs sm:text-sm">
+                $${Number(prices.mayorista || 0).toLocaleString('es-AR')}
+              </div>
+              <span class="text-[10px] text-emerald-600 font-bold">+6 un.</span>
+            </td>
+
+            <!-- Precio Distribuidor -->
+            <td class="py-3 px-3">
+              <div class="font-mono font-black text-blue-700 text-xs sm:text-sm">
+                $${Number(prices.distribuidor || 0).toLocaleString('es-AR')}
+              </div>
+              <span class="text-[10px] text-blue-600 font-bold">+12 / +20 un.</span>
+            </td>
+
+            <!-- Publicado en Web (Toggle Sacar / Poner) -->
+            <td class="py-3 px-3 text-center">
+              <button 
+                type="button" 
+                onclick="toggleProductPublished('${p.id}')" 
+                class="px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 mx-auto shadow-2xs ${isEnabled ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-stone-100 hover:bg-stone-200 text-stone-600 border border-stone-300'}"
+                title="${isEnabled ? 'Clic para sacar de la web' : 'Clic para publicar en la web'}"
+              >
+                <span>${isEnabled ? '🟢' : '⚪'}</span>
+                <span>${isEnabled ? 'Publicado' : 'Pausado'}</span>
+              </button>
+            </td>
+
+            <!-- Acciones -->
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button 
+                  type="button" 
+                  onclick="openEditProductModal('${p.id}')" 
+                  class="px-2.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 border border-stone-200 text-stone-700 text-xs font-bold cursor-pointer transition-all flex items-center gap-1"
+                  title="Modificar precios Minorista, Mayorista y Distribuidor"
+                >
+                  <span>💲</span>
+                  <span>Precios</span>
+                </button>
+                <button 
+                  type="button" 
+                  onclick="deleteProductFromMasterCatalog('${p.id}')" 
+                  class="p-1.5 rounded-xl text-stone-400 hover:text-red-600 hover:bg-red-50 cursor-pointer transition-all"
+                  title="Eliminar de catálogo"
+                >
+                  🗑️
+                </button>
+              </div>
+            </td>
+
+          </tr>
+        `;
+      }).join('');
     }
 
-    function toggleProductStock(id) {
+    function toggleProductPublished(id) {
       const p = adminProducts.find(item => item.id === id);
-      if (p) {
-        p.stock = !p.stock;
-        renderAdminProductsTable();
+      if (!p) return;
+
+      p.enabled = (p.enabled === false) ? true : false;
+      saveAdminMasterCatalog();
+      renderAdminProductsTable();
+
+      try {
+        if (p.enabled && typeof confetti === 'function') confetti({ particleCount: 20, spread: 40 });
+      } catch (e) {}
+    }
+
+    function openEditProductModal(id) {
+      const modal = document.getElementById('modal-edit-master-product');
+      if (!modal) return;
+
+      const p = adminProducts.find(item => item.id === id);
+      if (!p) return;
+
+      const prices = p.prices || {
+        minorista: p.price || 0,
+        mayorista: p.memberPrice || Math.round((p.price || 0) * 0.9),
+        distribuidor: Math.round((p.price || 0) * 0.8)
+      };
+
+      document.getElementById('edit-prod-id').value = p.id;
+      document.getElementById('edit-prod-name').value = p.name || '';
+      document.getElementById('edit-prod-provider').value = p.provider || 'VRDE Club';
+      document.getElementById('edit-prod-unit').value = p.unitLabel || p.unit || '';
+      document.getElementById('edit-prod-price-minorista').value = prices.minorista || 0;
+      document.getElementById('edit-prod-price-mayorista').value = prices.mayorista || 0;
+      document.getElementById('edit-prod-price-distribuidor').value = prices.distribuidor || 0;
+      document.getElementById('edit-prod-category').value = p.categoryId || 'almacen';
+      document.getElementById('edit-prod-subtitle').value = p.subtitle || '';
+      document.getElementById('edit-prod-enabled').checked = p.enabled !== false;
+
+      const iconEl = document.getElementById('modal-edit-icon');
+      if (iconEl) iconEl.textContent = p.emoji || '🌾';
+      const titleEl = document.getElementById('modal-edit-prod-title');
+      if (titleEl) titleEl.textContent = `Precios: ${p.name}`;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeEditProductModal() {
+      const modal = document.getElementById('modal-edit-master-product');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function handleSaveEditProduct(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-prod-id').value;
+      const p = adminProducts.find(item => item.id === id);
+      if (!p) return;
+
+      const name = document.getElementById('edit-prod-name').value.trim();
+      const provider = document.getElementById('edit-prod-provider').value.trim();
+      const unit = document.getElementById('edit-prod-unit').value.trim();
+      const minorista = parseFloat(document.getElementById('edit-prod-price-minorista').value) || 0;
+      const mayorista = parseFloat(document.getElementById('edit-prod-price-mayorista').value) || 0;
+      const distribuidor = parseFloat(document.getElementById('edit-prod-price-distribuidor').value) || 0;
+      const categoryId = document.getElementById('edit-prod-category').value;
+      const subtitle = document.getElementById('edit-prod-subtitle').value.trim();
+      const enabled = document.getElementById('edit-prod-enabled').checked;
+
+      p.name = name;
+      p.provider = provider;
+      p.unit = unit;
+      p.unitLabel = unit;
+      p.categoryId = categoryId;
+      p.subtitle = subtitle;
+      p.enabled = enabled;
+      p.prices = {
+        minorista: minorista,
+        mayorista: mayorista,
+        distribuidor: distribuidor
+      };
+      p.price = minorista;
+      p.memberPrice = mayorista;
+
+      saveAdminMasterCatalog();
+      closeEditProductModal();
+      renderAdminProductsTable();
+
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 30, spread: 50 });
+      } catch (err) {}
+    }
+
+    function openNewProductModal() {
+      const modal = document.getElementById('modal-new-master-product');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeNewProductModal() {
+      const modal = document.getElementById('modal-new-master-product');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function handleCreateNewProductMaster(e) {
+      e.preventDefault();
+      const icon = document.getElementById('new-prod-icon')?.value.trim() || '🌾';
+      const name = document.getElementById('new-prod-name')?.value.trim();
+      const provider = document.getElementById('new-prod-provider')?.value.trim() || 'VRDE Club';
+      const unit = document.getElementById('new-prod-unit')?.value.trim() || 'Unidad';
+      const minorista = parseFloat(document.getElementById('new-prod-price-minorista')?.value) || 0;
+      const mayorista = parseFloat(document.getElementById('new-prod-price-mayorista')?.value) || 0;
+      const distribuidor = parseFloat(document.getElementById('new-prod-price-distribuidor')?.value) || 0;
+      const categoryId = document.getElementById('new-prod-category')?.value || 'almacen';
+      const subtitle = document.getElementById('new-prod-subtitle')?.value.trim() || '';
+      const enabled = document.getElementById('new-prod-enabled')?.checked !== false;
+
+      if (!name) {
+        alert('Por favor ingresá el nombre del producto.');
+        return;
       }
+
+      const newId = 'prod-custom-' + Date.now().toString(36);
+      const newProd = {
+        id: newId,
+        name: name,
+        cleanName: name,
+        subtitle: subtitle,
+        categoryId: categoryId,
+        categoryName: categoryId,
+        provider: provider,
+        producer: provider,
+        location: 'Nodo Loma Verde',
+        practice: 'Producción Agroecológica',
+        story: subtitle,
+        unit: unit,
+        unitLabel: unit,
+        emoji: icon,
+        img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
+        prices: {
+          minorista: minorista,
+          mayorista: mayorista,
+          distribuidor: distribuidor
+        },
+        price: minorista,
+        memberPrice: mayorista,
+        enabled: enabled
+      };
+
+      adminProducts.unshift(newProd);
+      saveAdminMasterCatalog();
+      closeNewProductModal();
+      renderAdminProductsTable();
+
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 40, spread: 60 });
+      } catch (err) {}
+    }
+
+    function deleteProductFromMasterCatalog(id) {
+      const p = adminProducts.find(item => item.id === id);
+      const name = p ? p.name : 'este producto';
+      if (!confirm(`¿Eliminar definitivamente "${name}" del catálogo maestro?`)) return;
+
+      adminProducts = adminProducts.filter(item => item.id !== id);
+      saveAdminMasterCatalog();
+      renderAdminProductsTable();
+    }
+
+    function syncCatalogWithVrde() {
+      DEFAULT_MASTER_CATALOG.forEach(defProd => {
+        const existing = adminProducts.find(p => p.id === defProd.id);
+        if (!existing) {
+          adminProducts.push(JSON.parse(JSON.stringify(defProd)));
+        } else {
+          if (defProd.id.includes('lorenzo')) {
+            existing.name = defProd.name;
+            existing.subtitle = defProd.subtitle;
+            existing.location = defProd.location;
+            existing.practice = defProd.practice;
+            existing.producer = defProd.producer;
+            existing.provider = defProd.provider;
+          }
+        }
+      });
+
+      saveAdminMasterCatalog();
+      renderAdminProductsTable();
+
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 35, spread: 60 });
+      } catch (e) {}
+
+      alert('✓ Catálogo sincronizado con éxito con la red VRDE Club (Aceite Lorenzo Cabrera y alimentos federados actualizados).');
     }
 
     // =========================================================================
@@ -2767,21 +4000,7 @@
       }
     }
 
-    function openNewProductModal() {
-      const name = prompt('Nombre del nuevo producto agroecológico:');
-      if (name) {
-        const price = prompt('Precio unitario ($):', '15000');
-        adminProducts.push({
-          id: 'prod-' + Date.now(),
-          name: name,
-          category: 'Almacén',
-          price: parseInt(price, 10) || 10000,
-          memberPrice: Math.round((parseInt(price, 10) || 10000) * 0.9),
-          stock: true
-        });
-        renderAdminProductsTable();
-      }
-    }
+    // openNewProductModal() implementado en Tab 5
 
     // =========================================================================
     // 9. SINCRONIZACIÓN Y CURACIÓN VRDE CLUB (PRESTADOR FEDERADO)
