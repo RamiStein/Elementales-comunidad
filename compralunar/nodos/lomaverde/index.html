@@ -485,7 +485,7 @@
   <!-- ========================================================================= -->
   <!-- VISTA 3: TIENDA VRDE CLUB POR NODO (URL: /compralunar/nodos/:nombrenodo)   -->
   <!-- ========================================================================= -->
-  <div id="view-compralunar-store" class="lunar-view hidden w-full max-w-5xl mx-auto px-4 sm:px-6 pt-3 space-y-6 sm:space-y-7 fade-enter">
+  <div id="view-compralunar-store" class="lunar-view hidden w-full max-w-5xl mx-auto px-4 sm:px-6 pt-3 pb-32 space-y-6 sm:space-y-7 fade-enter">
     
     <!-- Barra superior de contexto de nodo seleccionado -->
     <div class="bg-white border border-stone-200 rounded-2xl p-3 sm:p-4 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
@@ -569,14 +569,24 @@
         </div>
       </div>
 
-      <button 
-        type="button" 
-        onclick="openLunarCheckoutModal()" 
-        class="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 active:scale-95"
-      >
-        <span>Confirmar Pedido</span>
-        <span>→</span>
-      </button>
+      <div class="flex items-center gap-2">
+        <button 
+          type="button" 
+          onclick="openLunarCheckoutModal()" 
+          class="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 active:scale-95"
+        >
+          <span>Confirmar Pedido</span>
+          <span>→</span>
+        </button>
+        <button 
+          type="button" 
+          onclick="hideFloatingCart(event)" 
+          class="w-9 h-9 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white flex items-center justify-center text-sm font-bold transition-all cursor-pointer shrink-0"
+          title="Guardar / Ocultar resumen"
+        >
+          ✕
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1478,14 +1488,7 @@
 
     // ROUTER SPA DE LA COMPRA LUNAR
     function navigateLunarRoute(path, updateHistory = true) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const queryRoute = urlParams.get('route');
-      const queryNode = urlParams.get('nodo');
-
       let resolvedPath = path || '/compralunar';
-      if (queryRoute) {
-        resolvedPath = '/compralunar/' + queryRoute;
-      }
       const cleanPath = resolvedPath.replace(/\/+$/, '') || '/compralunar';
       
       // Ocultar todas las vistas
@@ -1493,7 +1496,21 @@
 
       let targetPath = '/compralunar';
 
-      if (cleanPath.startsWith('/compralunar/nodos/') || cleanPath.startsWith('/lomaverde/tierra/lunar') || (queryNode && cleanPath.includes('compralunar'))) {
+      if (cleanPath === '/compralunar' || cleanPath === '' || cleanPath === '/') {
+        // Vista 1: Landing Inicial (Siempre oculta el popup flotante)
+        currentLunarView = 'landing';
+        const landingView = document.getElementById('view-compralunar-landing');
+        if (landingView) landingView.classList.remove('hidden');
+        targetPath = '/compralunar';
+
+      } else if (cleanPath === '/compralunar/nodos') {
+        // Vista 2: Selector de Nodos (Siempre oculta el popup flotante)
+        currentLunarView = 'nodos';
+        const nodosView = document.getElementById('view-compralunar-nodos');
+        if (nodosView) nodosView.classList.remove('hidden');
+        targetPath = '/compralunar/nodos';
+
+      } else if (cleanPath.startsWith('/compralunar/nodos/') || cleanPath.startsWith('/lomaverde/tierra/lunar')) {
         // Vista 3: Tienda del Nodo
         let nodeSlug = 'lomaverde';
         if (cleanPath.startsWith('/compralunar/nodos/')) {
@@ -1501,8 +1518,6 @@
           nodeSlug = parts[parts.length - 1];
         } else if (cleanPath.startsWith('/lomaverde/tierra/lunar')) {
           nodeSlug = 'lomaverde';
-        } else if (queryNode) {
-          nodeSlug = queryNode.replace(/^nodo-/, '');
         }
 
         if (!LUNAR_NODOS[nodeSlug]) nodeSlug = 'lomaverde';
@@ -1520,22 +1535,15 @@
 
         targetPath = `/compralunar/nodos/${nodeSlug}`;
 
-      } else if (cleanPath === '/compralunar/nodos') {
-        // Vista 2: Selector de Nodos
-        currentLunarView = 'nodos';
-        const nodosView = document.getElementById('view-compralunar-nodos');
-        if (nodosView) nodosView.classList.remove('hidden');
-        targetPath = '/compralunar/nodos';
-
       } else {
-        // Vista 1: Landing Inicial
+        // Fallback: Landing Inicial
         currentLunarView = 'landing';
         const landingView = document.getElementById('view-compralunar-landing');
         if (landingView) landingView.classList.remove('hidden');
         targetPath = '/compralunar';
       }
 
-      // Actualizar visibilidad de la barra flotante según la vista actual (solo visible en tienda)
+      // Actualizar visibilidad de la barra flotante (se oculta automáticamente fuera de la tienda)
       updateFloatingCart();
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1701,30 +1709,10 @@
       const wrapper = document.getElementById('vrde-product-showcase-wrapper');
       if (!wrapper) return;
 
-      const prod = LUNAR_PRODUCTS.find(p => p.id === activeProductId) || LUNAR_PRODUCTS[0];
+      const prod = LUNAR_PRODUCTS.find(p => p.id === activeProductId) || getProductsForActiveCategory()[0] || LUNAR_PRODUCTS[0];
+      if (!prod) return;
+      activeProductId = prod.id;
       const qty = lunarCart[prod.id] || 0;
-
-      // Otros productos presentes en la canasta
-      const otherInCart = Object.entries(lunarCart).filter(([id, q]) => id !== prod.id && q > 0);
-      let otherNoticeHtml = '';
-      if (otherInCart.length > 0) {
-        const otherDesc = otherInCart.map(([id, q]) => {
-          const p = LUNAR_PRODUCTS.find(x => x.id === id);
-          return `${q}x ${p ? p.name.split(' ')[0] : 'alimento'}`;
-        }).join(', ');
-        const firstOtherId = otherInCart[0][0];
-        otherNoticeHtml = `
-          <div class="mt-3 p-2.5 rounded-2xl bg-stone-100/90 border border-stone-200 text-stone-600 text-xs flex items-center justify-between gap-2 max-w-md mx-auto">
-            <div class="flex items-center gap-2 truncate">
-              <span>🧺</span>
-              <span class="truncate">Otros en tu canasta: <strong class="text-stone-800">${otherDesc}</strong></span>
-            </div>
-            <button type="button" onclick="selectActiveProduct('${firstOtherId}')" class="text-emerald-700 hover:text-emerald-900 font-bold underline shrink-0 cursor-pointer text-xs">
-              Ver
-            </button>
-          </div>
-        `;
-      }
 
       let activeTier = 'minorista';
       if (qty >= 20) {
@@ -1926,7 +1914,6 @@
                 Elegí cuántas unidades de <strong>${prod.name}</strong> querés sumar
               </span>
 
-              ${otherNoticeHtml}
             </div>
 
           </div>
@@ -1939,6 +1926,7 @@
     // 7. LÓGICA DE CANTIDAD Y ESCALAS COMERCIALES
     // =========================================================================
     function changeProductQuantity(prodId, delta) {
+      isFloatingCartDismissed = false;
       const current = lunarCart[prodId] || 0;
       let next = current + delta;
       if (next < 0) next = 0;
@@ -1979,12 +1967,35 @@
       return prod.prices.minorista;
     }
 
+    let isFloatingCartDismissed = false;
+
+    function hideFloatingCart(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      isFloatingCartDismissed = true;
+      const floatingEl = document.getElementById('floating-lunar-cart');
+      if (floatingEl) floatingEl.classList.add('hidden');
+    }
+
     function updateFloatingCart() {
       const floatingEl = document.getElementById('floating-lunar-cart');
       if (!floatingEl) return;
 
-      // Ocultar siempre si no estamos en la vista de la tienda del nodo
-      if (currentLunarView !== 'store') {
+      // Ocultar siempre si no estamos en la vista de la tienda del nodo o si fue guardado/cerrado
+      if (currentLunarView !== 'store' || isFloatingCartDismissed) {
+        floatingEl.classList.add('hidden');
+        return;
+      }
+
+      // Ocultar también si hay modales abiertos
+      const isAnyModalOpen = 
+        !document.getElementById('modal-lunar-checkout')?.classList.contains('hidden') ||
+        !document.getElementById('modal-producer-story')?.classList.contains('hidden') ||
+        !document.getElementById('modal-circulos-info')?.classList.contains('hidden');
+
+      if (isAnyModalOpen) {
         floatingEl.classList.add('hidden');
         return;
       }
@@ -2032,6 +2043,7 @@
     let currentOrderClientWaUrl = '';
 
     function openProducerStoryModal(prodId) {
+      hideFloatingCart();
       const prod = LUNAR_PRODUCTS.find(p => p.id === prodId);
       if (!prod) return;
 
@@ -2044,14 +2056,19 @@
     }
 
     function closeProducerStoryModal() {
+      isFloatingCartDismissed = false;
+      updateFloatingCart();
       document.getElementById('modal-producer-story')?.classList.add('hidden');
     }
 
     function openCirculosInfoModal() {
+      hideFloatingCart();
       document.getElementById('modal-circulos-info')?.classList.remove('hidden');
     }
 
     function closeCirculosInfoModal() {
+      isFloatingCartDismissed = false;
+      updateFloatingCart();
       document.getElementById('modal-circulos-info')?.classList.add('hidden');
     }
 
@@ -2080,6 +2097,7 @@
     }
 
     function openLunarCheckoutModal() {
+      hideFloatingCart();
       const modal = document.getElementById('modal-lunar-checkout');
       const listContainer = document.getElementById('checkout-items-list');
       if (!modal || !listContainer) return;
@@ -2158,6 +2176,8 @@
     }
 
     function closeLunarCheckoutModal() {
+      isFloatingCartDismissed = false;
+      updateFloatingCart();
       const modal = document.getElementById('modal-lunar-checkout');
       if (modal) modal.classList.add('hidden');
       // Dejar preparado el formulario para la próxima apertura
