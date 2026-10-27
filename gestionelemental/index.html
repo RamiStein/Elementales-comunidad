@@ -1585,7 +1585,7 @@
   <!-- MODAL: EDITAR INFORMACIÓN DE NODO DE RETIRO                               -->
   <!-- ========================================================================= -->
   <div id="modal-edit-admin-node" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in mx-auto my-auto">
       <div class="p-5 sm:p-6 border-b border-stone-200 bg-emerald-50/50 flex items-center justify-between gap-4 shrink-0">
         <div class="flex items-center gap-3">
           <div id="edit-node-icon-display" class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-2xl font-bold shrink-0">
@@ -1638,22 +1638,21 @@
             <label class="block font-bold text-stone-700 mb-1">Zona / Corredor *</label>
             <input type="text" id="edit-node-zone" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
           </div>
-
-        <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-bold text-stone-700 mb-1">Etiqueta Badge</label>
             <input type="text" id="edit-node-badge" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
           </div>
-          <div>
-            <label class="block font-bold text-stone-700 mb-1">Color de Badge</label>
-            <select id="edit-node-badgecolor" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none cursor-pointer">
-              <option value="emerald">Verde (Sede Principal / Activa)</option>
-              <option value="amber">Ámbar (Cooperativa)</option>
-              <option value="sky">Celeste (Corredor Río / Costero)</option>
-              <option value="purple">Violeta (Comunitario)</option>
-              <option value="rose">Rosa (Feria)</option>
-            </select>
-          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Color de Badge</label>
+          <select id="edit-node-badgecolor" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none cursor-pointer">
+            <option value="emerald">Verde (Sede Principal / Activa)</option>
+            <option value="amber">Ámbar (Cooperativa)</option>
+            <option value="sky">Celeste (Corredor Río / Costero)</option>
+            <option value="purple">Violeta (Comunitario)</option>
+            <option value="rose">Rosa (Feria)</option>
+          </select>
         </div>
 
         <div>
@@ -5623,7 +5622,59 @@ Por favor confirmanos recepción del pedido y horario estimado de entrega/cosech
         saveAdminNodes();
       }
 
+      // Sincronizar automáticamente en vivo cualquier nodo que haya sido renombrado
+      autoSyncMismatchedNodeSlugs();
+
       updateAdminNodosBadge();
+    }
+
+    function autoSyncMismatchedNodeSlugs() {
+      let changed = false;
+      adminNodes.forEach(node => {
+        if (!node || !node.name) return;
+        const expected = generateNodeSlug(node.name);
+        if (!expected) return;
+
+        // Presets originales predeterminados conocidos
+        const isDefaultPreset = (
+          (node.slug === 'chasqui' && node.name === 'Chasqui Maschwitz') ||
+          (node.slug === 'central' && node.name === 'Central Vicente López') ||
+          (node.slug === 'lomaverde' && (node.name === 'Nodo Loma Verde' || node.name === 'Loma Verde'))
+        );
+
+        if (!isDefaultPreset && node.slug !== expected) {
+          const oldSlug = node.slug;
+          let finalSlug = expected;
+          if (adminNodes.some(other => other !== node && other.slug === finalSlug)) {
+            let suffix = 2;
+            while (adminNodes.some(other => other !== node && other.slug === `${finalSlug}-${suffix}`)) {
+              suffix++;
+            }
+            finalSlug = `${finalSlug}-${suffix}`;
+          }
+
+          console.log(`[Elementales Nodos] Auto-migrando slug de "${node.name}": ${oldSlug} -> ${finalSlug}`);
+          node.slug = finalSlug;
+          node.id = 'nodo-' + finalSlug;
+          if (!node.shortName || node.shortName === oldSlug) {
+            node.shortName = generateShortName(node.name);
+          }
+
+          // Migrar selección activa si correspondía a este nodo
+          try {
+            const activeStored = localStorage.getItem('elementales_active_node');
+            if (activeStored === oldSlug || activeStored === 'nodo-' + oldSlug) {
+              localStorage.setItem('elementales_active_node', 'nodo-' + finalSlug);
+            }
+          } catch (e) {}
+
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        saveAdminNodes();
+      }
     }
 
     function saveAdminNodes() {
