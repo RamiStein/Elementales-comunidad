@@ -3513,6 +3513,7 @@
             </td>
             <td class="py-3 px-3 font-bold text-emerald-700 whitespace-nowrap">
               $${(o.total || 0).toLocaleString('es-AR')}
+              ${(o.communityContribution && o.communityContribution > 0) ? `<span class="block text-[10px] text-emerald-800 font-semibold font-mono" title="Aporte a la organización comunitaria: $${o.communityContribution.toLocaleString('es-AR')}">🌱 +$${o.communityContribution.toLocaleString('es-AR')} org</span>` : ''}
             </td>
             <td class="py-3 px-3 text-stone-700 whitespace-nowrap font-medium">
               ${o.paymentMethod || 'Efectivo'}

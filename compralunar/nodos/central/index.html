@@ -3029,8 +3029,12 @@
       // Despachar confirmación por correo electrónico en segundo plano
       sendLunarConfirmationEmail(newOrder);
 
-      // Generar mensaje para WhatsApp con formato limpio (sin mención de ahorro)
+      // Generar mensaje para WhatsApp con formato limpio (incluyendo aporte organizativo si corresponde)
       const itemsText = orderItems.map(i => `• ${i.qty}x ${i.name} -> $${i.total.toLocaleString('es-AR')}`).join('\n');
+      const contribText = contributionAmount > 0
+        ? `\nSubtotal alimentos: $${subtotalAmount.toLocaleString('es-AR')}\n🌱 *Aporte organización comunitaria (${lunarContributionType === '3%' ? '3% sugerido' : 'voluntario'}):* +$${contributionAmount.toLocaleString('es-AR')}`
+        : `\nSubtotal alimentos: $${subtotalAmount.toLocaleString('es-AR')}\nAporte organización: $0 (Sin aporte)`;
+
       const waText = encodeURIComponent(
 `🌕 *NUEVO PEDIDO - COMPRA LUNAR ELEMENTALES*
 ----------------------------------------
@@ -3045,7 +3049,8 @@
 ${notes ? `*Notas:* ${notes}\n` : ''}
 *Alimentos solicitados:*
 ${itemsText}
-
+${contribText}
+----------------------------------------
 *TOTAL A ABONAR:* $${totalAmount.toLocaleString('es-AR')}
 ----------------------------------------
 _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
@@ -3085,6 +3090,21 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
 
       const deliveryDateEl = document.getElementById('success-delivery-date');
       if (deliveryDateEl) deliveryDateEl.textContent = node.deliveryDate;
+
+      // Desglose en pantalla de éxito
+      const subtotalEl = document.getElementById('success-subtotal-price');
+      if (subtotalEl) subtotalEl.textContent = `$${subtotalAmount.toLocaleString('es-AR')}`;
+
+      const contribLabelEl = document.getElementById('success-contrib-label');
+      if (contribLabelEl) {
+        contribLabelEl.textContent = lunarContributionType === '3%' ? '3% sugerido' : (lunarContributionType === 'otro' ? 'voluntario' : 'sin aporte');
+      }
+
+      const contribPriceEl = document.getElementById('success-contrib-price');
+      if (contribPriceEl) {
+        contribPriceEl.textContent = contributionAmount > 0 ? `+$${contributionAmount.toLocaleString('es-AR')}` : '$0';
+        contribPriceEl.className = contributionAmount > 0 ? 'font-mono font-bold text-emerald-800' : 'font-mono font-medium text-stone-400';
+      }
 
       const totalPriceEl = document.getElementById('success-total-price');
       if (totalPriceEl) totalPriceEl.textContent = `$${totalAmount.toLocaleString('es-AR')}`;
@@ -3150,6 +3170,9 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
       if (!lastCompletedOrderData) return;
       const o = lastCompletedOrderData;
       const subject = encodeURIComponent(`Comprobante de Pedido #${o.id} - Compra Lunar Elementales`);
+      const contribEmailLine = (o.communityContribution && o.communityContribution > 0)
+        ? `• Aporte organización comunitaria (${o.contributionType === '3%' ? '3% sugerido' : 'voluntario'}): +$${o.communityContribution.toLocaleString('es-AR')}\n`
+        : '';
       const body = encodeURIComponent(
 `Hola ${o.clientName},
 
@@ -3160,10 +3183,13 @@ Este es el comprobante de tu pedido #${o.id} en la Compra Lunar Elementales:
 • Medio de Pago: ${o.paymentMethod}
 ${o.notes ? `• Notas: ${o.notes}\n` : ''}
 Alimentos Solicitados:
-${o.items.map(i => `• ${i.qty}x ${i.name} -> ${i.total.toLocaleString('es-AR')}`).join('\n')}
+${o.items.map(i => `• ${i.qty}x ${i.name} -> $${i.total.toLocaleString('es-AR')}`).join('\n')}
 
-TOTAL A PAGAR: ${o.total.toLocaleString('es-AR')}
+Subtotal alimentos: $${(o.subtotal || o.total).toLocaleString('es-AR')}
+${contribEmailLine}
+TOTAL A PAGAR: $${o.total.toLocaleString('es-AR')}
 
+Una compra comunitaria que intenciona la creación de comunidades resilientes.
 Para cualquier consulta o retiro, coordiná directamente con el responsable del nodo.
 Elementales Comunidad · https://elementales.store`
       );
@@ -3198,6 +3224,10 @@ Elementales Comunidad · https://elementales.store`
             Domicilio: orderData.clientAddress.full,
             PuntoDeRetiro: `${orderData.nodoNombre} (${orderData.deliveryDate})`,
             MedioDePago: orderData.paymentMethod,
+            SubtotalAlimentos: `$${(orderData.subtotal || orderData.total).toLocaleString('es-AR')}`,
+            AporteOrganizacionComunitaria: (orderData.communityContribution && orderData.communityContribution > 0)
+              ? `+$${orderData.communityContribution.toLocaleString('es-AR')} (${orderData.contributionType || ''})`
+              : '$0 (Sin aporte)',
             Total: `$${orderData.total.toLocaleString('es-AR')}`,
             Alimentos: itemsSummary,
             Notas: orderData.notes || 'Sin notas adicionales'
