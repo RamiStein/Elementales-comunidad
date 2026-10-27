@@ -1531,6 +1531,13 @@
 
       if (!catalog) {
         catalog = JSON.parse(JSON.stringify(DEFAULT_MASTER_CATALOG));
+      } else {
+        // Asegurar que productos nuevos existan sin sobreescribir precios existentes
+        DEFAULT_MASTER_CATALOG.forEach(defProd => {
+          if (!catalog.some(p => p.id === defProd.id)) {
+            catalog.push(JSON.parse(JSON.stringify(defProd)));
+          }
+        });
       }
 
       // Migración automática: reemplazar yerba obsoleta o fotos erróneas por Grápia Milenaria

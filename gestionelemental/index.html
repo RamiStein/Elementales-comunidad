@@ -1411,7 +1411,7 @@
                 id="edit-prod-price-minorista" 
                 required 
                 min="0" 
-                step="50" 
+                step="any" 
                 class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 font-mono font-black text-sm outline-none"
               />
               <span class="text-[10px] text-stone-400 block mt-0.5">1 a 5 unidades</span>
@@ -1426,7 +1426,7 @@
                 id="edit-prod-price-mayorista" 
                 required 
                 min="0" 
-                step="50" 
+                step="any" 
                 class="w-full bg-white border border-emerald-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-emerald-800 font-mono font-black text-sm outline-none"
               />
               <span class="text-[10px] text-emerald-600 block mt-0.5">+6 unidades</span>
@@ -1441,7 +1441,7 @@
                 id="edit-prod-price-distribuidor" 
                 required 
                 min="0" 
-                step="50" 
+                step="any" 
                 class="w-full bg-white border border-blue-300 focus:border-blue-500 rounded-xl px-3 py-2 text-blue-900 font-mono font-black text-sm outline-none"
               />
               <span class="text-[10px] text-blue-600 block mt-0.5">+12 o +20 un.</span>
@@ -1590,7 +1590,7 @@
                 id="new-prod-price-minorista" 
                 required 
                 min="0" 
-                step="50" 
+                step="any" 
                 value="19700" 
                 class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 font-mono font-black text-sm outline-none"
               />
@@ -1606,7 +1606,7 @@
                 id="new-prod-price-mayorista" 
                 required 
                 min="0" 
-                step="50" 
+                step="any" 
                 value="18700" 
                 class="w-full bg-white border border-emerald-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-emerald-800 font-mono font-black text-sm outline-none"
               />
@@ -1622,7 +1622,7 @@
                 id="new-prod-price-distribuidor" 
                 required 
                 min="0" 
-                step="50" 
+                step="any" 
                 value="18100" 
                 class="w-full bg-white border border-blue-300 focus:border-blue-500 rounded-xl px-3 py-2 text-blue-900 font-mono font-black text-sm outline-none"
               />
@@ -3546,13 +3546,13 @@
         adminProducts = JSON.parse(JSON.stringify(DEFAULT_MASTER_CATALOG));
         saveAdminMasterCatalog();
       } else {
-        // Asegurar que Lorenzo Cabrera y productos nuevos existan en el array si fue migrado
-        const hasLorenzo = adminProducts.some(p => p.id && p.id.includes('lorenzo'));
-        if (!hasLorenzo) {
-          const lorenzoProds = DEFAULT_MASTER_CATALOG.filter(p => p.id && p.id.includes('lorenzo'));
-          adminProducts.unshift(...lorenzoProds);
-          saveAdminMasterCatalog();
-        }
+        // Preservar los productos y precios modificados por el usuario, agregando solo los nuevos que falten
+        DEFAULT_MASTER_CATALOG.forEach(defProd => {
+          const existing = adminProducts.find(p => p.id === defProd.id);
+          if (!existing) {
+            adminProducts.push(JSON.parse(JSON.stringify(defProd)));
+          }
+        });
 
         // Asegurar sincronización de Grápia Milenaria y remoción de yerba obsoleta
         const hasOldYerba = adminProducts.some(p => 
@@ -3567,8 +3567,9 @@
           );
           const grapiaProds = DEFAULT_MASTER_CATALOG.filter(p => p.id && p.id.includes('grapia'));
           adminProducts.push(...grapiaProds);
-          saveAdminMasterCatalog();
         }
+
+        saveAdminMasterCatalog();
       }
     }
 
@@ -3843,6 +3844,8 @@
       try {
         if (typeof confetti === 'function') confetti({ particleCount: 30, spread: 50 });
       } catch (err) {}
+
+      alert(`✓ Precios guardados exitosamente para "${p.name}".\nMinorista: $${minorista.toLocaleString('es-AR')} | Mayorista: $${mayorista.toLocaleString('es-AR')} | Distribuidor: $${distribuidor.toLocaleString('es-AR')}`);
     }
 
     function openNewProductModal() {
