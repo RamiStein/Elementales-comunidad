@@ -249,7 +249,7 @@
             </span>
             <span class="inline-flex items-center gap-1.5 text-indigo-200 font-semibold bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
               <span>⏳</span>
-              <span>Cierre de pedidos: <strong class="text-white font-bold">30 de Octubre</strong></span>
+              <span>Cierre de pedidos: <strong id="landing-global-cierre" class="text-white font-bold">30 de Octubre</strong></span>
             </span>
             <span class="inline-flex items-center gap-1.5 text-emerald-300 font-semibold bg-emerald-950/50 border border-emerald-500/40 px-3 py-1.5 rounded-xl">
               <span>🚚</span>
@@ -705,15 +705,96 @@
             <!-- Renderizado dinámicamente -->
           </div>
 
-          <!-- Total a Abonar (Sin Ahorro) -->
-          <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl flex items-center justify-between text-xs">
-            <div>
-              <span class="text-stone-500 font-semibold block text-[11px] uppercase tracking-wider font-mono">Total a Abonar:</span>
-              <span id="checkout-total-price" class="font-heading font-black text-2xl text-emerald-950 block leading-tight">$0</span>
+          <!-- Espacio para Contribuir a la Organización de la Compra -->
+          <div class="p-4 bg-gradient-to-br from-amber-50/90 via-stone-50 to-emerald-50/50 border border-amber-200/90 rounded-2xl text-xs space-y-3 shadow-2xs">
+            <div class="flex items-start gap-2.5">
+              <span class="text-xl shrink-0 mt-0.5">🌱</span>
+              <div class="flex-1">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <h4 class="font-heading font-black text-stone-900 text-[13px]">Aporte a la organización de la compra</h4>
+                  <span class="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">Comunidades Resilientes</span>
+                </div>
+                <p class="text-[11px] text-stone-600 mt-1 leading-relaxed">
+                  Una compra comunitaria que intenciona la creación de comunidades resilientes. Tu aporte sostiene la logística compartida, el cuidado de los alimentos y el fortalecimiento de los nodos barriales.
+                </p>
+              </div>
             </div>
-            <div class="text-right">
-              <span class="text-[11px] text-stone-500 font-semibold block uppercase tracking-wider font-mono">Punto de Retiro:</span>
-              <span id="checkout-node-sublabel" class="font-black text-stone-800 text-xs block">Nodo Loma Verde</span>
+
+            <!-- Opciones de Contribución: 3% Sugerido | Lo que quien pide quiera | 0 -->
+            <div class="grid grid-cols-3 gap-2 pt-0.5">
+              <button 
+                type="button" 
+                id="btn-contrib-3"
+                onclick="selectCommunityContribution('3%')" 
+                class="px-2.5 py-2.5 rounded-xl border text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center bg-emerald-600 text-white border-emerald-600 shadow-xs ring-2 ring-emerald-500/20 active:scale-98"
+                title="Aporte sugerido del 3% para la organización colectiva"
+              >
+                <span class="font-black">3% <span class="text-[10px] font-normal opacity-90">(Sugerido)</span></span>
+                <span id="contrib-3-amount" class="text-[11px] font-mono font-bold opacity-95 block mt-0.5">$0</span>
+              </button>
+
+              <button 
+                type="button" 
+                id="btn-contrib-custom"
+                onclick="selectCommunityContribution('otro')" 
+                class="px-2.5 py-2.5 rounded-xl border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98"
+                title="Aportar el monto que desees libremente"
+              >
+                <span>Otro monto</span>
+                <span class="text-[10px] font-normal text-stone-400 block mt-0.5">Lo que quieras</span>
+              </button>
+
+              <button 
+                type="button" 
+                id="btn-contrib-0"
+                onclick="selectCommunityContribution('0')" 
+                class="px-2.5 py-2.5 rounded-xl border border-stone-200 text-stone-600 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98"
+                title="Continuar sin aporte organizativo"
+              >
+                <span>$0</span>
+                <span class="text-[10px] font-normal text-stone-400 block mt-0.5">Sin aporte</span>
+              </button>
+            </div>
+
+            <!-- Input dinámico para monto personalizado -->
+            <div id="contrib-custom-container" class="hidden pt-1">
+              <label class="block text-[11px] font-bold text-stone-700 mb-1">Indicá el monto que deseás aportar a la organización:</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-stone-400 font-bold">$</span>
+                <input 
+                  type="number" 
+                  id="contrib-custom-input" 
+                  min="0" 
+                  step="50" 
+                  placeholder="ej. 1000" 
+                  oninput="onCustomContributionInput(this.value)"
+                  class="w-full pl-7 pr-3 py-1.5 bg-white border border-stone-300 focus:border-emerald-500 rounded-xl text-stone-900 font-mono font-bold text-xs outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Total a Abonar con Desglose Transparente -->
+          <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl text-xs space-y-2">
+            <div class="flex items-center justify-between text-stone-600 text-[11px]">
+              <span>Subtotal alimentos:</span>
+              <span id="checkout-subtotal-price" class="font-mono font-bold text-stone-800">$0</span>
+            </div>
+            <div id="checkout-contrib-row" class="flex items-center justify-between text-stone-600 text-[11px] pb-1.5 border-b border-emerald-200/60">
+              <span class="flex items-center gap-1">
+                <span>🌱 Aporte organización (<span id="checkout-contrib-label">3% sugerido</span>):</span>
+              </span>
+              <span id="checkout-contrib-price" class="font-mono font-bold text-emerald-800">+$0</span>
+            </div>
+            <div class="flex items-center justify-between pt-0.5">
+              <div>
+                <span class="text-stone-500 font-semibold block text-[11px] uppercase tracking-wider font-mono">Total a Abonar:</span>
+                <span id="checkout-total-price" class="font-heading font-black text-2xl text-emerald-950 block leading-tight">$0</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-stone-500 font-semibold block uppercase tracking-wider font-mono">Punto de Retiro:</span>
+                <span id="checkout-node-sublabel" class="font-black text-stone-800 text-xs block">Nodo Loma Verde</span>
+              </div>
             </div>
           </div>
 
@@ -909,6 +990,18 @@
               </div>
             </div>
 
+            <!-- Desglose Subtotal y Aporte Organizativo -->
+            <div class="pt-2 border-t border-stone-200 text-xs space-y-1">
+              <div class="flex justify-between text-stone-600 text-[11px]">
+                <span>Subtotal alimentos:</span>
+                <span id="success-subtotal-price" class="font-mono font-bold text-stone-800">$0</span>
+              </div>
+              <div id="success-contrib-row" class="flex justify-between text-stone-600 text-[11px]">
+                <span>🌱 Aporte organización (<span id="success-contrib-label">3%</span>):</span>
+                <span id="success-contrib-price" class="font-mono font-bold text-emerald-800">+$0</span>
+              </div>
+            </div>
+
             <div class="pt-2 border-t border-stone-200 text-[11px] text-stone-600 space-y-1.5">
               <p>👤 <strong>Comprador:</strong> <span id="success-client-full-label" class="text-stone-800 font-bold"></span> (<span id="success-phone-label" class="font-mono"></span>)</p>
               <p>✉️ <strong>Email:</strong> <span id="success-email-label" class="font-mono text-stone-800"></span></p>
@@ -1079,6 +1172,16 @@
       return map[slug] || map['lomaverde'] || loadLunarNodes()[0];
     }
 
+    // Parámetro global de cierre para todos los nodos
+    function getGlobalCierreDate() {
+      try {
+        const stored = localStorage.getItem('elementales_global_cierre_v1');
+        if (stored && stored.trim()) return stored.trim();
+      } catch (e) {}
+      const first = loadLunarNodes()[0];
+      return first?.cierreDate || '30 de Octubre';
+    }
+
     // Proxy para mantener compatibilidad con cualquier lectura de LUNAR_NODOS
     const LUNAR_NODOS = new Proxy({}, {
       get: (target, prop) => {
@@ -1144,8 +1247,8 @@
 
               <div class="mt-4 pt-3 border-t border-stone-100 space-y-1.5 text-xs text-stone-600">
                 <p>📍 <strong>Punto:</strong> ${node.location || node.address || 'Punto barrial'}</p>
-                <p>🚚 <strong>Entrega:</strong> ${node.deliveryDate || 'Próximo ciclo'}</p>
-                ${node.cierreDate ? `<p>⏱️ <strong>Cierre:</strong> ${node.cierreDate}</p>` : ''}
+                <p class="text-stone-900 font-bold flex items-center gap-1.5"><span>🚚</span><span>Entrega: <strong>${node.deliveryDate || 'Próximo ciclo'}</strong></span></p>
+                <p class="text-amber-800 font-mono text-[11px] bg-amber-50 px-2 py-0.5 rounded border border-amber-200/80 inline-block">⏱️ Cierre general: ${getGlobalCierreDate()}</p>
               </div>
             </div>
 
@@ -1906,6 +2009,15 @@
       if (el) el.textContent = `${node.name} (${node.location})`;
       const summaryNode = document.getElementById('checkout-node-summary-label');
       if (summaryNode) summaryNode.textContent = node.name;
+
+      const globalCierre = getGlobalCierreDate();
+      const elCierre = document.getElementById('store-global-cierre-label');
+      if (elCierre) elCierre.textContent = globalCierre;
+      const elDel = document.getElementById('store-node-delivery-label');
+      if (elDel) elDel.textContent = node.deliveryDate || 'Próximo ciclo';
+
+      const landingCierre = document.getElementById('landing-global-cierre');
+      if (landingCierre) landingCierre.textContent = globalCierre;
     }
 
     // =========================================================================
@@ -2408,7 +2520,10 @@
 
           <div class="text-[11px] text-stone-300 flex items-start gap-2 leading-relaxed bg-white/5 p-2.5 rounded-2xl border border-white/10">
             <span class="text-base shrink-0">🚚</span>
-            <span>Retiro unificado en <strong>${nodeName}</strong>. El pedido se coordina y abona directo al retirar o por transferencia.</span>
+            <div class="space-y-0.5">
+              <div>Retiro en <strong>${nodeName}</strong>: <strong class="text-emerald-300">${(typeof LUNAR_NODOS !== 'undefined' && LUNAR_NODOS[selectedNodeSlug]?.deliveryDate) || 'Próximo ciclo'}</strong>.</div>
+              <div class="text-amber-300/90 text-[10px] font-mono">⏱️ Cierre de pedidos: ${getGlobalCierreDate()}</div>
+            </div>
           </div>
 
           <!-- Botón de Finalizar Compra -->
@@ -2624,6 +2739,103 @@
       closeLunarCheckoutModal();
     }
 
+    let lunarContributionType = '3%'; // '3%' | 'otro' | '0'
+    let lunarCustomContributionAmount = 0;
+
+    function getLunarCartSubtotal() {
+      const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
+      let subtotal = 0;
+      entries.forEach(([id, qty]) => {
+        const prod = LUNAR_PRODUCTS.find(p => p.id === id);
+        if (prod) {
+          subtotal += getProductUnitPrice(prod, qty) * qty;
+        }
+      });
+      return subtotal;
+    }
+
+    function getLunarContributionAmount(subtotal) {
+      if (lunarContributionType === '3%') {
+        return Math.round((subtotal * 0.03) / 10) * 10;
+      } else if (lunarContributionType === 'otro') {
+        return Math.max(0, Math.round(lunarCustomContributionAmount));
+      } else {
+        return 0;
+      }
+    }
+
+    function selectCommunityContribution(type) {
+      lunarContributionType = type;
+      const customContainer = document.getElementById('contrib-custom-container');
+      const customInput = document.getElementById('contrib-custom-input');
+
+      if (type === 'otro') {
+        if (customContainer) customContainer.classList.remove('hidden');
+        if (customInput) {
+          if (!customInput.value) {
+            const subtotal = getLunarCartSubtotal();
+            const suggestedCustom = Math.round((subtotal * 0.05) / 50) * 50 || 500;
+            customInput.value = lunarCustomContributionAmount > 0 ? lunarCustomContributionAmount : suggestedCustom;
+            lunarCustomContributionAmount = parseFloat(customInput.value) || 0;
+          }
+          customInput.focus();
+        }
+      } else {
+        if (customContainer) customContainer.classList.add('hidden');
+      }
+
+      updateCheckoutTotals();
+    }
+
+    function onCustomContributionInput(val) {
+      lunarCustomContributionAmount = Math.max(0, parseFloat(val) || 0);
+      updateCheckoutTotals();
+    }
+
+    function updateCheckoutTotals() {
+      const subtotal = getLunarCartSubtotal();
+      const contrib = getLunarContributionAmount(subtotal);
+      const total = subtotal + contrib;
+
+      // Actualizar monto calculado en botón 3% sugerido
+      const contrib3AmountEl = document.getElementById('contrib-3-amount');
+      if (contrib3AmountEl) {
+        contrib3AmountEl.textContent = `$${(Math.round((subtotal * 0.03) / 10) * 10).toLocaleString('es-AR')}`;
+      }
+
+      // Estilos activos/inactivos para los 3 botones
+      const btn3 = document.getElementById('btn-contrib-3');
+      const btnCustom = document.getElementById('btn-contrib-custom');
+      const btn0 = document.getElementById('btn-contrib-0');
+
+      const activeClass = 'px-2.5 py-2.5 rounded-xl border text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center bg-emerald-600 text-white border-emerald-600 shadow-xs ring-2 ring-emerald-500/20 active:scale-98';
+      const inactiveClass = 'px-2.5 py-2.5 rounded-xl border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98';
+
+      if (btn3) btn3.className = lunarContributionType === '3%' ? activeClass : inactiveClass;
+      if (btnCustom) btnCustom.className = lunarContributionType === 'otro' ? activeClass : inactiveClass;
+      if (btn0) btn0.className = lunarContributionType === '0' ? activeClass : inactiveClass;
+
+      // Desglose en resumen de totales
+      const subtotalEl = document.getElementById('checkout-subtotal-price');
+      if (subtotalEl) subtotalEl.textContent = `$${subtotal.toLocaleString('es-AR')}`;
+
+      const contribLabelEl = document.getElementById('checkout-contrib-label');
+      if (contribLabelEl) {
+        if (lunarContributionType === '3%') contribLabelEl.textContent = '3% sugerido';
+        else if (lunarContributionType === 'otro') contribLabelEl.textContent = 'personalizado';
+        else contribLabelEl.textContent = 'sin aporte';
+      }
+
+      const contribPriceEl = document.getElementById('checkout-contrib-price');
+      if (contribPriceEl) {
+        contribPriceEl.textContent = contrib > 0 ? `+$${contrib.toLocaleString('es-AR')}` : '$0';
+        contribPriceEl.className = contrib > 0 ? 'font-mono font-bold text-emerald-800' : 'font-mono font-medium text-stone-400';
+      }
+
+      const totalEl = document.getElementById('checkout-total-price');
+      if (totalEl) totalEl.textContent = `$${total.toLocaleString('es-AR')}`;
+    }
+
     function openLunarCheckoutModal() {
       hideFloatingCart();
       const modal = document.getElementById('modal-lunar-checkout');
@@ -2637,15 +2849,12 @@
       const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
       if (entries.length === 0) return;
 
-      let totalPrice = 0;
-
       listContainer.innerHTML = entries.map(([id, qty]) => {
         const prod = LUNAR_PRODUCTS.find(p => p.id === id);
         if (!prod) return '';
 
         const unitPrice = getProductUnitPrice(prod, qty);
         const itemTotal = unitPrice * qty;
-        totalPrice += itemTotal;
 
         let tierName = 'Minorista';
         if (qty >= 20) tierName = 'Distribuidor (+20)';
@@ -2672,7 +2881,8 @@
         `;
       }).join('');
 
-      document.getElementById('checkout-total-price').textContent = `$${totalPrice.toLocaleString('es-AR')}`;
+      // Calcular y renderizar desglose con aporte comunitario
+      updateCheckoutTotals();
 
       // Nodo activo en el resumen
       const node = LUNAR_NODOS[selectedNodeSlug] || LUNAR_NODOS['lomaverde'];
@@ -2736,14 +2946,14 @@
       if (entries.length === 0) return;
 
       const orderItems = [];
-      let totalAmount = 0;
+      let subtotalAmount = 0;
 
       entries.forEach(([id, qty]) => {
         const prod = LUNAR_PRODUCTS.find(p => p.id === id);
         if (prod) {
           const unitPrice = getProductUnitPrice(prod, qty);
           const itemTotal = unitPrice * qty;
-          totalAmount += itemTotal;
+          subtotalAmount += itemTotal;
           orderItems.push({
             id: prod.id,
             name: `${prod.name} (${prod.unit})`,
@@ -2753,6 +2963,9 @@
           });
         }
       });
+
+      const contributionAmount = getLunarContributionAmount(subtotalAmount);
+      const totalAmount = subtotalAmount + contributionAmount;
 
       const orderNumber = Math.floor(1000 + Math.random() * 9000);
       const fullAddressStr = `${street}, ${city} (${municipality}), ${province}`;
@@ -2774,6 +2987,9 @@
         },
         paymentMethod: payment,
         items: orderItems,
+        subtotal: subtotalAmount,
+        communityContribution: contributionAmount,
+        contributionType: lunarContributionType,
         total: totalAmount,
         status: 'Pendiente',
         nodoId: node.id,
@@ -2813,8 +3029,12 @@
       // Despachar confirmación por correo electrónico en segundo plano
       sendLunarConfirmationEmail(newOrder);
 
-      // Generar mensaje para WhatsApp con formato limpio (sin mención de ahorro)
+      // Generar mensaje para WhatsApp con formato limpio (incluyendo aporte organizativo si corresponde)
       const itemsText = orderItems.map(i => `• ${i.qty}x ${i.name} -> $${i.total.toLocaleString('es-AR')}`).join('\n');
+      const contribText = contributionAmount > 0
+        ? `\nSubtotal alimentos: $${subtotalAmount.toLocaleString('es-AR')}\n🌱 *Aporte organización comunitaria (${lunarContributionType === '3%' ? '3% sugerido' : 'voluntario'}):* +$${contributionAmount.toLocaleString('es-AR')}`
+        : `\nSubtotal alimentos: $${subtotalAmount.toLocaleString('es-AR')}\nAporte organización: $0 (Sin aporte)`;
+
       const waText = encodeURIComponent(
 `🌕 *NUEVO PEDIDO - COMPRA LUNAR ELEMENTALES*
 ----------------------------------------
@@ -2829,7 +3049,8 @@
 ${notes ? `*Notas:* ${notes}\n` : ''}
 *Alimentos solicitados:*
 ${itemsText}
-
+${contribText}
+----------------------------------------
 *TOTAL A ABONAR:* $${totalAmount.toLocaleString('es-AR')}
 ----------------------------------------
 _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
@@ -2869,6 +3090,21 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
 
       const deliveryDateEl = document.getElementById('success-delivery-date');
       if (deliveryDateEl) deliveryDateEl.textContent = node.deliveryDate;
+
+      // Desglose en pantalla de éxito
+      const subtotalEl = document.getElementById('success-subtotal-price');
+      if (subtotalEl) subtotalEl.textContent = `$${subtotalAmount.toLocaleString('es-AR')}`;
+
+      const contribLabelEl = document.getElementById('success-contrib-label');
+      if (contribLabelEl) {
+        contribLabelEl.textContent = lunarContributionType === '3%' ? '3% sugerido' : (lunarContributionType === 'otro' ? 'voluntario' : 'sin aporte');
+      }
+
+      const contribPriceEl = document.getElementById('success-contrib-price');
+      if (contribPriceEl) {
+        contribPriceEl.textContent = contributionAmount > 0 ? `+$${contributionAmount.toLocaleString('es-AR')}` : '$0';
+        contribPriceEl.className = contributionAmount > 0 ? 'font-mono font-bold text-emerald-800' : 'font-mono font-medium text-stone-400';
+      }
 
       const totalPriceEl = document.getElementById('success-total-price');
       if (totalPriceEl) totalPriceEl.textContent = `$${totalAmount.toLocaleString('es-AR')}`;
@@ -2934,6 +3170,9 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
       if (!lastCompletedOrderData) return;
       const o = lastCompletedOrderData;
       const subject = encodeURIComponent(`Comprobante de Pedido #${o.id} - Compra Lunar Elementales`);
+      const contribEmailLine = (o.communityContribution && o.communityContribution > 0)
+        ? `• Aporte organización comunitaria (${o.contributionType === '3%' ? '3% sugerido' : 'voluntario'}): +$${o.communityContribution.toLocaleString('es-AR')}\n`
+        : '';
       const body = encodeURIComponent(
 `Hola ${o.clientName},
 
@@ -2944,10 +3183,13 @@ Este es el comprobante de tu pedido #${o.id} en la Compra Lunar Elementales:
 • Medio de Pago: ${o.paymentMethod}
 ${o.notes ? `• Notas: ${o.notes}\n` : ''}
 Alimentos Solicitados:
-${o.items.map(i => `• ${i.qty}x ${i.name} -> ${i.total.toLocaleString('es-AR')}`).join('\n')}
+${o.items.map(i => `• ${i.qty}x ${i.name} -> $${i.total.toLocaleString('es-AR')}`).join('\n')}
 
-TOTAL A PAGAR: ${o.total.toLocaleString('es-AR')}
+Subtotal alimentos: $${(o.subtotal || o.total).toLocaleString('es-AR')}
+${contribEmailLine}
+TOTAL A PAGAR: $${o.total.toLocaleString('es-AR')}
 
+Una compra comunitaria que intenciona la creación de comunidades resilientes.
 Para cualquier consulta o retiro, coordiná directamente con el responsable del nodo.
 Elementales Comunidad · https://elementales.store`
       );
@@ -2982,6 +3224,10 @@ Elementales Comunidad · https://elementales.store`
             Domicilio: orderData.clientAddress.full,
             PuntoDeRetiro: `${orderData.nodoNombre} (${orderData.deliveryDate})`,
             MedioDePago: orderData.paymentMethod,
+            SubtotalAlimentos: `$${(orderData.subtotal || orderData.total).toLocaleString('es-AR')}`,
+            AporteOrganizacionComunitaria: (orderData.communityContribution && orderData.communityContribution > 0)
+              ? `+$${orderData.communityContribution.toLocaleString('es-AR')} (${orderData.contributionType || ''})`
+              : '$0 (Sin aporte)',
             Total: `$${orderData.total.toLocaleString('es-AR')}`,
             Alimentos: itemsSummary,
             Notas: orderData.notes || 'Sin notas adicionales'
@@ -3023,6 +3269,11 @@ Elementales Comunidad · https://elementales.store`
     });
 
     window.addEventListener('elementales_nodes_updated', () => {
+      renderLunarNodosSelection();
+      updateStoreNodeHeader();
+    });
+
+    window.addEventListener('elementales_global_cierre_updated', () => {
       renderLunarNodosSelection();
       updateStoreNodeHeader();
     });

@@ -1192,6 +1192,50 @@
         </div>
       </div>
 
+      <!-- CONFIGURACIÓN DEL CICLO: CIERRE GENERAL DE PEDIDOS (UNIFICADO PARA TODOS LOS NODOS) -->
+      <div class="bg-gradient-to-r from-amber-50 via-white to-amber-50/40 border border-amber-200 rounded-3xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-start sm:items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500 text-stone-950 flex items-center justify-center text-2xl font-bold shrink-0 shadow-xs">
+            ⏱️
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-amber-900 bg-amber-200/80 px-2.5 py-0.5 rounded-full border border-amber-300 font-mono">
+                Parámetro Global · Todos los Nodos
+              </span>
+              <span class="text-[11px] font-bold text-stone-500 font-mono">Ciclo Compra Lunar</span>
+            </div>
+            <h4 class="font-heading font-black text-base text-stone-900 mt-0.5">
+              Fecha Límite de Cierre de Pedidos
+            </h4>
+            <p class="text-xs text-stone-600 mt-0.5">
+              Esta fecha de cierre rige de manera <strong>general para todos los nodos</strong>. La entrega se define de forma independiente para cada nodo.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0 w-full md:w-auto">
+          <div class="relative flex-1 md:flex-initial">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-xs">📅</span>
+            <input 
+              type="text" 
+              id="admin-global-cierre-input" 
+              placeholder="ej: 30 de Octubre" 
+              value="30 de Octubre"
+              class="bg-white border-2 border-amber-300 focus:border-amber-500 rounded-2xl pl-9 pr-4 py-2.5 text-xs font-black text-stone-900 outline-none shadow-2xs w-full md:w-52 transition-all"
+              onkeydown="if(event.key === 'Enter'){ saveGlobalCierreDate(); }"
+            />
+          </div>
+          <button 
+            type="button" 
+            onclick="saveGlobalCierreDate()" 
+            class="px-5 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-stone-950 font-black text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap font-heading"
+          >
+            Guardar Cierre
+          </button>
+        </div>
+      </div>
+
       <!-- Filtros y Búsqueda -->
       <div class="bg-white border border-stone-200 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="relative flex-1 max-w-md">
@@ -1694,14 +1738,16 @@
           <input type="text" id="new-node-location" required placeholder="Ej. Av. Santa Fe y Dardo Rocha, San Isidro" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block font-bold text-stone-700 mb-1">Fecha de Entrega *</label>
-            <input type="text" id="new-node-delivery" required placeholder="Ej. Sábado 8 de Noviembre" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+            <label class="block font-bold text-stone-700 mb-1">Fecha y Horario de Entrega (Específica del Nodo) *</label>
+            <input type="text" id="new-node-delivery" required placeholder="Ej. Sábado 1 de Noviembre, 11 a 14hs" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+            <span class="text-[10px] text-stone-400 mt-1 block">Independiente: cada nodo tiene su propio día de entrega.</span>
           </div>
           <div>
-            <label class="block font-bold text-stone-700 mb-1">Fecha Límite de Cierre *</label>
-            <input type="text" id="new-node-cierre" required placeholder="Ej. 5 de Noviembre" value="30 de Octubre" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+            <label class="block font-bold text-stone-700 mb-1">Fecha Límite de Cierre (General)</label>
+            <input type="text" id="new-node-cierre" readonly class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-stone-600 outline-none cursor-not-allowed text-xs font-mono font-bold" />
+            <span class="text-[10px] text-amber-700 mt-1 block">Unificado: se define globalmente para todas las sedes.</span>
           </div>
         </div>
 
@@ -1816,14 +1862,16 @@
           <input type="text" id="edit-node-location" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block font-bold text-stone-700 mb-1">Fecha de Entrega Comunitaria *</label>
-            <input type="text" id="edit-node-delivery" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+            <label class="block font-bold text-stone-700 mb-1">Fecha y Horario de Entrega (Específica del Nodo) *</label>
+            <input type="text" id="edit-node-delivery" required placeholder="Ej. Sábado 1 de Noviembre, 11 a 14hs" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+            <span class="text-[10px] text-stone-400 mt-1 block">Independiente: cada nodo tiene su propio día de entrega.</span>
           </div>
           <div>
-            <label class="block font-bold text-stone-700 mb-1">Fecha Límite de Cierre *</label>
-            <input type="text" id="edit-node-cierre" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+            <label class="block font-bold text-stone-700 mb-1">Fecha Límite de Cierre (General para todos los nodos)</label>
+            <input type="text" id="edit-node-cierre" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs font-bold" />
+            <span class="text-[10px] text-amber-800 mt-1 block">Parámetro global: actualizará el cierre para todas las sedes.</span>
           </div>
         </div>
 
@@ -6222,6 +6270,48 @@ Por favor confirmanos recepción del pedido y horario estimado de entrega/cosech
       return name.replace(/^nodo[\s\-_]+/i, '').trim() || name;
     }
 
+    let adminGlobalCierre = '30 de Octubre';
+
+    function getGlobalCierreDate() {
+      try {
+        const stored = localStorage.getItem('elementales_global_cierre_v1');
+        if (stored && stored.trim()) return stored.trim();
+      } catch (e) {}
+      if (Array.isArray(adminNodes) && adminNodes.length > 0 && adminNodes[0].cierreDate) {
+        return adminNodes[0].cierreDate;
+      }
+      return adminGlobalCierre;
+    }
+
+    function saveGlobalCierreDate(val) {
+      const input = document.getElementById('admin-global-cierre-input');
+      const newVal = (val || input?.value || '').trim();
+      if (!newVal) {
+        alert('Por favor ingresá una fecha de cierre válida (ej: 30 de Octubre).');
+        return;
+      }
+      adminGlobalCierre = newVal;
+      try {
+        localStorage.setItem('elementales_global_cierre_v1', newVal);
+        window.dispatchEvent(new CustomEvent('elementales_global_cierre_updated', { detail: newVal }));
+      } catch (e) {}
+
+      // Sincronizar campo cierreDate en todos los nodos
+      adminNodes.forEach(n => {
+        n.cierreDate = newVal;
+      });
+      saveAdminNodes();
+
+      if (input) input.value = newVal;
+      const editInput = document.getElementById('edit-node-cierre');
+      if (editInput) editInput.value = newVal;
+      const newInput = document.getElementById('new-node-cierre');
+      if (newInput) newInput.value = newVal;
+
+      renderAdminNodosTable();
+      alert(`✓ Fecha de cierre general actualizada a: "${newVal}" para todos los nodos.\nLa entrega continúa definida de manera independiente en cada sede.`);
+    }
+
     function initAdminNodos() {
       try {
         const raw = localStorage.getItem('elementales_lunar_nodos_v1');
@@ -6241,6 +6331,9 @@ Por favor confirmanos recepción del pedido y horario estimado de entrega/cosech
       autoSyncMismatchedNodeSlugs();
 
       updateAdminNodosBadge();
+      adminGlobalCierre = getGlobalCierreDate();
+      const cierreInput = document.getElementById('admin-global-cierre-input');
+      if (cierreInput) cierreInput.value = adminGlobalCierre;
     }
 
     function autoSyncMismatchedNodeSlugs() {
@@ -6417,8 +6510,15 @@ Por favor confirmanos recepción del pedido y horario estimado de entrega/cosech
 
             <!-- Cronograma -->
             <td class="py-3 px-3">
-              <span class="font-bold text-stone-900 block">🚚 ${n.deliveryDate || 'Próximo ciclo'}</span>
-              ${n.cierreDate ? `<span class="text-[11px] text-amber-700 block font-mono">⏱️ Cierre: ${n.cierreDate}</span>` : ''}
+              <div class="space-y-1">
+                <span class="font-bold text-stone-900 block flex items-center gap-1.5">
+                  <span>🚚</span>
+                  <span>${n.deliveryDate || 'Próximo ciclo'}</span>
+                </span>
+                <span class="text-[11px] text-amber-800 font-mono bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/80 inline-block" title="Cierre general unificado para todos los nodos">
+                  ⏱️ Cierre general: ${getGlobalCierreDate()}
+                </span>
+              </div>
             </td>
 
             <!-- Contacto -->
@@ -6626,7 +6726,7 @@ Por favor confirmanos recepción del pedido y horario estimado de entrega/cosech
       document.getElementById('edit-node-badgecolor').value = n.badgeColor || 'emerald';
       document.getElementById('edit-node-location').value = n.location || n.address || '';
       document.getElementById('edit-node-delivery').value = n.deliveryDate || '';
-      document.getElementById('edit-node-cierre').value = n.cierreDate || '30 de Octubre';
+      document.getElementById('edit-node-cierre').value = getGlobalCierreDate();
       document.getElementById('edit-node-phone').value = n.phone || '';
       document.getElementById('edit-node-guardian').value = n.guardian || '';
       document.getElementById('edit-node-desc').value = n.desc || '';
@@ -6680,7 +6780,12 @@ Por favor confirmanos recepción del pedido y horario estimado de entrega/cosech
       n.location = document.getElementById('edit-node-location').value.trim();
       n.address = n.location;
       n.deliveryDate = document.getElementById('edit-node-delivery').value.trim();
-      n.cierreDate = document.getElementById('edit-node-cierre').value.trim();
+      const editCierreVal = document.getElementById('edit-node-cierre').value.trim();
+      if (editCierreVal && editCierreVal !== getGlobalCierreDate()) {
+        saveGlobalCierreDate(editCierreVal);
+      } else {
+        n.cierreDate = getGlobalCierreDate();
+      }
       n.phone = document.getElementById('edit-node-phone').value.trim();
       n.guardian = document.getElementById('edit-node-guardian').value.trim();
       n.desc = document.getElementById('edit-node-desc').value.trim();
