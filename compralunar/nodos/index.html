@@ -72,15 +72,19 @@
 
     /* Botones de categorías estilo VRDE Club */
     .vrde-cat-card {
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      position: relative;
     }
     .vrde-cat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.12);
+      transform: translateY(-1.5px);
+      box-shadow: 0 6px 14px -2px rgba(0, 0, 0, 0.18);
+      filter: brightness(1.05);
     }
     .vrde-cat-card.active {
-      border-color: #0f172a;
-      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.85), 0 8px 20px -4px rgba(0,0,0,0.2);
+      box-shadow: 0 0 0 2px #ffffff, 0 0 0 4.5px #0f172a, 0 8px 18px -2px rgba(0, 0, 0, 0.25) !important;
+      transform: scale(1.02);
+      z-index: 10;
     }
 
     /* Píldoras del carrusel */
@@ -479,7 +483,7 @@
 
     <!-- CATEGORÍAS ESTILO VRDE CLUB (IMAGEN 1) -->
     <section>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4" id="vrde-categories-grid">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3" id="vrde-categories-grid">
         <!-- Renderizado dinámicamente vía renderVrdeCategoryGrid() -->
       </div>
     </section>
@@ -1161,16 +1165,76 @@
     // 2. CATÁLOGO DE COMPRA LUNAR ESTRUCTURA VRDE CLUB
     // =========================================================================
     const LUNAR_CATEGORIES = [
-      { id: 'todos', name: 'Ver Todo', icon: '🌱', gradient: 'from-[#059669] to-[#10b981]', textColor: 'text-white' },
-      { id: 'aceite', name: 'Aceite Oliva', icon: '🫒', gradient: 'from-[#4d7c0f] to-[#a3e635]', textColor: 'text-white' },
-      { id: 'granos', name: 'Granos & Legumbres', icon: '🌾', gradient: 'from-[#d97706] to-[#fbbf24]', textColor: 'text-white' },
-      { id: 'harinas', name: 'Harinas & Molino', icon: '🍞', gradient: 'from-[#854d0e] to-[#fde047]', textColor: 'text-white' },
-      { id: 'yerba', name: 'Yerba Mate', icon: '🧉', gradient: 'from-[#15803d] to-[#4ade80]', textColor: 'text-white' },
-      { id: 'granja', name: 'Granja & Mieles', icon: '🍯', gradient: 'from-[#b45309] to-[#f59e0b]', textColor: 'text-white' },
-      { id: 'cacao', name: 'Cacao Silvestre', icon: '🍫', gradient: 'from-[#78350f] to-[#b45309]', textColor: 'text-white' },
-      { id: 'hongos', name: 'Hongos del Delta', icon: '🍄', gradient: 'from-[#991b1b] to-[#f87171]', textColor: 'text-white' },
-      { id: 'frutas', name: 'Frutas Agroecológicas', icon: '🍓', gradient: 'from-[#be123c] to-[#fb7185]', textColor: 'text-white' },
-      { id: 'verduras', name: 'Verduras & Huerta', icon: '🥬', gradient: 'from-[#15803d] to-[#86efac]', textColor: 'text-white' }
+      { 
+        id: 'todos', 
+        name: 'Ver Todo', 
+        icon: '🌱', 
+        bgStyle: 'linear-gradient(135deg, #008744 0%, #009e4f 55%, #00b05b 100%)',
+        textColor: 'text-white' 
+      },
+      { 
+        id: 'granos', 
+        name: 'Granos & Legumbres', 
+        icon: '🌾', 
+        bgStyle: 'linear-gradient(135deg, #e69216 0%, #bc9664 55%, #9e8d78 100%)',
+        textColor: 'text-white' 
+      },
+      { 
+        id: 'cacao', 
+        name: 'Cacao Silvestre', 
+        icon: '🍫', 
+        bgStyle: 'linear-gradient(135deg, #71381b 0%, #895d43 55%, #8e7b6d 100%)',
+        textColor: 'text-white' 
+      },
+      { 
+        id: 'yerba', 
+        name: 'Yerba Mate', 
+        icon: '🌿', 
+        bgStyle: 'linear-gradient(135deg, #1b7a3d 0%, #3e8156 55%, #689278 100%)',
+        textColor: 'text-white' 
+      },
+      { 
+        id: 'aceite', 
+        name: 'Aceite Oliva', 
+        icon: '🫒', 
+        bgStyle: 'linear-gradient(135deg, #577327 0%, #6e7f45 55%, #888f6b 100%)',
+        textColor: 'text-white' 
+      },
+      { 
+        id: 'hongos', 
+        name: 'Hongos del Delta', 
+        icon: '🍄', 
+        bgStyle: 'linear-gradient(135deg, #991e24 0%, #9a494d 55%, #a8686d 100%)',
+        textColor: 'text-white' 
+      },
+      { 
+        id: 'granja', 
+        name: 'Granja & Mieles', 
+        icon: '🥚', 
+        bgStyle: 'linear-gradient(135deg, #d36b10 0%, #b87b3e 55%, #a38262 100%)',
+        textColor: 'text-white' 
+      },
+      { 
+        id: 'harinas', 
+        name: 'Harinas & Molino', 
+        icon: '🍞', 
+        bgStyle: 'linear-gradient(135deg, #b88628 0%, #a28352 55%, #94826b 100%)',
+        textColor: 'text-white' 
+      },
+      { 
+        id: 'frutas', 
+        name: 'Frutas Agroecológicas', 
+        icon: '🍓', 
+        bgStyle: 'linear-gradient(135deg, #c2185b 0%, #b44a73 55%, #9e6d7d 100%)',
+        textColor: 'text-white' 
+      },
+      { 
+        id: 'verduras', 
+        name: 'Verduras & Huerta', 
+        icon: '🥬', 
+        bgStyle: 'linear-gradient(135deg, #2e7d32 0%, #4c8556 55%, #6d9374 100%)',
+        textColor: 'text-white' 
+      }
     ];
 
     const DEFAULT_MASTER_CATALOG = [
@@ -1845,12 +1909,14 @@
           <button 
             type="button" 
             onclick="selectVrdeCategory('${cat.id}')"
-            class="vrde-cat-card relative rounded-2xl p-4 text-left border-2 overflow-hidden cursor-pointer flex flex-col justify-between min-h-[72px] sm:min-h-[82px] bg-gradient-to-br ${cat.gradient} ${cat.textColor} ${isActive ? 'active' : 'border-transparent'}"
+            style="background: ${cat.bgStyle};"
+            class="vrde-cat-card rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-3 min-h-[46px] sm:min-h-[52px] text-left overflow-hidden cursor-pointer flex items-center justify-between relative group ${isActive ? 'active' : ''}"
+            title="Categoría: ${cat.name}"
           >
-            <span class="font-heading font-black text-xs sm:text-sm tracking-tight leading-snug drop-shadow-xs">
+            <span class="font-heading font-black text-sm sm:text-[15px] lg:text-base text-white tracking-tight leading-snug drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] pr-7 select-none">
               ${cat.name}
             </span>
-            <span class="text-xl sm:text-2xl self-end mt-1 filter drop-shadow-xs">
+            <span class="absolute right-2.5 bottom-1 text-base sm:text-lg filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)] pointer-events-none select-none transition-transform group-hover:scale-110">
               ${cat.icon}
             </span>
           </button>
