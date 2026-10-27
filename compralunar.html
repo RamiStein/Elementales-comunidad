@@ -894,13 +894,13 @@
             </div>
           </div>
 
-          <!-- Notificación de comprobante y confirmación por correo -->
+          <!-- Notificación de comprobante y confirmación -->
           <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-start gap-2.5 text-xs text-emerald-950">
-            <span class="text-base shrink-0">✉️</span>
-            <div>
-              <p class="font-bold">Comprobante y confirmación digital</p>
+            <span class="text-base shrink-0">📋</span>
+            <div class="flex-1">
+              <p class="font-bold">Comprobante y Pedido Registrado</p>
               <p class="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
-                Enviamos el detalle de tu orden a <strong id="success-email-notice" class="underline"></strong>.
+                Tu orden <strong id="success-email-notice" class="font-mono"></strong> quedó agendada en el sistema. Para confirmar el retiro con el coordinador del nodo, completá el envío por WhatsApp con el botón de abajo.
               </p>
             </div>
           </div>
@@ -932,6 +932,16 @@
             >
               <span>📲</span>
               <span>Guardar / Enviarme Copia a mi WhatsApp</span>
+            </button>
+
+            <button 
+              type="button" 
+              id="success-btn-email-copy"
+              onclick="sendOrderToMyEmail()"
+              class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-stone-50 active:scale-98 text-stone-700 border border-stone-300 font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 font-heading"
+            >
+              <span>✉️</span>
+              <span>Guardar / Enviarme Copia a mi Email</span>
             </button>
 
             <button 
@@ -2561,8 +2571,10 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
       const emailLabel = document.getElementById('success-email-label');
       if (emailLabel) emailLabel.textContent = email;
 
+      lastCompletedOrderData = newOrder;
+
       const emailNotice = document.getElementById('success-email-notice');
-      if (emailNotice) emailNotice.textContent = email;
+      if (emailNotice) emailNotice.textContent = `#${newOrder.id}`;
 
       const addressLabel = document.getElementById('success-address-label');
       if (addressLabel) addressLabel.textContent = fullAddressStr;
@@ -2633,10 +2645,36 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
       }
     }
 
+    let lastCompletedOrderData = null;
+
     function sendOrderToMyOwnWhatsApp() {
       if (currentOrderClientWaUrl) {
         window.open(currentOrderClientWaUrl, '_blank');
       }
+    }
+
+    function sendOrderToMyEmail() {
+      if (!lastCompletedOrderData) return;
+      const o = lastCompletedOrderData;
+      const subject = encodeURIComponent(`Comprobante de Pedido #${o.id} - Compra Lunar Elementales`);
+      const body = encodeURIComponent(
+`Hola ${o.clientName},
+
+Este es el comprobante de tu pedido #${o.id} en la Compra Lunar Elementales:
+
+• Punto de Retiro: ${o.nodoNombre} (${o.deliveryDate})
+• Domicilio registrado: ${o.clientAddress ? o.clientAddress.full : ''}
+• Medio de Pago: ${o.paymentMethod}
+${o.notes ? `• Notas: ${o.notes}\n` : ''}
+Alimentos Solicitados:
+${o.items.map(i => `• ${i.qty}x ${i.name} -> ${i.total.toLocaleString('es-AR')}`).join('\n')}
+
+TOTAL A PAGAR: ${o.total.toLocaleString('es-AR')}
+
+Para cualquier consulta o retiro, coordiná directamente con el responsable del nodo.
+Elementales Comunidad · https://elementales.store`
+      );
+      window.open(`mailto:${o.clientEmail}?subject=${subject}&body=${body}`, '_blank');
     }
 
     function sendLunarConfirmationEmail(orderData) {

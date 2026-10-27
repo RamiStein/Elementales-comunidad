@@ -357,6 +357,28 @@
         <!-- Filtros desplegables y Botones de Acción -->
         <div class="flex flex-wrap items-center gap-2">
           
+          <!-- Filtro por Carpeta / Ciclo Lunar (NUEVO) -->
+          <div class="flex items-center gap-1 bg-amber-50/70 p-1 rounded-xl border border-amber-200">
+            <select 
+              id="admin-order-folder-filter" 
+              onchange="onAdminFolderFilterChange(this.value)"
+              class="bg-transparent text-xs font-black text-amber-950 px-2 py-1 outline-none cursor-pointer hover:text-amber-800 transition-colors"
+              title="Filtrar por Carpeta de Archivo o Ciclo Lunar"
+            >
+              <option value="active">📥 Pedidos Activos</option>
+              <option value="all">🗂️ Todos los Pedidos</option>
+            </select>
+            <button 
+              type="button" 
+              onclick="openOrderFoldersModal()" 
+              class="px-2 py-1 rounded-lg bg-amber-200/80 hover:bg-amber-300 text-amber-950 text-xs font-black transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+              title="Gestionar y crear carpetas de archivo"
+            >
+              <span>📁</span>
+              <span class="hidden sm:inline">Carpetas</span>
+            </button>
+          </div>
+
           <!-- Filtro por Tipo de Compra (Semanal vs Lunar) -->
           <select 
             id="admin-order-type-filter" 
@@ -428,13 +450,39 @@
 
       </div>
 
+      <!-- Banner de Carpeta Archivada Activa -->
+      <div id="admin-folder-active-banner" class="hidden"></div>
+
+      <!-- Barra de Acciones Masivas (Pedidos Seleccionados) -->
+      <div id="admin-orders-bulk-bar" class="hidden bg-stone-900 text-white rounded-2xl p-3 px-4 flex flex-wrap items-center justify-between gap-3 shadow-lg text-xs font-bold animate-fade-in">
+        <div class="flex items-center gap-2.5">
+          <span id="bulk-selected-count" class="bg-emerald-500 text-stone-950 px-2 py-0.5 rounded-full font-mono font-black text-xs">0</span>
+          <span>pedidos seleccionados</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="openArchiveBulkModal()" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black cursor-pointer transition-all flex items-center gap-1.5 shadow-xs">
+            <span>📁</span>
+            <span>Archivar en Carpeta...</span>
+          </button>
+          <button type="button" onclick="bulkUnarchiveSelected()" class="px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 cursor-pointer transition-all">
+            Mover a Activos
+          </button>
+          <button type="button" onclick="clearSelectedOrders()" class="text-stone-400 hover:text-white px-2 py-1 cursor-pointer">
+            Desmarcar
+          </button>
+        </div>
+      </div>
+
       <!-- Tabla de Pedidos -->
       <div class="bg-white border border-stone-200 rounded-3xl overflow-hidden shadow-xs">
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-left border-collapse min-w-[760px]">
             <thead>
               <tr class="bg-stone-50 border-b border-stone-200 text-[10px] font-black uppercase tracking-wider text-stone-500">
-                <th class="py-3.5 px-4"># ID</th>
+                <th class="py-3.5 px-3 w-8 text-center">
+                  <input type="checkbox" id="select-all-orders-chk" onchange="toggleSelectAllOrders(this.checked)" class="rounded border-stone-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer w-4 h-4" title="Seleccionar todos" />
+                </th>
+                <th class="py-3.5 px-3"># ID</th>
                 <th class="py-3.5 px-3">Fecha</th>
                 <th class="py-3.5 px-4">Cliente & Contacto</th>
                 <th class="py-3.5 px-4">Punto de Retiro</th>
@@ -442,7 +490,7 @@
                 <th class="py-3.5 px-3">Total</th>
                 <th class="py-3.5 px-3">Pago</th>
                 <th class="py-3.5 px-4">Estado</th>
-                <th class="py-3.5 px-4 text-right">Contacto</th>
+                <th class="py-3.5 px-4 text-right">Contacto & Archivo</th>
               </tr>
             </thead>
             <tbody id="admin-orders-tbody" class="divide-y divide-stone-100">
@@ -1196,6 +1244,116 @@
     </div>
 
   </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: GESTOR DE CARPETAS Y CICLOS DE ARCHIVO                               -->
+  <!-- ========================================================================= -->
+  <div id="modal-order-folders" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      <div class="p-5 sm:p-6 border-b border-stone-200 bg-amber-50/50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-900 border border-amber-300 flex items-center justify-center text-xl font-bold shadow-2xs">
+            📁
+          </div>
+          <div>
+            <h3 class="font-heading font-black text-base text-stone-900">Carpetas & Ciclos de Archivo</h3>
+            <p class="text-xs text-stone-500">Agrupá y archivá pedidos por ciclo lunar, estación o período</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeOrderFoldersModal()" class="text-stone-400 hover:text-stone-700 text-xl font-bold p-1 cursor-pointer">✕</button>
+      </div>
+
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-5 text-xs flex-1">
+        <!-- Formulario Crear Carpeta -->
+        <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-3">
+          <label class="font-black text-stone-800 block text-xs">Crear Nueva Carpeta / Ciclo Lunar</label>
+          <div class="flex items-center gap-2">
+            <input 
+              type="text" 
+              id="new-folder-name-input" 
+              placeholder="ej: Luna de Tauro, Ciclo Noviembre 2026..." 
+              class="flex-1 bg-white border border-stone-300 rounded-xl px-3 py-2 text-xs font-medium outline-none focus:border-amber-600 shadow-2xs"
+              onkeydown="if(event.key === 'Enter'){ createOrderFolder(); }"
+            />
+            <button 
+              type="button" 
+              onclick="createOrderFolder()" 
+              class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs transition-all cursor-pointer shadow-xs whitespace-nowrap active:scale-95"
+            >
+              + Crear Carpeta
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de Carpetas Existentes -->
+        <div>
+          <h4 class="font-black text-stone-700 mb-2.5 uppercase tracking-wider text-[11px]">Carpetas Creadas</h4>
+          <div id="order-folders-list" class="space-y-2.5">
+            <!-- Renderizado dinámicamente -->
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-stone-200 bg-stone-50 flex items-center justify-end">
+        <button type="button" onclick="closeOrderFoldersModal()" class="px-4 py-2 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold text-xs cursor-pointer">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ARCHIVAR PEDIDOS EN CARPETA (SELECCIÓN SIMPLE O MASIVA)             -->
+  <!-- ========================================================================= -->
+  <div id="modal-archive-orders" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-md w-full text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      <div class="p-5 border-b border-stone-200 bg-amber-50/50 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">📁</span>
+          <h3 class="font-black text-sm text-stone-900">Archivar en Carpeta</h3>
+        </div>
+        <button type="button" onclick="closeArchiveOrdersModal()" class="text-stone-400 hover:text-stone-700 font-bold p-1 cursor-pointer">✕</button>
+      </div>
+
+      <div class="p-5 space-y-4 text-xs">
+        <p class="text-stone-600" id="archive-modal-desc">
+          Seleccioná la carpeta de destino para archivar los pedidos:
+        </p>
+
+        <div class="space-y-1.5">
+          <label class="font-bold text-stone-700 block text-[11px] uppercase tracking-wider">Elegir Carpeta Existente</label>
+          <select id="archive-modal-folder-select" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2.5 font-bold text-xs text-stone-800 outline-none focus:border-amber-600 shadow-2xs cursor-pointer">
+            <!-- Opciones inyectadas dinámicamente -->
+          </select>
+        </div>
+
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-stone-200"></div>
+          <span class="flex-shrink mx-3 text-stone-400 text-[10px] uppercase font-bold">O crear una nueva</span>
+          <div class="flex-grow border-t border-stone-200"></div>
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="font-bold text-stone-700 block text-[11px] uppercase tracking-wider">Nueva Carpeta</label>
+          <input 
+            type="text" 
+            id="archive-modal-new-folder" 
+            placeholder="ej: Luna de Tauro" 
+            class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-xs font-medium outline-none focus:border-amber-600 shadow-2xs"
+          />
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-stone-200 bg-stone-50 flex items-center justify-end gap-2">
+        <button type="button" onclick="closeArchiveOrdersModal()" class="px-4 py-2 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold text-xs cursor-pointer">
+          Cancelar
+        </button>
+        <button type="button" onclick="confirmArchiveOrders()" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs cursor-pointer shadow-xs active:scale-95">
+          Confirmar y Archivar
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ========================================================================= -->
   <!-- MODAL: COMPILADO DE PEDIDOS POR ALIMENTO                                   -->

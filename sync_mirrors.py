@@ -16,4 +16,12 @@ for t in targets:
     shutil.copy2(source, t)
     print(f"Copied to: {t}")
 
+# Mirror para gestión elemental
+source_gestion = r"C:\Users\Rami\.gemini\antigravity\scratch\elementales-feria\gestionelemental.html"
+target_gestion = r"C:\Users\Rami\.gemini\antigravity\scratch\elementales-feria\gestionelemental\index.html"
+if os.path.exists(source_gestion):
+    os.makedirs(os.path.dirname(target_gestion), exist_ok=True)
+    shutil.copy2(source_gestion, target_gestion)
+    print(f"Copied to: {target_gestion}")
+
 print("Sync completed successfully!")
