@@ -84,7 +84,7 @@ const VrdeSync = {
           priceSocio: 5900,
           priceRetail: 6900,
           emoji: '🧉',
-          img: 'public/assets/products/yerba_grapia_1k.webp',
+          img: 'public/assets/products/yerba_grapia_1kg.jpg',
           enabled: true,
           esCajon: false
         },
@@ -99,7 +99,7 @@ const VrdeSync = {
           priceSocio: 11400,
           priceRetail: 13200,
           emoji: '🧉',
-          img: 'public/assets/products/yerba_grapia_2k.webp',
+          img: 'public/assets/products/yerba_grapia_2kg.jpg',
           enabled: true,
           esCajon: false
         },
@@ -114,7 +114,7 @@ const VrdeSync = {
           priceSocio: 4800,
           priceRetail: 5900,
           emoji: '🍚',
-          img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=400&q=80',
+          img: 'public/assets/products/arroz_caupolican.jpg',
           enabled: true,
           esCajon: false
         },
@@ -130,7 +130,7 @@ const VrdeSync = {
           priceRetail: 19700,
           priceDistribuidor: 18100,
           emoji: '🫒',
-          img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=400&q=80',
+          img: 'public/assets/products/aceite_lorenzo_cabrera.jpg',
           enabled: true,
           esCajon: false
         },
@@ -146,7 +146,7 @@ const VrdeSync = {
           priceRetail: 37500,
           priceDistribuidor: 34500,
           emoji: '🫒',
-          img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=400&q=80',
+          img: 'public/assets/products/aceite_lorenzo_cabrera.jpg',
           enabled: true,
           esCajon: false
         },
@@ -162,7 +162,7 @@ const VrdeSync = {
           priceRetail: 89000,
           priceDistribuidor: 81900,
           emoji: '🫒',
-          img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=400&q=80',
+          img: 'public/assets/products/aceite_lorenzo_cabrera.jpg',
           enabled: true,
           esCajon: false
         }
