@@ -193,13 +193,13 @@
           <span class="hidden sm:inline">Ingresar</span>
         </a>
 
-        <!-- Botón de Pedido en Cabecera (Acceso directo para reabrir y confirmar) -->
+        <!-- Botón de Pedido en Cabecera (Acceso directo para abrir y confirmar pedido) -->
         <button 
           id="header-lunar-cart" 
           type="button" 
-          onclick="reopenFloatingCart()" 
+          onclick="openLunarCheckoutModal()" 
           class="hidden items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-stone-900 hover:bg-emerald-600 text-white shadow-sm hover:shadow transition-all cursor-pointer text-xs font-bold font-mono group"
-          title="Ver y cerrar pedido"
+          title="Ver y confirmar pedido"
         >
           <span class="text-base group-hover:scale-110 transition-transform">🧺</span>
           <span id="header-cart-price" class="text-emerald-400 group-hover:text-white font-mono font-black">$0</span>
@@ -657,48 +657,11 @@
           type="button" 
           onclick="hideFloatingCart(event)" 
           class="w-9 h-9 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white flex items-center justify-center text-sm font-bold transition-all cursor-pointer shrink-0"
-          title="Guardar al costado"
+          title="Ocultar aviso"
         >
           ✕
         </button>
       </div>
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- DOCK LATERAL / MINIMIZADO: BOTÓN FLOTANTE PARA REABRIR PEDIDO Y CERRAR    -->
-  <!-- ========================================================================= -->
-  <div 
-    id="minimized-lunar-cart" 
-    class="hidden fixed bottom-5 right-4 sm:right-6 z-40 animate-fade-in"
-  >
-    <div 
-      onclick="reopenFloatingCart()"
-      class="group flex items-center gap-2.5 sm:gap-3 bg-stone-900/95 hover:bg-stone-950 backdrop-blur-md text-white px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full shadow-2xl border-2 border-emerald-500 hover:border-emerald-400 transition-all cursor-pointer hover:scale-105 active:scale-95"
-      title="Hacer clic para reabrir tu pedido y confirmar compra"
-    >
-      <div class="relative flex items-center justify-center">
-        <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🧺</span>
-        <span 
-          id="minimized-cart-count" 
-          class="absolute -top-2 -right-2 bg-emerald-500 text-stone-950 font-black text-[10px] sm:text-xs w-5 h-5 rounded-full flex items-center justify-center shadow-md border-2 border-stone-900"
-        >
-          0
-        </span>
-      </div>
-      <div class="text-left">
-        <span class="block text-[9px] sm:text-[10px] text-stone-300 font-bold uppercase tracking-wider leading-none">Tu Pedido</span>
-        <span id="minimized-cart-price" class="block font-mono font-black text-xs sm:text-sm text-emerald-400 leading-tight">$0</span>
-      </div>
-      <button 
-        type="button" 
-        onclick="event.stopPropagation(); openLunarCheckoutModal();"
-        class="ml-1 px-3 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs transition-all flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
-        title="Cerrar y confirmar pedido ahora"
-      >
-        <span>Cerrar Pedido</span>
-        <span>↗</span>
-      </button>
     </div>
   </div>
 
@@ -2212,18 +2175,11 @@
     }
 
     function reopenFloatingCart() {
-      isFloatingCartDismissed = false;
-      updateFloatingCart();
-      const floatingEl = document.getElementById('floating-lunar-cart');
-      if (floatingEl) {
-        floatingEl.classList.remove('hidden');
-        floatingEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
+      openLunarCheckoutModal();
     }
 
     function updateFloatingCart() {
       const floatingEl = document.getElementById('floating-lunar-cart');
-      const minimizedEl = document.getElementById('minimized-lunar-cart');
       const headerCartEl = document.getElementById('header-lunar-cart');
 
       const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
@@ -2238,10 +2194,6 @@
       // Si no estamos en la tienda o no hay items o hay un modal abierto: ocultar ambos
       if (currentLunarView !== 'store' || totalUnits === 0 || isAnyModalOpen) {
         if (floatingEl) floatingEl.classList.add('hidden');
-        if (minimizedEl) {
-          minimizedEl.classList.add('hidden');
-          minimizedEl.classList.remove('flex');
-        }
         if (headerCartEl) {
           headerCartEl.classList.add('hidden');
           headerCartEl.classList.remove('inline-flex');
@@ -2277,13 +2229,7 @@
         priceLabel.textContent = formattedPrice;
       }
 
-      // 2. Actualizar botón lateral minimizado (dock)
-      const minCountLabel = document.getElementById('minimized-cart-count');
-      if (minCountLabel) minCountLabel.textContent = totalUnits;
-      const minPriceLabel = document.getElementById('minimized-cart-price');
-      if (minPriceLabel) minPriceLabel.textContent = formattedPrice;
-
-      // 3. Actualizar widget de cabecera
+      // 2. Actualizar widget de cabecera
       const headerPriceLabel = document.getElementById('header-cart-price');
       if (headerPriceLabel) headerPriceLabel.textContent = formattedPrice;
       const headerCountLabel = document.getElementById('header-cart-count');
@@ -2294,19 +2240,11 @@
         headerCartEl.classList.add('inline-flex');
       }
 
-      // 4. Alternar visibilidad según si se ocultó o no el pop up
+      // 3. Alternar visibilidad de la barra emergente según si el usuario la cerró
       if (isFloatingCartDismissed) {
         if (floatingEl) floatingEl.classList.add('hidden');
-        if (minimizedEl) {
-          minimizedEl.classList.remove('hidden');
-          minimizedEl.classList.add('flex');
-        }
       } else {
         if (floatingEl) floatingEl.classList.remove('hidden');
-        if (minimizedEl) {
-          minimizedEl.classList.add('hidden');
-          minimizedEl.classList.remove('flex');
-        }
       }
     }
 
