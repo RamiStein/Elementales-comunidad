@@ -2209,8 +2209,8 @@
         !document.getElementById('modal-producer-story')?.classList.contains('hidden') ||
         !document.getElementById('modal-circulos-info')?.classList.contains('hidden');
 
-      // Si no estamos en la tienda o no hay items o hay un modal abierto: ocultar ambos
-      if (currentLunarView !== 'store' || totalUnits === 0 || isAnyModalOpen) {
+      // Si no estamos en la tienda o no hay items: ocultar ambos
+      if (currentLunarView !== 'store' || totalUnits === 0) {
         if (floatingEl) floatingEl.classList.add('hidden');
         if (headerCartEl) {
           headerCartEl.classList.add('hidden');
@@ -2247,7 +2247,7 @@
         priceLabel.textContent = formattedPrice;
       }
 
-      // 2. Actualizar widget de cabecera
+      // 2. Widget de cabecera: SIEMPRE visible mientras haya items en la canasta
       const headerPriceLabel = document.getElementById('header-cart-price');
       if (headerPriceLabel) headerPriceLabel.textContent = formattedPrice;
       const headerCountLabel = document.getElementById('header-cart-count');
@@ -2258,11 +2258,13 @@
         headerCartEl.classList.add('inline-flex');
       }
 
-      // 3. Alternar visibilidad de la barra emergente según si el usuario la cerró
-      if (isFloatingCartDismissed) {
-        if (floatingEl) floatingEl.classList.add('hidden');
-      } else {
-        if (floatingEl) floatingEl.classList.remove('hidden');
+      // 3. Barra emergente inferior: se oculta si hay un modal abierto o si el usuario la cerró con la X
+      if (floatingEl) {
+        if (isFloatingCartDismissed || isAnyModalOpen) {
+          floatingEl.classList.add('hidden');
+        } else {
+          floatingEl.classList.remove('hidden');
+        }
       }
     }
 
@@ -2286,9 +2288,9 @@
     }
 
     function closeProducerStoryModal() {
+      document.getElementById('modal-producer-story')?.classList.add('hidden');
       isFloatingCartDismissed = false;
       updateFloatingCart();
-      document.getElementById('modal-producer-story')?.classList.add('hidden');
     }
 
     function openCirculosInfoModal() {
@@ -2297,9 +2299,9 @@
     }
 
     function closeCirculosInfoModal() {
+      document.getElementById('modal-circulos-info')?.classList.add('hidden');
       isFloatingCartDismissed = false;
       updateFloatingCart();
-      document.getElementById('modal-circulos-info')?.classList.add('hidden');
     }
 
     function removeItemFromCart(prodId) {
@@ -2406,10 +2408,10 @@
     }
 
     function closeLunarCheckoutModal() {
-      isFloatingCartDismissed = false;
-      updateFloatingCart();
       const modal = document.getElementById('modal-lunar-checkout');
       if (modal) modal.classList.add('hidden');
+      isFloatingCartDismissed = false;
+      updateFloatingCart();
       // Dejar preparado el formulario para la próxima apertura
       setTimeout(() => {
         document.getElementById('lunar-checkout-view-form')?.classList.remove('hidden');
