@@ -132,6 +132,19 @@
           onerror="this.src='public/assets/brand/comunidad_emblem_clean.png'"
         />
       </a>
+
+      <!-- Botón de Pedido en Cabecera (Acceso directo para reabrir y confirmar) -->
+      <button 
+        id="header-lunar-cart" 
+        type="button" 
+        onclick="reopenFloatingCart()" 
+        class="hidden items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-stone-900 hover:bg-emerald-600 text-white shadow-sm hover:shadow transition-all cursor-pointer text-xs font-bold font-mono group"
+        title="Ver y cerrar pedido"
+      >
+        <span class="text-base group-hover:scale-110 transition-transform">🧺</span>
+        <span id="header-cart-price" class="text-emerald-400 group-hover:text-white font-mono font-black">$0</span>
+        <span id="header-cart-count" class="px-2 py-0.5 rounded-full bg-emerald-500/20 group-hover:bg-white/20 text-emerald-300 group-hover:text-white text-[11px] font-bold font-sans">0 un.</span>
+      </button>
     </div>
   </header>
 
@@ -582,11 +595,48 @@
           type="button" 
           onclick="hideFloatingCart(event)" 
           class="w-9 h-9 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white flex items-center justify-center text-sm font-bold transition-all cursor-pointer shrink-0"
-          title="Guardar / Ocultar resumen"
+          title="Guardar al costado"
         >
           ✕
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- DOCK LATERAL / MINIMIZADO: BOTÓN FLOTANTE PARA REABRIR PEDIDO Y CERRAR    -->
+  <!-- ========================================================================= -->
+  <div 
+    id="minimized-lunar-cart" 
+    class="hidden fixed bottom-5 right-4 sm:right-6 z-40 animate-fade-in"
+  >
+    <div 
+      onclick="reopenFloatingCart()"
+      class="group flex items-center gap-2.5 sm:gap-3 bg-stone-900/95 hover:bg-stone-950 backdrop-blur-md text-white px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-full shadow-2xl border-2 border-emerald-500 hover:border-emerald-400 transition-all cursor-pointer hover:scale-105 active:scale-95"
+      title="Hacer clic para reabrir tu pedido y confirmar compra"
+    >
+      <div class="relative flex items-center justify-center">
+        <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🧺</span>
+        <span 
+          id="minimized-cart-count" 
+          class="absolute -top-2 -right-2 bg-emerald-500 text-stone-950 font-black text-[10px] sm:text-xs w-5 h-5 rounded-full flex items-center justify-center shadow-md border-2 border-stone-900"
+        >
+          0
+        </span>
+      </div>
+      <div class="text-left">
+        <span class="block text-[9px] sm:text-[10px] text-stone-300 font-bold uppercase tracking-wider leading-none">Tu Pedido</span>
+        <span id="minimized-cart-price" class="block font-mono font-black text-xs sm:text-sm text-emerald-400 leading-tight">$0</span>
+      </div>
+      <button 
+        type="button" 
+        onclick="event.stopPropagation(); openLunarCheckoutModal();"
+        class="ml-1 px-3 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs transition-all flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
+        title="Cerrar y confirmar pedido ahora"
+      >
+        <span>Cerrar Pedido</span>
+        <span>↗</span>
+      </button>
     </div>
   </div>
 
@@ -1975,40 +2025,46 @@
         e.stopPropagation();
       }
       isFloatingCartDismissed = true;
+      updateFloatingCart();
+    }
+
+    function reopenFloatingCart() {
+      isFloatingCartDismissed = false;
+      updateFloatingCart();
       const floatingEl = document.getElementById('floating-lunar-cart');
-      if (floatingEl) floatingEl.classList.add('hidden');
+      if (floatingEl) {
+        floatingEl.classList.remove('hidden');
+        floatingEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
     }
 
     function updateFloatingCart() {
       const floatingEl = document.getElementById('floating-lunar-cart');
-      if (!floatingEl) return;
+      const minimizedEl = document.getElementById('minimized-lunar-cart');
+      const headerCartEl = document.getElementById('header-lunar-cart');
 
-      // Ocultar siempre si no estamos en la vista de la tienda del nodo o si fue guardado/cerrado
-      if (currentLunarView !== 'store' || isFloatingCartDismissed) {
-        floatingEl.classList.add('hidden');
-        return;
-      }
+      const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
+      const totalUnits = entries.reduce((acc, [_, qty]) => acc + qty, 0);
 
-      // Ocultar también si hay modales abiertos
+      // Modales abiertos
       const isAnyModalOpen = 
         !document.getElementById('modal-lunar-checkout')?.classList.contains('hidden') ||
         !document.getElementById('modal-producer-story')?.classList.contains('hidden') ||
         !document.getElementById('modal-circulos-info')?.classList.contains('hidden');
 
-      if (isAnyModalOpen) {
-        floatingEl.classList.add('hidden');
+      // Si no estamos en la tienda o no hay items o hay un modal abierto: ocultar ambos
+      if (currentLunarView !== 'store' || totalUnits === 0 || isAnyModalOpen) {
+        if (floatingEl) floatingEl.classList.add('hidden');
+        if (minimizedEl) {
+          minimizedEl.classList.add('hidden');
+          minimizedEl.classList.remove('flex');
+        }
+        if (headerCartEl) {
+          headerCartEl.classList.add('hidden');
+          headerCartEl.classList.remove('inline-flex');
+        }
         return;
       }
-
-      const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
-      const totalUnits = entries.reduce((acc, [_, qty]) => acc + qty, 0);
-
-      if (totalUnits === 0) {
-        floatingEl.classList.add('hidden');
-        return;
-      }
-
-      floatingEl.classList.remove('hidden');
 
       let totalPrice = 0;
       entries.forEach(([id, qty]) => {
@@ -2019,6 +2075,9 @@
         }
       });
 
+      const formattedPrice = `$${totalPrice.toLocaleString('es-AR')}`;
+
+      // 1. Actualizar textos de la barra emergente grande
       const itemsLabel = document.getElementById('cart-total-items-label');
       if (itemsLabel) {
         if (entries.length === 1) {
@@ -2032,7 +2091,39 @@
 
       const priceLabel = document.getElementById('cart-total-price-label');
       if (priceLabel) {
-        priceLabel.textContent = `$${totalPrice.toLocaleString('es-AR')}`;
+        priceLabel.textContent = formattedPrice;
+      }
+
+      // 2. Actualizar botón lateral minimizado (dock)
+      const minCountLabel = document.getElementById('minimized-cart-count');
+      if (minCountLabel) minCountLabel.textContent = totalUnits;
+      const minPriceLabel = document.getElementById('minimized-cart-price');
+      if (minPriceLabel) minPriceLabel.textContent = formattedPrice;
+
+      // 3. Actualizar widget de cabecera
+      const headerPriceLabel = document.getElementById('header-cart-price');
+      if (headerPriceLabel) headerPriceLabel.textContent = formattedPrice;
+      const headerCountLabel = document.getElementById('header-cart-count');
+      if (headerCountLabel) headerCountLabel.textContent = `${totalUnits} un.`;
+
+      if (headerCartEl) {
+        headerCartEl.classList.remove('hidden');
+        headerCartEl.classList.add('inline-flex');
+      }
+
+      // 4. Alternar visibilidad según si se ocultó o no el pop up
+      if (isFloatingCartDismissed) {
+        if (floatingEl) floatingEl.classList.add('hidden');
+        if (minimizedEl) {
+          minimizedEl.classList.remove('hidden');
+          minimizedEl.classList.add('flex');
+        }
+      } else {
+        if (floatingEl) floatingEl.classList.remove('hidden');
+        if (minimizedEl) {
+          minimizedEl.classList.add('hidden');
+          minimizedEl.classList.remove('flex');
+        }
       }
     }
 
