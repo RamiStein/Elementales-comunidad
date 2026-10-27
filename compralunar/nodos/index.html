@@ -183,7 +183,7 @@
         </a>
       </div>
 
-      <!-- DERECHA: BOTÓN DE LOGIN + BOTÓN DE CARRITO CHECKOUT -->
+      <!-- DERECHA: BOTÓN DE LOGIN -->
       <div class="flex items-center gap-2 sm:gap-3 z-10">
         <!-- Log in -->
         <a 
@@ -194,19 +194,6 @@
           <span class="text-sm">👤</span>
           <span class="hidden sm:inline">Ingresar</span>
         </a>
-
-        <!-- Botón de Pedido en Cabecera (Acceso directo para abrir y confirmar pedido) -->
-        <button 
-          id="header-lunar-cart" 
-          type="button" 
-          onclick="openLunarCheckoutModal()" 
-          class="hidden items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-stone-900 hover:bg-emerald-600 text-white shadow-sm hover:shadow transition-all cursor-pointer text-xs font-bold font-mono group"
-          title="Ver y confirmar pedido"
-        >
-          <span class="text-base group-hover:scale-110 transition-transform">🧺</span>
-          <span id="header-cart-price" class="text-emerald-400 group-hover:text-white font-mono font-black">$0</span>
-          <span id="header-cart-count" class="px-2 py-0.5 rounded-full bg-emerald-500/20 group-hover:bg-white/20 text-emerald-300 group-hover:text-white text-[11px] font-bold font-sans">0 un.</span>
-        </button>
       </div>
 
     </div>
@@ -537,20 +524,7 @@
 
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- BARRA FLOTANTE DE PEDIDO / CHECKOUT (ESTILO ELEMENTALES)                  -->
-  <!-- ========================================================================= -->
-  <div id="floating-lunar-cart" class="hidden lg:hidden fixed bottom-4 inset-x-4 max-w-xl mx-auto z-40 animate-bounce-subtle">
-    <div class="bg-stone-900 text-white rounded-3xl p-3.5 sm:p-4 shadow-2xl border-2 border-emerald-500/40 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow-md shrink-0">
-          🌕
-        </div>
-        <div>
-          <span id="cart-total-items-label" class="font-black text-xs sm:text-sm text-stone-200 block">0 alimentos</span>
-          <span id="cart-total-price-label" class="font-mono font-black text-lg sm:text-xl text-emerald-400 block">$0</span>
-        </div>
-      </div>
+  
 
       <div class="flex items-center gap-2">
         <button 
@@ -2591,92 +2565,14 @@
       return prod.prices.minorista;
     }
 
-    let isFloatingCartDismissed = false;
-
-    function hideFloatingCart(e) {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      isFloatingCartDismissed = true;
-      updateFloatingCart();
-    }
-
+    function hideFloatingCart() {}
     function reopenFloatingCart() {
       openLunarCheckoutModal();
     }
 
+    // Actualiza exclusivamente el espacio de "Tu Pedido"
     function updateFloatingCart() {
       renderSidebarCart();
-      const floatingEl = document.getElementById('floating-lunar-cart');
-      const headerCartEl = document.getElementById('header-lunar-cart');
-
-      const entries = Object.entries(lunarCart).filter(([_, qty]) => qty > 0);
-      const totalUnits = entries.reduce((acc, [_, qty]) => acc + qty, 0);
-
-      // Modales abiertos
-      const isAnyModalOpen = 
-        !document.getElementById('modal-lunar-checkout')?.classList.contains('hidden') ||
-        !document.getElementById('modal-producer-story')?.classList.contains('hidden') ||
-        !document.getElementById('modal-circulos-info')?.classList.contains('hidden');
-
-      // Si no estamos en la tienda o no hay items: ocultar ambos
-      if (currentLunarView !== 'store' || totalUnits === 0) {
-        if (floatingEl) floatingEl.classList.add('hidden');
-        if (headerCartEl) {
-          headerCartEl.classList.add('hidden');
-          headerCartEl.classList.remove('inline-flex');
-        }
-        return;
-      }
-
-      let totalPrice = 0;
-      entries.forEach(([id, qty]) => {
-        const prod = LUNAR_PRODUCTS.find(p => p.id === id);
-        if (prod) {
-          const unitPrice = getProductUnitPrice(prod, qty);
-          totalPrice += unitPrice * qty;
-        }
-      });
-
-      const formattedPrice = `$${totalPrice.toLocaleString('es-AR')}`;
-
-      // 1. Actualizar textos de la barra emergente grande
-      const itemsLabel = document.getElementById('cart-total-items-label');
-      if (itemsLabel) {
-        if (entries.length === 1) {
-          const singleProd = LUNAR_PRODUCTS.find(p => p.id === entries[0][0]);
-          const shortName = singleProd ? singleProd.name.split(' ')[0] : 'alimento';
-          itemsLabel.textContent = `${totalUnits} ${totalUnits === 1 ? 'unidad' : 'unidades'} de ${shortName}`;
-        } else {
-          itemsLabel.textContent = `${totalUnits} unidades en total (${entries.length} alimentos)`;
-        }
-      }
-
-      const priceLabel = document.getElementById('cart-total-price-label');
-      if (priceLabel) {
-        priceLabel.textContent = formattedPrice;
-      }
-
-      // 2. Widget de cabecera: SIEMPRE visible mientras haya items en la canasta
-      const headerPriceLabel = document.getElementById('header-cart-price');
-      if (headerPriceLabel) headerPriceLabel.textContent = formattedPrice;
-      const headerCountLabel = document.getElementById('header-cart-count');
-      if (headerCountLabel) headerCountLabel.textContent = `${totalUnits} un.`;
-
-      if (headerCartEl) {
-        headerCartEl.classList.remove('hidden');
-        headerCartEl.classList.add('inline-flex');
-      }
-
-      // 3. Barra emergente inferior: se oculta si hay un modal abierto o si el usuario la cerró con la X
-      if (floatingEl) {
-        if (isFloatingCartDismissed || isAnyModalOpen) {
-          floatingEl.classList.add('hidden');
-        } else {
-          floatingEl.classList.remove('hidden');
-        }
-      }
     }
 
     // =========================================================================
