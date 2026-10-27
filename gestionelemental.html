@@ -3301,48 +3301,71 @@
         enabled: true
       },
       {
-        id: 'lunar-yerba-barbaqua-2k',
-        name: 'Yerba Mate Agroecológica Secado Barbaquá (2 kg)',
-        cleanName: 'Yerba Mate Barbaquá',
-        subtitle: '24 meses de estacionamiento natural • Ahumado suave tradicional',
+        id: 'lunar-yerba-grapia-1k',
+        name: 'Yerba Mate Agroecológica Grápia Milenaria (1 kg)',
+        cleanName: 'Yerba Mate Grápia Milenaria (1 kg)',
+        subtitle: '24 meses de estacionamiento natural • Sabor suave, rendidor y sin acidez',
         categoryId: 'yerba',
         categoryName: 'Yerba Mate',
         provider: 'VRDE Club',
-        producer: 'Cooperativa Ybira Porá',
-        location: 'Oberá, Misiones',
-        practice: 'Monte nativo con sombra biológica sin pesticidas',
-        story: 'Elaborada por familias colonas con secanza lenta a leña noble y estacionamiento en depósito de madera.',
-        unit: 'paquete 2kg',
-        unitLabel: 'Paquete 2 kg',
+        producer: 'Cooperativa Agropecuaria El Colono',
+        location: 'Campo Ramón, Misiones',
+        practice: 'Monte nativo agroecológico sin pesticidas • Sin TACC',
+        story: 'Nacida bajo el amparo de la Grápia, árbol milenario de la selva misionera. Pequeños productores colonos de Campo Ramón elaboran esta yerba con 24 meses de estacionamiento natural en depósitos de madera noble, brindando un mate equilibrado, rendidor y sin provocar acidez.',
+        unit: 'paquete 1kg',
+        unitLabel: 'Paquete 1 kg (Papel Madera)',
         emoji: '🧉',
-        img: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80',
+        img: 'public/assets/products/yerba_grapia_1k.webp',
         prices: {
-          minorista: 6800,
-          mayorista: 5800,
+          minorista: 6900,
+          mayorista: 5900,
           distribuidor: 4900
         },
         enabled: true
       },
       {
-        id: 'lunar-yerba-sin-tacc-1k',
-        name: 'Yerba Mate Agroecológica Hoja Fina Sin TACC (1 kg)',
-        cleanName: 'Yerba Mate Sin TACC',
-        subtitle: 'Certificada sin TACC • Molienda especial baja en polvo',
+        id: 'lunar-yerba-grapia-2k',
+        name: 'Yerba Mate Agroecológica Grápia Milenaria (2 kg)',
+        cleanName: 'Yerba Mate Grápia Milenaria (2 kg)',
+        subtitle: 'Formato familiar 2 kg en papel madera • Cosecha selecta de monte nativo',
         categoryId: 'yerba',
         categoryName: 'Yerba Mate',
-        provider: 'Compra Lunar',
-        producer: 'Cooperativa Ybira Porá',
-        location: 'Misiones',
-        practice: 'Lavado con agua de manantial y molienda controlada',
-        story: 'Sabor suave, duradero y rendidor. Sin acidez ni fermentaciones industriales.',
-        unit: 'paquete 1kg',
-        unitLabel: 'Paquete 1 kg',
+        provider: 'VRDE Club',
+        producer: 'Cooperativa Agropecuaria El Colono',
+        location: 'Campo Ramón, Misiones',
+        practice: 'Estacionamiento natural de 2 años • Molienda equilibrada con palo',
+        story: 'Formato familiar de 2 kg en papel kraft ecológico. Ideal para mateadas comunitarias y familias, preservando intacto el aroma dulce y las propiedades antioxidantes naturales de la yerba.',
+        unit: 'paquete 2kg',
+        unitLabel: 'Paquete 2 kg (Familiar)',
         emoji: '🧉',
-        img: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80',
+        img: 'public/assets/products/yerba_grapia_2k.webp',
         prices: {
-          minorista: 4200,
-          mayorista: 3600,
-          distribuidor: 3100
+          minorista: 13200,
+          mayorista: 11400,
+          distribuidor: 9600
+        },
+        enabled: true
+      },
+      {
+        id: 'lunar-yerba-grapia-500g',
+        name: 'Yerba Mate Agroecológica Grápia Milenaria (500 g)',
+        cleanName: 'Yerba Mate Grápia Milenaria (500 g)',
+        subtitle: 'Paquete medio kilo en papel madera • Sabor noble, suave y sin acidez',
+        categoryId: 'yerba',
+        categoryName: 'Yerba Mate',
+        provider: 'VRDE Club',
+        producer: 'Cooperativa Agropecuaria El Colono',
+        location: 'Campo Ramón, Misiones',
+        practice: 'Agroecológica de Campo Ramón • Certificada Sin TACC',
+        story: 'Presentación tradicional de 500 g en envase de papel madera para disfrutar del auténtico sabor misionero de monte nativo con secanza a leña y reposo natural.',
+        unit: 'paquete 500g',
+        unitLabel: 'Paquete 500 g',
+        emoji: '🧉',
+        img: 'public/assets/products/yerba_grapia_500g.webp',
+        prices: {
+          minorista: 3900,
+          mayorista: 3400,
+          distribuidor: 2900
         },
         enabled: true
       },
@@ -3528,6 +3551,22 @@
         if (!hasLorenzo) {
           const lorenzoProds = DEFAULT_MASTER_CATALOG.filter(p => p.id && p.id.includes('lorenzo'));
           adminProducts.unshift(...lorenzoProds);
+          saveAdminMasterCatalog();
+        }
+
+        // Asegurar sincronización de Grápia Milenaria y remoción de yerba obsoleta
+        const hasOldYerba = adminProducts.some(p => 
+          (p.id && (p.id.includes('barbaqua') || p.id.includes('sin-tacc'))) ||
+          (p.img && p.img.includes('photo-1563805042'))
+        );
+        const hasGrapia = adminProducts.some(p => p.id && p.id.includes('grapia'));
+
+        if (hasOldYerba || !hasGrapia) {
+          adminProducts = adminProducts.filter(p => 
+            !p.id || (!p.id.includes('barbaqua') && !p.id.includes('sin-tacc') && !(p.img && p.img.includes('photo-1563805042')))
+          );
+          const grapiaProds = DEFAULT_MASTER_CATALOG.filter(p => p.id && p.id.includes('grapia'));
+          adminProducts.push(...grapiaProds);
           saveAdminMasterCatalog();
         }
       }
