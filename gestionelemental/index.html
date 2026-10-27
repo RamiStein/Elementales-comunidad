@@ -2839,6 +2839,9 @@
       // 4. Catálogo Maestro de Productos Publicados en la Web
       initAdminMasterCatalog();
 
+      // 4.B Inicializar Carpetas de Pedidos / Ciclos Lunares
+      initAdminOrderFolders();
+
       // 5. Inicializar Sincronización VRDE Club
       if (typeof VrdeSync !== 'undefined') {
         const camps = VrdeSync.getCampaigns();
@@ -2874,6 +2877,390 @@
       }
       renderAdminOrdersTable();
       renderAdminMembersTable();
+    }
+
+    // =========================================================================
+    // 3.B GESTIÓN DE CARPETAS DE PEDIDOS Y CICLOS LUNARES (ARCHIVADO)
+    // =========================================================================
+    let adminOrderFolders = ['Luna de Tauro'];
+    let currentOrderFolderFilter = 'active'; // 'active' (activos) | 'all' (todos) | nombre de carpeta
+    let selectedOrderIds = new Set();
+    let pendingArchiveOrderIds = [];
+
+    function initAdminOrderFolders() {
+      try {
+        const rawFolders = localStorage.getItem('elementales_order_folders_v1');
+        if (rawFolders) {
+          const parsed = JSON.parse(rawFolders);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            adminOrderFolders = parsed;
+          }
+        }
+      } catch (e) {
+        adminOrderFolders = ['Luna de Tauro'];
+      }
+
+      // Descubrir cualquier carpeta ya presente en los pedidos cargados
+      if (Array.isArray(adminOrders)) {
+        adminOrders.forEach(o => {
+          if (o.folder && typeof o.folder === 'string' && o.folder.trim()) {
+            const fName = o.folder.trim();
+            if (!adminOrderFolders.includes(fName)) {
+              adminOrderFolders.push(fName);
+            }
+          }
+        });
+      }
+
+      saveAdminOrderFolders();
+      updateFolderSelectOptions();
+    }
+
+    function saveAdminOrderFolders() {
+      try {
+        localStorage.setItem('elementales_order_folders_v1', JSON.stringify(adminOrderFolders));
+      } catch (e) {}
+    }
+
+    function updateFolderSelectOptions() {
+      // 1. Selector de filtro en la barra de pedidos
+      const filterSelect = document.getElementById('admin-order-folder-filter');
+      if (filterSelect) {
+        let optionsHtml = `
+          <option value="active" ${currentOrderFolderFilter === 'active' ? 'selected' : ''}>📥 Pedidos Activos</option>
+          <option value="all" ${currentOrderFolderFilter === 'all' ? 'selected' : ''}>🗂️ Todos los Pedidos</option>
+        `;
+        if (adminOrderFolders.length > 0) {
+          optionsHtml += `<optgroup label="Carpetas Archivadas">`;
+          adminOrderFolders.forEach(folder => {
+            const isSel = currentOrderFolderFilter === folder ? 'selected' : '';
+            optionsHtml += `<option value="${folder}" ${isSel}>📁 ${folder}</option>`;
+          });
+          optionsHtml += `</optgroup>`;
+        }
+        filterSelect.innerHTML = optionsHtml;
+      }
+
+      // 2. Selector en modal de archivar
+      const archiveSelect = document.getElementById('archive-modal-folder-select');
+      if (archiveSelect) {
+        if (adminOrderFolders.length === 0) {
+          archiveSelect.innerHTML = '<option value="">(No hay carpetas creadas todavía)</option>';
+        } else {
+          archiveSelect.innerHTML = adminOrderFolders.map(f => `<option value="${f}">📁 ${f}</option>`).join('');
+        }
+      }
+    }
+
+    function onAdminFolderFilterChange(val) {
+      currentOrderFolderFilter = val;
+      clearSelectedOrders();
+      renderAdminOrdersTable();
+    }
+
+    function setOrderFolderFilter(val) {
+      currentOrderFolderFilter = val;
+      const filterSelect = document.getElementById('admin-order-folder-filter');
+      if (filterSelect) filterSelect.value = val;
+      clearSelectedOrders();
+      renderAdminOrdersTable();
+    }
+
+    // --- Selección Masiva ---
+    function toggleSelectAllOrders(checked) {
+      const rowCheckboxes = document.querySelectorAll('.order-row-chk');
+      rowCheckboxes.forEach(chk => {
+        chk.checked = checked;
+        const id = chk.value;
+        if (checked) {
+          selectedOrderIds.add(id);
+        } else {
+          selectedOrderIds.delete(id);
+        }
+      });
+      updateBulkBarUI();
+    }
+
+    function onOrderSelectionChange(id, checked) {
+      if (checked) {
+        selectedOrderIds.add(id);
+      } else {
+        selectedOrderIds.delete(id);
+      }
+      updateBulkBarUI();
+    }
+
+    function clearSelectedOrders() {
+      selectedOrderIds.clear();
+      const allChk = document.getElementById('select-all-orders-chk');
+      if (allChk) allChk.checked = false;
+      const rowCheckboxes = document.querySelectorAll('.order-row-chk');
+      rowCheckboxes.forEach(chk => { chk.checked = false; });
+      updateBulkBarUI();
+    }
+
+    function updateBulkBarUI() {
+      const bulkBar = document.getElementById('admin-orders-bulk-bar');
+      const countEl = document.getElementById('bulk-selected-count');
+      const allChk = document.getElementById('select-all-orders-chk');
+      const rowCheckboxes = document.querySelectorAll('.order-row-chk');
+
+      if (bulkBar && countEl) {
+        if (selectedOrderIds.size > 0) {
+          countEl.textContent = selectedOrderIds.size;
+          bulkBar.classList.remove('hidden');
+        } else {
+          bulkBar.classList.add('hidden');
+        }
+      }
+
+      if (allChk && rowCheckboxes.length > 0) {
+        allChk.checked = rowCheckboxes.length === selectedOrderIds.size;
+      }
+    }
+
+    // --- Modal de Gestión de Carpetas ---
+    function openOrderFoldersModal() {
+      renderOrderFoldersList();
+      const modal = document.getElementById('modal-order-folders');
+      if (modal) modal.classList.remove('hidden');
+      const input = document.getElementById('new-folder-name-input');
+      if (input) {
+        input.value = '';
+        setTimeout(() => input.focus(), 100);
+      }
+    }
+
+    function closeOrderFoldersModal() {
+      const modal = document.getElementById('modal-order-folders');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function createOrderFolder() {
+      const input = document.getElementById('new-folder-name-input');
+      if (!input) return;
+      const name = input.value.trim();
+      if (!name) {
+        alert('Por favor escribí un nombre para la carpeta (ej: Luna de Tauro)');
+        return;
+      }
+      if (adminOrderFolders.some(f => f.toLowerCase() === name.toLowerCase())) {
+        alert('Ya existe una carpeta con ese nombre.');
+        return;
+      }
+
+      adminOrderFolders.push(name);
+      saveAdminOrderFolders();
+      updateFolderSelectOptions();
+      renderOrderFoldersList();
+      input.value = '';
+    }
+
+    function deleteOrderFolder(name) {
+      const ordersInFolder = adminOrders.filter(o => o.folder === name).length;
+      const msg = ordersInFolder > 0
+        ? `¿Eliminar la carpeta "${name}"? Contiene ${ordersInFolder} pedido(s). Estos pedidos volverán al listado de Pedidos Activos.`
+        : `¿Eliminar la carpeta "${name}"?`;
+
+      if (!confirm(msg)) return;
+
+      adminOrders.forEach(o => {
+        if (o.folder === name) {
+          delete o.folder;
+        }
+      });
+      saveAdminOrders();
+
+      adminOrderFolders = adminOrderFolders.filter(f => f !== name);
+      saveAdminOrderFolders();
+
+      if (currentOrderFolderFilter === name) {
+        currentOrderFolderFilter = 'active';
+      }
+
+      updateFolderSelectOptions();
+      renderOrderFoldersList();
+      renderAdminOrdersTable();
+    }
+
+    function unarchiveAllInFolder(name) {
+      const count = adminOrders.filter(o => o.folder === name).length;
+      if (count === 0) {
+        alert(`No hay pedidos en la carpeta "${name}".`);
+        return;
+      }
+      if (!confirm(`¿Mover los ${count} pedidos de "${name}" a Pedidos Activos?`)) return;
+
+      adminOrders.forEach(o => {
+        if (o.folder === name) {
+          delete o.folder;
+        }
+      });
+      saveAdminOrders();
+      renderOrderFoldersList();
+      renderAdminOrdersTable();
+    }
+
+    function renderOrderFoldersList() {
+      const listContainer = document.getElementById('order-folders-list');
+      if (!listContainer) return;
+
+      if (adminOrderFolders.length === 0) {
+        listContainer.innerHTML = `
+          <div class="text-center py-6 text-stone-400 bg-stone-50 rounded-2xl border border-stone-200">
+            <span class="text-2xl block mb-1">📁</span>
+            Aún no has creado carpetas. Escribí un nombre arriba para crear una (ej: Luna de Tauro).
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = adminOrderFolders.map(folderName => {
+        const folderOrders = adminOrders.filter(o => o.folder === folderName);
+        const orderCount = folderOrders.length;
+        const totalRev = folderOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+
+        return `
+          <div class="p-3 bg-white border border-stone-200 rounded-2xl flex flex-wrap items-center justify-between gap-2 shadow-2xs hover:border-amber-300 transition-all">
+            <div class="flex items-center gap-2.5">
+              <span class="text-lg">📁</span>
+              <div>
+                <h5 class="font-black text-stone-900 text-xs">${folderName}</h5>
+                <p class="text-[11px] text-stone-500 font-mono">
+                  ${orderCount} pedido(s) • <span class="font-bold text-emerald-700">${totalRev.toLocaleString('es-AR')}</span>
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button 
+                type="button" 
+                onclick="closeOrderFoldersModal(); setOrderFolderFilter('${folderName.replace(/'/g, "\\'")}');" 
+                class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-[11px] cursor-pointer transition-colors"
+                title="Filtrar pedidos de esta carpeta"
+              >
+                Ver Pedidos
+              </button>
+              ${orderCount > 0 ? `
+                <button 
+                  type="button" 
+                  onclick="unarchiveAllInFolder('${folderName.replace(/'/g, "\\'")}')" 
+                  class="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-[11px] font-bold cursor-pointer transition-colors"
+                  title="Mover todos los pedidos de esta carpeta a Activos"
+                >
+                  Desarchivar
+                </button>
+              ` : ''}
+              <button 
+                type="button" 
+                onclick="deleteOrderFolder('${folderName.replace(/'/g, "\\'")}')" 
+                class="p-1 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 text-xs cursor-pointer transition-colors"
+                title="Eliminar carpeta"
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- Modal de Archivar Pedido(s) ---
+    function openArchiveSingleOrderModal(orderId) {
+      pendingArchiveOrderIds = [String(orderId)];
+      openArchiveModalCommon();
+    }
+
+    function openArchiveBulkModal() {
+      if (selectedOrderIds.size === 0) {
+        alert('Por favor seleccioná al menos un pedido marcando la casilla de la izquierda.');
+        return;
+      }
+      pendingArchiveOrderIds = Array.from(selectedOrderIds).map(String);
+      openArchiveModalCommon();
+    }
+
+    function openArchiveModalCommon() {
+      const descEl = document.getElementById('archive-modal-desc');
+      if (descEl) {
+        if (pendingArchiveOrderIds.length === 1) {
+          descEl.innerHTML = `Archivar pedido <strong>#${pendingArchiveOrderIds[0]}</strong> en una carpeta o ciclo lunar:`;
+        } else {
+          descEl.innerHTML = `Archivar <strong>${pendingArchiveOrderIds.length} pedidos seleccionados</strong> en una carpeta o ciclo lunar:`;
+        }
+      }
+
+      updateFolderSelectOptions();
+      const newFolderInput = document.getElementById('archive-modal-new-folder');
+      if (newFolderInput) newFolderInput.value = '';
+
+      const modal = document.getElementById('modal-archive-orders');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeArchiveOrdersModal() {
+      const modal = document.getElementById('modal-archive-orders');
+      if (modal) modal.classList.add('hidden');
+      pendingArchiveOrderIds = [];
+    }
+
+    function confirmArchiveOrders() {
+      const newNameInput = document.getElementById('archive-modal-new-folder');
+      const selectEl = document.getElementById('archive-modal-folder-select');
+
+      let targetFolder = '';
+      if (newNameInput && newNameInput.value.trim()) {
+        targetFolder = newNameInput.value.trim();
+        if (!adminOrderFolders.includes(targetFolder)) {
+          adminOrderFolders.push(targetFolder);
+          saveAdminOrderFolders();
+          updateFolderSelectOptions();
+        }
+      } else if (selectEl && selectEl.value) {
+        targetFolder = selectEl.value;
+      }
+
+      if (!targetFolder) {
+        alert('Por favor seleccioná una carpeta o escribí el nombre de una nueva.');
+        return;
+      }
+
+      adminOrders.forEach(o => {
+        const orderIdStr = String(o.id || o.number);
+        if (pendingArchiveOrderIds.includes(orderIdStr) || pendingArchiveOrderIds.includes(String(o.id)) || pendingArchiveOrderIds.includes(String(o.number))) {
+          o.folder = targetFolder;
+        }
+      });
+
+      saveAdminOrders();
+      closeArchiveOrdersModal();
+      clearSelectedOrders();
+      renderAdminOrdersTable();
+    }
+
+    function bulkUnarchiveSelected() {
+      if (selectedOrderIds.size === 0) return;
+      if (!confirm(`¿Mover los ${selectedOrderIds.size} pedidos seleccionados a Pedidos Activos?`)) return;
+
+      adminOrders.forEach(o => {
+        const orderIdStr = String(o.id || o.number);
+        if (selectedOrderIds.has(orderIdStr) || selectedOrderIds.has(String(o.id)) || selectedOrderIds.has(String(o.number))) {
+          delete o.folder;
+        }
+      });
+
+      saveAdminOrders();
+      clearSelectedOrders();
+      renderAdminOrdersTable();
+    }
+
+    function unarchiveSingleOrder(orderId) {
+      const orderIdStr = String(orderId);
+      const o = adminOrders.find(item => String(item.id) === orderIdStr || String(item.number) === orderIdStr);
+      if (o) {
+        delete o.folder;
+        saveAdminOrders();
+        renderAdminOrdersTable();
+      }
     }
 
     // =========================================================================
@@ -2967,12 +3354,44 @@
         list = list.filter(o => o.status === statusFilter);
       }
 
+      // Filtrar por Carpeta / Ciclo Lunar (NUEVO)
+      if (currentOrderFolderFilter === 'active') {
+        list = list.filter(o => !o.folder);
+      } else if (currentOrderFolderFilter !== 'all') {
+        list = list.filter(o => o.folder === currentOrderFolderFilter);
+      }
+
+      // Banner informativo si estamos viendo una carpeta archivada
+      const folderBanner = document.getElementById('admin-folder-active-banner');
+      if (folderBanner) {
+        if (currentOrderFolderFilter !== 'active' && currentOrderFolderFilter !== 'all') {
+          const totalInFolder = list.reduce((acc, o) => acc + (o.total || 0), 0);
+          folderBanner.className = 'bg-amber-100/90 border border-amber-300 rounded-2xl p-3 px-4 flex flex-wrap items-center justify-between gap-3 text-xs text-amber-950 font-bold mb-3 shadow-xs';
+          folderBanner.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="text-base">📁</span>
+              <span>Viendo pedidos archivados en: <strong class="underline decoration-amber-500 decoration-2">${currentOrderFolderFilter}</strong></span>
+              <span class="bg-amber-200/90 text-amber-950 px-2 py-0.5 rounded-full text-[11px] font-mono">${list.length} pedido(s) • $${totalInFolder.toLocaleString('es-AR')}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="setOrderFolderFilter('active')" class="px-3 py-1 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xs cursor-pointer shadow-xs transition-colors">
+                ← Volver a Pedidos Activos
+              </button>
+            </div>
+          `;
+        } else {
+          folderBanner.className = 'hidden';
+          folderBanner.innerHTML = '';
+        }
+      }
+
       // Filtrar por texto de búsqueda
       if (q) {
         list = list.filter(o => 
           (o.clientName && o.clientName.toLowerCase().includes(q)) ||
           (o.clientPhone && o.clientPhone.includes(q)) ||
-          (o.id && o.id.toLowerCase().includes(q)) ||
+          (o.id && String(o.id).toLowerCase().includes(q)) ||
+          (o.folder && o.folder.toLowerCase().includes(q)) ||
           (o.items && JSON.stringify(o.items).toLowerCase().includes(q))
         );
       }
@@ -2980,16 +3399,20 @@
       if (list.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="9" class="py-12 text-center text-stone-500">
+            <td colspan="10" class="py-12 text-center text-stone-500">
               <span class="text-2xl block mb-2">🔍</span>
-              No se encontraron pedidos con los filtros aplicados.
+              ${currentOrderFolderFilter !== 'active' && currentOrderFolderFilter !== 'all' 
+                ? `No hay pedidos en la carpeta <strong>${currentOrderFolderFilter}</strong> con los filtros seleccionados.` 
+                : 'No se encontraron pedidos con los filtros aplicados.'}
             </td>
           </tr>
         `;
+        updateBulkBarUI();
         return;
       }
 
       tbody.innerHTML = list.map(o => {
+        const orderIdStr = String(o.id || o.number);
         const isDone = o.status === 'Entregado';
         const isReady = o.status === 'Listo para Retirar';
         const isPaid = o.status === 'Pagado';
@@ -3004,18 +3427,36 @@
           ? `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-purple-50 text-purple-800 border border-purple-200 px-1.5 py-0.5 rounded-md font-mono mt-1">🌕 Lunar</span>`
           : `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded-md font-mono mt-1">🌱 Semanal</span>`;
 
+        const folderBadge = o.folder 
+          ? `<span class="inline-flex items-center gap-1 text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.5 rounded-md mt-1" title="Archivado en: ${o.folder}">📁 ${o.folder}</span>`
+          : '';
+
         const itemsStr = Array.isArray(o.items) 
           ? o.items.map(i => `${i.qty}x ${i.name}`).join(', ')
           : (typeof o.items === 'string' ? o.items : 'Items varios');
 
         const cleanPhone = (o.clientPhone || '').replace(/\D/g, '');
-        const waMsg = encodeURIComponent(`Hola ${o.clientName || 'vecin@'}! Te contactamos desde el Nodo Elementales sobre tu pedido #${o.id || o.number}. Tu pedido está ${o.status}.`);
+        const waMsg = encodeURIComponent(`Hola ${o.clientName || 'vecin@'}! Te contactamos desde el Nodo Elementales sobre tu pedido #${orderIdStr}. Tu pedido está ${o.status}.`);
+
+        const isSelected = selectedOrderIds.has(orderIdStr) || selectedOrderIds.has(String(o.id));
 
         return `
-          <tr class="hover:bg-stone-50/80 transition-colors">
-            <td class="py-3 px-4 font-mono font-bold text-stone-900">
-              <span class="block">${o.id || o.number}</span>
-              ${typeBadge}
+          <tr class="hover:bg-stone-50/80 transition-colors ${isSelected ? 'bg-amber-50/40' : ''}">
+            <td class="py-3 px-3 text-center">
+              <input 
+                type="checkbox" 
+                class="order-row-chk rounded border-stone-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer w-4 h-4" 
+                value="${orderIdStr}" 
+                ${isSelected ? 'checked' : ''} 
+                onchange="onOrderSelectionChange('${orderIdStr}', this.checked)"
+              />
+            </td>
+            <td class="py-3 px-3 font-mono font-bold text-stone-900">
+              <span class="block">${orderIdStr}</span>
+              <div class="flex flex-wrap gap-1 items-center">
+                ${typeBadge}
+                ${folderBadge}
+              </div>
             </td>
             <td class="py-3 px-3 text-stone-500 whitespace-nowrap">${o.dateStr}</td>
             <td class="py-3 px-4">
@@ -3027,7 +3468,7 @@
                 <span>📍</span> ${o.nodoNombre || 'Loma Verde'}
               </span>
             </td>
-            <td class="py-3 px-4 text-stone-700 max-w-xs truncate" title="${itemsStr}">
+            <td class="py-3 px-4 text-stone-700 max-w-xs truncate" title="${itemsStr.replace(/"/g, '&quot;')}">
               ${itemsStr}
             </td>
             <td class="py-3 px-3 font-bold text-emerald-700 whitespace-nowrap">
@@ -3038,7 +3479,7 @@
             </td>
             <td class="py-3 px-4">
               <select 
-                onchange="updateOrderStatus('${o.id}', this.value)"
+                onchange="updateOrderStatus('${o.id || o.number}', this.value)"
                 class="text-[11px] font-bold py-1 px-2.5 rounded-xl border outline-none bg-white cursor-pointer ${badgeClass}"
               >
                 <option value="Pendiente" ${o.status === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
@@ -3048,24 +3489,48 @@
               </select>
             </td>
             <td class="py-3 px-4 text-right">
-              ${cleanPhone ? `
-                <a 
-                  href="https://wa.me/${cleanPhone}?text=${waMsg}" 
-                  target="_blank" 
-                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-[11px] text-decoration-none transition-all shadow-2xs"
-                  title="Abrir chat de WhatsApp"
-                >
-                  <span>💬 WhatsApp</span>
-                </a>
-              ` : '<span class="text-stone-400">-</span>'}
+              <div class="inline-flex items-center gap-1.5 justify-end">
+                ${cleanPhone ? `
+                  <a 
+                    href="https://wa.me/${cleanPhone}?text=${waMsg}" 
+                    target="_blank" 
+                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-[11px] text-decoration-none transition-all shadow-2xs"
+                    title="Abrir chat de WhatsApp"
+                  >
+                    <span>💬 WhatsApp</span>
+                  </a>
+                ` : ''}
+                ${o.folder ? `
+                  <button 
+                    type="button" 
+                    onclick="unarchiveSingleOrder('${orderIdStr}')" 
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 font-bold text-[11px] transition-all shadow-2xs cursor-pointer"
+                    title="Mover a Pedidos Activos (Desarchivar)"
+                  >
+                    <span>📥 Desarchivar</span>
+                  </button>
+                ` : `
+                  <button 
+                    type="button" 
+                    onclick="openArchiveSingleOrderModal('${orderIdStr}')" 
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-[11px] transition-all shadow-2xs cursor-pointer"
+                    title="Archivar en carpeta..."
+                  >
+                    <span>📁 Archivar</span>
+                  </button>
+                `}
+              </div>
             </td>
           </tr>
         `;
       }).join('');
+
+      updateBulkBarUI();
     }
 
     function updateOrderStatus(orderId, newStatus) {
-      const o = adminOrders.find(item => item.id === orderId);
+      const orderIdStr = String(orderId);
+      const o = adminOrders.find(item => String(item.id) === orderIdStr || String(item.number) === orderIdStr);
       if (o) {
         o.status = newStatus;
         saveAdminOrders();
@@ -3074,29 +3539,39 @@
       }
     }
 
-    // Exportar a CSV para abrir en Excel
+    // Exportar a CSV para abrir en Excel (respetando la carpeta seleccionada)
     function exportOrdersCSV() {
-      const orders = adminOrders || [];
+      let orders = adminOrders || [];
       if (orders.length === 0) {
         alert('No hay pedidos registrados para exportar.');
         return;
       }
 
-      let csv = 'ID,Tipo,Fecha,Cliente,Telefono,Productos,Total,Metodo_Pago,Estado,Nodo\n';
+      let filenameScope = 'todos';
+      if (currentOrderFolderFilter === 'active') {
+        orders = orders.filter(o => !o.folder);
+        filenameScope = 'activos';
+      } else if (currentOrderFolderFilter !== 'all') {
+        orders = orders.filter(o => o.folder === currentOrderFolderFilter);
+        filenameScope = currentOrderFolderFilter.toLowerCase().replace(/[^a-z0-9]/g, '_');
+      }
+
+      let csv = 'ID,Tipo,Carpeta,Fecha,Cliente,Telefono,Productos,Total,Metodo_Pago,Estado,Nodo\n';
       orders.forEach(o => {
         const isLunar = o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-'));
         const typeStr = isLunar ? 'Compra Lunar' : 'Compra Semanal';
+        const folderStr = o.folder || 'Activo';
         const items = Array.isArray(o.items) ? o.items.map(i => `${i.qty}x ${i.name}`).join(' | ') : (o.items || '');
         const cleanName = (o.clientName || '').replace(/,/g, ' ');
         const cleanItems = items.replace(/,/g, ' ');
-        csv += `${o.id || o.number},${typeStr},${o.dateStr},${cleanName},${o.clientPhone || ''},${cleanItems},${o.total || 0},${o.paymentMethod || ''},${o.status || ''},${o.nodoNombre || ''}\n`;
+        csv += `${o.id || o.number},${typeStr},${folderStr},${o.dateStr},${cleanName},${o.clientPhone || ''},${cleanItems},${o.total || 0},${o.paymentMethod || ''},${o.status || ''},${o.nodoNombre || ''}\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', `elementales_pedidos_${new Date().toISOString().slice(0, 10)}.csv`);
+      link.setAttribute('download', `elementales_pedidos_${filenameScope}_${new Date().toISOString().slice(0, 10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -3138,9 +3613,13 @@
       });
       const scopeBadge = document.getElementById('compiled-scope-badge');
       if (scopeBadge) {
-        if (compiledProductsFilter === 'lunar') scopeBadge.textContent = '🌕 Compra Lunar';
-        else if (compiledProductsFilter === 'semanal') scopeBadge.textContent = '🌱 Compra Semanal';
-        else scopeBadge.textContent = 'Todos los pedidos';
+        let folderLabel = '';
+        if (currentOrderFolderFilter !== 'active' && currentOrderFolderFilter !== 'all') {
+          folderLabel = ` • 📁 ${currentOrderFolderFilter}`;
+        }
+        if (compiledProductsFilter === 'lunar') scopeBadge.textContent = '🌕 Compra Lunar' + folderLabel;
+        else if (compiledProductsFilter === 'semanal') scopeBadge.textContent = '🌱 Compra Semanal' + folderLabel;
+        else scopeBadge.textContent = (currentOrderFolderFilter !== 'active' && currentOrderFolderFilter !== 'all' ? `📁 ${currentOrderFolderFilter}` : 'Todos los pedidos');
       }
     }
 
@@ -3160,6 +3639,13 @@
         list = list.filter(o => o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-')));
       } else if (compiledProductsFilter === 'semanal') {
         list = list.filter(o => o.type !== 'lunar' && (!o.id || !String(o.id).startsWith('LUNAR-')));
+      }
+
+      // Filtrar por Carpeta / Ciclo Lunar seleccionado
+      if (currentOrderFolderFilter === 'active') {
+        list = list.filter(o => !o.folder);
+      } else if (currentOrderFolderFilter !== 'all') {
+        list = list.filter(o => o.folder === currentOrderFolderFilter);
       }
 
       // Consolidar por producto
