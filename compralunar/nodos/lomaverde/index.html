@@ -41,9 +41,6 @@
     };
   </script>
 
-  <!-- Canvas Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
   <style>
     body {
       background-color: #fcfaf8;
@@ -119,6 +116,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
+  <script>window.confetti = function() {};</script>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-emerald-100 selection:text-emerald-900 pb-28">
 
@@ -1802,12 +1800,6 @@
       selectedNodeSlug = node.slug;
       localStorage.setItem('elementales_active_node', node.id);
       navigateLunarRoute(`/compralunar/nodos/${node.slug}`);
-
-      try {
-        if (typeof confetti === 'function') {
-          confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } });
-        }
-      } catch (e) {}
     }
 
     function updateStoreNodeHeader() {
@@ -2370,12 +2362,6 @@
       saveLunarCart();
       renderActiveProductShowcase();
       updateFloatingCart();
-
-      try {
-        if (typeof confetti === 'function' && targetMinQty >= 6) {
-          confetti({ particleCount: 25, spread: 50, origin: { y: 0.8 } });
-        }
-      } catch (e) {}
     }
 
     function saveLunarCart() {
@@ -2820,11 +2806,6 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
       updateFloatingCart();
 
       // Confetti de celebración
-      try {
-        if (typeof confetti === 'function') {
-          confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
-        }
-      } catch (err) {}
 
       // Mostrar pantalla de confirmación dentro del modal
       document.getElementById('lunar-checkout-view-form')?.classList.add('hidden');

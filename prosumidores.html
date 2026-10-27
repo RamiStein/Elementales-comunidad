@@ -41,9 +41,6 @@
   <!-- Font Awesome Icons CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
   <style>
     body { -webkit-tap-highlight-color: transparent; }
     .tab-active { border-bottom: 3px solid #1db954; color: #15803d; font-weight: 800; }
@@ -53,6 +50,7 @@
     ::-webkit-scrollbar-track { background: #f5f0ec; }
     ::-webkit-scrollbar-thumb { background: #d99a86; border-radius: 999px; }
   </style>
+  <script>window.confetti = function() {};</script>
 </head>
 <body class="bg-[#fcfaf8] font-body text-stone-800 min-h-screen flex flex-col justify-between selection:bg-[#c0826d] selection:text-white relative pb-20">
 
@@ -985,10 +983,6 @@
       saveDB();
       updateCounterBadges();
       resetForm();
-
-      try {
-        if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 70 });
-      } catch (err) {}
 
       // Pasar a la pestaña de base de datos
       switchTab('base');

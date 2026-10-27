@@ -26,10 +26,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
   <link rel="stylesheet" href="css/styles.css" />
+  <script>window.confetti = function() {};</script>
 </head>
 <body class="bg-[#fcfaf8] text-stone-800 min-h-screen font-body flex flex-col justify-between selection:bg-[#c0826d] selection:text-white">
 
@@ -308,12 +306,6 @@
       feedback.textContent = `¡Bienvenido/a ${name || code}! Tu código único quedó registrado. Elegí tu nodo de retiro a continuación...`;
       feedback.className = 'text-xs text-emerald-700 font-bold block mt-2 animate-fade-in';
       feedback.classList.remove('hidden');
-
-      try {
-        if (typeof confetti === 'function') {
-          confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
-        }
-      } catch (err) {}
 
       setTimeout(() => {
         window.location.href = 'index.html#asociar-nodo';

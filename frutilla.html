@@ -40,9 +40,6 @@
       }
     }
   </script>
-
-  <!-- Canvas Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
   
   <!-- Google Fonts: Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -127,6 +124,7 @@
       display: none !important;
     }
   </style>
+  <script>window.confetti = function() {};</script>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-[#c0826d] selection:text-white pb-20">
 
@@ -1057,9 +1055,6 @@
 
       // Efectos de éxito
       playSuccessSound();
-      if (typeof confetti === 'function') {
-        confetti({ particleCount: 60, spread: 80, origin: { y: 0.6 } });
-      }
 
       // Refrescar Blockchain y abrir Modal de Éxito
       renderBlockchainView();
