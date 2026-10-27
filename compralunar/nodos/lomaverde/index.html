@@ -433,126 +433,9 @@
       </p>
     </div>
 
-    <!-- Tarjetas de Nodos Barriales -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 pt-2">
-      
-      <!-- 1. Nodo Loma Verde (Sede Principal) -->
-      <div 
-        onclick="selectNodeAndOpenStore('lomaverde')"
-        class="group bg-white border-2 border-stone-200 hover:border-emerald-500 rounded-3xl p-6 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4 hover:-translate-y-1"
-      >
-        <div>
-          <div class="flex items-center justify-between gap-2 mb-3">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold font-mono">
-              ● Sede Activa
-            </span>
-            <span class="text-xs text-stone-400 font-mono">Escobar</span>
-          </div>
-
-          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-2xl flex items-center justify-center font-bold mb-3 group-hover:scale-105 transition-transform">
-            🌿
-          </div>
-
-          <h3 class="font-black text-lg text-stone-900 font-heading leading-tight group-hover:text-emerald-800 transition-colors">
-            Nodo Loma Verde
-          </h3>
-          <p class="text-xs text-stone-500 mt-1">
-            Red Comunitaria Loma Verde · Finca Ecotipa y quintas del corredor norte.
-          </p>
-
-          <div class="mt-4 pt-3 border-t border-stone-100 space-y-1.5 text-xs text-stone-600">
-            <p>📍 <strong>Punto:</strong> Calle Congreve & Arrayanes</p>
-            <p>🚚 <strong>Entrega:</strong> Sábado 1 de Noviembre</p>
-          </div>
-        </div>
-
-        <button 
-          type="button" 
-          class="w-full py-2.5 rounded-xl bg-emerald-600 group-hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-2"
-        >
-          <span>Elegir Loma Verde</span>
-          <span>→</span>
-        </button>
-      </div>
-
-      <!-- 2. Nodo Chasqui Maschwitz -->
-      <div 
-        onclick="selectNodeAndOpenStore('chasqui')"
-        class="group bg-white border-2 border-stone-200 hover:border-amber-500 rounded-3xl p-6 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4 hover:-translate-y-1"
-      >
-        <div>
-          <div class="flex items-center justify-between gap-2 mb-3">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold font-mono">
-              Cooperativa
-            </span>
-            <span class="text-xs text-stone-400 font-mono">Maschwitz</span>
-          </div>
-
-          <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-800 border border-amber-200 text-2xl flex items-center justify-center font-bold mb-3 group-hover:scale-105 transition-transform">
-            🌾
-          </div>
-
-          <h3 class="font-black text-lg text-stone-900 font-heading leading-tight group-hover:text-amber-800 transition-colors">
-            Chasqui Maschwitz
-          </h3>
-          <p class="text-xs text-stone-500 mt-1">
-            Almacén Cooperativo & Molino Campesino Chasqui.
-          </p>
-
-          <div class="mt-4 pt-3 border-t border-stone-100 space-y-1.5 text-xs text-stone-600">
-            <p>📍 <strong>Punto:</strong> Espacio Cultural Chasqui</p>
-            <p>🚚 <strong>Entrega:</strong> Domingo 2 de Noviembre</p>
-          </div>
-        </div>
-
-        <button 
-          type="button" 
-          class="w-full py-2.5 rounded-xl bg-stone-900 group-hover:bg-amber-600 text-white font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-2"
-        >
-          <span>Elegir Chasqui</span>
-          <span>→</span>
-        </button>
-      </div>
-
-      <!-- 3. Nodo Central Vicente López -->
-      <div 
-        onclick="selectNodeAndOpenStore('central')"
-        class="group bg-white border-2 border-stone-200 hover:border-sky-500 rounded-3xl p-6 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4 hover:-translate-y-1"
-      >
-        <div>
-          <div class="flex items-center justify-between gap-2 mb-3">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-300 text-[10px] font-bold font-mono">
-              Corredor Río
-            </span>
-            <span class="text-xs text-stone-400 font-mono">Vicente López</span>
-          </div>
-
-          <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-800 border border-sky-200 text-2xl flex items-center justify-center font-bold mb-3 group-hover:scale-105 transition-transform">
-            🌊
-          </div>
-
-          <h3 class="font-black text-lg text-stone-900 font-heading leading-tight group-hover:text-sky-800 transition-colors">
-            Central Vicente López
-          </h3>
-          <p class="text-xs text-stone-500 mt-1">
-            Punto de acopio costero Florida / Olivos / La Lucila.
-          </p>
-
-          <div class="mt-4 pt-3 border-t border-stone-100 space-y-1.5 text-xs text-stone-600">
-            <p>📍 <strong>Punto:</strong> Nodo Costero V. López</p>
-            <p>🚚 <strong>Entrega:</strong> Primer fin de semana Nov.</p>
-          </div>
-        </div>
-
-        <button 
-          type="button" 
-          class="w-full py-2.5 rounded-xl bg-stone-900 group-hover:bg-sky-600 text-white font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-2"
-        >
-          <span>Elegir V. López</span>
-          <span>→</span>
-        </button>
-      </div>
-
+    <!-- Tarjetas de Nodos Barriales Dinámicos (/compralunar/nodos) -->
+    <div id="lunar-nodos-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 pt-2">
+      <!-- Inyectado dinámicamente vía renderLunarNodosSelection() -->
     </div>
 
   </div>
@@ -1073,41 +956,175 @@
     // =========================================================================
     // 1. DEFINICIÓN DE NODOS DE RETIRO
     // =========================================================================
-    const LUNAR_NODOS = {
-      'lomaverde': {
+    const DEFAULT_LUNAR_NODOS = [
+      {
         id: 'nodo-lomaverde',
         slug: 'lomaverde',
         name: 'Nodo Loma Verde',
         shortName: 'Loma Verde',
-        location: 'Calle Congreve & Arrayanes, Loma Verde (Escobar)',
-        deliveryDate: 'Sábado 1 de Noviembre',
+        zone: 'Escobar Norte',
+        badge: '● Sede Activa',
+        badgeColor: 'emerald',
         icon: '🌿',
-        badge: 'Sede Activa',
-        phone: '5491133445566'
+        desc: 'Red Comunitaria Loma Verde · Finca Ecotipa y quintas del corredor norte.',
+        location: 'Calle Congreve & Arrayanes, Loma Verde (Escobar)',
+        address: 'Calle Congreve & Arrayanes, Loma Verde',
+        deliveryDate: 'Sábado 1 de Noviembre',
+        cierreDate: '30 de Octubre',
+        phone: '5491133445566',
+        guardian: 'Coordinación Círculos Loma Verde & VRDE Club',
+        enabled: true
       },
-      'chasqui': {
+      {
         id: 'nodo-cooperativa',
         slug: 'chasqui',
         name: 'Chasqui Maschwitz',
         shortName: 'Maschwitz',
-        location: 'Espacio Cultural & Almacén Chasqui, Maschwitz',
-        deliveryDate: 'Domingo 2 de Noviembre',
-        icon: '🌾',
+        zone: 'Escobar Sur',
         badge: 'Cooperativa',
-        phone: '5491123456789'
+        badgeColor: 'amber',
+        icon: '🌾',
+        desc: 'Almacén Cooperativo & Molino Campesino Chasqui.',
+        location: 'Espacio Cultural & Almacén Chasqui, Maschwitz',
+        address: 'Espacio Cultural Chasqui',
+        deliveryDate: 'Domingo 2 de Noviembre',
+        cierreDate: '30 de Octubre',
+        phone: '5491123456789',
+        guardian: 'Equipo Logístico Chasqui',
+        enabled: true
       },
-      'central': {
+      {
         id: 'nodo-central',
         slug: 'central',
         name: 'Central Vicente López',
         shortName: 'Vicente López',
-        location: 'Punto de acopio costero Florida / V. López',
-        deliveryDate: 'Primer fin de semana de Noviembre',
-        icon: '🌊',
+        zone: 'Corredor Río',
         badge: 'Corredor Río',
-        phone: '5491123456789'
+        badgeColor: 'sky',
+        icon: '🌊',
+        desc: 'Punto de acopio costero Florida / Olivos / La Lucila.',
+        location: 'Punto de acopio costero Florida / V. López',
+        address: 'Nodo Costero V. López',
+        deliveryDate: 'Primer fin de semana de Noviembre',
+        cierreDate: '30 de Octubre',
+        phone: '5491123456789',
+        guardian: 'Nodo Costero V. López',
+        enabled: true
       }
-    };
+    ];
+
+    function loadLunarNodes() {
+      try {
+        const raw = localStorage.getItem('elementales_lunar_nodos_v1');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        }
+      } catch (e) {}
+      return JSON.parse(JSON.stringify(DEFAULT_LUNAR_NODOS));
+    }
+
+    function getActiveLunarNodesList() {
+      return loadLunarNodes().filter(n => n.enabled !== false);
+    }
+
+    function getLunarNodesMap() {
+      const list = loadLunarNodes();
+      const map = {};
+      list.forEach(n => {
+        map[n.slug] = n;
+      });
+      return map;
+    }
+
+    function getLunarNode(slug) {
+      const map = getLunarNodesMap();
+      return map[slug] || map['lomaverde'] || loadLunarNodes()[0];
+    }
+
+    // Proxy para mantener compatibilidad con cualquier lectura de LUNAR_NODOS
+    const LUNAR_NODOS = new Proxy({}, {
+      get: (target, prop) => {
+        if (typeof prop === 'string') {
+          return getLunarNode(prop);
+        }
+        return undefined;
+      }
+    });
+
+    function renderLunarNodosSelection() {
+      const container = document.getElementById('lunar-nodos-grid');
+      if (!container) return;
+
+      const nodesList = getActiveLunarNodesList();
+      if (nodesList.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center text-stone-500 bg-white border border-stone-200 rounded-3xl p-8">
+            <span class="text-4xl block mb-2">📍</span>
+            <p class="font-black text-stone-800 text-lg">No hay sedes activas en este momento</p>
+            <p class="text-xs text-stone-500 mt-1">Los nodos se publican y administran desde el Panel de Gestión Elemental.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = nodesList.map(node => {
+        const badgeColorMap = {
+          emerald: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+          amber: 'bg-amber-100 text-amber-900 border-amber-300',
+          sky: 'bg-sky-100 text-sky-800 border-sky-300',
+          purple: 'bg-purple-100 text-purple-800 border-purple-300',
+          rose: 'bg-rose-100 text-rose-800 border-rose-300'
+        };
+        const badgeClass = badgeColorMap[node.badgeColor] || 'bg-emerald-100 text-emerald-800 border-emerald-300';
+        const borderHoverClass = node.badgeColor === 'amber' ? 'hover:border-amber-500' : (node.badgeColor === 'sky' ? 'hover:border-sky-500' : 'hover:border-emerald-500');
+        const textHoverClass = node.badgeColor === 'amber' ? 'group-hover:text-amber-800' : (node.badgeColor === 'sky' ? 'group-hover:text-sky-800' : 'group-hover:text-emerald-800');
+        const btnHoverClass = node.badgeColor === 'amber' ? 'group-hover:bg-amber-600' : (node.badgeColor === 'sky' ? 'group-hover:bg-sky-600' : 'group-hover:bg-emerald-700');
+
+        return `
+          <div 
+            onclick="selectNodeAndOpenStore('${node.slug}')"
+            class="group bg-white border-2 border-stone-200 ${borderHoverClass} rounded-3xl p-6 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4 hover:-translate-y-1"
+          >
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full ${badgeClass} border text-[10px] font-bold font-mono">
+                  ${node.badge || 'Sede Barrial'}
+                </span>
+                <span class="text-xs text-stone-400 font-mono">${node.zone || node.shortName || ''}</span>
+              </div>
+
+              <div class="w-12 h-12 rounded-2xl bg-stone-50 border border-stone-200 text-2xl flex items-center justify-center font-bold mb-3 group-hover:scale-105 transition-transform">
+                ${node.icon || '📍'}
+              </div>
+
+              <h3 class="font-black text-lg text-stone-900 font-heading leading-tight ${textHoverClass} transition-colors">
+                ${node.name}
+              </h3>
+              <p class="text-xs text-stone-500 mt-1 leading-relaxed">
+                ${node.desc || ''}
+              </p>
+
+              <div class="mt-4 pt-3 border-t border-stone-100 space-y-1.5 text-xs text-stone-600">
+                <p>📍 <strong>Punto:</strong> ${node.location || node.address || 'Punto barrial'}</p>
+                <p>🚚 <strong>Entrega:</strong> ${node.deliveryDate || 'Próximo ciclo'}</p>
+                ${node.cierreDate ? `<p>⏱️ <strong>Cierre:</strong> ${node.cierreDate}</p>` : ''}
+              </div>
+            </div>
+
+            <button 
+              type="button" 
+              class="w-full py-2.5 rounded-xl bg-stone-900 ${btnHoverClass} text-white font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>Elegir ${node.shortName || node.name}</span>
+              <span>→</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
 
     // =========================================================================
     // 2. CATÁLOGO DE COMPRA LUNAR ESTRUCTURA VRDE CLUB
@@ -1653,6 +1670,7 @@
         currentLunarView = 'nodos';
         const nodosView = document.getElementById('view-compralunar-nodos');
         if (nodosView) nodosView.classList.remove('hidden');
+        renderLunarNodosSelection();
         targetPath = '/compralunar/nodos';
 
       } else if (cleanPath.startsWith('/compralunar/nodos/') || cleanPath.startsWith('/lomaverde/tierra/lunar')) {
@@ -2660,7 +2678,7 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
       navigateLunarRoute(window.location.pathname, false);
     });
 
-    // Sincronización en vivo cuando el admin modifica precios o pausa/publica alimentos
+    // Sincronización en vivo cuando el admin modifica precios o pausa/publica alimentos o nodos
     window.addEventListener('storage', (e) => {
       if (e.key === 'elementales_master_catalog_v2') {
         LUNAR_PRODUCTS = loadLunarMasterProducts();
@@ -2669,6 +2687,23 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
         renderActiveProductShowcase();
         updateFloatingCart();
       }
+      if (e.key === 'elementales_lunar_nodos_v1') {
+        renderLunarNodosSelection();
+        updateStoreNodeHeader();
+      }
+    });
+
+    window.addEventListener('elementales_catalog_updated', () => {
+      LUNAR_PRODUCTS = loadLunarMasterProducts();
+      renderVrdeCategoryGrid();
+      renderProductsPills();
+      renderActiveProductShowcase();
+      updateFloatingCart();
+    });
+
+    window.addEventListener('elementales_nodes_updated', () => {
+      renderLunarNodosSelection();
+      updateStoreNodeHeader();
     });
 
     window.addEventListener('elementales_catalog_updated', () => {

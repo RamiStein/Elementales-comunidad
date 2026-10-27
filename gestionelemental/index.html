@@ -224,6 +224,124 @@
       </div>
 
     </div>
+  
+    <!-- ======================================================================= -->
+    <!-- TAB 9: GESTIÓN DE NODOS DE RETIRO & SEDES BARRIALES (/compralunar/nodos)-->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-nodos" class="admin-panel-content hidden space-y-6">
+      
+      <!-- Banner Principal de Nodos -->
+      <div class="bg-gradient-to-r from-emerald-50/90 via-white to-teal-50/50 border border-emerald-200 rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-3xl shrink-0 shadow-md">
+            📍
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-900 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
+                Puntos de Entrega & Red Barrial
+              </span>
+              <span id="nodos-active-count-badge" class="font-mono text-[11px] font-bold text-stone-600 bg-white px-2 py-0.5 rounded-md border border-stone-200">
+                3 sedes activas
+              </span>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-black text-stone-900 font-heading">
+              Gestión de Nodos de Retiro (/compralunar/nodos)
+            </h3>
+            <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl leading-relaxed">
+              Agregá y sacá nodos a la sección pública <strong class="text-emerald-800">/compralunar/nodos</strong>, pausá sedes temporalmente o modificá direcciones, fechas de entrega y contactos.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+          <a 
+            href="/compralunar/nodos" 
+            target="_blank" 
+            class="px-4 py-2.5 rounded-2xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-700 font-bold text-xs shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <span>Ver /compralunar/nodos</span>
+            <span>↗</span>
+          </a>
+          <button 
+            type="button" 
+            onclick="openNewNodeModal()" 
+            class="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-black text-xs shadow-md transition-all flex items-center gap-2 cursor-pointer font-heading"
+          >
+            <span>➕</span>
+            <span>Nuevo Nodo de Retiro</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- KPIs Rápidos de Nodos -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white border border-stone-200 rounded-3xl p-5 shadow-xs">
+          <span class="text-stone-400 font-mono text-[11px] font-bold uppercase tracking-wider block">Total de Nodos</span>
+          <span id="nodos-kpi-total" class="font-heading font-black text-3xl text-stone-900 block mt-1">3</span>
+          <span class="text-stone-500 text-xs mt-1 block">Sedes registradas en el sistema</span>
+        </div>
+        <div class="bg-white border border-emerald-200 rounded-3xl p-5 shadow-xs bg-emerald-50/20">
+          <span class="text-emerald-700 font-mono text-[11px] font-bold uppercase tracking-wider block">Publicados en la Web</span>
+          <span id="nodos-kpi-active" class="font-heading font-black text-3xl text-emerald-700 block mt-1">3</span>
+          <span class="text-stone-500 text-xs mt-1 block">Visibles en /compralunar/nodos</span>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-3xl p-5 shadow-xs">
+          <span class="text-stone-400 font-mono text-[11px] font-bold uppercase tracking-wider block">Pausados / Ocultos</span>
+          <span id="nodos-kpi-paused" class="font-heading font-black text-3xl text-stone-500 block mt-1">0</span>
+          <span class="text-stone-500 text-xs mt-1 block">No reciben pedidos actualmente</span>
+        </div>
+      </div>
+
+      <!-- Filtros y Búsqueda -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="relative flex-1 max-w-md">
+          <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-sm">🔍</span>
+          <input 
+            type="text" 
+            id="admin-nodos-search" 
+            oninput="renderAdminNodosTable()" 
+            placeholder="Buscar por nombre, localidad, dirección o guardián..." 
+            class="w-full bg-stone-50 border border-stone-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-stone-900 placeholder:text-stone-400 outline-none focus:border-emerald-500 focus:bg-white transition-all"
+          />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <select 
+            id="admin-nodos-status-filter" 
+            onchange="renderAdminNodosTable()" 
+            class="bg-white border border-stone-200 text-stone-700 font-bold text-xs rounded-2xl px-3 py-2 outline-none cursor-pointer shadow-2xs"
+          >
+            <option value="todos">Todos los Estados</option>
+            <option value="active">🟢 Solo Publicados en Web</option>
+            <option value="paused">⚪ Solo Pausados (Ocultos)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabla Maestra de Nodos -->
+      <div class="bg-white border border-stone-200 rounded-3xl overflow-hidden shadow-xs">
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse min-w-[920px]">
+            <thead>
+              <tr class="bg-stone-50 border-b border-stone-200 text-[10px] font-black uppercase tracking-wider text-stone-500">
+                <th class="py-3.5 px-4">Nodo & Sede</th>
+                <th class="py-3.5 px-3">Punto de Retiro</th>
+                <th class="py-3.5 px-3">Cronograma de Entrega</th>
+                <th class="py-3.5 px-3">Contacto / Coordinador</th>
+                <th class="py-3.5 px-3 text-center">Publicado en Web</th>
+                <th class="py-3.5 px-4 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-nodos-tbody" class="divide-y divide-stone-100">
+              <!-- Inyectado dinámicamente vía renderAdminNodosTable() -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
   </main>
 
   <!-- ========================================================================= -->
@@ -316,6 +434,17 @@
         <span>⏰</span>
         <span>Recordatorios Productores</span>
         <span id="tab-badge-reminders-count" class="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold hidden">0 hoy</span>
+      </button>
+
+      <button 
+        type="button" 
+        id="admin-tab-btn-nodos"
+        onclick="switchAdminTab('nodos')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-500 hover:text-stone-900 hover:bg-stone-100 shrink-0 flex items-center gap-2 font-bold"
+      >
+        <span>📍</span>
+        <span>Gestión de Nodos</span>
+        <span id="tab-badge-nodos-count" class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">3</span>
       </button>
     </div>
 
@@ -1340,6 +1469,223 @@
   <!-- ========================================================================= -->
   <!-- MODAL: EDITAR PRECIOS & PRODUCTO PUBLICADO EN LA WEB                      -->
   <!-- ========================================================================= -->
+  
+  <!-- ========================================================================= -->
+  <!-- MODAL: CREAR NUEVO NODO DE RETIRO                                         -->
+  <!-- ========================================================================= -->
+  <div id="modal-new-admin-node" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      <div class="p-5 sm:p-6 border-b border-stone-200 bg-emerald-50/50 flex items-center justify-between gap-4 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-2xl font-bold shrink-0">
+            📍
+          </div>
+          <div>
+            <h3 class="font-black text-lg text-stone-900 font-heading">
+              Agregar Nuevo Nodo de Retiro
+            </h3>
+            <p class="text-xs text-stone-500">
+              Creá un nuevo punto de entrega comunitaria para la Compra Lunar.
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeNewNodeModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+      </div>
+
+      <form id="form-new-admin-node" onsubmit="handleCreateNewNode(event)" class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-1">
+            <label class="block font-bold text-stone-700 mb-1">Ícono (Emoji) *</label>
+            <input type="text" id="new-node-icon" required value="📍" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-center text-xl outline-none" />
+          </div>
+          <div class="col-span-2">
+            <label class="block font-bold text-stone-700 mb-1">Nombre Completo *</label>
+            <input type="text" id="new-node-name" required placeholder="Ej. Nodo San Isidro" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Nombre Corto / Localidad *</label>
+            <input type="text" id="new-node-shortname" required placeholder="Ej. San Isidro" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Slug URL (único) *</label>
+            <input type="text" id="new-node-slug" required placeholder="Ej. sanisidro" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-mono outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Zona / Corredor *</label>
+            <input type="text" id="new-node-zone" required placeholder="Ej. Corredor Norte" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Etiqueta Badge</label>
+            <input type="text" id="new-node-badge" placeholder="Ej. Sede Barrial" value="Sede Activa" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Dirección / Punto de Retiro *</label>
+          <input type="text" id="new-node-location" required placeholder="Ej. Av. Santa Fe y Dardo Rocha, San Isidro" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Fecha de Entrega *</label>
+            <input type="text" id="new-node-delivery" required placeholder="Ej. Sábado 8 de Noviembre" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Fecha Límite de Cierre *</label>
+            <input type="text" id="new-node-cierre" required placeholder="Ej. 5 de Noviembre" value="30 de Octubre" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">WhatsApp / Teléfono Coordinador</label>
+            <input type="text" id="new-node-phone" placeholder="Ej. 5491133445566" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Guardián / Responsable</label>
+            <input type="text" id="new-node-guardian" placeholder="Ej. Familia Vecinal San Isidro" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Descripción / Nota Barrial</label>
+          <textarea id="new-node-desc" rows="2" placeholder="Breve referencia barrial..." class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none resize-none"></textarea>
+        </div>
+
+        <div class="p-3 bg-stone-50 border border-stone-200 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="font-bold text-stone-800 block">Publicar en la Web al crear</span>
+            <span class="text-[11px] text-stone-500">Aparecerá en /compralunar/nodos para que los vecinos puedan elegirlo</span>
+          </div>
+          <input type="checkbox" id="new-node-enabled" checked class="w-5 h-5 text-emerald-600 rounded border-stone-300 cursor-pointer" />
+        </div>
+
+        <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeNewNodeModal()" class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer">Cancelar</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black cursor-pointer shadow-xs font-heading">Crear y Publicar Nodo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: EDITAR INFORMACIÓN DE NODO DE RETIRO                               -->
+  <!-- ========================================================================= -->
+  <div id="modal-edit-admin-node" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      <div class="p-5 sm:p-6 border-b border-stone-200 bg-emerald-50/50 flex items-center justify-between gap-4 shrink-0">
+        <div class="flex items-center gap-3">
+          <div id="edit-node-icon-display" class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-2xl font-bold shrink-0">
+            📍
+          </div>
+          <div>
+            <h3 id="edit-node-modal-title" class="font-black text-lg text-stone-900 font-heading">
+              Modificar Información del Nodo
+            </h3>
+            <p class="text-xs text-stone-500">
+              Actualizá la dirección, fechas y detalles para /compralunar/nodos.
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeEditNodeModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+      </div>
+
+      <form id="form-edit-admin-node" onsubmit="handleSaveEditNode(event)" class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+        <input type="hidden" id="edit-node-slug" value="" />
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-1">
+            <label class="block font-bold text-stone-700 mb-1">Ícono (Emoji) *</label>
+            <input type="text" id="edit-node-icon" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-center text-xl outline-none" />
+          </div>
+          <div class="col-span-2">
+            <label class="block font-bold text-stone-700 mb-1">Nombre Completo *</label>
+            <input type="text" id="edit-node-name" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Nombre Corto *</label>
+            <input type="text" id="edit-node-shortname" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Zona / Corredor *</label>
+            <input type="text" id="edit-node-zone" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Etiqueta Badge</label>
+            <input type="text" id="edit-node-badge" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Color de Badge</label>
+            <select id="edit-node-badgecolor" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none cursor-pointer">
+              <option value="emerald">Verde (Sede Principal / Activa)</option>
+              <option value="amber">Ámbar (Cooperativa)</option>
+              <option value="sky">Celeste (Corredor Río / Costero)</option>
+              <option value="purple">Violeta (Comunitario)</option>
+              <option value="rose">Rosa (Feria)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Dirección / Punto de Retiro *</label>
+          <input type="text" id="edit-node-location" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Fecha de Entrega Comunitaria *</label>
+            <input type="text" id="edit-node-delivery" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Fecha Límite de Cierre *</label>
+            <input type="text" id="edit-node-cierre" required class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">WhatsApp / Teléfono Coordinador</label>
+            <input type="text" id="edit-node-phone" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Guardián / Responsable</label>
+            <input type="text" id="edit-node-guardian" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Descripción / Nota Barrial</label>
+          <textarea id="edit-node-desc" rows="2" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none resize-none"></textarea>
+        </div>
+
+        <div class="p-3 bg-stone-50 border border-stone-200 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="font-bold text-stone-800 block">Publicado en la Web</span>
+            <span class="text-[11px] text-stone-500">Visible en /compralunar/nodos para recibir pedidos</span>
+          </div>
+          <input type="checkbox" id="edit-node-enabled" class="w-5 h-5 text-emerald-600 rounded border-stone-300 cursor-pointer" />
+        </div>
+
+        <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeEditNodeModal()" class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer">Cancelar</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black cursor-pointer shadow-xs font-heading">Guardar Cambios del Nodo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div id="modal-edit-master-product" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
     <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
       
@@ -2202,6 +2548,7 @@
       if (tabName === 'finanzas') renderAdminFinances();
       if (tabName === 'vrde') renderAdminVrdeSync();
       if (tabName === 'recordatorios') renderAdminReminders();
+      if (tabName === 'nodos') renderAdminNodosTable();
     }
 
     // =========================================================================
@@ -2326,6 +2673,7 @@
       }
 
       initAdminProducerReminders();
+      initAdminNodos();
       updateAdminKPIs();
       switchAdminTab(currentAdminTab);
     }
@@ -5160,6 +5508,418 @@ Por favor confirmanos recepción del pedido y horario estimado de entrega/cosech
     document.addEventListener('DOMContentLoaded', () => {
       checkAuthState();
     });
-  </script>
+  
+    // =========================================================================
+    // GESTIÓN DE NODOS DE RETIRO (/compralunar/nodos)
+    // =========================================================================
+    const DEFAULT_LUNAR_NODOS = [
+      {
+        id: 'nodo-lomaverde',
+        slug: 'lomaverde',
+        name: 'Nodo Loma Verde',
+        shortName: 'Loma Verde',
+        zone: 'Escobar Norte',
+        badge: '● Sede Activa',
+        badgeColor: 'emerald',
+        icon: '🌿',
+        desc: 'Red Comunitaria Loma Verde · Finca Ecotipa y quintas del corredor norte.',
+        location: 'Calle Congreve & Arrayanes, Loma Verde (Escobar)',
+        address: 'Calle Congreve & Arrayanes, Loma Verde',
+        deliveryDate: 'Sábado 1 de Noviembre',
+        cierreDate: '30 de Octubre',
+        phone: '5491133445566',
+        guardian: 'Coordinación Círculos Loma Verde & VRDE Club',
+        enabled: true
+      },
+      {
+        id: 'nodo-cooperativa',
+        slug: 'chasqui',
+        name: 'Chasqui Maschwitz',
+        shortName: 'Maschwitz',
+        zone: 'Escobar Sur',
+        badge: 'Cooperativa',
+        badgeColor: 'amber',
+        icon: '🌾',
+        desc: 'Almacén Cooperativo & Molino Campesino Chasqui.',
+        location: 'Espacio Cultural & Almacén Chasqui, Maschwitz',
+        address: 'Espacio Cultural Chasqui',
+        deliveryDate: 'Domingo 2 de Noviembre',
+        cierreDate: '30 de Octubre',
+        phone: '5491123456789',
+        guardian: 'Equipo Logístico Chasqui',
+        enabled: true
+      },
+      {
+        id: 'nodo-central',
+        slug: 'central',
+        name: 'Central Vicente López',
+        shortName: 'Vicente López',
+        zone: 'Corredor Río',
+        badge: 'Corredor Río',
+        badgeColor: 'sky',
+        icon: '🌊',
+        desc: 'Punto de acopio costero Florida / Olivos / La Lucila.',
+        location: 'Punto de acopio costero Florida / V. López',
+        address: 'Nodo Costero V. López',
+        deliveryDate: 'Primer fin de semana de Noviembre',
+        cierreDate: '30 de Octubre',
+        phone: '5491123456789',
+        guardian: 'Nodo Costero V. López',
+        enabled: true
+      }
+    ];
+
+    let adminNodes = [];
+
+    function initAdminNodos() {
+      try {
+        const raw = localStorage.getItem('elementales_lunar_nodos_v1');
+        if (raw) {
+          adminNodes = JSON.parse(raw);
+        }
+      } catch (e) {
+        adminNodes = [];
+      }
+
+      if (!Array.isArray(adminNodes) || adminNodes.length === 0) {
+        adminNodes = JSON.parse(JSON.stringify(DEFAULT_LUNAR_NODOS));
+        saveAdminNodes();
+      } else {
+        // Asegurar que si faltan nodos base existan
+        DEFAULT_LUNAR_NODOS.forEach(defNode => {
+          if (!adminNodes.some(n => n.slug === defNode.slug)) {
+            adminNodes.push(JSON.parse(JSON.stringify(defNode)));
+          }
+        });
+        saveAdminNodes();
+      }
+
+      updateAdminNodosBadge();
+    }
+
+    function saveAdminNodes() {
+      try {
+        localStorage.setItem('elementales_lunar_nodos_v1', JSON.stringify(adminNodes));
+        window.dispatchEvent(new CustomEvent('elementales_nodes_updated', { detail: adminNodes }));
+      } catch (e) {
+        console.error('Error guardando nodos:', e);
+      }
+      updateAdminNodosBadge();
+    }
+
+    function updateAdminNodosBadge() {
+      const activeCount = adminNodes.filter(n => n.enabled !== false).length;
+      const b1 = document.getElementById('tab-badge-nodos-count');
+      if (b1) b1.textContent = activeCount;
+      const b2 = document.getElementById('nodos-active-count-badge');
+      if (b2) b2.textContent = `${activeCount} sedes activas`;
+    }
+
+    function renderAdminNodosTable() {
+      const tbody = document.getElementById('admin-nodos-tbody');
+      if (!tbody) return;
+
+      const q = (document.getElementById('admin-nodos-search')?.value || '').toLowerCase().trim();
+      const statusFilter = document.getElementById('admin-nodos-status-filter')?.value || 'todos';
+
+      // Actualizar KPIs
+      const totalCount = adminNodes.length;
+      const activeCount = adminNodes.filter(n => n.enabled !== false).length;
+      const pausedCount = totalCount - activeCount;
+
+      const kpiTotal = document.getElementById('nodos-kpi-total');
+      if (kpiTotal) kpiTotal.textContent = totalCount;
+      const kpiActive = document.getElementById('nodos-kpi-active');
+      if (kpiActive) kpiActive.textContent = activeCount;
+      const kpiPaused = document.getElementById('nodos-kpi-paused');
+      if (kpiPaused) kpiPaused.textContent = pausedCount;
+
+      let list = [...adminNodes];
+
+      // Filtro por estado
+      if (statusFilter === 'active') {
+        list = list.filter(n => n.enabled !== false);
+      } else if (statusFilter === 'paused') {
+        list = list.filter(n => n.enabled === false);
+      }
+
+      // Filtro por texto
+      if (q) {
+        list = list.filter(n => 
+          (n.name && n.name.toLowerCase().includes(q)) ||
+          (n.shortName && n.shortName.toLowerCase().includes(q)) ||
+          (n.location && n.location.toLowerCase().includes(q)) ||
+          (n.address && n.address.toLowerCase().includes(q)) ||
+          (n.zone && n.zone.toLowerCase().includes(q)) ||
+          (n.guardian && n.guardian.toLowerCase().includes(q)) ||
+          (n.slug && n.slug.toLowerCase().includes(q))
+        );
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-12 text-center text-stone-400 bg-stone-50/50">
+              <span class="text-3xl block mb-2">🔍</span>
+              <p class="font-bold text-stone-700">No se encontraron nodos con los filtros aplicados.</p>
+              <p class="text-xs text-stone-500 mt-1">Podés crear una nueva sede con el botón "Nuevo Nodo de Retiro".</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map(n => {
+        const isEnabled = n.enabled !== false;
+        const badgeColorMap = {
+          emerald: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+          amber: 'bg-amber-50 text-amber-900 border-amber-200',
+          sky: 'bg-sky-50 text-sky-800 border-sky-200',
+          purple: 'bg-purple-50 text-purple-800 border-purple-200',
+          rose: 'bg-rose-50 text-rose-800 border-rose-200'
+        };
+        const badgeClass = badgeColorMap[n.badgeColor] || 'bg-emerald-50 text-emerald-800 border-emerald-200';
+
+        return `
+          <tr class="hover:bg-stone-50/80 transition-colors ${!isEnabled ? 'opacity-60 bg-stone-50/40' : ''}">
+            
+            <!-- Nodo & Sede -->
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl shrink-0 w-10 h-10 rounded-2xl bg-stone-100 border border-stone-200 flex items-center justify-center">${n.icon || '📍'}</span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-black text-stone-900 text-xs sm:text-sm font-heading">${n.name}</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border font-mono ${badgeClass}">
+                      ${n.badge || n.zone || 'Sede'}
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-[11px] text-stone-400 font-mono">slug: /compralunar/nodos/${n.slug}</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Punto de Retiro -->
+            <td class="py-3 px-3">
+              <span class="font-bold text-stone-800 block">${n.location || n.address || 'A coordinar'}</span>
+              <span class="text-[11px] text-stone-500 block">${n.desc || ''}</span>
+            </td>
+
+            <!-- Cronograma -->
+            <td class="py-3 px-3">
+              <span class="font-bold text-stone-900 block">🚚 ${n.deliveryDate || 'Próximo ciclo'}</span>
+              ${n.cierreDate ? `<span class="text-[11px] text-amber-700 block font-mono">⏱️ Cierre: ${n.cierreDate}</span>` : ''}
+            </td>
+
+            <!-- Contacto -->
+            <td class="py-3 px-3">
+              <span class="font-bold text-stone-800 block">${n.guardian || 'Equipo Nodo'}</span>
+              ${n.phone ? `<span class="text-[11px] text-stone-500 font-mono block">📞 ${n.phone}</span>` : ''}
+            </td>
+
+            <!-- Publicado en Web -->
+            <td class="py-3 px-3 text-center">
+              <button 
+                type="button" 
+                onclick="toggleNodePublished('${n.slug}')"
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all shadow-2xs ${isEnabled ? 'bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300' : 'bg-stone-200 hover:bg-stone-300 text-stone-600 border border-stone-300'}"
+                title="Hacé clic para publicar u ocultar este nodo en /compralunar/nodos"
+              >
+                <span class="w-2 h-2 rounded-full ${isEnabled ? 'bg-emerald-600 animate-pulse' : 'bg-stone-400'}"></span>
+                <span>${isEnabled ? 'Publicado' : 'Pausado'}</span>
+              </button>
+            </td>
+
+            <!-- Acciones -->
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button 
+                  type="button" 
+                  onclick="openEditNodeModal('${n.slug}')" 
+                  class="px-2.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 border border-stone-200 text-stone-700 text-xs font-bold cursor-pointer transition-all flex items-center gap-1"
+                  title="Modificar información y fechas del nodo"
+                >
+                  <span>✏️</span>
+                  <span>Editar</span>
+                </button>
+                <button 
+                  type="button" 
+                  onclick="deleteNodeFromAdmin('${n.slug}')" 
+                  class="p-1.5 rounded-xl text-stone-400 hover:text-red-600 hover:bg-red-50 cursor-pointer transition-all"
+                  title="Eliminar nodo"
+                >
+                  🗑️
+                </button>
+              </div>
+            </td>
+
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function toggleNodePublished(slug) {
+      const node = adminNodes.find(n => n.slug === slug);
+      if (!node) return;
+
+      node.enabled = (node.enabled === false) ? true : false;
+      saveAdminNodes();
+      renderAdminNodosTable();
+
+      try {
+        if (node.enabled && typeof confetti === 'function') confetti({ particleCount: 20, spread: 40 });
+      } catch (e) {}
+    }
+
+    function openNewNodeModal() {
+      const modal = document.getElementById('modal-new-admin-node');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeNewNodeModal() {
+      const modal = document.getElementById('modal-new-admin-node');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function handleCreateNewNode(e) {
+      e.preventDefault();
+      const icon = document.getElementById('new-node-icon')?.value.trim() || '📍';
+      const name = document.getElementById('new-node-name')?.value.trim();
+      const shortName = document.getElementById('new-node-shortname')?.value.trim() || name;
+      let slug = document.getElementById('new-node-slug')?.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+      const zone = document.getElementById('new-node-zone')?.value.trim() || 'Zona Norte';
+      const badge = document.getElementById('new-node-badge')?.value.trim() || 'Sede Activa';
+      const location = document.getElementById('new-node-location')?.value.trim();
+      const delivery = document.getElementById('new-node-delivery')?.value.trim() || 'Próximo ciclo';
+      const cierre = document.getElementById('new-node-cierre')?.value.trim() || '30 de Octubre';
+      const phone = document.getElementById('new-node-phone')?.value.trim() || '';
+      const guardian = document.getElementById('new-node-guardian')?.value.trim() || '';
+      const desc = document.getElementById('new-node-desc')?.value.trim() || '';
+      const enabled = document.getElementById('new-node-enabled')?.checked !== false;
+
+      if (!name || !location) {
+        alert('Por favor completá el nombre y la dirección del nodo.');
+        return;
+      }
+
+      if (!slug) {
+        slug = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      }
+
+      if (adminNodes.some(n => n.slug === slug)) {
+        slug = slug + '-' + Math.floor(100 + Math.random() * 900);
+      }
+
+      const newNode = {
+        id: 'nodo-' + slug,
+        slug: slug,
+        name: name,
+        shortName: shortName,
+        zone: zone,
+        badge: badge,
+        badgeColor: 'emerald',
+        icon: icon,
+        desc: desc,
+        location: location,
+        address: location,
+        deliveryDate: delivery,
+        cierreDate: cierre,
+        phone: phone,
+        guardian: guardian,
+        enabled: enabled
+      };
+
+      adminNodes.push(newNode);
+      saveAdminNodes();
+      closeNewNodeModal();
+      renderAdminNodosTable();
+
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 30, spread: 50 });
+      } catch (err) {}
+
+      alert(`✓ Nodo "${name}" agregado con éxito.\nURL: /compralunar/nodos/${slug}`);
+    }
+
+    function openEditNodeModal(slug) {
+      const modal = document.getElementById('modal-edit-admin-node');
+      if (!modal) return;
+
+      const n = adminNodes.find(item => item.slug === slug);
+      if (!n) return;
+
+      document.getElementById('edit-node-slug').value = n.slug;
+      document.getElementById('edit-node-icon').value = n.icon || '📍';
+      document.getElementById('edit-node-name').value = n.name || '';
+      document.getElementById('edit-node-shortname').value = n.shortName || '';
+      document.getElementById('edit-node-zone').value = n.zone || '';
+      document.getElementById('edit-node-badge').value = n.badge || '';
+      document.getElementById('edit-node-badgecolor').value = n.badgeColor || 'emerald';
+      document.getElementById('edit-node-location').value = n.location || n.address || '';
+      document.getElementById('edit-node-delivery').value = n.deliveryDate || '';
+      document.getElementById('edit-node-cierre').value = n.cierreDate || '30 de Octubre';
+      document.getElementById('edit-node-phone').value = n.phone || '';
+      document.getElementById('edit-node-guardian').value = n.guardian || '';
+      document.getElementById('edit-node-desc').value = n.desc || '';
+      document.getElementById('edit-node-enabled').checked = n.enabled !== false;
+
+      const titleEl = document.getElementById('edit-node-modal-title');
+      if (titleEl) titleEl.textContent = `Modificar Nodo: ${n.name}`;
+      const iconEl = document.getElementById('edit-node-icon-display');
+      if (iconEl) iconEl.textContent = n.icon || '📍';
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeEditNodeModal() {
+      const modal = document.getElementById('modal-edit-admin-node');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function handleSaveEditNode(e) {
+      e.preventDefault();
+      const slug = document.getElementById('edit-node-slug').value;
+      const n = adminNodes.find(item => item.slug === slug);
+      if (!n) return;
+
+      n.icon = document.getElementById('edit-node-icon').value.trim() || '📍';
+      n.name = document.getElementById('edit-node-name').value.trim();
+      n.shortName = document.getElementById('edit-node-shortname').value.trim() || n.name;
+      n.zone = document.getElementById('edit-node-zone').value.trim();
+      n.badge = document.getElementById('edit-node-badge').value.trim();
+      n.badgeColor = document.getElementById('edit-node-badgecolor').value;
+      n.location = document.getElementById('edit-node-location').value.trim();
+      n.address = n.location;
+      n.deliveryDate = document.getElementById('edit-node-delivery').value.trim();
+      n.cierreDate = document.getElementById('edit-node-cierre').value.trim();
+      n.phone = document.getElementById('edit-node-phone').value.trim();
+      n.guardian = document.getElementById('edit-node-guardian').value.trim();
+      n.desc = document.getElementById('edit-node-desc').value.trim();
+      n.enabled = document.getElementById('edit-node-enabled').checked;
+
+      saveAdminNodes();
+      closeEditNodeModal();
+      renderAdminNodosTable();
+
+      try {
+        if (typeof confetti === 'function') confetti({ particleCount: 20, spread: 40 });
+      } catch (err) {}
+
+      alert(`✓ Información del nodo "${n.name}" guardada y actualizada en la web.`);
+    }
+
+    function deleteNodeFromAdmin(slug) {
+      const n = adminNodes.find(item => item.slug === slug);
+      const name = n ? n.name : 'este nodo';
+      if (!confirm(`¿Eliminar definitivamente el nodo "${name}"? Dejará de aparecer en /compralunar/nodos.`)) return;
+
+      adminNodes = adminNodes.filter(item => item.slug !== slug);
+      saveAdminNodes();
+      renderAdminNodosTable();
+    }
+
+</script>
 </body>
 </html>
