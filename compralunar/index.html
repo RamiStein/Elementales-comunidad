@@ -124,80 +124,255 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-emerald-100 selection:text-emerald-900 pb-28">
 
-  <!-- ========================================================================= -->
-  <!-- 1. HEADER: ELEMENTALES COMUNIDAD (MENÚ IZQ / LOGO CENTRADO / LOGIN + CART DER) -->
+    <!-- ========================================================================= -->
+  <!-- 1. HEADER: ELEMENTALES COMUNIDAD (MENÚ IZQ / COMPRA LUNAR CENTRADA / LOGO DER) -->
   <!-- ========================================================================= -->
   <header class="w-full bg-white/95 backdrop-blur-md border-b border-stone-200 sticky top-0 z-40 px-4 sm:px-8 py-3 transition-all">
     <div class="max-w-6xl mx-auto relative flex items-center justify-between min-h-[44px]">
       
-      <!-- IZQUIERDA: Menú desplegable estilo navegación -->
+      <!-- IZQUIERDA: Botón para abrir el panel lateral de navegación -->
       <div class="relative flex items-center z-10">
         <button 
           type="button" 
           id="lunar-menu-btn" 
           onclick="toggleLunarNavMenu(event)" 
           class="p-2 rounded-2xl text-stone-700 hover:text-emerald-800 hover:bg-stone-100 transition-colors flex items-center justify-center cursor-pointer focus:outline-none"
-          title="Menú de Navegación"
-          aria-label="Abrir menú"
+          title="Menú y Panel Compra Lunar"
+          aria-label="Abrir panel de navegación"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
         </button>
-
-        <!-- Dropdown Menú Flotante -->
-        <div id="lunar-nav-dropdown" class="hidden absolute left-0 top-full mt-2 w-60 bg-white rounded-2xl shadow-xl border border-stone-200 py-2.5 z-50 animate-fade-in">
-          <div class="px-4 py-2 border-b border-stone-100 mb-1">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">Elementales</span>
-            <p class="text-xs font-black text-stone-800">Menú de Navegación</p>
-          </div>
-          <a href="/" class="flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-stone-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors">
-            <span class="text-base">🌐</span>
-            <span>Portal de la Red</span>
-          </a>
-          <a href="/compralunar/nodos" onclick="handleMenuNodeClick(event)" class="flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-stone-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors">
-            <span class="text-base">📍</span>
-            <span>Cambiar Punto de Retiro</span>
-          </a>
-          <a href="/compralunar" onclick="handleMenuStoreClick(event)" class="flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-stone-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors">
-            <span class="text-base">🌱</span>
-            <span>Catálogo y Cosechas</span>
-          </a>
-          <div class="border-t border-stone-100 my-1.5"></div>
-          <a href="/gestionelemental.html" class="flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-stone-600 hover:bg-amber-50 hover:text-amber-900 transition-colors">
-            <span class="text-base">🔐</span>
-            <span>Gestión del Nodo</span>
-          </a>
-        </div>
       </div>
 
-      <!-- CENTRO: SOLO EL EMBLEMA GEOMÉTRICO (CENTRADO MATEMÁTICAMENTE) -->
+      <!-- CENTRO: TÍTULO SUTIL COMPRA LUNAR -->
       <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-auto">
-        <a href="/compralunar" onclick="handleLogoClick(event)" class="flex items-center justify-center p-1.5 rounded-2xl hover:bg-stone-100/70 transition-all group" title="Elementales Comunidad · Compra Lunar">
+        <button type="button" onclick="handleLogoClick(event)" class="flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-stone-100/80 transition-colors text-stone-800 font-heading font-black text-xs sm:text-sm tracking-tight cursor-pointer">
+          <span class="text-sm sm:text-base">🌕</span>
+          <span>Compra Lunar</span>
+        </button>
+      </div>
+
+      <!-- DERECHA: ÍCONO ELEMENTALES (Reemplaza al Inicio de Sesión) -->
+      <div class="flex items-center gap-2 sm:gap-3 z-10">
+        <a 
+          href="/compralunar" 
+          onclick="handleLogoClick(event)" 
+          class="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1.5 rounded-2xl hover:bg-stone-100 transition-all group cursor-pointer" 
+          title="Elementales Comunidad · Inicio"
+        >
           <img 
             src="public/assets/brand/comunidad_emblem_clean.png" 
             alt="Elementales Comunidad" 
-            class="h-9 w-9 sm:h-10 sm:w-10 object-contain group-hover:scale-110 transition-transform drop-shadow-xs" 
+            class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition-transform drop-shadow-xs" 
             onerror="this.src='public/assets/brand/comunidad_full_clean.png'"
           />
-        </a>
-      </div>
-
-      <!-- DERECHA: BOTÓN DE LOGIN -->
-      <div class="flex items-center gap-2 sm:gap-3 z-10">
-        <!-- Log in -->
-        <a 
-          href="/" 
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-stone-700 hover:text-emerald-700 hover:bg-stone-100 transition-colors cursor-pointer"
-          title="Ingresar a la Red"
-        >
-          <span class="text-sm">👤</span>
-          <span class="hidden sm:inline">Ingresar</span>
+          <span class="font-heading font-black text-stone-900 text-sm hidden sm:inline tracking-tight group-hover:text-emerald-800 transition-colors">Elementales</span>
         </a>
       </div>
 
     </div>
   </header>
+
+  <!-- ========================================================================= -->
+  <!-- PANEL LATERAL DE NAVEGACIÓN (DRAWER OFF-CANVAS)                           -->
+  <!-- ========================================================================= -->
+  <!-- Backdrop desenfocado -->
+  <div 
+    id="lunar-drawer-backdrop" 
+    onclick="closeLunarDrawer()" 
+    class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Panel Desplegable Lateral Izquierdo -->
+  <aside 
+    id="lunar-drawer-panel" 
+    class="fixed top-0 left-0 bottom-0 z-50 w-full max-w-[340px] sm:max-w-[400px] bg-white shadow-2xl flex flex-col -translate-x-full transition-transform duration-300 ease-out"
+    aria-label="Menú y Panel Compra Lunar"
+  >
+    <!-- Encabezado del Panel -->
+    <div class="p-4 sm:p-5 border-b border-stone-200 flex items-center justify-between bg-stone-50/80">
+      <div class="flex items-center gap-2.5">
+        <img 
+          src="public/assets/brand/comunidad_emblem_clean.png" 
+          alt="Elementales" 
+          class="w-7 h-7 object-contain drop-shadow-xs" 
+          onerror="this.src='public/assets/brand/comunidad_full_clean.png'"
+        />
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 font-mono block leading-none">Comunidad</span>
+          <h2 class="text-sm font-black text-stone-900 font-heading leading-tight">Compra Lunar</h2>
+        </div>
+      </div>
+      <button 
+        type="button" 
+        onclick="closeLunarDrawer()" 
+        class="w-8 h-8 rounded-full text-stone-500 hover:text-stone-900 hover:bg-stone-200/80 transition-colors flex items-center justify-center cursor-pointer focus:outline-none"
+        aria-label="Cerrar panel"
+        title="Cerrar"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Contenido con Scroll -->
+    <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5">
+      
+      <!-- 1. INFORMACIÓN DE LA COMPRA LUNAR -->
+      <section class="rounded-2xl bg-gradient-to-br from-emerald-50/90 to-teal-50/50 border border-emerald-100 p-4 space-y-3 shadow-2xs">
+        <div class="flex items-center gap-2 text-emerald-900">
+          <span class="text-lg">🌕</span>
+          <h3 class="font-heading font-black text-xs uppercase tracking-wider">¿Qué es la Compra Lunar?</h3>
+        </div>
+        <p class="text-xs text-stone-700 leading-relaxed">
+          Un circuito de <strong>consumo colectivo y agroecológico</strong> autogestionado por la comunidad. Compramos de forma directa a familias productoras de la tierra, promoviendo <strong>comunidades resilientes</strong>, soberanía alimentaria y precios justos sin intermediarios.
+        </p>
+        <div class="pt-2 border-t border-emerald-200/60 grid grid-cols-3 gap-1.5 text-center text-[10px] text-stone-600 font-medium">
+          <div class="bg-white/80 p-1.5 rounded-lg border border-emerald-100">
+            <span class="block text-xs mb-0.5">📍</span>
+            <strong class="text-emerald-950 font-bold block">1. Elegí nodo</strong>
+            <span>Punto barrial</span>
+          </div>
+          <div class="bg-white/80 p-1.5 rounded-lg border border-emerald-100">
+            <span class="block text-xs mb-0.5">🧺</span>
+            <strong class="text-emerald-950 font-bold block">2. Canasta</strong>
+            <span>Antes del cierre</span>
+          </div>
+          <div class="bg-white/80 p-1.5 rounded-lg border border-emerald-100">
+            <span class="block text-xs mb-0.5">🚚</span>
+            <strong class="text-emerald-950 font-bold block">3. Retiro</strong>
+            <span>Día de entrega</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. FECHAS DEL CICLO: ENTREGA Y CIERRE -->
+      <section class="rounded-2xl bg-white border border-stone-200 p-4 space-y-3.5 shadow-2xs">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 text-stone-900">
+            <span class="text-base">📅</span>
+            <h3 class="font-heading font-black text-xs uppercase tracking-wider">Fechas del Ciclo</h3>
+          </div>
+          <span class="text-[10px] font-bold font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Ciclo Activo</span>
+        </div>
+
+        <div class="space-y-2">
+          <!-- Cierre de pedidos -->
+          <div class="p-2.5 rounded-xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-2.5">
+            <span class="text-base shrink-0 mt-0.5">⏰</span>
+            <div class="flex-1 min-w-0">
+              <span class="text-[10px] font-extrabold uppercase text-amber-900 tracking-wider block">Cierre de Pedidos</span>
+              <p id="drawer-cierre-date" class="text-xs font-black text-amber-950 font-mono mt-0.5">Cargando...</p>
+              <p class="text-[10px] text-amber-800/80 mt-0.5 leading-tight">Hasta las 23:59 hs. Se consolidan las cosechas con los productores.</p>
+            </div>
+          </div>
+
+          <!-- Fecha de entrega comunitaria -->
+          <div class="p-2.5 rounded-xl bg-stone-50 border border-stone-200 flex items-start gap-2.5">
+            <span class="text-base shrink-0 mt-0.5">🚚</span>
+            <div class="flex-1 min-w-0">
+              <span class="text-[10px] font-extrabold uppercase text-stone-500 tracking-wider block">Entrega Comunitaria</span>
+              <p id="drawer-delivery-date" class="text-xs font-black text-stone-900 font-mono mt-0.5">Cargando...</p>
+              <div class="mt-1 flex items-center justify-between text-[11px] text-stone-600">
+                <span id="drawer-node-name" class="truncate font-semibold text-stone-800 pr-1">Sede Loma Verde</span>
+                <button type="button" onclick="handleDrawerChangeNode()" class="text-emerald-700 hover:text-emerald-900 font-bold underline cursor-pointer shrink-0">Cambiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. DETALLE DE PEDIDO -->
+      <section class="rounded-2xl bg-white border border-stone-200 p-4 space-y-3 shadow-2xs">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 text-stone-900">
+            <span class="text-base">🧺</span>
+            <h3 class="font-heading font-black text-xs uppercase tracking-wider">Detalle de tu Pedido</h3>
+          </div>
+        </div>
+
+        <!-- Vista cuando hay productos en carrito -->
+        <div id="drawer-active-cart-section" class="hidden space-y-3">
+          <div class="flex items-center justify-between bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-100">
+            <span id="drawer-cart-count" class="text-xs font-bold text-emerald-950">0 productos</span>
+            <span id="drawer-cart-subtotal" class="font-mono font-black text-emerald-900 text-sm">$0</span>
+          </div>
+
+          <!-- Lista de ítems -->
+          <ul id="drawer-cart-items" class="max-h-36 overflow-y-auto space-y-1 divide-y divide-stone-100 pr-1 text-xs">
+            <!-- Items generados dinámicamente -->
+          </ul>
+
+          <button 
+            type="button" 
+            onclick="handleDrawerOpenCheckout()" 
+            class="w-full py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-emerald-600 text-white font-bold text-xs shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer font-heading"
+          >
+            <span>Ver canasta y confirmar</span>
+            <span class="text-sm">→</span>
+          </button>
+        </div>
+
+        <!-- Vista cuando carrito está vacío -->
+        <div id="drawer-empty-cart-section" class="space-y-3">
+          <p class="text-xs text-stone-500 italic text-center py-2">Tu canasta está vacía por el momento.</p>
+
+          <!-- Espacio para mostrar último pedido si existió -->
+          <div id="drawer-last-order-box" class="hidden"></div>
+
+          <button 
+            type="button" 
+            onclick="handleDrawerOpenStore()" 
+            class="w-full py-2.5 px-4 rounded-xl bg-stone-100 hover:bg-emerald-50 hover:text-emerald-900 text-stone-800 font-bold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>🌱 Explorar Alimentos</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 4. COMPARTIR PÁGINA EN WHATSAPP -->
+      <section class="rounded-2xl bg-white border border-stone-200 p-4 space-y-3 shadow-2xs">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 text-stone-900">
+            <span class="text-base">💬</span>
+            <h3 class="font-heading font-black text-xs uppercase tracking-wider">Compartir en WhatsApp</h3>
+          </div>
+          <p class="text-[11px] text-stone-500 leading-normal">
+            Invitá a familiares, vecinos y amigos a sumarse a la compra comunitaria de este ciclo lunar.
+          </p>
+        </div>
+
+        <button 
+          type="button" 
+          onclick="shareLunarViaWhatsApp()" 
+          class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba59] active:scale-98 text-white font-bold text-xs sm:text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2.5 cursor-pointer font-heading"
+          title="Compartir por WhatsApp"
+        >
+          <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          <span>Compartir en WhatsApp</span>
+        </button>
+      </section>
+
+      <!-- Enlaces secundarios del sistema -->
+      <div class="pt-2 border-t border-stone-200/70 space-y-1">
+        <a href="/" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-600 hover:text-emerald-800 hover:bg-stone-100 transition-colors">
+          <span>🌐</span>
+          <span>Portal Principal Elementales</span>
+        </a>
+        <a href="/gestionelemental.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-stone-600 hover:text-amber-800 hover:bg-amber-50/70 transition-colors">
+          <span>🔐</span>
+          <span>Gestión y Administración del Nodo</span>
+        </a>
+      </div>
+
+    </div>
+  </aside>
 
   <!-- ========================================================================= -->
   <!-- VISTA 1: LANDING INICIAL (URL: /compralunar)                              -->
@@ -1928,32 +2103,210 @@
       }
     }
 
+    function openLunarDrawer() {
+      updateDrawerContent();
+      const drawer = document.getElementById('lunar-drawer-panel');
+      const backdrop = document.getElementById('lunar-drawer-backdrop');
+      if (drawer && backdrop) {
+        backdrop.classList.remove('pointer-events-none', 'opacity-0');
+        backdrop.classList.add('opacity-100');
+        drawer.classList.remove('-translate-x-full');
+        drawer.classList.add('translate-x-0');
+        document.body.classList.add('overflow-hidden');
+      }
+    }
+
+    function closeLunarDrawer() {
+      const drawer = document.getElementById('lunar-drawer-panel');
+      const backdrop = document.getElementById('lunar-drawer-backdrop');
+      if (drawer && backdrop) {
+        backdrop.classList.add('opacity-0');
+        backdrop.classList.remove('opacity-100');
+        drawer.classList.add('-translate-x-full');
+        drawer.classList.remove('translate-x-0');
+        setTimeout(() => {
+          backdrop.classList.add('pointer-events-none');
+          document.body.classList.remove('overflow-hidden');
+        }, 300);
+      }
+    }
+
     function toggleLunarNavMenu(e) {
       if (e) e.stopPropagation();
-      const menu = document.getElementById('lunar-nav-dropdown');
-      if (menu) menu.classList.toggle('hidden');
+      const drawer = document.getElementById('lunar-drawer-panel');
+      if (drawer && drawer.classList.contains('translate-x-0')) {
+        closeLunarDrawer();
+      } else {
+        openLunarDrawer();
+      }
     }
 
-    function handleMenuNodeClick(e) {
-      if (e) e.preventDefault();
-      document.getElementById('lunar-nav-dropdown')?.classList.add('hidden');
-      navigateLunarRoute('/compralunar/nodos');
+    function handleDrawerChangeNode() {
+      closeLunarDrawer();
+      goToNodeSelection();
     }
 
-    function handleMenuStoreClick(e) {
-      if (e) e.preventDefault();
-      document.getElementById('lunar-nav-dropdown')?.classList.add('hidden');
-      navigateLunarRoute(`/compralunar/nodos/${selectedNodeSlug || 'lomaverde'}`);
+    function handleDrawerOpenStore() {
+      closeLunarDrawer();
+      const node = selectedNodeSlug || 'lomaverde';
+      navigateLunarRoute(`/compralunar/nodos/${node}`);
     }
 
-    // Cerrar menú al hacer clic fuera
-    document.addEventListener('click', (e) => {
-      const menu = document.getElementById('lunar-nav-dropdown');
-      const btn = document.getElementById('lunar-menu-btn');
-      if (menu && !menu.classList.contains('hidden')) {
-        if (!menu.contains(e.target) && !btn?.contains(e.target)) {
-          menu.classList.add('hidden');
+    function handleDrawerOpenCheckout() {
+      closeLunarDrawer();
+      openLunarCheckoutModal();
+    }
+
+    function handleDrawerShowLastOrder() {
+      closeLunarDrawer();
+      let lastOrder = lastCompletedOrderData;
+      if (!lastOrder) {
+        try {
+          const stored = localStorage.getItem('elementales_last_order');
+          if (stored) lastOrder = JSON.parse(stored);
+        } catch (e) {}
+      }
+      if (!lastOrder) return;
+
+      const orderBadgeEl = document.getElementById('success-order-id-badge');
+      if (orderBadgeEl) orderBadgeEl.textContent = `#${lastOrder.id}`;
+      const clientNameEl = document.getElementById('success-client-name');
+      if (clientNameEl) clientNameEl.textContent = lastOrder.clientName || 'Comprador';
+      const totalPriceEl = document.getElementById('success-total-price');
+      if (totalPriceEl) totalPriceEl.textContent = `$${(lastOrder.total || 0).toLocaleString('es-AR')}`;
+      const deliveryDateEl = document.getElementById('success-delivery-date');
+      if (deliveryDateEl && lastOrder.deliveryDate) deliveryDateEl.textContent = lastOrder.deliveryDate;
+      const nodeNameEl = document.getElementById('success-node-name');
+      if (nodeNameEl && lastOrder.nodeName) nodeNameEl.textContent = lastOrder.nodeName;
+
+      const modal = document.getElementById('lunar-checkout-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        document.getElementById('lunar-checkout-view-form')?.classList.add('hidden');
+        const successView = document.getElementById('lunar-checkout-view-success');
+        if (successView) {
+          successView.classList.remove('hidden');
+          successView.scrollTop = 0;
         }
+      }
+    }
+
+    function updateDrawerContent() {
+      // 1. Fechas y Nodo
+      const node = (typeof LUNAR_NODOS !== 'undefined' && LUNAR_NODOS[selectedNodeSlug]) 
+        ? LUNAR_NODOS[selectedNodeSlug] 
+        : (typeof loadLunarNodes === 'function' ? loadLunarNodes()[0] : { name: 'Sede Loma Verde', location: 'Escobar', deliveryDate: 'Sábado 8 de Noviembre' });
+      const globalCierre = (typeof getGlobalCierreDate === 'function') ? getGlobalCierreDate() : '30 de Octubre';
+
+      const cierreEl = document.getElementById('drawer-cierre-date');
+      if (cierreEl) cierreEl.textContent = globalCierre;
+
+      const deliveryEl = document.getElementById('drawer-delivery-date');
+      if (deliveryEl) deliveryEl.textContent = node?.deliveryDate || 'Próximo ciclo';
+
+      const nodeNameEl = document.getElementById('drawer-node-name');
+      if (nodeNameEl) nodeNameEl.textContent = `${node?.name || 'Sede Comunitaria'}${node?.location ? ' (' + node.location + ')' : ''}`;
+
+      // 2. Detalle de Pedido (Carrito activo o último pedido)
+      const cartEntries = (typeof lunarCart === 'object' && lunarCart !== null) 
+        ? Object.entries(lunarCart).filter(([_, qty]) => qty > 0) 
+        : [];
+      
+      const activeCartSection = document.getElementById('drawer-active-cart-section');
+      const emptyCartSection = document.getElementById('drawer-empty-cart-section');
+      const cartCountEl = document.getElementById('drawer-cart-count');
+      const cartSubtotalEl = document.getElementById('drawer-cart-subtotal');
+      const cartItemsList = document.getElementById('drawer-cart-items');
+
+      if (cartEntries.length > 0) {
+        if (activeCartSection) activeCartSection.classList.remove('hidden');
+        if (emptyCartSection) emptyCartSection.classList.add('hidden');
+
+        let totalQty = 0;
+        const subtotal = (typeof getLunarCartSubtotal === 'function') ? getLunarCartSubtotal() : 0;
+
+        const itemsHtml = cartEntries.map(([id, qty]) => {
+          totalQty += qty;
+          const prod = (typeof LUNAR_PRODUCTS !== 'undefined') ? LUNAR_PRODUCTS.find(p => p.id === id) : null;
+          const unitPrice = (prod && typeof getProductUnitPrice === 'function') ? getProductUnitPrice(prod, qty) : (prod?.prices?.minorista || 0);
+          const itemTotal = unitPrice * qty;
+          const name = prod ? prod.name : id;
+          return `<li class="flex items-center justify-between py-1 text-xs text-stone-700 border-b border-stone-100 last:border-b-0">
+            <span class="truncate pr-2 font-medium"><strong class="text-stone-900">${qty}x</strong> ${name}</span>
+            <span class="font-mono font-bold shrink-0 text-stone-800">$${itemTotal.toLocaleString('es-AR')}</span>
+          </li>`;
+        }).join('');
+
+        if (cartCountEl) cartCountEl.textContent = `${totalQty} ${totalQty === 1 ? 'producto' : 'productos'}`;
+        if (cartSubtotalEl) cartSubtotalEl.textContent = `$${subtotal.toLocaleString('es-AR')}`;
+        if (cartItemsList) cartItemsList.innerHTML = itemsHtml;
+      } else {
+        if (activeCartSection) activeCartSection.classList.add('hidden');
+        if (emptyCartSection) emptyCartSection.classList.remove('hidden');
+
+        let lastOrder = lastCompletedOrderData;
+        if (!lastOrder) {
+          try {
+            const stored = localStorage.getItem('elementales_last_order');
+            if (stored) lastOrder = JSON.parse(stored);
+          } catch (e) {}
+        }
+
+        const lastOrderBox = document.getElementById('drawer-last-order-box');
+        if (lastOrder && lastOrder.id) {
+          if (lastOrderBox) {
+            lastOrderBox.classList.remove('hidden');
+            lastOrderBox.innerHTML = `
+              <div class="p-3 bg-stone-50 rounded-xl border border-stone-200 text-xs space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-stone-800">Último pedido registrado</span>
+                  <span class="font-mono font-black text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">#${lastOrder.id}</span>
+                </div>
+                <div class="text-[11px] text-stone-600">
+                  Total: <strong class="text-stone-900 font-mono">$${(lastOrder.total || 0).toLocaleString('es-AR')}</strong>
+                </div>
+                <div class="pt-1 flex items-center justify-between text-[11px]">
+                  <span class="text-stone-500 truncate mr-2">Entrega: ${lastOrder.deliveryDate || 'Acordada'}</span>
+                  <button type="button" onclick="handleDrawerShowLastOrder()" class="text-emerald-700 hover:text-emerald-900 font-bold underline cursor-pointer shrink-0">Ver comprobante</button>
+                </div>
+              </div>
+            `;
+          }
+        } else {
+          if (lastOrderBox) lastOrderBox.classList.add('hidden');
+        }
+      }
+    }
+
+    function shareLunarViaWhatsApp() {
+      const node = (typeof LUNAR_NODOS !== 'undefined' && LUNAR_NODOS[selectedNodeSlug]) 
+        ? LUNAR_NODOS[selectedNodeSlug] 
+        : { name: 'Comunidad Elementales', location: 'Punto de retiro', deliveryDate: 'Próximo ciclo' };
+      const globalCierre = (typeof getGlobalCierreDate === 'function') ? getGlobalCierreDate() : '30 de Octubre';
+      const delivery = node.deliveryDate || 'Próximo ciclo';
+      const nodeName = node.name || 'Sede Comunitaria';
+      const nodeLoc = node.location ? ` (${node.location})` : '';
+
+      const shareText = 
+`🌕 *Compra Comunitaria Lunar - Elementales*
+Sumate a la compra colectiva de alimentos agroecológicos. Construimos juntos comunidades resilientes con consumo consciente y precios justos directo de productores.
+
+📍 *Punto de retiro:* ${nodeName}${nodeLoc}
+⏰ *Cierre de pedidos:* ${globalCierre}
+🚚 *Entrega comunitaria:* ${delivery}
+
+👉 *Hacé tu pedido acá:*
+https://elementales.store/compralunar`;
+
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+      window.open(waUrl, '_blank');
+    }
+
+    // Tecla escape para cerrar drawer
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeLunarDrawer();
       }
     });
 
@@ -1992,6 +2345,9 @@
 
       const landingCierre = document.getElementById('landing-global-cierre');
       if (landingCierre) landingCierre.textContent = globalCierre;
+      if (typeof updateDrawerContent === 'function') {
+        updateDrawerContent();
+      }
     }
 
     // =========================================================================
@@ -2573,6 +2929,9 @@
     // Actualiza exclusivamente el espacio de "Tu Pedido"
     function updateFloatingCart() {
       renderSidebarCart();
+      if (typeof updateDrawerContent === 'function') {
+        updateDrawerContent();
+      }
     }
 
     // =========================================================================
@@ -2971,6 +3330,9 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
       if (emailLabel) emailLabel.textContent = email;
 
       lastCompletedOrderData = newOrder;
+      try {
+        localStorage.setItem('elementales_last_order', JSON.stringify(newOrder));
+      } catch (e) {}
 
       const emailNotice = document.getElementById('success-email-notice');
       if (emailNotice) emailNotice.textContent = `#${newOrder.id}`;
