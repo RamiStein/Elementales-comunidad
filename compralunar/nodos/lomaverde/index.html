@@ -1683,7 +1683,11 @@
           nodeSlug = 'lomaverde';
         }
 
-        if (!LUNAR_NODOS[nodeSlug]) nodeSlug = 'lomaverde';
+        const nodesMap = getLunarNodesMap();
+        if (!nodesMap[nodeSlug]) {
+          const activeList = getActiveLunarNodesList();
+          nodeSlug = activeList[0]?.slug || 'lomaverde';
+        }
         
         selectedNodeSlug = nodeSlug;
         currentLunarView = 'store';
@@ -2717,8 +2721,16 @@ _Pedido registrado en elementales.store/compralunar/nodos/${node.slug}_`
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Leer ruta actual del navegador
-      const initialPath = window.location.pathname || '/compralunar';
+      // Leer ruta actual del navegador y soportar parámetros ?route= o ?nodo=
+      const urlParams = new URLSearchParams(window.location.search);
+      const routeParam = urlParams.get('route');
+      const nodoParam = urlParams.get('nodo');
+      let initialPath = window.location.pathname || '/compralunar';
+      if (routeParam) {
+        initialPath = '/compralunar/' + routeParam.replace(/^\/+/, '');
+      } else if (nodoParam) {
+        initialPath = '/compralunar/nodos/' + nodoParam;
+      }
       navigateLunarRoute(initialPath, false);
     });
   </script>
