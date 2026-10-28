@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>🫒 Aceite de Oliva Extra Virgen Lorenzo Cabrera | Elementales Comunidad</title>
+  
+  <meta name="description" content="Sumate con amigos y vecinos en Elementales para pedir Aceite de Oliva Extra Virgen Agroecológico Lorenzo Cabrera de Villa Mazán, La Rioja. Escalas de compra pequeña (minorista), familiar (mayorista) y comunitaria (distribuidor)." />
+  <meta property="og:title" content="🫒 Aceite de Oliva Extra Virgen Lorenzo Cabrera - Elementales .store" />
+  <meta property="og:description" content="Compra pequeña (minorista), compra familiar (mayorista) o compra comunitaria (distribuidor) directo de olivares riojanos en Elementales." />
+  <meta property="og:image" content="public/assets/products/aceite_lorenzo_cabrera.jpg" />
+
+  <!-- Tailwind CSS CDN con paleta oficial de Elementales -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            oliva: {
+              DEFAULT: '#577327',
+              dark: '#3e531c',
+              light: '#6e7f45',
+              tint: '#f4f7ee',
+            },
+            terracotta: {
+              DEFAULT: '#c0826d',
+              light: '#d99a86',
+              dark: '#a6634f',
+              tint: '#fcf4f0',
+            },
+            spotify: {
+              DEFAULT: '#1db954',
+              hover: '#16a34a',
+            },
+            tierra: {
+              DEFAULT: '#8ca15d',
+              dark: '#4d662b',
+              light: '#edf3e3'
+            }
+          },
+          fontFamily: {
+            sans: ['Outfit', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Outfit', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --color-oliva: #577327;
+      --color-oliva-dark: #3e531c;
+      --color-terracotta: #c0826d;
+      --color-terracotta-dark: #a6634f;
+      --color-terracotta-tint: #fcf4f0;
+      --c-tierra: #8ca15d;
+      --color-spotify: #1db954;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: #fcfaf8;
+      color: #1c1917;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: var(--font-heading);
+    }
+
+    .font-mono-code {
+      font-family: var(--font-mono);
+    }
+
+    /* Animaciones suaves */
+    @keyframes pulse-subtle {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2.5s ease-in-out infinite;
+    }
+
+    .btn-action {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+
+    /* Tarjeta estilo Bloque Blockchain Elementales */
+    .block-card {
+      position: relative;
+      background: #ffffff;
+      border: 2px solid #e2ebd4;
+      border-radius: 1.5rem;
+      transition: all 0.25s ease;
+    }
+    .block-card.committed {
+      border-color: #577327;
+      background: linear-gradient(180deg, #f4f7ee 0%, #ffffff 100%);
+    }
+    .block-card.mining {
+      border-color: #8ca15d;
+      background: linear-gradient(180deg, #fcfaf8 0%, #ffffff 100%);
+      box-shadow: 0 10px 25px -5px rgba(87, 115, 39, 0.12);
+    }
+
+    /* Hash tag */
+    .hash-badge {
+      font-family: var(--font-mono);
+      background: #1c1917;
+      color: #a4c468;
+      padding: 0.15rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+  <script>window.confetti = function() {};</script>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#577327] selection:text-white pb-20">
+
+  <!-- ========================================================================= -->
+  <!-- 1. CABECERA ELEMENTALES & CONTEXTO DE CÍRCULO -->
+  <!-- ========================================================================= -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-[#e2ebd4] sticky top-0 z-40 shadow-xs">
+    <div class="max-w-xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
+      
+      <!-- LOGO ELEMENTALES -->
+      <a href="index.html" class="flex items-center gap-2.5 text-decoration-none group">
+        <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs group-hover:scale-105 transition-transform" alt="Elementales" />
+        <div class="leading-tight">
+          <span class="block font-black text-sm sm:text-base text-stone-900 tracking-tight leading-none font-heading">
+            Elementales <span class="text-[#577327]">.store</span>
+          </span>
+          <span class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider mt-0.5">
+            Compras Colectivas · Red Barrial
+          </span>
+        </div>
+      </a>
+
+      <!-- Selector de Círculo y Compartir -->
+      <div class="flex items-center gap-1.5">
+        <div class="relative">
+          <select id="circle-select" onchange="onCircleChange(this.value)" class="text-xs font-bold bg-[#f4f7ee] border border-[#d6e3c1] text-[#3e531c] rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#577327] cursor-pointer max-w-[170px] sm:max-w-[210px] truncate">
+            <!-- Inyectado por JS -->
+          </select>
+        </div>
+
+        <button onclick="shareOlivaWhatsApp()" class="btn-action bg-[#1db954] hover:bg-[#16a34a] text-white rounded-xl p-2 text-xs font-bold shadow-xs flex items-center gap-1" title="Compartir en WhatsApp">
+          <span>📲</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. HERO PRINCIPAL: ACEITE DE OLIVA EXTRA VIRGEN LORENZO CABRERA -->
+  <!-- ========================================================================= -->
+  <main class="max-w-xl mx-auto px-4 pt-4 sm:pt-6 w-full space-y-6">
+
+    <!-- Tarjeta del Producto Principal -->
+    <div class="bg-white rounded-3xl border-2 border-[#e2ebd4] shadow-sm p-5 sm:p-6 text-center relative overflow-hidden">
+      
+      <!-- Banner Superior de Calidad Tierra Elementales -->
+      <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#f4f7ee] text-[#3e531c] border border-[#577327]/30 text-xs font-black uppercase tracking-wider mb-3 shadow-2xs">
+        <span>🫒</span> AGROECOLÓGICO · 1° PRENSA EN FRÍO
+      </div>
+
+      <!-- Título y Origen -->
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-stone-900 tracking-tight leading-none mb-1 font-heading uppercase">
+        ACEITE DE OLIVA
+      </h1>
+      <p class="text-xs sm:text-sm font-bold text-[#577327] mb-4">
+        Lorenzo Cabrera · Olivares Centenarios de Villa Mazán, La Rioja
+      </p>
+
+      <!-- Imagen Destacada del Aceite -->
+      <div class="w-full h-56 sm:h-64 rounded-2xl overflow-hidden bg-stone-50 border border-stone-200 relative mb-4 shadow-inner group">
+        <img 
+          src="public/assets/products/aceite_lorenzo_cabrera.jpg" 
+          alt="Aceite de Oliva Extra Virgen Lorenzo Cabrera" 
+          class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+          onerror="this.src='public/assets/brand/comunidad_full_clean.png';"
+        />
+        <div class="absolute bottom-2.5 right-2.5 bg-black/75 backdrop-blur-xs text-white text-[11px] font-black px-2.5 py-1 rounded-lg border border-white/20 shadow-xs flex items-center gap-1.5">
+          <span>🫒</span> Botella 1L / Lotes Colectivos
+        </div>
+      </div>
+
+      <!-- Ficha de Especificaciones del Productor -->
+      <div class="bg-[#fcfaf8] rounded-2xl p-3.5 sm:p-4 border border-[#e2ebd4] text-left text-xs text-stone-700 space-y-2 mb-4 leading-relaxed">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div>
+            <p>• <strong>Presentación:</strong> Botella de 1 Litro (Vidrio)</p>
+            <p class="text-[10px] text-stone-500 pl-3 leading-tight">1° prensado artesanal en frío</p>
+          </div>
+          <div>
+            <p>• <strong>Origen:</strong> Villa Mazán, La Rioja</p>
+            <p>• <strong>Variedad:</strong> Arauco Centenario (<0.2% acidez)</p>
+          </div>
+        </div>
+        <p class="text-[11px] text-[#3e531c] font-semibold border-t border-[#e2ebd4] pt-2 flex items-center gap-1.5">
+          <span>👥</span> Circuito comunitario: conectamos a familias consumidoras directo con productores de la tierra.
+        </p>
+      </div>
+
+      <!-- Banner de Escalas de Precios Transparentes -->
+      <div class="bg-gradient-to-r from-[#3e531c] via-[#577327] to-[#8ca15d] text-white rounded-2xl p-4 shadow-md text-left space-y-2">
+        <span class="block text-[11px] sm:text-xs font-black uppercase tracking-wider text-white/90 text-center border-b border-white/20 pb-1.5">
+          Escala de Precios Directo de Productor
+        </span>
+        <div class="grid grid-cols-3 gap-2 text-center pt-0.5">
+          <div class="bg-white/10 rounded-xl p-2 backdrop-blur-xs">
+            <span class="block text-[10px] font-extrabold text-stone-200 uppercase">Pequeña</span>
+            <strong class="block text-sm sm:text-base font-black font-heading mt-0.5">$19.700</strong>
+            <span class="block text-[9px] text-stone-300">Minorista (1 a 5L)</span>
+          </div>
+          <div class="bg-white/20 rounded-xl p-2 backdrop-blur-xs border border-white/30">
+            <span class="block text-[10px] font-extrabold text-amber-200 uppercase">Familiar</span>
+            <strong class="block text-sm sm:text-base font-black font-heading mt-0.5">$18.700</strong>
+            <span class="block text-[9px] text-stone-200">Mayorista (+6L)</span>
+          </div>
+          <div class="bg-white/10 rounded-xl p-2 backdrop-blur-xs">
+            <span class="block text-[10px] font-extrabold text-emerald-200 uppercase">Comunitaria</span>
+            <strong class="block text-sm sm:text-base font-black font-heading mt-0.5">$18.100</strong>
+            <span class="block text-[9px] text-stone-200">Distribuidor (+20L)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 3. SELECTOR DE MODALIDAD (PEQUEÑA, FAMILIAR, COMUNITARIA) -->
+    <!-- ========================================================================= -->
+    <div class="bg-white rounded-3xl border-2 border-stone-200 p-5 shadow-sm space-y-4">
+      
+      <div class="flex items-center justify-between border-b border-stone-100 pb-2.5">
+        <div>
+          <h2 class="text-base font-black text-stone-900 font-heading">
+            Elegí tu modalidad para sumarte:
+          </h2>
+          <p class="text-xs text-stone-500">
+            Pequeña (minorista), familiar (mayorista) o comunitaria (distribuidor).
+          </p>
+        </div>
+        <span class="text-xl">🫒</span>
+      </div>
+
+      <!-- BOTÓN RÁPIDO: Cerrar Lote Comunitario en Curso (Si hay un bloque abierto con faltante) -->
+      <div id="btn-quick-close-container" class="hidden">
+        <button 
+          type="button" 
+          onclick="selectQuickClosingPortion()" 
+          id="btn-quick-close"
+          class="w-full p-3 rounded-2xl border-2 border-[#1db954] bg-[#edf8f1] hover:bg-[#e1f5e8] text-[#0f5c2b] font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer active:scale-98 animate-pulse-subtle"
+        >
+          <span>🎯</span>
+          <span id="btn-quick-close-text">Cerrar el Lote en Curso con los litros restantes</span>
+        </button>
+      </div>
+
+      <!-- Botones Principales de Modalidad: Pequeña, Familiar, Comunitaria -->
+      <div class="grid grid-cols-3 gap-2.5">
+        
+        <!-- Opción 1: Compra Pequeña (Minorista) -->
+        <button 
+          type="button" 
+          onclick="selectTierDirect('pequena')" 
+          id="btn-opt-pequena" 
+          class="portion-opt-btn p-3 rounded-2xl border-2 border-stone-200 bg-white hover:border-[#8ca15d] text-center flex flex-col items-center justify-center gap-1 transition-all cursor-pointer"
+        >
+          <span class="text-lg">🫒</span>
+          <span class="text-xs font-black text-stone-900 leading-tight">Compra Pequeña</span>
+          <span class="text-[10px] font-extrabold text-[#577327] bg-[#f4f7ee] px-2 py-0.5 rounded-full border border-[#d6e3c1]">Minorista</span>
+          <span class="text-[11px] text-stone-500 font-bold">1 Litro</span>
+          <span class="text-xs font-black text-stone-900 mt-0.5">$19.700</span>
+        </button>
+
+        <!-- Opción 2: Compra Familiar (Mayorista) -->
+        <button 
+          type="button" 
+          onclick="selectTierDirect('familiar')" 
+          id="btn-opt-familiar" 
+          class="portion-opt-btn p-3 rounded-2xl border-2 border-[#577327] bg-[#f4f7ee] ring-2 ring-[#577327]/30 text-center flex flex-col items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
+        >
+          <span class="text-lg">🏡</span>
+          <span class="text-xs font-black text-stone-900 leading-tight">Compra Familiar</span>
+          <span class="text-[10px] font-extrabold text-[#a6634f] bg-[#fcf4f0] px-2 py-0.5 rounded-full border border-[#f0d8ce]">Mayorista</span>
+          <span class="text-[11px] text-stone-500 font-bold">6 Litros</span>
+          <span class="text-xs font-black text-stone-900 mt-0.5">$112.200</span>
+        </button>
+
+        <!-- Opción 3: Compra Comunitaria (Distribuidor) -->
+        <button 
+          type="button" 
+          onclick="selectTierDirect('comunitaria')" 
+          id="btn-opt-comunitaria" 
+          class="portion-opt-btn p-3 rounded-2xl border-2 border-stone-200 bg-white hover:border-[#8ca15d] text-center flex flex-col items-center justify-center gap-1 transition-all cursor-pointer"
+        >
+          <span class="text-lg">📦</span>
+          <span class="text-xs font-black text-stone-900 leading-tight">Compra Comunitaria</span>
+          <span class="text-[10px] font-extrabold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Distribuidor</span>
+          <span class="text-[11px] text-stone-500 font-bold">20 Litros</span>
+          <span class="text-xs font-black text-stone-900 mt-0.5">$362.000</span>
+        </button>
+
+      </div>
+
+      <!-- Selector Avanzado de Cantidad de Litros / Botellas -->
+      <div class="bg-[#fcfaf8] rounded-2xl p-3.5 border border-[#e2ebd4] space-y-3">
+        
+        <div class="flex items-center justify-between text-xs font-bold text-stone-700">
+          <span class="flex items-center gap-1.5">
+            <span>⚙️</span> Personalizar cantidad exacta de litros:
+          </span>
+          <span id="tier-indicator-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#f4f7ee] text-[#577327] border border-[#d6e3c1]">
+            Mayorista (+6L)
+          </span>
+        </div>
+
+        <div class="flex items-center justify-between bg-white border border-stone-200 rounded-xl p-2.5 px-4">
+          <div class="flex flex-col">
+            <span class="text-xs font-bold text-stone-700">Botellas de 1 Litro:</span>
+            <span id="unit-price-hint" class="text-[10px] text-stone-400 font-mono">$18.700 por litro</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button type="button" onclick="adjustLiters(-1)" class="w-9 h-9 rounded-xl bg-stone-100 hover:bg-stone-200 font-black text-stone-800 flex items-center justify-center text-base cursor-pointer active:scale-95 transition-all">-</button>
+            <span id="display-liters-count" class="w-10 text-center font-black text-lg text-stone-900 font-mono">6</span>
+            <button type="button" onclick="adjustLiters(1)" class="w-9 h-9 rounded-xl bg-stone-100 hover:bg-stone-200 font-black text-stone-800 flex items-center justify-center text-base cursor-pointer active:scale-95 transition-all">+</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Resumen de la Selección Actual -->
+      <div class="bg-[#f4f7ee] rounded-2xl p-4 border border-[#d6e3c1] flex items-center justify-between gap-3">
+        <div>
+          <span id="selection-tier-tag" class="text-[10px] font-extrabold uppercase tracking-wider text-[#577327] block">
+            Compra Familiar · Escala Mayorista
+          </span>
+          <p id="selection-summary-text" class="font-black text-stone-900 text-sm sm:text-base leading-tight">
+            6 Litros (Botellas de 1L)
+          </p>
+          <span id="selection-summary-sub" class="text-xs text-stone-600 font-medium">
+            $18.700 por litro · Ahorro mayorista de $1.000/L
+          </span>
+        </div>
+        <div class="text-right shrink-0">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 block">Total a pagar</span>
+          <span id="selection-summary-price" class="text-xl sm:text-2xl font-black text-[#577327] font-heading">$ 112.200</span>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- 4. FORMULARIO DE CONFIRMACIÓN ULTRA RÁPIDO (EN UN PASO) -->
+      <!-- ===================================================================== -->
+      <form onsubmit="handleOlivaOrderSubmit(event)" class="space-y-3 pt-2 border-t border-stone-100">
+        
+        <div>
+          <label class="block text-xs font-bold text-stone-700 uppercase mb-1">
+            👤 Tu Nombre y Apellido *
+          </label>
+          <input 
+            type="text" 
+            id="order-client-name" 
+            required 
+            placeholder="Ej: Ramiro Stein" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] rounded-xl px-3.5 py-2.5 text-sm font-bold text-stone-900 focus:outline-none focus:bg-white transition-colors"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 uppercase mb-1">
+            📱 WhatsApp / Celular (para coordinar entrega) *
+          </label>
+          <input 
+            type="tel" 
+            id="order-client-phone" 
+            required 
+            placeholder="Ej: 11 5566-7788" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] rounded-xl px-3.5 py-2.5 text-sm font-bold text-stone-900 focus:outline-none focus:bg-white transition-colors"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">
+              💳 Forma de Pago
+            </label>
+            <select id="order-payment-method" class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] rounded-xl px-3 py-2 text-xs font-bold text-stone-900 focus:outline-none">
+              <option value="Efectivo">💵 Efectivo al retirar</option>
+              <option value="Transferencia">🏦 Transferencia Bancaria (Alias)</option>
+              <option value="Mercado Pago">📱 Mercado Pago / QR</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">
+              📍 Retiro de Círculo
+            </label>
+            <div id="order-pickup-preview" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-xs font-semibold text-stone-700 truncate">
+              Nodo Loma Verde / Punto Barrial
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón Gigante de Acción (Verde Spotify oficial de Elementales) -->
+        <button 
+          type="submit" 
+          id="btn-confirm-order"
+          class="btn-action w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-4 rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer mt-2 font-heading"
+        >
+          <span>🫒</span>
+          <span id="btn-confirm-order-text">CONFIRMAR MI PEDIDO ($112.200)</span>
+          <span>→</span>
+        </button>
+
+      </form>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 5. BLOCKCHAIN DE LOTES COMUNITARIOS (COMMITS Y BLOQUE EN LLENADO) -->
+    <!-- ========================================================================= -->
+    <div class="space-y-4 pt-2">
+      
+      <!-- Encabezado de la Sección Blockchain Elementales -->
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-black uppercase tracking-wider bg-stone-900 text-[#a4c468] px-2.5 py-0.5 rounded-md font-mono-code">
+              ⛓️ BLOCKCHAIN ELEMENTALES
+            </span>
+            <span class="text-xs font-bold text-stone-500">Lotes x 20 Litros</span>
+          </div>
+          <h2 class="text-lg sm:text-xl font-black text-stone-900 mt-1 font-heading">
+            Cadena de Lotes y Commits Colectivos
+          </h2>
+          <p class="text-xs text-stone-600 leading-snug">
+            Cada lote comunitario de 20 litros es un bloque colectivo. Al completarse al 100%, se realiza el <strong>Commit del Lote</strong> y queda confirmado para despacho directo desde La Rioja.
+          </p>
+        </div>
+      </div>
+
+      <!-- A) BLOQUE ACTUAL EN LLENADO (MEMPOOL / OPEN BLOCK) -->
+      <div id="active-block-container">
+        <!-- Inyectado por JS -->
+      </div>
+
+      <!-- B) HISTORIAL DE BLOQUES CONFIRMADOS (COMMITTED BLOCKS) -->
+      <div>
+        <h3 class="text-xs font-black uppercase tracking-wider text-stone-500 mb-2.5 flex items-center gap-1.5">
+          <span>📦</span> Lotes de 20L Cerrados y Confirmados (Commits):
+        </h3>
+        <div id="committed-blocks-list" class="space-y-3">
+          <!-- Inyectado por JS -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: PEDIDO REGISTRADO CON ÉXITO & COMPARTIR WHATSAPP -->
+  <!-- ========================================================================= -->
+  <div id="modal-order-success" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full text-center shadow-2xl border border-stone-200 animate-fade-in">
+      
+      <div class="w-16 h-16 rounded-full bg-[#f4f7ee] text-[#577327] flex items-center justify-center text-3xl mx-auto mb-3 shadow-inner border border-[#d6e3c1]">
+        🫒
+      </div>
+      
+      <h3 class="font-black text-2xl text-stone-900 font-heading mb-1">
+        ¡Pedido Registrado con Éxito!
+      </h3>
+      <p class="text-xs text-stone-500 mb-4">
+        Tu pedido de aceite de oliva quedó asignado al lote comunitario de Elementales.
+      </p>
+
+      <div class="bg-[#fcfaf8] rounded-2xl p-4 text-left border border-[#e2ebd4] mb-5 text-xs space-y-1.5">
+        <div class="flex justify-between items-center pb-2 border-b border-[#e2ebd4]">
+          <span class="text-stone-500">Ticket: <strong id="success-ticket-id" class="font-mono-code text-stone-900">#OLIV-001</strong></span>
+          <span id="success-block-tag" class="font-bold text-[#577327] bg-[#f4f7ee] px-2 py-0.5 rounded-full text-[10px] border border-[#d6e3c1]">Lote #1</span>
+        </div>
+        <p><strong>Vecino/a:</strong> <span id="success-client-name">Juan</span></p>
+        <p><strong>Modalidad:</strong> <span id="success-portion-text">Compra Familiar (6 Litros)</span></p>
+        <p><strong>Total:</strong> <span id="success-total-price" class="font-black text-[#577327]">$112.200</span></p>
+        <p><strong>Punto de Retiro:</strong> <span id="success-pickup-text">Sede Loma Verde</span></p>
+      </div>
+
+      <div class="space-y-2">
+        <button 
+          type="button" 
+          onclick="sendWhatsAppTicketOliva()" 
+          class="btn-action w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm py-3.5 rounded-2xl shadow-sm flex items-center justify-center gap-2 cursor-pointer font-heading"
+        >
+          <span>💬</span> Enviar Comprobante por WhatsApp
+        </button>
+
+        <button 
+          type="button" 
+          onclick="shareOlivaWhatsApp()" 
+          class="btn-action w-full bg-[#577327] hover:bg-[#3e531c] text-white font-bold text-xs py-3 rounded-2xl flex items-center justify-center gap-2 cursor-pointer font-heading"
+        >
+          <span>📢</span> Avisar a Vecinos para Cerrar el Lote
+        </button>
+
+        <button 
+          type="button" 
+          onclick="closeSuccessModal()" 
+          class="btn-action w-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs py-2.5 rounded-2xl cursor-pointer"
+        >
+          Volver a la Página de Aceite de Oliva
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts: Módulos de datos y lógica de la landing -->
+  <script src="js/products-data.js" charset="UTF-8"></script>
+  <script src="js/circulos.js" charset="UTF-8"></script>
+  <script src="js/db.js" charset="UTF-8"></script>
+
+  <script>
+    // =========================================================================
+    // LÓGICA DE LA LANDING DE ACEITE DE OLIVA & BLOCKCHAIN DE LOTES (ELEMENTALES)
+    // =========================================================================
+    const OLIVA_CONFIG = {
+      productId: 'vrde-aceite-lorenzo-1l',
+      name: 'Aceite de Oliva Extra Virgen Lorenzo Cabrera (1L)',
+      producer: 'Lorenzo Cabrera',
+      origin: 'Villa Mazán, La Rioja',
+      lotCapacity: 20, // Cada lote comunitario son 20 litros
+      prices: {
+        pequena: 19700,    // Compra pequeña -> Minorista (1 a 5L)
+        familiar: 18700,   // Compra familiar -> Mayorista (6 a 19L)
+        comunitaria: 18100 // Compra comunitaria -> Distribuidor (+20L)
+      },
+      storageKey: 'elementales_oliva_orders_v1'
+    };
+
+    // Estado del selector actual
+    let selectedLiters = 6; // Default: Compra familiar (6 litros)
+    let activeCircle = null;
+    let lastCompletedOrder = null;
+
+    // Inicialización al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      initCircleContext();
+      loadUserSession();
+      updatePortionDisplay();
+      renderBlockchainView();
+    });
+
+    // 1. Contexto de Círculo (Detección por URL o default)
+    function initCircleContext() {
+      const select = document.getElementById('circle-select');
+      const circles = typeof CirculosManager !== 'undefined' ? CirculosManager.getAllCircles() : [];
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlSlug = urlParams.get('circulo') || urlParams.get('c');
+      
+      let targetCircle = null;
+      if (urlSlug && typeof CirculosManager !== 'undefined') {
+        targetCircle = CirculosManager.getCircle(urlSlug);
+      }
+      if (!targetCircle && typeof CirculosManager !== 'undefined') {
+        const activeId = CirculosManager.getActiveCircleId();
+        if (activeId) targetCircle = CirculosManager.getCircle(activeId);
+      }
+      if (!targetCircle && circles.length > 0) {
+        targetCircle = circles[0];
+      }
+
+      activeCircle = targetCircle;
+
+      if (select) {
+        if (circles.length === 0) {
+          select.innerHTML = '<option value="">Nodo Loma Verde</option>';
+        } else {
+          select.innerHTML = circles.map(c => `
+            <option value="${c.id}" ${activeCircle && activeCircle.id === c.id ? 'selected' : ''}>
+              🤝 ${c.nombre}
+            </option>
+          `).join('');
+        }
+      }
+
+      updatePickupDisplay();
+    }
+
+    function onCircleChange(circleId) {
+      if (typeof CirculosManager !== 'undefined') {
+        const c = CirculosManager.getCircle(circleId);
+        if (c) {
+          activeCircle = c;
+          CirculosManager.setActiveCircleId(c.id);
+          updatePickupDisplay();
+          renderBlockchainView();
+        }
+      }
+    }
+
+    function updatePickupDisplay() {
+      const el = document.getElementById('order-pickup-preview');
+      if (el) {
+        if (activeCircle) {
+          el.textContent = `${activeCircle.nombre} (${activeCircle.direccion || 'Retiro Barrial'})`;
+        } else {
+          el.textContent = 'Nodo Loma Verde (Rawson 3450, Escobar)';
+        }
+      }
+    }
+
+    // 2. Cargar sesión de usuario guardada
+    function loadUserSession() {
+      let savedName = '';
+      let savedPhone = '';
+
+      if (typeof ElementalesDB !== 'undefined') {
+        const sess = ElementalesDB.getSession();
+        if (sess) {
+          savedName = sess.userName || '';
+          savedPhone = sess.userPhone || '';
+        }
+      }
+      if (!savedName) savedName = localStorage.getItem('elementales_user_name') || '';
+      if (!savedPhone) savedPhone = localStorage.getItem('elementales_user_phone') || '';
+
+      const nameInput = document.getElementById('order-client-name');
+      const phoneInput = document.getElementById('order-client-phone');
+      if (nameInput && savedName) nameInput.value = savedName;
+      if (phoneInput && savedPhone) phoneInput.value = savedPhone;
+    }
+
+    // 3. Selección directa por modalidad (3 botones principales)
+    function selectTierDirect(tierKey) {
+      if (tierKey === 'pequena') {
+        selectedLiters = 1; // 1 Litro -> Minorista
+      } else if (tierKey === 'familiar') {
+        selectedLiters = 6; // 6 Litros -> Mayorista
+      } else if (tierKey === 'comunitaria') {
+        selectedLiters = 20; // 20 Litros -> Distribuidor
+      }
+      playPopSound();
+      updatePortionDisplay();
+    }
+
+    function adjustLiters(delta) {
+      selectedLiters = Math.max(1, selectedLiters + delta);
+      playPopSound();
+      updatePortionDisplay();
+    }
+
+    // Determinar escala y precio según cantidad de litros
+    function getTierForLiters(liters) {
+      if (liters >= 20) {
+        return {
+          key: 'comunitaria',
+          name: 'Compra Comunitaria',
+          type: 'Distribuidor (+20L)',
+          unitPrice: OLIVA_CONFIG.prices.comunitaria,
+          savingsPerLiter: OLIVA_CONFIG.prices.pequena - OLIVA_CONFIG.prices.comunitaria,
+          badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-200'
+        };
+      } else if (liters >= 6) {
+        return {
+          key: 'familiar',
+          name: 'Compra Familiar',
+          type: 'Mayorista (+6L)',
+          unitPrice: OLIVA_CONFIG.prices.familiar,
+          savingsPerLiter: OLIVA_CONFIG.prices.pequena - OLIVA_CONFIG.prices.familiar,
+          badgeClass: 'bg-[#fcf4f0] text-[#a6634f] border-[#f0d8ce]'
+        };
+      } else {
+        return {
+          key: 'pequena',
+          name: 'Compra Pequeña',
+          type: 'Minorista (1 a 5L)',
+          unitPrice: OLIVA_CONFIG.prices.pequena,
+          savingsPerLiter: 0,
+          badgeClass: 'bg-[#f4f7ee] text-[#577327] border-[#d6e3c1]'
+        };
+      }
+    }
+
+    function getCurrentSelectionTotals() {
+      const tier = getTierForLiters(selectedLiters);
+      const total = selectedLiters * tier.unitPrice;
+      const totalSavings = selectedLiters * tier.savingsPerLiter;
+      return { liters: selectedLiters, tier, total, totalSavings };
+    }
+
+    function updatePortionDisplay() {
+      const totals = getCurrentSelectionTotals();
+      
+      // Actualizar contador numérico
+      const countEl = document.getElementById('display-liters-count');
+      if (countEl) countEl.textContent = totals.liters;
+
+      // Actualizar botón activo de los 3 principales
+      const btnPequena = document.getElementById('btn-opt-pequena');
+      const btnFamiliar = document.getElementById('btn-opt-familiar');
+      const btnComunitaria = document.getElementById('btn-opt-comunitaria');
+
+      const activeCls = 'border-[#577327] bg-[#f4f7ee] ring-2 ring-[#577327]/30 shadow-xs font-black';
+      const defaultCls = 'border-stone-200 bg-white text-stone-700 hover:border-[#8ca15d]';
+
+      if (btnPequena) {
+        btnPequena.className = `portion-opt-btn p-3 rounded-2xl border-2 text-center flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${totals.tier.key === 'pequena' ? activeCls : defaultCls}`;
+      }
+      if (btnFamiliar) {
+        btnFamiliar.className = `portion-opt-btn p-3 rounded-2xl border-2 text-center flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${totals.tier.key === 'familiar' ? activeCls : defaultCls}`;
+      }
+      if (btnComunitaria) {
+        btnComunitaria.className = `portion-opt-btn p-3 rounded-2xl border-2 text-center flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${totals.tier.key === 'comunitaria' ? activeCls : defaultCls}`;
+      }
+
+      // Actualizar badge indicador en selector avanzado
+      const tierBadge = document.getElementById('tier-indicator-badge');
+      if (tierBadge) {
+        tierBadge.textContent = totals.tier.type;
+        tierBadge.className = `text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${totals.tier.badgeClass}`;
+      }
+
+      const hintEl = document.getElementById('unit-price-hint');
+      if (hintEl) {
+        hintEl.textContent = `$${formatMoney(totals.tier.unitPrice)} por litro`;
+      }
+
+      // Resumen visual
+      const summaryTier = document.getElementById('selection-tier-tag');
+      const summaryText = document.getElementById('selection-summary-text');
+      const summarySub = document.getElementById('selection-summary-sub');
+      const summaryPrice = document.getElementById('selection-summary-price');
+      const btnConfirmText = document.getElementById('btn-confirm-order-text');
+
+      if (summaryTier) {
+        summaryTier.textContent = `${totals.tier.name} · ${totals.tier.type}`;
+      }
+
+      if (summaryText) {
+        summaryText.textContent = `${totals.liters} ${totals.liters === 1 ? 'Litro' : 'Litros'} (${totals.liters} ${totals.liters === 1 ? 'botella' : 'botellas'} de 1L)`;
+      }
+
+      if (summarySub) {
+        if (totals.totalSavings > 0) {
+          summarySub.innerHTML = `<strong class="text-stone-900">$${formatMoney(totals.tier.unitPrice)}/L</strong> · ¡Ahorrás $${formatMoney(totals.totalSavings)} con escala ${totals.tier.type}!`;
+        } else {
+          summarySub.textContent = `$${formatMoney(totals.tier.unitPrice)} por litro (A partir de 6L aplica precio mayorista)`;
+        }
+      }
+
+      if (summaryPrice) {
+        summaryPrice.textContent = `$ ${formatMoney(totals.total)}`;
+      }
+
+      if (btnConfirmText) {
+        btnConfirmText.textContent = `CONFIRMAR MI PEDIDO (${totals.liters}L · $${formatMoney(totals.total)})`;
+      }
+    }
+
+    // 4. LÓGICA DE BLOCKCHAIN DE LOTES COMUNITARIOS (20L POR BLOQUE)
+    function getAllOlivaOrders() {
+      try {
+        const raw = localStorage.getItem(OLIVA_CONFIG.storageKey);
+        if (raw) {
+          const list = JSON.parse(raw);
+          if (Array.isArray(list) && list.length > 0) return list;
+        }
+      } catch (e) {}
+
+      // Semilla inicial comunitaria para demostrar el llenado colaborativo del primer lote
+      const seedOrders = [
+        {
+          id: 'OLIV-001',
+          number: 1,
+          timestamp: Date.now() - 3600000 * 3,
+          dateStr: new Date(Date.now() - 3600000 * 3).toLocaleDateString('es-AR'),
+          timeStr: '10:15',
+          clientName: 'Mariana Gómez',
+          clientPhone: '11 5566-7788',
+          paymentMethod: 'Transferencia',
+          productName: 'Aceite de Oliva Extra Virgen Lorenzo Cabrera',
+          liters: 6,
+          tierName: 'Compra Familiar (Mayorista)',
+          total: 112200,
+          status: 'Confirmado',
+          circuloId: 'cooperativa',
+          circuloNombre: 'Círculo Cooperativa Loma Verde',
+          direccionRetiro: 'Rawson 3450, Loma Verde'
+        },
+        {
+          id: 'OLIV-002',
+          number: 2,
+          timestamp: Date.now() - 3600000 * 1.5,
+          dateStr: new Date(Date.now() - 3600000 * 1.5).toLocaleDateString('es-AR'),
+          timeStr: '12:40',
+          clientName: 'Carlos Benítez',
+          clientPhone: '11 4433-2211',
+          paymentMethod: 'Efectivo',
+          productName: 'Aceite de Oliva Extra Virgen Lorenzo Cabrera',
+          liters: 2,
+          tierName: 'Compra Pequeña (Minorista)',
+          total: 39400,
+          status: 'Confirmado',
+          circuloId: 'cooperativa',
+          circuloNombre: 'Círculo Cooperativa Loma Verde',
+          direccionRetiro: 'Rawson 3450, Loma Verde'
+        }
+      ];
+      try {
+        localStorage.setItem(OLIVA_CONFIG.storageKey, JSON.stringify(seedOrders));
+      } catch (e) {}
+      return seedOrders;
+    }
+
+    function saveOlivaOrders(orders) {
+      localStorage.setItem(OLIVA_CONFIG.storageKey, JSON.stringify(orders));
+    }
+
+    // Algoritmo de cálculo de bloques encadenados (Blockchain de Lotes de 20L)
+    function calculateBlockchain() {
+      const allOrders = getAllOlivaOrders();
+      const circleId = activeCircle ? activeCircle.id : null;
+      const relevantOrders = allOrders.filter(o => !circleId || o.circuloId === circleId || !o.circuloId);
+
+      const committedBlocks = [];
+      let currentBlock = {
+        blockNumber: 1,
+        coveredLiters: 0,
+        remainingLiters: OLIVA_CONFIG.lotCapacity,
+        percent: 0,
+        status: 'open',
+        participants: []
+      };
+
+      for (const ord of relevantOrders) {
+        let unallocated = parseInt(ord.liters) || 0;
+
+        while (unallocated > 0) {
+          const space = OLIVA_CONFIG.lotCapacity - currentBlock.coveredLiters;
+          const take = Math.min(unallocated, space);
+
+          currentBlock.participants.push({
+            clientName: ord.clientName,
+            liters: take,
+            total: Math.round(take * (ord.total / ord.liters)),
+            timestamp: ord.timestamp,
+            dateStr: ord.dateStr,
+            timeStr: ord.timeStr
+          });
+
+          currentBlock.coveredLiters += take;
+          currentBlock.remainingLiters = Math.max(0, OLIVA_CONFIG.lotCapacity - currentBlock.coveredLiters);
+          currentBlock.percent = Math.min(100, Math.round((currentBlock.coveredLiters / OLIVA_CONFIG.lotCapacity) * 100));
+          unallocated -= take;
+
+          if (currentBlock.remainingLiters <= 0) {
+            currentBlock.status = 'committed';
+            currentBlock.commitHash = '0xoliva' + Math.abs((currentBlock.blockNumber * 38411) % 65536).toString(16).padStart(4, '0');
+            committedBlocks.push(currentBlock);
+
+            currentBlock = {
+              blockNumber: committedBlocks.length + 1,
+              coveredLiters: 0,
+              remainingLiters: OLIVA_CONFIG.lotCapacity,
+              percent: 0,
+              status: 'open',
+              participants: []
+            };
+          }
+        }
+      }
+
+      return { committedBlocks, activeBlock: currentBlock };
+    }
+
+    // Renderizar la visualización tipo blockchain con diseño Elementales
+    function renderBlockchainView() {
+      const { committedBlocks, activeBlock } = calculateBlockchain();
+
+      // Control del Botón Rápido de Cierre
+      const quickCloseContainer = document.getElementById('btn-quick-close-container');
+      const quickCloseText = document.getElementById('btn-quick-close-text');
+      if (quickCloseContainer && quickCloseText) {
+        if (activeBlock.coveredLiters > 0 && activeBlock.remainingLiters > 0) {
+          quickCloseContainer.classList.remove('hidden');
+          const remLiters = activeBlock.remainingLiters;
+          const remTier = getTierForLiters(remLiters);
+          const remPrice = formatMoney(remLiters * remTier.unitPrice);
+          quickCloseText.textContent = `🎯 ¡Cerrar Lote Comunitario #${activeBlock.blockNumber} con los ${remLiters}L restantes ($${remPrice})!`;
+          window.quickClosingLiters = remLiters;
+        } else {
+          quickCloseContainer.classList.add('hidden');
+          window.quickClosingLiters = null;
+        }
+      }
+
+      // 1. Renderizar Bloque Activo (En Curso)
+      const activeContainer = document.getElementById('active-block-container');
+      if (activeContainer) {
+        const isPartiallyFilled = activeBlock.coveredLiters > 0;
+        const remainingStr = `${activeBlock.remainingLiters}L`;
+        const coveredStr = `${activeBlock.coveredLiters}L`;
+
+        activeContainer.innerHTML = `
+          <div class="block-card ${isPartiallyFilled ? 'mining' : ''} p-5 shadow-xs border-[#577327]/40 bg-gradient-to-b from-[#f4f7ee]/50 to-white">
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-black uppercase tracking-wider ${isPartiallyFilled ? 'bg-[#577327] text-white' : 'bg-[#8ca15d] text-white'} px-2.5 py-0.5 rounded-lg shadow-2xs">
+                    ${isPartiallyFilled ? '⏳ LOTE EN LLENADO' : '🟢 LOTE ABIERTO'}
+                  </span>
+                  <span class="text-xs font-extrabold text-stone-800">Lote #${activeBlock.blockNumber}</span>
+                </div>
+                <h4 class="text-base font-black text-stone-900 mt-1 leading-tight font-heading">
+                  ${isPartiallyFilled ? `¡Faltan solo ${remainingStr} para completar el lote comunitario!` : 'Listo para abrir con tu compra'}
+                </h4>
+              </div>
+              <span class="hash-badge">LOTE #${String(activeBlock.blockNumber).padStart(3, '0')}</span>
+            </div>
+
+            <!-- Barra de Llenado del Bloque -->
+            <div class="mb-3">
+              <div class="flex justify-between text-xs font-bold mb-1 text-stone-600">
+                <span>${coveredStr} cubiertos (${activeBlock.percent}%)</span>
+                <span class="text-[#577327] font-extrabold font-mono">Capacidad: 20 Litros</span>
+              </div>
+              <div class="w-full h-3.5 bg-stone-100 rounded-full overflow-hidden p-0.5 border border-stone-200">
+                <div class="h-full bg-gradient-to-r from-[#8ca15d] to-[#577327] rounded-full transition-all duration-500" style="width: ${activeBlock.percent}%;"></div>
+              </div>
+            </div>
+
+            <!-- Vecinos ya sumados a este Bloque -->
+            <div>
+              <span class="text-[11px] font-bold text-stone-500 block mb-1.5">
+                ${activeBlock.participants.length > 0 ? 'Vecinos en este lote comunitario:' : 'Aún no hay vecinos en este lote:'}
+              </span>
+              
+              ${activeBlock.participants.length > 0 ? `
+                <div class="space-y-1.5">
+                  ${activeBlock.participants.map(p => `
+                    <div class="flex items-center justify-between text-xs bg-[#fcfaf8] border border-[#e2ebd4] rounded-xl px-3 py-1.5">
+                      <span class="font-bold text-stone-800 flex items-center gap-1.5">
+                        <span>👤</span> ${escapeHtml(p.clientName)}
+                      </span>
+                      <span class="font-extrabold text-[#577327] bg-[#f4f7ee] px-2 py-0.5 rounded-lg border border-[#d6e3c1]">
+                        ${p.liters}L ($${formatMoney(p.total)})
+                      </span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : `
+                <div class="text-xs text-stone-400 italic bg-[#fcfaf8] p-2.5 rounded-xl border border-stone-100 text-center">
+                  💡 Pedí compra pequeña (1L), familiar (6L) o comunitaria (20L) para abrir este lote y sumar a tus vecinos.
+                </div>
+              `}
+            </div>
+
+          </div>
+        `;
+      }
+
+      // 2. Renderizar Bloques Confirmados (Commits de Lote)
+      const listContainer = document.getElementById('committed-blocks-list');
+      if (listContainer) {
+        if (committedBlocks.length === 0) {
+          listContainer.innerHTML = `
+            <div class="text-center py-6 bg-white rounded-2xl border border-stone-200 text-stone-400 text-xs">
+              <span class="text-2xl block mb-1">📦</span>
+              Aún no hay lotes de 20L cerrados al 100%. ¡Completá el bloque actual para generar el primer Commit!
+            </div>
+          `;
+        } else {
+          listContainer.innerHTML = committedBlocks.map(b => `
+            <div class="block-card committed p-4 shadow-xs border-[#577327]/50 bg-gradient-to-b from-[#f4f7ee]/60 to-white">
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] font-black uppercase tracking-wider bg-[#3e531c] text-white px-2 py-0.5 rounded-md font-mono-code">
+                      COMMIT CONFIRMADO ✅
+                    </span>
+                    <strong class="text-xs font-black text-stone-900 font-heading">LOTE #${b.blockNumber} (20 LITROS)</strong>
+                  </div>
+                  <p class="text-[11px] text-[#3e531c] font-bold mt-0.5">
+                    100% Cerrado · Confirmado para despacho desde Villa Mazán, La Rioja
+                  </p>
+                </div>
+                <span class="hash-badge">${b.commitHash}</span>
+              </div>
+
+              <!-- Lista de vecinos del bloque -->
+              <div class="bg-white/90 rounded-xl p-2.5 border border-[#577327]/20 text-xs text-stone-700 space-y-1">
+                <span class="text-[10px] font-bold text-stone-400 block uppercase">Participantes del Commit:</span>
+                ${b.participants.map(p => `
+                  <div class="flex justify-between items-center text-[11px]">
+                    <span class="font-bold text-stone-900">• ${escapeHtml(p.clientName)}</span>
+                    <span class="font-extrabold text-[#577327] font-mono">${p.liters} Litros ($${formatMoney(p.total)})</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    function selectQuickClosingPortion() {
+      if (window.quickClosingLiters) {
+        selectedLiters = window.quickClosingLiters;
+        updatePortionDisplay();
+        playPopSound();
+        document.getElementById('order-client-name')?.focus();
+      }
+    }
+
+    // 5. CONFIRMAR PEDIDO
+    function handleOlivaOrderSubmit(e) {
+      e.preventDefault();
+      const totals = getCurrentSelectionTotals();
+      if (totals.liters <= 0) {
+        alert('Por favor selecciona una cantidad de litros.');
+        return;
+      }
+
+      const clientName = document.getElementById('order-client-name').value.trim();
+      const clientPhone = document.getElementById('order-client-phone').value.trim();
+      const paymentMethod = document.getElementById('order-payment-method').value;
+
+      if (!clientName) {
+        alert('Ingresa tu nombre para identificarte en el pedido.');
+        return;
+      }
+
+      // Guardar nombre y teléfono en sesión global de Elementales
+      if (typeof ElementalesDB !== 'undefined' && ElementalesDB.setUserName) {
+        ElementalesDB.setUserName(clientName);
+        if (clientPhone) ElementalesDB.setUserPhone(clientPhone);
+      } else {
+        localStorage.setItem('elementales_user_name', clientName);
+        if (clientPhone) localStorage.setItem('elementales_user_phone', clientPhone);
+      }
+
+      const orderNumber = getAllOlivaOrders().length + 1;
+      const orderId = 'OLIV-' + String(orderNumber).padStart(3, '0');
+      const now = new Date();
+
+      const newOrder = {
+        id: orderId,
+        number: orderNumber,
+        timestamp: now.getTime(),
+        dateStr: now.toLocaleDateString('es-AR'),
+        timeStr: now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+        clientName,
+        clientPhone,
+        paymentMethod,
+        productName: 'Aceite de Oliva Extra Virgen Lorenzo Cabrera (1L)',
+        liters: totals.liters,
+        tierKey: totals.tier.key,
+        tierName: totals.tier.name,
+        tierType: totals.tier.type,
+        unitPrice: totals.tier.unitPrice,
+        total: totals.total,
+        status: 'Confirmado',
+        circuloId: activeCircle ? activeCircle.id : null,
+        circuloNombre: activeCircle ? activeCircle.nombre : 'Nodo Loma Verde',
+        direccionRetiro: activeCircle ? activeCircle.direccion : 'Sede Loma Verde'
+      };
+
+      // Guardar en almacenamiento de Aceite de Oliva
+      const orders = getAllOlivaOrders();
+      orders.push(newOrder);
+      saveOlivaOrders(orders);
+
+      // Persistir en ElementalesDB general
+      if (typeof ElementalesDB !== 'undefined' && ElementalesDB.saveOrder) {
+        ElementalesDB.saveOrder({
+          id: 'ORD-' + orderId,
+          number: orderNumber,
+          timestamp: newOrder.timestamp,
+          dateStr: newOrder.dateStr,
+          timeStr: newOrder.timeStr,
+          clientName: newOrder.clientName,
+          clientPhone: newOrder.clientPhone,
+          paymentMethod: newOrder.paymentMethod,
+          items: [{
+            id: OLIVA_CONFIG.productId,
+            name: `Aceite de Oliva Lorenzo Cabrera (${totals.liters}L · ${totals.tier.name})`,
+            price: totals.tier.unitPrice,
+            qty: totals.liters,
+            unit: 'Litro(s)',
+            total: totals.total,
+            emoji: '🫒'
+          }],
+          total: totals.total,
+          circuloId: newOrder.circuloId,
+          circuloNombre: newOrder.circuloNombre
+        });
+      }
+
+      // Sumar al Círculo si corresponde
+      if (activeCircle && typeof CirculosManager !== 'undefined') {
+        CirculosManager.addOrderToCircle(activeCircle.id, {
+          clientName,
+          itemsSummary: `Aceite de Oliva Lorenzo Cabrera (${totals.liters}L · ${totals.tier.name})`,
+          totalAmount: totals.total
+        });
+      }
+
+      lastCompletedOrder = newOrder;
+
+      // Efectos de éxito
+      playSuccessSound();
+
+      // Refrescar Blockchain y abrir Modal de Éxito
+      renderBlockchainView();
+      openSuccessModal(newOrder);
+    }
+
+    // 6. MODAL DE ÉXITO & WHATSAPP TICKET ELEMENTALES
+    function openSuccessModal(order) {
+      document.getElementById('success-ticket-id').textContent = `#${order.id}`;
+      document.getElementById('success-client-name').textContent = order.clientName;
+      document.getElementById('success-portion-text').textContent = `${order.tierName} (${order.liters} Litros)`;
+      document.getElementById('success-total-price').textContent = `$${formatMoney(order.total)}`;
+      document.getElementById('success-pickup-text').textContent = order.direccionRetiro || 'Punto Barrial Loma Verde';
+      
+      const modal = document.getElementById('modal-order-success');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('modal-order-success')?.classList.add('hidden');
+    }
+
+    function sendWhatsAppTicketOliva() {
+      if (!lastCompletedOrder) return;
+      const o = lastCompletedOrder;
+      
+      let msg = `🫒 *ELEMENTALES .STORE - PEDIDO DE ACEITE DE OLIVA*\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `🧾 *Ticket:* #${o.id}\n`;
+      msg += `👤 *Vecino/a:* ${o.clientName}\n`;
+      msg += `📅 *Fecha:* ${o.dateStr} a las ${o.timeStr} hs\n`;
+      if (activeCircle) {
+        msg += `🤝 *Círculo:* ${activeCircle.nombre}\n`;
+        msg += `📍 *Retiro:* ${activeCircle.direccion || 'Punto Barrial'}\n`;
+      }
+      msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `🫒 *Producto:* Aceite de Oliva Extra Virgen Lorenzo Cabrera\n`;
+      msg += `🏷️ *Modalidad:* ${o.tierName} (${o.tierType})\n`;
+      msg += `⚖️ *Cantidad:* ${o.liters} Litro(s) en botella de vidrio 1L\n`;
+      msg += `💰 *TOTAL: $${formatMoney(o.total)}*\n`;
+      msg += `💳 *Forma de Pago:* ${o.paymentMethod}\n`;
+      if (activeCircle && activeCircle.alias) {
+        msg += `🏦 *Alias Transferencia:* \`${activeCircle.alias}\`\n`;
+      }
+      msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `¡Muchas gracias por sumarte a las compras colectivas de Elementales! ✨🌱\n`;
+      msg += `https://elementales.store/oliva`;
+
+      const coordPhone = activeCircle && activeCircle.telefono ? cleanPhone(activeCircle.telefono) : '';
+      let url = coordPhone ? `https://wa.me/${coordPhone}?text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    function shareOlivaWhatsApp() {
+      const { activeBlock } = calculateBlockchain();
+      const remainingStr = `${activeBlock.remainingLiters}L`;
+      
+      let baseUrl = window.location.origin;
+      let shareUrl = activeCircle 
+        ? `${baseUrl}/oliva.html?circulo=${activeCircle.slug || activeCircle.id}`
+        : `${baseUrl}/oliva.html`;
+
+      let text = `🫒 *ACEITE DE OLIVA EXTRA VIRGEN - ELEMENTALES .STORE*\n`;
+      text += `🌱 Lorenzo Cabrera · Olivares Centenarios de Villa Mazán, La Rioja\n`;
+      text += `🍶 1° Prensa en frío artesanal · Variedad Arauco\n`;
+      if (activeCircle) {
+        text += `🤝 Círculo: *${activeCircle.nombre}* · Retiro: ${activeCircle.direccion}\n`;
+      }
+      text += `\n¡Hola vecinos! 👋 Estamos armando la compra comunitaria de Aceite de Oliva en Elementales directo de finca.\n`;
+      text += `\n📌 *Modalidades disponibles:*\n`;
+      text += `• Compra Pequeña (Minorista): $19.700/L (1 a 5L)\n`;
+      text += `• Compra Familiar (Mayorista): $18.700/L (+6L)\n`;
+      text += `• Compra Comunitaria (Distribuidor): $18.100/L (+20L)\n`;
+      if (activeBlock.coveredLiters > 0) {
+        text += `\n⚡ *Lote #${activeBlock.blockNumber} en curso:* ya sumamos ${activeBlock.coveredLiters}L. ¡Faltan solo *${remainingStr}* para cerrarlo y despachar!\n`;
+      }
+      text += `\n👉 *Elegí tu parte y sumate acá:*\n`;
+      text += `${shareUrl}\n\n`;
+      text += `_Elementales Comunidad · La persona y la tierra en el centro_`;
+
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    // Utilidades de formato
+    function formatMoney(amount) {
+      return (amount || 0).toLocaleString('es-AR');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function cleanPhone(phone) {
+      if (!phone) return '';
+      let clean = String(phone).replace(/[^0-9]/g, '');
+      if (clean.length === 10) clean = '549' + clean;
+      return clean;
+    }
+
+    // Sintetizador de audio nativo (Web Audio API)
+    function playPopSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    function playSuccessSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const now = ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.1, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + (i + 1) * 0.08);
+          osc.start(now + i * 0.08);
+          osc.stop(now + (i + 1) * 0.08);
+        });
+      } catch (e) {}
+    }
+  </script>
+
+</body>
+</html>
