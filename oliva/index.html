@@ -147,7 +147,7 @@
         <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs group-hover:scale-105 transition-transform" alt="Elementales" />
         <div class="leading-tight">
           <span class="block font-black text-sm sm:text-base text-stone-900 tracking-tight leading-none font-heading">
-            Elementales <span class="text-[#577327]">.store</span>
+            Elementales <span class="text-[#577327]">Comunidad</span>
           </span>
           <span class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider mt-0.5">
             Compras Colectivas · Red Barrial
@@ -163,8 +163,21 @@
           </select>
         </div>
 
-        <button onclick="shareOlivaWhatsApp()" class="btn-action bg-[#1db954] hover:bg-[#16a34a] text-white rounded-xl p-2 text-xs font-bold shadow-xs flex items-center gap-1" title="Compartir en WhatsApp">
-          <span>📲</span>
+        <button 
+          type="button" 
+          onclick="shareOlivaWhatsApp()" 
+          class="btn-action bg-[#1db954] hover:bg-[#16a34a] text-white rounded-xl px-2.5 py-1.5 text-xs font-black shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0" 
+          title="Compartir compra colectiva por WhatsApp"
+          aria-label="Compartir en WhatsApp"
+        >
+          <svg class="w-3.5 h-3.5 fill-none stroke-current shrink-0" viewBox="0 0 24 24" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span class="text-[11px] font-heading font-black tracking-wide">Compartir</span>
         </button>
       </div>
 
@@ -1069,6 +1082,8 @@
 
       const newOrder = {
         id: orderId,
+        type: 'lunar',
+        category: 'lunar',
         number: orderNumber,
         timestamp: now.getTime(),
         dateStr: now.toLocaleDateString('es-AR'),
@@ -1098,6 +1113,8 @@
       if (typeof ElementalesDB !== 'undefined' && ElementalesDB.saveOrder) {
         ElementalesDB.saveOrder({
           id: 'ORD-' + orderId,
+          type: 'lunar',
+          category: 'lunar',
           number: orderNumber,
           timestamp: newOrder.timestamp,
           dateStr: newOrder.dateStr,
@@ -1195,7 +1212,7 @@
         ? `${baseUrl}/oliva.html?circulo=${activeCircle.slug || activeCircle.id}`
         : `${baseUrl}/oliva.html`;
 
-      let text = `🫒 *ACEITE DE OLIVA EXTRA VIRGEN - ELEMENTALES .STORE*\n`;
+      let text = `🫒 *ACEITE DE OLIVA EXTRA VIRGEN - ELEMENTALES COMUNIDAD*\n`;
       text += `🌱 Lorenzo Cabrera · Olivares Centenarios de Villa Mazán, La Rioja\n`;
       text += `🍶 1° Prensa en frío artesanal · Variedad Arauco\n`;
       if (activeCircle) {

@@ -2775,6 +2775,20 @@
     let adminProducts = [];
     let adminSelectedNode = 'todos';
 
+    // Identificador universal de Compra Lunar (Ciclos lunares, Lotes de Aceite de Oliva, LUNAR- y ORD-OLIV-)
+    function isLunarOrder(o) {
+      if (!o) return false;
+      if (o.type === 'lunar' || o.tipo === 'lunar' || o.category === 'lunar') return true;
+      const idStr = String(o.id || o.number || '');
+      if (idStr.startsWith('LUNAR-') || idStr.startsWith('ORD-LUNAR-') || idStr.startsWith('ORD-OLIV-') || idStr.startsWith('OLIV-')) return true;
+      if (o.tierType || (o.productName && /aceite|oliva/i.test(o.productName))) return true;
+      if (o.items) {
+        const itemsStr = typeof o.items === 'string' ? o.items : JSON.stringify(o.items);
+        if (/lorenzo cabrera|aceite de oliva|compra lunar|lunar/i.test(itemsStr)) return true;
+      }
+      return false;
+    }
+
     function initAdminData() {
       // 1. Cargar Pedidos Generales
       try {
@@ -2783,6 +2797,20 @@
           adminOrders = JSON.parse(rawOrders);
         }
       } catch (e) { adminOrders = []; }
+
+      // Auto-clasificar y normalizar pedidos lunares preexistentes (ej. ORD-OLIV-xxx)
+      if (Array.isArray(adminOrders)) {
+        let changed = false;
+        adminOrders.forEach(o => {
+          if (isLunarOrder(o) && o.type !== 'lunar') {
+            o.type = 'lunar';
+            changed = true;
+          }
+        });
+        if (changed) {
+          saveAdminOrders();
+        }
+      }
 
       // Semilla de pedidos si está vacío para tener información inmediata
       if (!Array.isArray(adminOrders) || adminOrders.length === 0) {
@@ -3384,9 +3412,9 @@
 
       // Filtrar por Tipo de Compra (Semanal vs Lunar)
       if (typeFilter === 'lunar') {
-        list = list.filter(o => o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-')));
+        list = list.filter(o => isLunarOrder(o));
       } else if (typeFilter === 'semanal') {
-        list = list.filter(o => o.type !== 'lunar' && (!o.id || !String(o.id).startsWith('LUNAR-')));
+        list = list.filter(o => !isLunarOrder(o));
       }
 
       // Filtrar por Estado
@@ -3462,7 +3490,7 @@
         if (isReady) badgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
         if (isDone) badgeClass = 'bg-stone-100 text-stone-600 border-stone-300';
 
-        const isLunar = o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-'));
+        const isLunar = isLunarOrder(o);
         const typeBadge = isLunar
           ? `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-purple-50 text-purple-800 border border-purple-200 px-1.5 py-0.5 rounded-md font-mono mt-1">🌕 Lunar</span>`
           : `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded-md font-mono mt-1">🌱 Semanal</span>`;
@@ -3599,7 +3627,7 @@
 
       let csv = 'ID,Tipo,Carpeta,Fecha,Cliente,Telefono,Productos,Total,Metodo_Pago,Estado,Nodo\n';
       orders.forEach(o => {
-        const isLunar = o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-'));
+        const isLunar = isLunarOrder(o);
         const typeStr = isLunar ? 'Compra Lunar' : 'Compra Semanal';
         const folderStr = o.folder || 'Activo';
         const items = Array.isArray(o.items) ? o.items.map(i => `${i.qty}x ${i.name}`).join(' | ') : (o.items || '');
@@ -3677,9 +3705,9 @@
 
       // Filtrar por tipo (lunar / semanal)
       if (compiledProductsFilter === 'lunar') {
-        list = list.filter(o => o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-')));
+        list = list.filter(o => isLunarOrder(o));
       } else if (compiledProductsFilter === 'semanal') {
-        list = list.filter(o => o.type !== 'lunar' && (!o.id || !String(o.id).startsWith('LUNAR-')));
+        list = list.filter(o => !isLunarOrder(o));
       }
 
       // Filtrar por Carpeta / Ciclo Lunar seleccionado
@@ -3693,7 +3721,7 @@
       const summaryMap = {};
 
       list.forEach(order => {
-        const isLunar = order.type === 'lunar' || (order.id && String(order.id).startsWith('LUNAR-'));
+        const isLunar = isLunarOrder(order);
         const orderIdStr = String(order.id || order.number);
         const clientNameStr = order.clientName || 'Cliente';
 
@@ -3821,9 +3849,9 @@
         list = list.filter(o => o.nodoId === adminSelectedNode || !o.nodoId);
       }
       if (compiledProductsFilter === 'lunar') {
-        list = list.filter(o => o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-')));
+        list = list.filter(o => isLunarOrder(o));
       } else if (compiledProductsFilter === 'semanal') {
-        list = list.filter(o => o.type !== 'lunar' && (!o.id || !String(o.id).startsWith('LUNAR-')));
+        list = list.filter(o => !isLunarOrder(o));
       }
 
       const summaryMap = {};
@@ -3932,9 +3960,9 @@
         list = list.filter(o => o.nodoId === adminSelectedNode || !o.nodoId);
       }
       if (compiledProductsFilter === 'lunar') {
-        list = list.filter(o => o.type === 'lunar' || (o.id && String(o.id).startsWith('LUNAR-')));
+        list = list.filter(o => isLunarOrder(o));
       } else if (compiledProductsFilter === 'semanal') {
-        list = list.filter(o => o.type !== 'lunar' && (!o.id || !String(o.id).startsWith('LUNAR-')));
+        list = list.filter(o => !isLunarOrder(o));
       }
 
       const summaryMap = {};
