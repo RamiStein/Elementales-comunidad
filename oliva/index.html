@@ -278,18 +278,6 @@
         <span class="text-xl">🫒</span>
       </div>
 
-      <!-- BOTÓN RÁPIDO: Cerrar Lote Comunitario en Curso (Si hay un bloque abierto con faltante) -->
-      <div id="btn-quick-close-container" class="hidden">
-        <button 
-          type="button" 
-          onclick="selectQuickClosingPortion()" 
-          id="btn-quick-close"
-          class="w-full p-3 rounded-2xl border-2 border-[#1db954] bg-[#edf8f1] hover:bg-[#e1f5e8] text-[#0f5c2b] font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer active:scale-98 animate-pulse-subtle"
-        >
-          <span>🎯</span>
-          <span id="btn-quick-close-text">Cerrar el Lote en Curso con los litros restantes</span>
-        </button>
-      </div>
 
       <!-- Botones Principales de Modalidad: Pequeña, Familiar, Comunitaria -->
       <div class="grid grid-cols-3 gap-2.5">
@@ -384,70 +372,23 @@
       </div>
 
       <!-- ===================================================================== -->
-      <!-- 4. FORMULARIO DE CONFIRMACIÓN ULTRA RÁPIDO (EN UN PASO) -->
+      <!-- 4. BOTÓN DE ACCIÓN: REALIZAR PEDIDO (CHECKOUT INTEGRAL ELEMENTALES)   -->
       <!-- ===================================================================== -->
-      <form onsubmit="handleOlivaOrderSubmit(event)" class="space-y-3 pt-2 border-t border-stone-100">
-        
-        <div>
-          <label class="block text-xs font-bold text-stone-700 uppercase mb-1">
-            👤 Tu Nombre y Apellido *
-          </label>
-          <input 
-            type="text" 
-            id="order-client-name" 
-            required 
-            placeholder="Ej: Ramiro Stein" 
-            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] rounded-xl px-3.5 py-2.5 text-sm font-bold text-stone-900 focus:outline-none focus:bg-white transition-colors"
-          />
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-stone-700 uppercase mb-1">
-            📱 WhatsApp / Celular (para coordinar entrega) *
-          </label>
-          <input 
-            type="tel" 
-            id="order-client-phone" 
-            required 
-            placeholder="Ej: 11 5566-7788" 
-            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] rounded-xl px-3.5 py-2.5 text-sm font-bold text-stone-900 focus:outline-none focus:bg-white transition-colors"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">
-              💳 Forma de Pago
-            </label>
-            <select id="order-payment-method" class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] rounded-xl px-3 py-2 text-xs font-bold text-stone-900 focus:outline-none">
-              <option value="Efectivo">💵 Efectivo al retirar</option>
-              <option value="Transferencia">🏦 Transferencia Bancaria (Alias)</option>
-              <option value="Mercado Pago">📱 Mercado Pago / QR</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">
-              📍 Retiro de Círculo
-            </label>
-            <div id="order-pickup-preview" class="w-full bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 text-xs font-semibold text-stone-700 truncate">
-              Nodo Loma Verde / Punto Barrial
-            </div>
-          </div>
-        </div>
-
-        <!-- Botón Gigante de Acción (Verde Spotify oficial de Elementales) -->
+      <div class="pt-3 border-t border-stone-100 space-y-2">
         <button 
-          type="submit" 
-          id="btn-confirm-order"
-          class="btn-action w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-4 rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer mt-2 font-heading"
+          type="button" 
+          onclick="openOlivaCheckoutModal()" 
+          id="btn-open-checkout"
+          class="btn-action w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-4 rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer font-heading active:scale-98 transition-all"
         >
           <span>🫒</span>
-          <span id="btn-confirm-order-text">CONFIRMAR MI PEDIDO ($112.200)</span>
+          <span id="btn-open-checkout-text">REALIZAR PEDIDO ($112.200)</span>
           <span>→</span>
         </button>
-
-      </form>
+        <p class="text-center text-[11px] text-stone-500 font-medium flex items-center justify-center gap-1.5">
+          <span>✨</span> Sin pago previo obligatorio · Coordinás entrega, punto de retiro y pago en el checkout
+        </p>
+      </div>
 
     </div>
 
@@ -494,62 +435,455 @@
   </main>
 
   <!-- ========================================================================= -->
-  <!-- MODAL: PEDIDO REGISTRADO CON ÉXITO & COMPARTIR WHATSAPP -->
+  <!-- MODAL: CHECKOUT & CIERRE DE PEDIDO DE ACEITE DE OLIVA                     -->
   <!-- ========================================================================= -->
-  <div id="modal-order-success" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
-    <div class="bg-white rounded-3xl p-6 max-w-md w-full text-center shadow-2xl border border-stone-200 animate-fade-in">
+  <div id="modal-oliva-checkout" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
       
-      <div class="w-16 h-16 rounded-full bg-[#f4f7ee] text-[#577327] flex items-center justify-center text-3xl mx-auto mb-3 shadow-inner border border-[#d6e3c1]">
-        🫒
-      </div>
-      
-      <h3 class="font-black text-2xl text-stone-900 font-heading mb-1">
-        ¡Pedido Registrado con Éxito!
-      </h3>
-      <p class="text-xs text-stone-500 mb-4">
-        Tu pedido de aceite de oliva quedó asignado al lote comunitario de Elementales.
-      </p>
-
-      <div class="bg-[#fcfaf8] rounded-2xl p-4 text-left border border-[#e2ebd4] mb-5 text-xs space-y-1.5">
-        <div class="flex justify-between items-center pb-2 border-b border-[#e2ebd4]">
-          <span class="text-stone-500">Ticket: <strong id="success-ticket-id" class="font-mono-code text-stone-900">#OLIV-001</strong></span>
-          <span id="success-block-tag" class="font-bold text-[#577327] bg-[#f4f7ee] px-2 py-0.5 rounded-full text-[10px] border border-[#d6e3c1]">Lote #1</span>
+      <!-- ========================================== -->
+      <!-- VISTA 1: FORMULARIO DE CHECKOUT Y REGISTRO -->
+      <!-- ========================================== -->
+      <div id="oliva-checkout-view-form" class="flex flex-col h-full max-h-[92vh]">
+        <!-- Encabezado Modal -->
+        <div class="p-5 sm:p-6 border-b border-stone-200 bg-stone-50/70 flex items-start justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-[10px] font-black uppercase tracking-wider text-[#3e531c] bg-[#eef5e4] px-2.5 py-0.5 rounded-full border border-[#c9dcaf] font-mono">
+                Compra Comunitaria · Aceite de Oliva
+              </span>
+            </div>
+            <h3 class="font-black text-xl text-stone-900 font-heading">
+              Resumen de tu Pedido
+            </h3>
+            <p class="text-xs text-stone-500 mt-0.5">
+              Completá tus datos para agendar el pedido y coordinar entrega en <strong id="oliva-checkout-node-summary-label">Nodo Loma Verde</strong>.
+            </p>
+          </div>
+          <button type="button" onclick="closeOlivaCheckoutModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
         </div>
-        <p><strong>Vecino/a:</strong> <span id="success-client-name">Juan</span></p>
-        <p><strong>Modalidad:</strong> <span id="success-portion-text">Compra Familiar (6 Litros)</span></p>
-        <p><strong>Total:</strong> <span id="success-total-price" class="font-black text-[#577327]">$112.200</span></p>
-        <p><strong>Punto de Retiro:</strong> <span id="success-pickup-text">Sede Loma Verde</span></p>
+
+        <!-- Cuerpo del Checkout (Scrollable) -->
+        <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+          
+          <div class="flex items-center justify-between pb-0.5">
+            <span class="font-bold text-stone-700 text-xs">Alimento en tu pedido:</span>
+          </div>
+
+          <!-- Card de Producto en Carrito -->
+          <div class="border border-stone-200 rounded-2xl p-4 bg-stone-50/60 space-y-3">
+            <div class="flex items-start gap-3">
+              <img 
+                src="public/assets/products/aceite_lorenzo_cabrera.jpg" 
+                alt="Aceite de Oliva Lorenzo Cabrera" 
+                class="w-16 h-16 rounded-xl object-cover border border-stone-200 shrink-0 shadow-2xs"
+              />
+              <div class="flex-1 min-w-0">
+                <h4 class="font-heading font-black text-stone-900 text-sm truncate">Aceite de Oliva Extra Virgen (1L)</h4>
+                <p class="text-[11px] text-stone-500 font-medium">Lorenzo Cabrera · Variedad Arauco, La Rioja</p>
+                <div class="flex items-center gap-2 mt-1">
+                  <span id="oliva-checkout-tier-badge" class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-[#f4f7ee] text-[#577327] border border-[#d6e3c1]">
+                    Compra Familiar · Mayorista
+                  </span>
+                  <span id="oliva-checkout-unit-price" class="text-[11px] font-bold text-stone-600 font-mono">
+                    $18.700 / Litro
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selector de Cantidad en Checkout -->
+            <div class="flex items-center justify-between pt-2 border-t border-stone-200/70">
+              <span class="text-[11px] text-stone-500 font-bold">Litros a encargar:</span>
+              <div class="flex items-center gap-3">
+                <div class="flex items-center border border-stone-300 rounded-xl bg-white overflow-hidden shadow-2xs">
+                  <button 
+                    type="button" 
+                    onclick="changeOlivaLitersInCheckout(-1)"
+                    class="w-8 h-7 flex items-center justify-center font-black text-stone-600 hover:bg-stone-100 cursor-pointer"
+                  >−</button>
+                  <span id="oliva-checkout-qty" class="w-10 text-center font-mono font-black text-xs text-stone-900">6</span>
+                  <button 
+                    type="button" 
+                    onclick="changeOlivaLitersInCheckout(1)"
+                    class="w-8 h-7 flex items-center justify-center font-black text-stone-600 hover:bg-stone-100 cursor-pointer"
+                  >+</button>
+                </div>
+                <div class="text-right min-w-[80px]">
+                  <span id="oliva-checkout-item-total" class="font-mono font-black text-base text-stone-900">$112.200</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Espacio para Contribuir a la Organización de la Compra -->
+          <div class="p-4 bg-gradient-to-br from-amber-50/90 via-stone-50 to-emerald-50/50 border border-amber-200/90 rounded-2xl text-xs space-y-3 shadow-2xs">
+            <div class="flex items-start gap-2.5">
+              <span class="text-xl shrink-0 mt-0.5">🌱</span>
+              <div class="flex-1">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <h4 class="font-heading font-black text-stone-900 text-[13px]">Aporte a la organización de la compra</h4>
+                  <span class="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">Comunidades Resilientes</span>
+                </div>
+                <p class="text-[11px] text-stone-600 mt-1 leading-relaxed">
+                  Una compra comunitaria que intenciona la creación de comunidades resilientes. Tu aporte sostiene la logística compartida, el cuidado de los alimentos y el fortalecimiento de los nodos barriales.
+                </p>
+              </div>
+            </div>
+
+            <!-- Opciones de Contribución: 3% Sugerido | Lo que quien pide quiera | 0 -->
+            <div class="grid grid-cols-3 gap-2 pt-0.5">
+              <button 
+                type="button" 
+                id="oliva-btn-contrib-3"
+                onclick="selectOlivaContribution('3%')" 
+                class="px-2.5 py-2.5 rounded-xl border text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center bg-emerald-600 text-white border-emerald-600 shadow-xs ring-2 ring-emerald-500/20 active:scale-98"
+                title="Aporte sugerido del 3% para la organización colectiva"
+              >
+                <span class="font-black">3% <span class="text-[10px] font-normal opacity-90">(Sugerido)</span></span>
+                <span id="oliva-contrib-3-amount" class="text-[11px] font-mono font-bold opacity-95 block mt-0.5">$3.366</span>
+              </button>
+
+              <button 
+                type="button" 
+                id="oliva-btn-contrib-custom"
+                onclick="selectOlivaContribution('otro')" 
+                class="px-2.5 py-2.5 rounded-xl border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98"
+                title="Aportar el monto que desees libremente"
+              >
+                <span>Otro monto</span>
+                <span class="text-[10px] font-normal text-stone-400 block mt-0.5">Lo que quieras</span>
+              </button>
+
+              <button 
+                type="button" 
+                id="oliva-btn-contrib-0"
+                onclick="selectOlivaContribution('0')" 
+                class="px-2.5 py-2.5 rounded-xl border border-stone-200 text-stone-600 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98"
+                title="Continuar sin aporte organizativo"
+              >
+                <span>$0</span>
+                <span class="text-[10px] font-normal text-stone-400 block mt-0.5">Sin aporte</span>
+              </button>
+            </div>
+
+            <!-- Input dinámico para monto personalizado -->
+            <div id="oliva-contrib-custom-container" class="hidden pt-1">
+              <label class="block text-[11px] font-bold text-stone-700 mb-1">Indicá el monto que deseás aportar a la organización:</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-stone-400 font-bold">$</span>
+                <input 
+                  type="number" 
+                  id="oliva-contrib-custom-input" 
+                  min="0" 
+                  step="50" 
+                  placeholder="ej. 1000" 
+                  oninput="onOlivaCustomContributionInput(this.value)"
+                  class="w-full pl-7 pr-3 py-1.5 bg-white border border-stone-300 focus:border-emerald-500 rounded-xl text-stone-900 font-mono font-bold text-xs outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Total a Abonar con Desglose Transparente -->
+          <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl text-xs space-y-2">
+            <div class="flex items-center justify-between text-stone-600 text-[11px]">
+              <span>Subtotal aceite:</span>
+              <span id="oliva-checkout-subtotal-price" class="font-mono font-bold text-stone-800">$112.200</span>
+            </div>
+            <div id="oliva-checkout-contrib-row" class="flex items-center justify-between text-stone-600 text-[11px] pb-1.5 border-b border-emerald-200/60">
+              <span class="flex items-center gap-1">
+                <span>🌱 Aporte organización (<span id="oliva-checkout-contrib-label">3% sugerido</span>):</span>
+              </span>
+              <span id="oliva-checkout-contrib-price" class="font-mono font-bold text-emerald-800">+$3.366</span>
+            </div>
+            <div class="flex items-center justify-between pt-0.5">
+              <div>
+                <span class="text-stone-500 font-semibold block text-[11px] uppercase tracking-wider font-mono">Total a Abonar:</span>
+                <span id="oliva-checkout-total-price" class="font-heading font-black text-2xl text-emerald-950 block leading-tight">$115.566</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-stone-500 font-semibold block uppercase tracking-wider font-mono">Punto de Retiro:</span>
+                <span id="oliva-checkout-node-sublabel" class="font-black text-stone-800 text-xs block">Nodo Loma Verde</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulario de Contacto -->
+          <form id="oliva-checkout-form" onsubmit="handleConfirmOlivaOrder(event)" class="space-y-3">
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">Nombre Completo / Familia *</label>
+              <input 
+                type="text" 
+                id="oliva-order-name" 
+                required 
+                placeholder="ej. Mariana Gómez" 
+                class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
+                <input 
+                  type="tel" 
+                  id="oliva-order-phone" 
+                  required 
+                  placeholder="ej. 11 2345 6789" 
+                  class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                />
+              </div>
+
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Correo Electrónico (Email) *</label>
+                <input 
+                  type="email" 
+                  id="oliva-order-email" 
+                  required 
+                  placeholder="ej. mariana@correo.com" 
+                  class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                />
+              </div>
+            </div>
+
+            <!-- Bloque de Dirección Completa -->
+            <div class="p-3 bg-stone-50 border border-stone-200 rounded-2xl space-y-2.5">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-stone-800">
+                <span>📍</span>
+                <span>Dirección de Residencia</span>
+                <span class="text-[10px] text-stone-400 font-normal font-mono">(para registro del nodo)</span>
+              </div>
+
+              <div>
+                <label class="block font-semibold text-stone-600 text-[11px] mb-1">Calle y Altura / Dpto *</label>
+                <input 
+                  type="text" 
+                  id="oliva-order-street" 
+                  required 
+                  placeholder="ej. Los Álamos 1234, Casa 3" 
+                  class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div>
+                  <label class="block font-semibold text-stone-600 text-[11px] mb-1">Ciudad / Localidad *</label>
+                  <input 
+                    type="text" 
+                    id="oliva-order-city" 
+                    required 
+                    placeholder="ej. Loma Verde" 
+                    class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                  />
+                </div>
+                <div>
+                  <label class="block font-semibold text-stone-600 text-[11px] mb-1">Municipio / Partido *</label>
+                  <input 
+                    type="text" 
+                    id="oliva-order-municipality" 
+                    required 
+                    placeholder="ej. Escobar" 
+                    class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                  />
+                </div>
+                <div>
+                  <label class="block font-semibold text-stone-600 text-[11px] mb-1">Provincia *</label>
+                  <input 
+                    type="text" 
+                    id="oliva-order-province" 
+                    required 
+                    value="Buenos Aires" 
+                    placeholder="ej. Buenos Aires" 
+                    class="w-full bg-white border border-stone-300 focus:border-emerald-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">Método de Pago</label>
+              <select id="oliva-order-payment" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none text-xs">
+                <option value="Transferencia">📱 Transferencia MP / Alias del Nodo</option>
+                <option value="Efectivo">💵 Efectivo al momento de retirar</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">Notas o Círculo Barrial (Opcional)</label>
+              <input 
+                type="text" 
+                id="oliva-order-notes" 
+                placeholder="ej. Retiro junto con Círculo Las Magnolias" 
+                class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-500 focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+              />
+            </div>
+
+            <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+              <button 
+                type="button" 
+                onclick="closeOlivaCheckoutModal()" 
+                class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold cursor-pointer transition-all"
+              >
+                Seguir Eligiendo
+              </button>
+              <button 
+                type="submit" 
+                id="btn-oliva-submit"
+                class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-black cursor-pointer shadow-xs hover:shadow-md transition-all flex items-center gap-2 font-heading"
+              >
+                <span>📝</span>
+                <span>Registrar Pedido</span>
+              </button>
+            </div>
+          </form>
+
+        </div>
       </div>
 
-      <div class="space-y-2">
-        <button 
-          type="button" 
-          onclick="sendWhatsAppTicketOliva()" 
-          class="btn-action w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm py-3.5 rounded-2xl shadow-sm flex items-center justify-center gap-2 cursor-pointer font-heading"
-        >
-          <span>💬</span> Enviar Comprobante por WhatsApp
-        </button>
+      <!-- ========================================================================= -->
+      <!-- VISTA 2: PANTALLA CLARA DE PEDIDO REGISTRADO Y BOTÓN DE WHATSAPP         -->
+      <!-- ========================================================================= -->
+      <div id="oliva-checkout-view-success" class="hidden flex flex-col h-full max-h-[92vh]">
+        <!-- Encabezado de Éxito -->
+        <div class="p-5 sm:p-6 border-b border-stone-200 bg-emerald-50/50 flex items-start justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-2xl font-bold shrink-0 shadow-2xs">
+              ✓
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
+                  Confirmación de Compra
+                </span>
+                <span id="oliva-success-order-id-badge" class="font-mono text-[11px] font-bold text-stone-600 bg-white px-2 py-0.5 rounded-md border border-stone-200">
+                  #OLIV-001
+                </span>
+              </div>
+              <h3 class="font-black text-xl text-stone-900 font-heading">
+                ¡Pedido Registrado con Éxito!
+              </h3>
+            </div>
+          </div>
+          <button type="button" onclick="closeOlivaCheckoutModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+        </div>
 
-        <button 
-          type="button" 
-          onclick="shareOlivaWhatsApp()" 
-          class="btn-action w-full bg-[#577327] hover:bg-[#3e531c] text-white font-bold text-xs py-3 rounded-2xl flex items-center justify-center gap-2 cursor-pointer font-heading"
-        >
-          <span>📢</span> Avisar a Vecinos para Cerrar el Lote
-        </button>
+        <!-- Contenido del Detalle del Pedido Registrado (Scrollable) -->
+        <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+          
+          <div class="text-center max-w-sm mx-auto space-y-1">
+            <p class="text-sm font-bold text-stone-900">
+              ¡Muchas gracias, <span id="oliva-success-client-name" class="text-emerald-800 font-black">Vecino/a</span>!
+            </p>
+            <p class="text-xs text-stone-500 leading-relaxed">
+              Tu orden quedó guardada y agendada para el retiro en <strong id="oliva-success-node-name" class="text-stone-800">Nodo Loma Verde</strong>.
+            </p>
+          </div>
 
-        <button 
-          type="button" 
-          onclick="closeSuccessModal()" 
-          class="btn-action w-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs py-2.5 rounded-2xl cursor-pointer"
-        >
-          Volver a la Página de Aceite de Oliva
-        </button>
+          <!-- Resumen Completo y Claro del Pedido -->
+          <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 text-xs space-y-3">
+            
+            <div class="flex items-center justify-between pb-2.5 border-b border-stone-200">
+              <div>
+                <span class="text-[10px] text-stone-400 font-mono uppercase block font-bold">Entrega Comunitaria:</span>
+                <span id="oliva-success-delivery-date" class="font-bold text-stone-800 text-xs">Próxima entrega programada</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] text-stone-400 font-mono uppercase block font-bold">Total a Pagar:</span>
+                <span id="oliva-success-total-price" class="font-mono font-black text-xl text-emerald-900">$0</span>
+              </div>
+            </div>
+
+            <!-- Desglose de Alimentos Solicitados -->
+            <div>
+              <span class="text-[10px] text-stone-400 font-mono uppercase block font-bold mb-1.5">Alimento Solicitado:</span>
+              <div id="oliva-success-items-list" class="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                <!-- Items renderizados aquí -->
+              </div>
+            </div>
+
+            <!-- Desglose Subtotal y Aporte Organizativo -->
+            <div class="pt-2 border-t border-stone-200 text-xs space-y-1">
+              <div class="flex justify-between text-stone-600 text-[11px]">
+                <span>Subtotal aceite:</span>
+                <span id="oliva-success-subtotal-price" class="font-mono font-bold text-stone-800">$0</span>
+              </div>
+              <div id="oliva-success-contrib-row" class="flex justify-between text-stone-600 text-[11px]">
+                <span>🌱 Aporte organización (<span id="oliva-success-contrib-label">3%</span>):</span>
+                <span id="oliva-success-contrib-price" class="font-mono font-bold text-emerald-800">+$0</span>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-stone-200 text-[11px] text-stone-600 space-y-1.5">
+              <p>👤 <strong>Comprador:</strong> <span id="oliva-success-client-full-label" class="text-stone-800 font-bold"></span> (<span id="oliva-success-phone-label" class="font-mono"></span>)</p>
+              <p>✉️ <strong>Email:</strong> <span id="oliva-success-email-label" class="font-mono text-stone-800"></span></p>
+              <p>🏠 <strong>Domicilio:</strong> <span id="oliva-success-address-label" class="text-stone-800"></span></p>
+              <p>📍 <strong>Punto de Retiro:</strong> <span id="oliva-success-location-label" class="text-stone-800 font-semibold">Nodo Loma Verde</span></p>
+              <p>💳 <strong>Método de Pago:</strong> <span id="oliva-success-payment-label" class="text-stone-800">Transferencia</span></p>
+              <p id="oliva-success-notes-row" class="hidden">📝 <strong>Notas:</strong> <span id="oliva-success-notes-label"></span></p>
+            </div>
+          </div>
+
+          <!-- Notificación de comprobante y confirmación -->
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-start gap-2.5 text-xs text-emerald-950">
+            <span class="text-base shrink-0">📋</span>
+            <div class="flex-1">
+              <p class="font-bold">Comprobante y Pedido Registrado</p>
+              <p class="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
+                Tu orden <strong id="oliva-success-email-notice" class="font-mono"></strong> quedó agendada en el sistema de Lotes Comunitarios. Para confirmar el retiro con el coordinador del nodo, completá el envío por WhatsApp con el botón de abajo.
+              </p>
+            </div>
+          </div>
+
+          <!-- Bloque de Acciones WhatsApp -->
+          <div class="space-y-2 pt-1">
+            <div class="bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-center">
+              <p class="text-[11px] text-stone-700 font-semibold leading-relaxed">
+                El pedido ya está guardado en el sistema. Elegí cómo confirmar por WhatsApp:
+              </p>
+            </div>
+
+            <button 
+              type="button" 
+              id="oliva-success-btn-whatsapp"
+              onclick="sendWhatsAppTicketOliva()"
+              class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] active:scale-98 text-white font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 font-heading"
+            >
+              <span class="text-lg">💬</span>
+              <span>Enviar Pedido al Coordinador del Nodo</span>
+              <span class="text-sm font-normal">→</span>
+            </button>
+
+            <button 
+              type="button" 
+              onclick="sendOrderToMyOwnWhatsApp()"
+              class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-stone-50 active:scale-98 text-stone-800 border border-stone-300 font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 font-heading"
+            >
+              <span>📲</span>
+              <span>Guardar / Enviarme Copia a mi WhatsApp</span>
+            </button>
+
+            <button 
+              type="button" 
+              onclick="shareOlivaWhatsApp()" 
+              class="w-full py-2.5 px-4 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 font-heading"
+            >
+              <span>📢</span>
+              <span>Avisar a Vecinos para Cerrar el Lote</span>
+            </button>
+
+            <button 
+              type="button" 
+              onclick="closeOlivaCheckoutModal()" 
+              class="w-full py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs font-bold cursor-pointer transition-colors text-center"
+            >
+              Cerrar y Volver a la Tienda
+            </button>
+          </div>
+
+        </div>
       </div>
 
     </div>
   </div>
-
   <!-- Scripts: Módulos de datos y lógica de la landing -->
   <script src="js/products-data.js" charset="UTF-8"></script>
   <script src="js/circulos.js" charset="UTF-8"></script>
@@ -577,6 +911,10 @@
     let selectedLiters = 6; // Default: Compra familiar (6 litros)
     let activeCircle = null;
     let lastCompletedOrder = null;
+    let olivaContributionType = '3%';
+    let olivaCustomContributionAmount = 0;
+    let currentOrderWaUrl = '';
+    let currentOrderClientWaUrl = '';
 
     // Inicialización al cargar la página
     document.addEventListener('DOMContentLoaded', () => {
@@ -650,6 +988,11 @@
     function loadUserSession() {
       let savedName = '';
       let savedPhone = '';
+      let savedEmail = '';
+      let savedStreet = '';
+      let savedCity = '';
+      let savedMunicipality = '';
+      let savedProvince = 'Buenos Aires';
 
       if (typeof ElementalesDB !== 'undefined') {
         const sess = ElementalesDB.getSession();
@@ -660,11 +1003,27 @@
       }
       if (!savedName) savedName = localStorage.getItem('elementales_user_name') || '';
       if (!savedPhone) savedPhone = localStorage.getItem('elementales_user_phone') || '';
+      savedEmail = localStorage.getItem('elementales_user_email') || '';
+      savedStreet = localStorage.getItem('elementales_user_street') || '';
+      savedCity = localStorage.getItem('elementales_user_city') || '';
+      savedMunicipality = localStorage.getItem('elementales_user_municipality') || '';
+      savedProvince = localStorage.getItem('elementales_user_province') || 'Buenos Aires';
 
-      const nameInput = document.getElementById('order-client-name');
-      const phoneInput = document.getElementById('order-client-phone');
+      const nameInput = document.getElementById('oliva-order-name');
+      const phoneInput = document.getElementById('oliva-order-phone');
+      const emailInput = document.getElementById('oliva-order-email');
+      const streetInput = document.getElementById('oliva-order-street');
+      const cityInput = document.getElementById('oliva-order-city');
+      const muniInput = document.getElementById('oliva-order-municipality');
+      const provInput = document.getElementById('oliva-order-province');
+
       if (nameInput && savedName) nameInput.value = savedName;
       if (phoneInput && savedPhone) phoneInput.value = savedPhone;
+      if (emailInput && savedEmail) emailInput.value = savedEmail;
+      if (streetInput && savedStreet) streetInput.value = savedStreet;
+      if (cityInput && savedCity) cityInput.value = savedCity;
+      if (muniInput && savedMunicipality) muniInput.value = savedMunicipality;
+      if (provInput && savedProvince) provInput.value = savedProvince;
     }
 
     // 3. Selección directa por modalidad (3 botones principales)
@@ -790,7 +1149,8 @@
       }
 
       if (btnConfirmText) {
-        btnConfirmText.textContent = `CONFIRMAR MI PEDIDO (${totals.liters}L · $${formatMoney(totals.total)})`;
+        const btnOpen = document.getElementById('btn-open-checkout-text');
+        if (btnOpen) btnOpen.textContent = `REALIZAR PEDIDO (${totals.liters}L · $${formatMoney(totals.total)})`;
       }
     }
 
@@ -914,23 +1274,6 @@
     function renderBlockchainView() {
       const { committedBlocks, activeBlock } = calculateBlockchain();
 
-      // Control del Botón Rápido de Cierre
-      const quickCloseContainer = document.getElementById('btn-quick-close-container');
-      const quickCloseText = document.getElementById('btn-quick-close-text');
-      if (quickCloseContainer && quickCloseText) {
-        if (activeBlock.coveredLiters > 0 && activeBlock.remainingLiters > 0) {
-          quickCloseContainer.classList.remove('hidden');
-          const remLiters = activeBlock.remainingLiters;
-          const remTier = getTierForLiters(remLiters);
-          const remPrice = formatMoney(remLiters * remTier.unitPrice);
-          quickCloseText.textContent = `🎯 ¡Cerrar Lote Comunitario #${activeBlock.blockNumber} con los ${remLiters}L restantes ($${remPrice})!`;
-          window.quickClosingLiters = remLiters;
-        } else {
-          quickCloseContainer.classList.add('hidden');
-          window.quickClosingLiters = null;
-        }
-      }
-
       // 1. Renderizar Bloque Activo (En Curso)
       const activeContainer = document.getElementById('active-block-container');
       if (activeContainer) {
@@ -1040,41 +1383,152 @@
       }
     }
 
-    function selectQuickClosingPortion() {
-      if (window.quickClosingLiters) {
-        selectedLiters = window.quickClosingLiters;
-        updatePortionDisplay();
-        playPopSound();
-        document.getElementById('order-client-name')?.focus();
+    // 5. CHECKOUT INTEGRAL & APORTE COMUNITARIO
+    function getOlivaContributionAmount(subtotal) {
+      if (olivaContributionType === '3%') {
+        return Math.round((subtotal * 0.03) / 10) * 10;
+      } else if (olivaContributionType === 'otro') {
+        return Math.max(0, Math.round(olivaCustomContributionAmount));
+      }
+      return 0;
+    }
+
+    function selectOlivaContribution(type) {
+      olivaContributionType = type;
+      const customContainer = document.getElementById('oliva-contrib-custom-container');
+      const customInput = document.getElementById('oliva-contrib-custom-input');
+
+      if (type === 'otro') {
+        if (customContainer) customContainer.classList.remove('hidden');
+        if (customInput) {
+          if (!customInput.value) {
+            const totals = getCurrentSelectionTotals();
+            const suggestedCustom = Math.round((totals.total * 0.05) / 50) * 50 || 500;
+            customInput.value = olivaCustomContributionAmount > 0 ? olivaCustomContributionAmount : suggestedCustom;
+            olivaCustomContributionAmount = parseFloat(customInput.value) || 0;
+          }
+          customInput.focus();
+        }
+      } else {
+        if (customContainer) customContainer.classList.add('hidden');
+      }
+
+      updateOlivaCheckoutTotals();
+    }
+
+    function onOlivaCustomContributionInput(val) {
+      olivaCustomContributionAmount = Math.max(0, parseFloat(val) || 0);
+      updateOlivaCheckoutTotals();
+    }
+
+    function changeOlivaLitersInCheckout(delta) {
+      selectedLiters = Math.max(1, selectedLiters + delta);
+      updatePortionDisplay();
+      updateOlivaCheckoutTotals();
+    }
+
+    function openOlivaCheckoutModal() {
+      const modal = document.getElementById('modal-oliva-checkout');
+      if (!modal) return;
+
+      document.getElementById('oliva-checkout-view-form')?.classList.remove('hidden');
+      document.getElementById('oliva-checkout-view-success')?.classList.add('hidden');
+
+      loadUserSession();
+      updateOlivaCheckoutTotals();
+      modal.classList.remove('hidden');
+    }
+
+    function closeOlivaCheckoutModal() {
+      document.getElementById('modal-oliva-checkout')?.classList.add('hidden');
+    }
+
+    function updateOlivaCheckoutTotals() {
+      const totals = getCurrentSelectionTotals();
+      const contrib = getOlivaContributionAmount(totals.total);
+      const totalToPay = totals.total + contrib;
+
+      const qtyEl = document.getElementById('oliva-checkout-qty');
+      if (qtyEl) qtyEl.textContent = totals.liters;
+
+      const badgeEl = document.getElementById('oliva-checkout-tier-badge');
+      if (badgeEl) badgeEl.textContent = `${totals.tier.name} · ${totals.tier.type}`;
+
+      const unitPriceEl = document.getElementById('oliva-checkout-unit-price');
+      if (unitPriceEl) unitPriceEl.textContent = `$${formatMoney(totals.tier.unitPrice)} / Litro`;
+
+      const itemTotalEl = document.getElementById('oliva-checkout-item-total');
+      if (itemTotalEl) itemTotalEl.textContent = `$${formatMoney(totals.total)}`;
+
+      const contrib3El = document.getElementById('oliva-contrib-3-amount');
+      if (contrib3El) contrib3El.textContent = `$${(Math.round((totals.total * 0.03) / 10) * 10).toLocaleString('es-AR')}`;
+
+      const btn3 = document.getElementById('oliva-btn-contrib-3');
+      const btnCustom = document.getElementById('oliva-btn-contrib-custom');
+      const btn0 = document.getElementById('oliva-btn-contrib-0');
+
+      const activeClass = 'px-2.5 py-2.5 rounded-xl border text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center bg-emerald-600 text-white border-emerald-600 shadow-xs ring-2 ring-emerald-500/20 active:scale-98';
+      const inactiveClass = 'px-2.5 py-2.5 rounded-xl border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98';
+
+      if (btn3) btn3.className = olivaContributionType === '3%' ? activeClass : inactiveClass;
+      if (btnCustom) btnCustom.className = olivaContributionType === 'otro' ? activeClass : inactiveClass;
+      if (btn0) btn0.className = olivaContributionType === '0' ? activeClass : inactiveClass;
+
+      const subtotalEl = document.getElementById('oliva-checkout-subtotal-price');
+      if (subtotalEl) subtotalEl.textContent = `$${totals.total.toLocaleString('es-AR')}`;
+
+      const contribLabelEl = document.getElementById('oliva-checkout-contrib-label');
+      if (contribLabelEl) {
+        if (olivaContributionType === '3%') contribLabelEl.textContent = '3% sugerido';
+        else if (olivaContributionType === 'otro') contribLabelEl.textContent = 'personalizado';
+        else contribLabelEl.textContent = 'sin aporte';
+      }
+
+      const contribPriceEl = document.getElementById('oliva-checkout-contrib-price');
+      if (contribPriceEl) {
+        contribPriceEl.textContent = contrib > 0 ? `+$${contrib.toLocaleString('es-AR')}` : '$0';
+        contribPriceEl.className = contrib > 0 ? 'font-mono font-bold text-emerald-800' : 'font-mono font-medium text-stone-400';
+      }
+
+      const totalEl = document.getElementById('oliva-checkout-total-price');
+      if (totalEl) totalEl.textContent = `$${totalToPay.toLocaleString('es-AR')}`;
+
+      const pickupSublabel = document.getElementById('oliva-checkout-node-sublabel');
+      const pickupSummaryLabel = document.getElementById('oliva-checkout-node-summary-label');
+      const nodeName = activeCircle ? activeCircle.nombre : 'Nodo Loma Verde';
+      if (pickupSublabel) pickupSublabel.textContent = nodeName;
+      if (pickupSummaryLabel) pickupSummaryLabel.textContent = nodeName;
+
+      const btnOpenCheckoutText = document.getElementById('btn-open-checkout-text');
+      if (btnOpenCheckoutText) {
+        btnOpenCheckoutText.textContent = `REALIZAR PEDIDO (${totals.liters}L · $${formatMoney(totals.total)})`;
       }
     }
 
-    // 5. CONFIRMAR PEDIDO
-    function handleOlivaOrderSubmit(e) {
-      e.preventDefault();
+    function handleConfirmOlivaOrder(e) {
+      if (e) e.preventDefault();
+
       const totals = getCurrentSelectionTotals();
-      if (totals.liters <= 0) {
-        alert('Por favor selecciona una cantidad de litros.');
+      if (totals.liters <= 0) return;
+
+      const name = document.getElementById('oliva-order-name')?.value.trim();
+      const phone = document.getElementById('oliva-order-phone')?.value.trim();
+      const email = document.getElementById('oliva-order-email')?.value.trim();
+      const street = document.getElementById('oliva-order-street')?.value.trim();
+      const city = document.getElementById('oliva-order-city')?.value.trim();
+      const municipality = document.getElementById('oliva-order-municipality')?.value.trim();
+      const province = document.getElementById('oliva-order-province')?.value.trim() || 'Buenos Aires';
+      const payment = document.getElementById('oliva-order-payment')?.value || 'Transferencia';
+      const notes = document.getElementById('oliva-order-notes')?.value.trim() || '';
+
+      if (!name || !phone || !email || !street || !city || !municipality) {
+        alert('Por favor completá los datos obligatorios para continuar.');
         return;
       }
 
-      const clientName = document.getElementById('order-client-name').value.trim();
-      const clientPhone = document.getElementById('order-client-phone').value.trim();
-      const paymentMethod = document.getElementById('order-payment-method').value;
-
-      if (!clientName) {
-        alert('Ingresa tu nombre para identificarte en el pedido.');
-        return;
-      }
-
-      // Guardar nombre y teléfono en sesión global de Elementales
-      if (typeof ElementalesDB !== 'undefined' && ElementalesDB.setUserName) {
-        ElementalesDB.setUserName(clientName);
-        if (clientPhone) ElementalesDB.setUserPhone(clientPhone);
-      } else {
-        localStorage.setItem('elementales_user_name', clientName);
-        if (clientPhone) localStorage.setItem('elementales_user_phone', clientPhone);
-      }
+      const contrib = getOlivaContributionAmount(totals.total);
+      const totalAmount = totals.total + contrib;
+      const fullAddressStr = `${street}, ${city} (${municipality}), ${province}`;
 
       const orderNumber = getAllOlivaOrders().length + 1;
       const orderId = 'OLIV-' + String(orderNumber).padStart(3, '0');
@@ -1082,39 +1536,62 @@
 
       const newOrder = {
         id: orderId,
-        type: 'lunar',
-        category: 'lunar',
         number: orderNumber,
         timestamp: now.getTime(),
         dateStr: now.toLocaleDateString('es-AR'),
         timeStr: now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
-        clientName,
-        clientPhone,
-        paymentMethod,
+        clientName: name,
+        clientPhone: phone,
+        clientEmail: email,
+        clientAddress: {
+          street,
+          city,
+          municipality,
+          province,
+          full: fullAddressStr
+        },
+        paymentMethod: payment,
+        notes: notes,
         productName: 'Aceite de Oliva Extra Virgen Lorenzo Cabrera (1L)',
         liters: totals.liters,
         tierKey: totals.tier.key,
         tierName: totals.tier.name,
         tierType: totals.tier.type,
         unitPrice: totals.tier.unitPrice,
-        total: totals.total,
+        subtotal: totals.total,
+        communityContribution: contrib,
+        contributionType: olivaContributionType,
+        total: totalAmount,
         status: 'Confirmado',
         circuloId: activeCircle ? activeCircle.id : null,
         circuloNombre: activeCircle ? activeCircle.nombre : 'Nodo Loma Verde',
         direccionRetiro: activeCircle ? activeCircle.direccion : 'Sede Loma Verde'
       };
 
-      // Guardar en almacenamiento de Aceite de Oliva
+      try {
+        localStorage.setItem('elementales_user_name', name);
+        localStorage.setItem('elementales_user_phone', phone);
+        localStorage.setItem('elementales_user_email', email);
+        localStorage.setItem('elementales_user_street', street);
+        localStorage.setItem('elementales_user_city', city);
+        localStorage.setItem('elementales_user_municipality', municipality);
+        localStorage.setItem('elementales_user_province', province);
+
+        let allOrders = [];
+        const raw = localStorage.getItem('elementales_orders');
+        if (raw) allOrders = JSON.parse(raw);
+        allOrders.unshift(newOrder);
+        localStorage.setItem('elementales_orders', JSON.stringify(allOrders));
+        localStorage.setItem('elementales_orders_db_v1', JSON.stringify(allOrders));
+      } catch (err) {}
+
       const orders = getAllOlivaOrders();
       orders.push(newOrder);
       saveOlivaOrders(orders);
 
-      // Persistir en ElementalesDB general
       if (typeof ElementalesDB !== 'undefined' && ElementalesDB.saveOrder) {
         ElementalesDB.saveOrder({
           id: 'ORD-' + orderId,
-          type: 'lunar',
-          category: 'lunar',
           number: orderNumber,
           timestamp: newOrder.timestamp,
           dateStr: newOrder.dateStr,
@@ -1131,78 +1608,137 @@
             total: totals.total,
             emoji: '🫒'
           }],
-          total: totals.total,
+          total: totalAmount,
           circuloId: newOrder.circuloId,
           circuloNombre: newOrder.circuloNombre
         });
       }
 
-      // Sumar al Círculo si corresponde
       if (activeCircle && typeof CirculosManager !== 'undefined') {
         CirculosManager.addOrderToCircle(activeCircle.id, {
           clientName,
           itemsSummary: `Aceite de Oliva Lorenzo Cabrera (${totals.liters}L · ${totals.tier.name})`,
-          totalAmount: totals.total
+          totalAmount: totalAmount
         });
       }
 
       lastCompletedOrder = newOrder;
 
-      // Efectos de éxito
+      const orderBadge = document.getElementById('oliva-success-order-id-badge');
+      if (orderBadge) orderBadge.textContent = `#${orderId}`;
+
+      const clientNameEl = document.getElementById('oliva-success-client-name');
+      if (clientNameEl) clientNameEl.textContent = name;
+
+      const clientFullLabel = document.getElementById('oliva-success-client-full-label');
+      if (clientFullLabel) clientFullLabel.textContent = name;
+
+      const phoneLabel = document.getElementById('oliva-success-phone-label');
+      if (phoneLabel) phoneLabel.textContent = phone;
+
+      const emailLabel = document.getElementById('oliva-success-email-label');
+      if (emailLabel) emailLabel.textContent = email;
+
+      const emailNotice = document.getElementById('oliva-success-email-notice');
+      if (emailNotice) emailNotice.textContent = `#${orderId}`;
+
+      const addressLabel = document.getElementById('oliva-success-address-label');
+      if (addressLabel) addressLabel.textContent = fullAddressStr;
+
+      const locationLabel = document.getElementById('oliva-success-location-label');
+      if (locationLabel) locationLabel.textContent = activeCircle ? activeCircle.nombre : 'Nodo Loma Verde';
+
+      const paymentLabel = document.getElementById('oliva-success-payment-label');
+      if (paymentLabel) paymentLabel.textContent = payment;
+
+      const notesRow = document.getElementById('oliva-success-notes-row');
+      const notesLabel = document.getElementById('oliva-success-notes-label');
+      if (notes) {
+        if (notesRow) notesRow.classList.remove('hidden');
+        if (notesLabel) notesLabel.textContent = notes;
+      } else {
+        if (notesRow) notesRow.classList.add('hidden');
+      }
+
+      const totalEl = document.getElementById('oliva-success-total-price');
+      if (totalEl) totalEl.textContent = `$${totalAmount.toLocaleString('es-AR')}`;
+
+      const subtotalEl = document.getElementById('oliva-success-subtotal-price');
+      if (subtotalEl) subtotalEl.textContent = `$${totals.total.toLocaleString('es-AR')}`;
+
+      const contribRow = document.getElementById('oliva-success-contrib-row');
+      const contribLabel = document.getElementById('oliva-success-contrib-label');
+      const contribPrice = document.getElementById('oliva-success-contrib-price');
+      if (contrib > 0) {
+        if (contribRow) contribRow.classList.remove('hidden');
+        if (contribLabel) contribLabel.textContent = olivaContributionType === '3%' ? '3% sugerido' : 'voluntario';
+        if (contribPrice) contribPrice.textContent = `+$${contrib.toLocaleString('es-AR')}`;
+      } else {
+        if (contribRow) contribRow.classList.remove('hidden');
+        if (contribLabel) contribLabel.textContent = 'sin aporte';
+        if (contribPrice) contribPrice.textContent = '$0';
+      }
+
+      const itemsList = document.getElementById('oliva-success-items-list');
+      if (itemsList) {
+        itemsList.innerHTML = `
+          <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border border-stone-200">
+            <div>
+              <span class="font-bold text-stone-900 block text-xs">Aceite de Oliva Extra Virgen (1L)</span>
+              <span class="text-[11px] text-stone-500">${totals.liters} Litro(s) · Escala ${totals.tier.name} ($${formatMoney(totals.tier.unitPrice)}/L)</span>
+            </div>
+            <strong class="font-mono text-stone-900 font-bold">$${totals.total.toLocaleString('es-AR')}</strong>
+          </div>
+        `;
+      }
+
+      const contribText = contrib > 0
+        ? `\nSubtotal aceite: $${totals.total.toLocaleString('es-AR')}\n🌱 *Aporte organización (${olivaContributionType === '3%' ? '3% sugerido' : 'voluntario'}):* +$${contrib.toLocaleString('es-AR')}`
+        : `\nSubtotal aceite: $${totals.total.toLocaleString('es-AR')}\nAporte organización: $0 (Sin aporte)`;
+
+      const waMsg = 
+`🫒 *PEDIDO DE ACEITE DE OLIVA - ELEMENTALES .STORE*
+━━━━━━━━━━━━━━━━━━━━━
+🧾 *Ticket:* #${orderId}
+👤 *Vecino/a:* ${name}
+📱 *Teléfono:* ${phone}
+✉️ *Email:* ${email}
+🏠 *Domicilio:* ${fullAddressStr}
+📍 *Punto de Retiro:* ${activeCircle ? activeCircle.nombre : 'Nodo Loma Verde'}
+💳 *Forma de Pago:* ${payment}
+${notes ? `📝 *Notas:* ${notes}\n` : ''}━━━━━━━━━━━━━━━━━━━━━
+🫒 *Producto:* Aceite de Oliva Extra Virgen Lorenzo Cabrera
+🏷️ *Modalidad:* ${totals.tier.name} (${totals.tier.type})
+⚖️ *Cantidad:* ${totals.liters} Litro(s) en botella de vidrio 1L
+${contribText}
+━━━━━━━━━━━━━━━━━━━━━
+💰 *TOTAL A ABONAR: $${totalAmount.toLocaleString('es-AR')}*
+━━━━━━━━━━━━━━━━━━━━━
+¡Muchas gracias por sumarte a las compras comunitarias de Elementales! ✨🌱
+https://elementales.store/oliva`;
+
+      const coordPhone = activeCircle && activeCircle.telefono ? cleanPhone(activeCircle.telefono) : '5491133445566';
+      currentOrderWaUrl = `https://wa.me/${coordPhone}?text=${encodeURIComponent(waMsg)}`;
+      currentOrderClientWaUrl = `https://wa.me/?text=${encodeURIComponent(waMsg)}`;
+
       playSuccessSound();
-
-      // Refrescar Blockchain y abrir Modal de Éxito
       renderBlockchainView();
-      openSuccessModal(newOrder);
-    }
 
-    // 6. MODAL DE ÉXITO & WHATSAPP TICKET ELEMENTALES
-    function openSuccessModal(order) {
-      document.getElementById('success-ticket-id').textContent = `#${order.id}`;
-      document.getElementById('success-client-name').textContent = order.clientName;
-      document.getElementById('success-portion-text').textContent = `${order.tierName} (${order.liters} Litros)`;
-      document.getElementById('success-total-price').textContent = `$${formatMoney(order.total)}`;
-      document.getElementById('success-pickup-text').textContent = order.direccionRetiro || 'Punto Barrial Loma Verde';
-      
-      const modal = document.getElementById('modal-order-success');
-      if (modal) modal.classList.remove('hidden');
-    }
-
-    function closeSuccessModal() {
-      document.getElementById('modal-order-success')?.classList.add('hidden');
+      document.getElementById('oliva-checkout-view-form')?.classList.add('hidden');
+      document.getElementById('oliva-checkout-view-success')?.classList.remove('hidden');
     }
 
     function sendWhatsAppTicketOliva() {
-      if (!lastCompletedOrder) return;
-      const o = lastCompletedOrder;
-      
-      let msg = `🫒 *ELEMENTALES .STORE - PEDIDO DE ACEITE DE OLIVA*\n`;
-      msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-      msg += `🧾 *Ticket:* #${o.id}\n`;
-      msg += `👤 *Vecino/a:* ${o.clientName}\n`;
-      msg += `📅 *Fecha:* ${o.dateStr} a las ${o.timeStr} hs\n`;
-      if (activeCircle) {
-        msg += `🤝 *Círculo:* ${activeCircle.nombre}\n`;
-        msg += `📍 *Retiro:* ${activeCircle.direccion || 'Punto Barrial'}\n`;
+      if (currentOrderWaUrl) {
+        window.open(currentOrderWaUrl, '_blank');
       }
-      msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-      msg += `🫒 *Producto:* Aceite de Oliva Extra Virgen Lorenzo Cabrera\n`;
-      msg += `🏷️ *Modalidad:* ${o.tierName} (${o.tierType})\n`;
-      msg += `⚖️ *Cantidad:* ${o.liters} Litro(s) en botella de vidrio 1L\n`;
-      msg += `💰 *TOTAL: $${formatMoney(o.total)}*\n`;
-      msg += `💳 *Forma de Pago:* ${o.paymentMethod}\n`;
-      if (activeCircle && activeCircle.alias) {
-        msg += `🏦 *Alias Transferencia:* \`${activeCircle.alias}\`\n`;
-      }
-      msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-      msg += `¡Muchas gracias por sumarte a las compras colectivas de Elementales! ✨🌱\n`;
-      msg += `https://elementales.store/oliva`;
-
-      const coordPhone = activeCircle && activeCircle.telefono ? cleanPhone(activeCircle.telefono) : '';
-      let url = coordPhone ? `https://wa.me/${coordPhone}?text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
-      window.open(url, '_blank');
     }
 
+    function sendOrderToMyOwnWhatsApp() {
+      if (currentOrderClientWaUrl) {
+        window.open(currentOrderClientWaUrl, '_blank');
+      }
+    }
     function shareOlivaWhatsApp() {
       const { activeBlock } = calculateBlockchain();
       const remainingStr = `${activeBlock.remainingLiters}L`;
