@@ -729,9 +729,9 @@
     function getAllFrutillaOrders() {
       try {
         const raw = localStorage.getItem(FRUTILLA_CONFIG.storageKey);
-        if (raw) {
+        if (raw !== null) {
           const list = JSON.parse(raw);
-          if (Array.isArray(list) && list.length > 0) return list;
+          if (Array.isArray(list)) return list;
         }
       } catch (e) {}
 

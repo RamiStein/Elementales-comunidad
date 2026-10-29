@@ -746,7 +746,7 @@
           <div>
             <div class="flex items-center gap-2">
               <span class="text-xs font-black text-amber-700 uppercase tracking-wider font-mono-code">⚡ BLOQUE EN CURSO</span>
-              <span id="current-cajon-id-pill" class="text-[10px] font-bold bg-stone-100 text-stone-700 border border-stone-200 px-2 py-0.5 rounded-full font-mono">Cajón #3 en minado</span>
+              <span id="current-cajon-id-pill" class="text-[10px] font-bold bg-stone-100 text-stone-700 border border-stone-200 px-2 py-0.5 rounded-full font-mono">Cajón #1 en minado</span>
             </div>
             <h4 class="text-lg font-black text-stone-900 mt-1 font-heading">
               Progreso del Cajón Activo de 5 kg
@@ -755,8 +755,8 @@
 
           <div class="flex items-center gap-3">
             <div class="text-right">
-              <span id="current-cajon-progress-text" class="text-xl font-black text-emerald-700 font-mono">4.17 / 5.00 kg</span>
-              <span id="current-cajon-percent-text" class="text-xs text-stone-500 block font-bold">83% completado</span>
+              <span id="current-cajon-progress-text" class="text-xl font-black text-emerald-700 font-mono">0.00 / 5.00 kg</span>
+              <span id="current-cajon-percent-text" class="text-xs text-stone-500 block font-bold">0% completado</span>
             </div>
             <button 
               type="button" 
@@ -771,7 +771,7 @@
 
         <!-- Barra de Progreso Visual de 5kg -->
         <div class="w-full bg-stone-100 rounded-full h-4 overflow-hidden p-0.5 border border-stone-200 mb-4">
-          <div id="current-cajon-progress-bar" class="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: 83%;"></div>
+          <div id="current-cajon-progress-bar" class="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
         </div>
 
         <!-- Pedidos que integran este cajón -->
@@ -3403,17 +3403,49 @@
       return false;
     }
 
+    // Helper para calcular peso en kg de pedidos de Frutillas
+    function getFrutillaOrderKg(o) {
+      if (!o) return 0;
+      if (o.kg && !isNaN(Number(o.kg)) && Number(o.kg) > 0) return Number(o.kg);
+      let totalKg = 0;
+      const items = getCleanOrderItems(o);
+      items.forEach(it => {
+        const name = (it.name || '').toLowerCase();
+        const qty = Number(it.qty) || 1;
+        if (name.includes('frutilla')) {
+          if (name.includes('1/2') || name.includes('2.5kg') || name.includes('2.5 kg') || name.includes('2,5kg') || name.includes('2,5 kg') || name.includes('2.5') || name.includes('2,5')) {
+            totalKg += 2.5 * qty;
+          } else if (name.includes('1/3') || name.includes('1.67kg') || name.includes('1.67 kg') || name.includes('1,67kg') || name.includes('1,67 kg') || name.includes('1.67') || name.includes('1,67')) {
+            totalKg += 1.67 * qty;
+          } else if (name.includes('1/4') || name.includes('1.25kg') || name.includes('1.25 kg') || name.includes('1,25kg') || name.includes('1,25 kg') || name.includes('1.25') || name.includes('1,25')) {
+            totalKg += 1.25 * qty;
+          } else if (name.includes('1/6') || name.includes('0.83kg') || name.includes('0.83 kg') || name.includes('0.83')) {
+            totalKg += 0.83 * qty;
+          } else if (name.includes('entero') || name.includes('5 kg') || name.includes('(5kg)') || (/(?:^|[^0-9.])5\s*kg/i).test(name)) {
+            totalKg += 5.0 * qty;
+          } else if (name.includes('1 kg') || name.includes('(1kg)') || (/(?:^|[^0-9.])1\s*kg/i).test(name)) {
+            totalKg += 1.0 * qty;
+          } else {
+            totalKg += 2.5 * qty;
+          }
+        }
+      });
+      return totalKg > 0 ? +totalKg.toFixed(2) : (String(o.id || '').startsWith('FRUT-') ? 2.5 : 0);
+    }
+
     function initAdminData() {
+      const alreadySeeded = localStorage.getItem('elementales_orders_seeded') === 'true';
+
       // 1. Cargar Pedidos Generales
       try {
         const rawOrders = localStorage.getItem('elementales_orders') || localStorage.getItem('elementales_orders_db_v1');
-        if (rawOrders) {
+        if (rawOrders !== null) {
           adminOrders = JSON.parse(rawOrders);
         }
       } catch (e) { adminOrders = []; }
 
       // Auto-clasificar y normalizar pedidos lunares preexistentes (ej. ORD-OLIV-xxx)
-      if (Array.isArray(adminOrders)) {
+      if (Array.isArray(adminOrders) && adminOrders.length > 0) {
         let changed = false;
         adminOrders.forEach(o => {
           if (isLunarOrder(o) && o.type !== 'lunar') {
@@ -3426,8 +3458,8 @@
         }
       }
 
-      // Semilla de pedidos si está vacío para tener información inmediata
-      if (!Array.isArray(adminOrders) || adminOrders.length === 0) {
+      // Semilla de pedidos SOLO la primera vez absoluta si nunca fue sembrado
+      if (!alreadySeeded && (!Array.isArray(adminOrders) || adminOrders.length === 0)) {
         adminOrders = [
           {
             id: 'ORD-1042',
@@ -3542,6 +3574,7 @@
       try {
         localStorage.setItem('elementales_orders', JSON.stringify(adminOrders));
         localStorage.setItem('elementales_orders_db_v1', JSON.stringify(adminOrders));
+        localStorage.setItem('elementales_orders_seeded', 'true');
       } catch (e) {}
     }
 
@@ -4035,22 +4068,28 @@
       if (elTabBaseDatos) elTabBaseDatos.textContent = totalOrders;
 
       // KPI Frutillas
-      const totalKg = 16.67;
+      let totalFrutKg = 0;
+      let frutillaOrdersCount = 0;
+      orders.forEach(o => {
+        const idStr = String(o.id || '');
+        const itemsStr = typeof o.items === 'string' ? o.items : JSON.stringify(o.items || '');
+        if (idStr.startsWith('FRUT-') || idStr.startsWith('ORD-FRUT-') || /frutilla/i.test(itemsStr)) {
+          frutillaOrdersCount++;
+          totalFrutKg += getFrutillaOrderKg(o);
+        }
+      });
+      totalFrutKg = +totalFrutKg.toFixed(2);
+      const frutClosedCajones = Math.floor(totalFrutKg / 5.0);
+
       const elKg = document.getElementById('kpi-total-frutilla-kg');
       const elCajonesClosed = document.getElementById('kpi-cajones-closed');
       const elCommitsPill = document.getElementById('kpi-cajones-commits-pill');
       const elTabFrut = document.getElementById('tab-badge-frutilla-count');
 
-      if (elKg) elKg.textContent = totalKg.toFixed(1);
-      if (elCajonesClosed) elCajonesClosed.textContent = '2 cajones sellados';
-      if (elCommitsPill) elCommitsPill.textContent = '2 commits';
-      
-      const frutillaOrdersCount = orders.filter(o => {
-        const idStr = String(o.id || '');
-        const itemsStr = typeof o.items === 'string' ? o.items : JSON.stringify(o.items || '');
-        return idStr.startsWith('FRUT-') || idStr.startsWith('ORD-FRUT-') || /frutilla/i.test(itemsStr);
-      }).length;
-      if (elTabFrut) elTabFrut.textContent = frutillaOrdersCount || '3';
+      if (elKg) elKg.textContent = totalFrutKg.toFixed(1);
+      if (elCajonesClosed) elCajonesClosed.textContent = `${frutClosedCajones} ${frutClosedCajones === 1 ? 'cajón sellado' : 'cajones sellados'}`;
+      if (elCommitsPill) elCommitsPill.textContent = `${frutClosedCajones} ${frutClosedCajones === 1 ? 'commit' : 'commits'}`;
+      if (elTabFrut) elTabFrut.textContent = frutillaOrdersCount;
 
       // KPI Aceite de Oliva
       let oliveLiters = 0;
@@ -4384,6 +4423,13 @@
         }
       } catch (e) {}
 
+      if (adminOrders.length === 0) {
+        try {
+          localStorage.setItem('elementales_frutilla_orders_v1', '[]');
+          localStorage.setItem('elementales_oliva_orders_v1', '[]');
+        } catch (e) {}
+      }
+
       updateAdminKPIs();
       renderAdminOrdersTable();
       if (currentAdminTab === 'basedatos') renderAdminDatabaseTable();
@@ -4408,6 +4454,31 @@
         const idStr = String(o.id || o.number);
         return !selectedOrderIds.has(idStr);
       });
+
+      try {
+        const rawFrut = localStorage.getItem('elementales_frutilla_orders_v1');
+        if (rawFrut) {
+          let frOrders = JSON.parse(rawFrut);
+          frOrders = frOrders.filter(x => !selectedOrderIds.has(String(x.id)) && !selectedOrderIds.has('ORD-' + String(x.id)));
+          localStorage.setItem('elementales_frutilla_orders_v1', JSON.stringify(frOrders));
+        }
+      } catch (e) {}
+
+      try {
+        const rawOliva = localStorage.getItem('elementales_oliva_orders_v1');
+        if (rawOliva) {
+          let olOrders = JSON.parse(rawOliva);
+          olOrders = olOrders.filter(x => !selectedOrderIds.has(String(x.id)) && !selectedOrderIds.has('ORD-' + String(x.id)));
+          localStorage.setItem('elementales_oliva_orders_v1', JSON.stringify(olOrders));
+        }
+      } catch (e) {}
+
+      if (adminOrders.length === 0) {
+        try {
+          localStorage.setItem('elementales_frutilla_orders_v1', '[]');
+          localStorage.setItem('elementales_oliva_orders_v1', '[]');
+        } catch (e) {}
+      }
 
       selectedOrderIds.clear();
       saveAdminOrders();
@@ -5275,17 +5346,12 @@
     }
 
     // =========================================================================
-    // ACTUALIZACIÓN DE TAB FRUTILLAS: QUIÉNES PIDIERON FRUTILLAS
+    // ACTUALIZACIÓN DE TAB FRUTILLAS: CAJONES BLOCKCHAIN Y QUIÉNES PIDIERON
     // =========================================================================
-    const originalRenderAdminFrutillas = renderAdminFrutillas;
-    renderAdminFrutillas = function() {
-      if (typeof originalRenderAdminFrutillas === 'function') {
-        try { originalRenderAdminFrutillas(); } catch(e) {}
-      }
-
+    function renderAdminFrutillas() {
       const tbody = document.getElementById('admin-frutilla-orders-tbody');
-      if (!tbody) return;
 
+      // 1. Obtener pedidos reales de Frutillas
       const frutillaOrders = (adminOrders || []).filter(o => {
         const idStr = String(o.id || '');
         if (idStr.startsWith('FRUT-') || idStr.startsWith('ORD-FRUT-')) return true;
@@ -5293,21 +5359,160 @@
         return /frutilla/i.test(itemsStr);
       });
 
+      // 2. Calcular kg por pedido, totales y aportes organizativos
+      let totalKg = 0;
+      let totalRev = 0;
+      let totalDonations = 0;
+
+      const parsedFrutillaRows = frutillaOrders.map(o => {
+        const kg = getFrutillaOrderKg(o);
+        const don = getOrderDonation(o);
+        const total = o.total || 0;
+
+        totalKg += kg;
+        totalRev += total;
+        totalDonations += don;
+
+        return {
+          order: o,
+          kg,
+          donation: don,
+          total
+        };
+      });
+
+      totalKg = +totalKg.toFixed(2);
+
+      // 3. Blockchain de Cajones de 5 kg
+      const CRATE_CAPACITY = 5.0;
+      const closedCajonesCount = Math.floor(totalKg / CRATE_CAPACITY);
+      const activeCajonKg = +(totalKg % CRATE_CAPACITY).toFixed(2);
+      const activeCajonPercent = Math.min(100, Math.round((activeCajonKg / CRATE_CAPACITY) * 100));
+      const remainingKg = +(CRATE_CAPACITY - activeCajonKg).toFixed(2);
+      const currentCajonNumber = closedCajonesCount + 1;
+
+      // 4. Actualizar Badges y KPIs
       const badge = document.getElementById('frutilla-orders-total-badge');
       if (badge) badge.textContent = `${frutillaOrders.length} pedidos`;
 
-      if (frutillaOrders.length === 0) {
+      const tabBadge = document.getElementById('tab-badge-frutilla-count');
+      if (tabBadge) tabBadge.textContent = frutillaOrders.length;
+
+      const elKg = document.getElementById('kpi-total-frutilla-kg');
+      if (elKg) elKg.textContent = totalKg.toFixed(1);
+
+      const elCajonesClosed = document.getElementById('kpi-cajones-closed');
+      if (elCajonesClosed) elCajonesClosed.textContent = `${closedCajonesCount} ${closedCajonesCount === 1 ? 'cajón sellado' : 'cajones sellados'}`;
+
+      const elCommitsPill = document.getElementById('kpi-cajones-commits-pill');
+      if (elCommitsPill) elCommitsPill.textContent = `${closedCajonesCount} ${closedCajonesCount === 1 ? 'commit' : 'commits'}`;
+
+      // 5. Estado del Bloque en Curso (Cajón Activo)
+      const pillCajonId = document.getElementById('current-cajon-id-pill');
+      if (pillCajonId) {
+        pillCajonId.textContent = `Cajón #${currentCajonNumber} en minado`;
+      }
+
+      const progText = document.getElementById('current-cajon-progress-text');
+      if (progText) {
+        progText.textContent = `${activeCajonKg.toFixed(2)} / ${CRATE_CAPACITY.toFixed(2)} kg`;
+      }
+
+      const percText = document.getElementById('current-cajon-percent-text');
+      if (percText) {
+        percText.textContent = `${activeCajonPercent}% completado (${remainingKg.toFixed(2)} kg para cerrar)`;
+      }
+
+      const progBar = document.getElementById('current-cajon-progress-bar');
+      if (progBar) {
+        progBar.style.width = `${activeCajonPercent}%`;
+      }
+
+      // 6. Participantes del Cajón en Curso
+      const partGrid = document.getElementById('current-cajon-participants-grid');
+      if (partGrid) {
+        if (parsedFrutillaRows.length === 0) {
+          partGrid.innerHTML = `
+            <div class="col-span-full text-center py-4 text-stone-400 text-xs bg-stone-50 rounded-2xl border border-stone-200">
+              Aún no hay pedidos en este cajón. ¡Sé el primero en sumarte!
+            </div>
+          `;
+        } else {
+          const currentParticipants = parsedFrutillaRows.slice(-3).reverse();
+          let partsHtml = currentParticipants.map(p => `
+            <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200">
+              <div class="flex items-center justify-between text-xs">
+                <strong class="text-stone-900 font-bold">${p.order.clientName || 'Vecin@'}</strong>
+                <span class="text-emerald-700 font-mono font-bold">${p.kg} kg</span>
+              </div>
+              <span class="text-[10px] text-stone-500 block mt-1">${p.order.nodoNombre || 'Nodo Loma Verde'} · $${p.total.toLocaleString('es-AR')}</span>
+            </div>
+          `).join('');
+
+          if (remainingKg > 0) {
+            partsHtml += `
+              <div class="bg-amber-50 border border-dashed border-amber-300 p-3 rounded-2xl flex flex-col justify-center items-center text-center">
+                <span class="text-[11px] font-bold text-amber-800">¡Falta ${remainingKg.toFixed(2)} kg para cerrar!</span>
+                <span class="text-[10px] text-stone-500">Cajón colaborativo Finca Ecotipa</span>
+              </div>
+            `;
+          }
+          partGrid.innerHTML = partsHtml;
+        }
+      }
+
+      // 7. Historial de Commits de Cajones Sellados
+      const histList = document.getElementById('cajones-commits-history-list');
+      if (histList) {
+        if (closedCajonesCount > 0) {
+          let histHtml = '';
+          for (let i = 1; i <= closedCajonesCount; i++) {
+            const hash = '0xfrut' + Math.abs((i * 31415) % 65536).toString(16).padStart(4, '0');
+            histHtml += `
+              <div class="bg-stone-50/70 border border-emerald-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">✓ CAJÓN SELLADO (5 kg)</span>
+                    <span class="font-mono text-xs text-stone-500">Hash: ${hash}</span>
+                  </div>
+                  <h5 class="text-sm font-bold text-stone-900">Bloque #${String(i).padStart(3, '0')} · 5.00 kg Frutillas Agroecológicas</h5>
+                  <p class="text-xs text-stone-500 mt-0.5">Cajón completo asegurado directo con Finca Ecotipa para distribución en nodos barriales.</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-sm font-bold text-emerald-700 block font-mono">$${(44000).toLocaleString('es-AR')}</span>
+                  <span class="text-[10px] text-stone-500">Confirmado Finca</span>
+                </div>
+              </div>
+            `;
+          }
+          histList.innerHTML = histHtml;
+        } else {
+          histList.innerHTML = `
+            <div class="text-center py-6 text-stone-400 bg-stone-50 rounded-2xl border border-stone-200 text-xs">
+              <span class="text-xl block mb-1">📦</span>
+              Aún no se ha sellado ningún cajón de 5 kg completo. Al alcanzar 5.00 kg se generará el primer Commit Blockchain.
+            </div>
+          `;
+        }
+      }
+
+      // 8. Tabla de Pedidos de Frutillas
+      if (!tbody) return;
+
+      if (parsedFrutillaRows.length === 0) {
         tbody.innerHTML = `
           <tr>
             <td colspan="10" class="py-8 text-center text-stone-500 text-xs">
-              No hay pedidos de Frutillas registrados en la lista aún.
+              No hay pedidos de Frutillas registrados aún.
             </td>
           </tr>
         `;
         return;
       }
 
-      tbody.innerHTML = frutillaOrders.map(o => {
+      let cumulativeKg = 0;
+      tbody.innerHTML = parsedFrutillaRows.map(p => {
+        const o = p.order;
         const orderIdStr = String(o.id || o.number);
         const cleanPhone = (o.clientPhone || '').replace(/\D/g, '');
         const don = getOrderDonation(o);
@@ -5319,7 +5524,11 @@
         if (o.status === 'Entregado') badgeClass = 'bg-stone-100 text-stone-600 border-stone-300';
 
         const clean = getCleanOrderItems(o);
-        const frutItem = clean.find(i => /frutilla/i.test(i.name)) || clean[0] || { name: 'Cajón Frutilla', qty: 1 };
+        const frutItem = clean.find(i => /frutilla/i.test(i.name)) || clean[0] || { name: `${p.kg} kg Frutillas`, qty: 1 };
+
+        cumulativeKg += p.kg;
+        const assignedCajonNumber = Math.floor((cumulativeKg - 0.001) / CRATE_CAPACITY) + 1;
+        const isCurrentCajon = assignedCajonNumber === currentCajonNumber;
 
         return `
           <tr class="hover:bg-stone-50/80 transition-colors">
@@ -5335,18 +5544,18 @@
             </td>
             <td class="py-3 px-3 text-stone-800 font-semibold text-xs whitespace-nowrap">
               <span class="inline-flex px-2 py-0.5 rounded-lg bg-rose-50 text-rose-800 border border-rose-200">
-                ${frutItem.qty}x ${frutItem.name}
+                ${frutItem.qty}x ${frutItem.name} (${p.kg} kg)
               </span>
             </td>
             <td class="py-3 px-3 text-stone-600 font-mono text-xs whitespace-nowrap">
-              Cajón #3 (en curso)
+              Cajón #${assignedCajonNumber} ${isCurrentCajon ? '<span class="text-amber-700 font-bold">(en curso)</span>' : '<span class="text-emerald-700 font-bold">(sellado)</span>'}
             </td>
             <td class="py-3 px-3 text-stone-700 whitespace-nowrap text-xs">
               <span>📍</span> ${o.nodoNombre || 'Nodo Loma Verde'}
             </td>
             <td class="py-3 px-3 whitespace-nowrap text-xs font-mono">
-              <strong class="text-emerald-800 font-bold block">$${(o.total || 0).toLocaleString('es-AR')}</strong>
-              ${don > 0 ? `<span class="text-[10px] text-emerald-600 font-semibold">🌱 +$${don.toLocaleString('es-AR')} org</span>` : ''}
+              <strong class="text-emerald-800 font-bold block">$${p.total.toLocaleString('es-AR')}</strong>
+              ${p.donation > 0 ? `<span class="text-[10px] text-emerald-600 font-semibold">🌱 +$${p.donation.toLocaleString('es-AR')} org</span>` : ''}
             </td>
             <td class="py-3 px-3 text-amber-950 font-bold whitespace-nowrap text-xs">
               <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded-lg text-[10px]">
@@ -5391,9 +5600,9 @@
           </tr>
         `;
       }).join('');
-    };
+    }
 
-    // Exportar a CSV para abrir en Excel (respetando la carpeta seleccionada)
+// Exportar a CSV para abrir en Excel (respetando la carpeta seleccionada)
     function exportOrdersCSV() {
       let orders = adminOrders || [];
       if (orders.length === 0) {
@@ -5802,74 +6011,10 @@
     // =========================================================================
     // 6. FRUTILLAS & CAJONES BLOCKCHAIN (TAB 2 - MODO CLARO)
     // =========================================================================
-    function renderAdminFrutillas() {
-      // Participantes del cajón en curso
-      const partGrid = document.getElementById('current-cajon-participants-grid');
-      if (partGrid) {
-        partGrid.innerHTML = `
-          <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200">
-            <div class="flex items-center justify-between text-xs">
-              <strong class="text-stone-900 font-bold">Lucas Benítez</strong>
-              <span class="text-emerald-700 font-mono font-bold">2.5 kg (1/2 cajón)</span>
-            </div>
-            <span class="text-[10px] text-stone-500 block mt-1">Círculo Cooperativa · $19.000</span>
-          </div>
-
-          <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200">
-            <div class="flex items-center justify-between text-xs">
-              <strong class="text-stone-900 font-bold">Sofía Albarracín</strong>
-              <span class="text-emerald-700 font-mono font-bold">1.67 kg (1/3 cajón)</span>
-            </div>
-            <span class="text-[10px] text-stone-500 block mt-1">Nodo Loma Verde · $13.000</span>
-          </div>
-
-          <div class="bg-amber-50 border border-dashed border-amber-300 p-3 rounded-2xl flex flex-col justify-center items-center text-center">
-            <span class="text-[11px] font-bold text-amber-800">¡Falta 0.83 kg para cerrar!</span>
-            <span class="text-[10px] text-stone-500">Equivale a 1/6 de cajón</span>
-          </div>
-        `;
-      }
-
-      // Historial de commits de cajones
-      const histList = document.getElementById('cajones-commits-history-list');
-      if (histList) {
-        histList.innerHTML = `
-          <div class="bg-stone-50/70 border border-emerald-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">✓ CAJÓN SELLADO</span>
-                <span class="font-mono text-xs text-stone-500">Hash: 0x7F2A...9C14</span>
-              </div>
-              <h5 class="text-sm font-bold text-stone-900">Bloque #001 · 5.00 kg Frutillas Agroecológicas</h5>
-              <p class="text-xs text-stone-500 mt-0.5">Participantes: Mariana Gómez (2.5 kg), Roberto Paez (1.67 kg), Elena S. (0.83 kg)</p>
-            </div>
-            <div class="text-right shrink-0">
-              <span class="text-sm font-bold text-emerald-700 block">$38.000</span>
-              <span class="text-[10px] text-stone-500">16/10/2026 · Confirmado Finca</span>
-            </div>
-          </div>
-
-          <div class="bg-stone-50/70 border border-emerald-200 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">✓ CAJÓN SELLADO</span>
-                <span class="font-mono text-xs text-stone-500">Hash: 0x3B8E...4A02</span>
-              </div>
-              <h5 class="text-sm font-bold text-stone-900">Bloque #002 · 5.00 kg Frutillas Agroecológicas</h5>
-              <p class="text-xs text-stone-500 mt-0.5">Participantes: Familia Rossi (1 cajón completo de 5 kg)</p>
-            </div>
-            <div class="text-right shrink-0">
-              <span class="text-sm font-bold text-emerald-700 block">$38.000</span>
-              <span class="text-[10px] text-stone-500">15/10/2026 · Confirmado Finca</span>
-            </div>
-          </div>
-        `;
-      }
-    }
-
     function commitCurrentCajon() {
       if (confirm('¿Confirmar el sellado y commit de este cajón de 5 kg con Finca Ecotipa?')) {
         alert('✓ Commit de cajón generado exitosamente con Hash criptográfico. Abriendo nuevo cajón colaborativo...');
+        renderAdminFrutillas();
       }
     }
 
