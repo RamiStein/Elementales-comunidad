@@ -1210,7 +1210,9 @@
         address: 'Anchorena 684, La Lucila',
         fullAddress: 'Anchorena 684, La Lucila, Vicente López',
         phone: '5491133445566',
-        deliveryDate: 'Sábado 7 de noviembre'
+        deliveryDay: 'Sábado 7 de noviembre',
+        deliveryHours: '10 a 14 hs',
+        deliverySchedule: 'Sábado 7 de noviembre (10 a 14 hs)'
       },
       lomaverde: {
         id: 'lomaverde',
@@ -1219,7 +1221,9 @@
         address: 'Botafogo 1320',
         fullAddress: 'Botafogo 1320, Loma Verde, Escobar',
         phone: '5491133445566',
-        deliveryDate: 'Sábado 7 de noviembre'
+        deliveryDay: 'Viernes 6 de noviembre',
+        deliveryHours: '9 a 13 hs',
+        deliverySchedule: 'Viernes 6 de noviembre (9 a 13 hs)'
       }
     };
 
@@ -1888,6 +1892,9 @@
       const step5NodeAddress = document.getElementById('step5-node-address');
       if (step5NodeAddress) step5NodeAddress.textContent = node.address;
 
+      const step5Delivery = document.getElementById('step5-delivery-schedule');
+      if (step5Delivery) step5Delivery.textContent = node.deliverySchedule;
+
       const step5BeingName = document.getElementById('step5-being-name');
       if (step5BeingName) step5BeingName.textContent = selectedElementalBeing;
 
@@ -2094,7 +2101,7 @@
         direccionRetiro: node.address,
         serElemental: selectedElementalBeing,
         cierreFecha: 'Domingo 1 de noviembre',
-        entregaFecha: 'Sábado 7 de noviembre'
+        entregaFecha: node.deliverySchedule
       };
 
       try {
@@ -2236,7 +2243,7 @@
 📍 *Nodo de Retiro:* ${node.name} (${node.address})
 ✨ *Ser Elemental:* ${selectedElementalBeing}
 ⏳ *Cierre de Compra:* Domingo 1 de noviembre
-📦 *Entrega Comunitaria:* Sábado 7 de noviembre
+📦 *Entrega Comunitaria:* ${node.deliverySchedule}
 ━━━━━━━━━━━━━━━━━━━━━
 👤 *Comprador:* ${name}
 📱 *Teléfono:* ${phone}
@@ -2260,12 +2267,12 @@ https://elementales.store/oliva`;
 🌱 Lorenzo Cabrera · Olivares Centenarios de Villa Mazán, La Rioja
 🍶 1° Prensa artesanal en frío · Variedad Arauco · Calidad Agroecológica
 
-📍 *Puntos de Retiro:*
-• Nodo Elementales La Lucila (Anchorena 684, La Lucila)
-• Nodo Loma Verde (Botafogo 1320, Escobar)
+📍 *Puntos y Horarios de Retiro:*
+• Nodo Loma Verde (Botafogo 1320): Viernes 6 de nov (9 a 13 hs)
+• Nodo La Lucila (Anchorena 684): Sábado 7 de nov (10 a 14 hs)
 
 ⏳ *Cierre de compra:* Domingo 1 de noviembre (23:59 hs)
-📦 *Entrega comunitaria:* Sábado 7 de noviembre
+📦 *Entregas:* Viernes 6 y Sábado 7 de noviembre
 
 ¡Sumate al lote comunitario y pedí directo de finca! ✨
 👉 https://elementales.store/oliva`;
@@ -2304,12 +2311,12 @@ https://elementales.store/oliva`;
 🌱 Lorenzo Cabrera · Olivares Centenarios de Villa Mazán, La Rioja
 🍶 1° Prensa artesanal en frío · Variedad Arauco · Calidad Agroecológica
 
-📍 *Puntos de Retiro:*
-• Nodo Elementales La Lucila (Anchorena 684, La Lucila)
-• Nodo Loma Verde (Botafogo 1320, Escobar)
+📍 *Puntos y Horarios de Retiro:*
+• Nodo Loma Verde (Botafogo 1320): Viernes 6 de nov (9 a 13 hs)
+• Nodo La Lucila (Anchorena 684): Sábado 7 de nov (10 a 14 hs)
 
 ⏳ *Cierre de compra:* Domingo 1 de noviembre (23:59 hs)
-📦 *Entrega comunitaria:* Sábado 7 de noviembre
+📦 *Entregas:* Viernes 6 y Sábado 7 de noviembre
 
 ¡Sumate al lote comunitario y pedí directo de finca! ✨
 👉 https://elementales.store/oliva`;
