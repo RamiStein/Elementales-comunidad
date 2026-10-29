@@ -577,6 +577,143 @@
     </div>
 
     <!-- ======================================================================= -->
+    <!-- TAB NUEVO: BASE DE DATOS INTEGRAL DE PEDIDOS (TODOS LOS CAMPOS)          -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-basedatos" class="admin-panel-content hidden space-y-4">
+      
+      <!-- Encabezado y Herramientas -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200 font-mono">
+              Registros Históricos Unificados
+            </span>
+            <span class="text-xs text-stone-400 font-mono">Todos los datos del comprador</span>
+          </div>
+          <h3 class="text-xl font-black text-stone-900 font-heading">
+            Base de Datos Integral de Pedidos
+          </h3>
+          <p class="text-xs text-stone-600 mt-0.5 leading-relaxed">
+            Visualizá todos los datos ingresados por las personas: domicilio, teléfono, email, alimentos solicitados, aporte donado y el Ser Elemental que tomó el pedido.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button 
+            type="button" 
+            onclick="exportFullDatabaseCSV()" 
+            class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black shadow-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-98"
+            title="Exportar base de datos completa con todos los campos en formato Excel / CSV"
+          >
+            <span>📥</span>
+            <span>Exportar CSV Completo</span>
+          </button>
+
+          <button 
+            type="button" 
+            onclick="backupFullDatabaseJSON()" 
+            class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold border border-stone-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-98"
+            title="Descargar copia de seguridad en JSON de toda la base de datos"
+          >
+            <span>💾</span>
+            <span>Backup JSON</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Métricas Resumen de la Base de Datos -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-stone-400 block font-mono">Total Registros</span>
+          <span id="db-stat-total-orders" class="text-xl sm:text-2xl font-black text-stone-900 font-heading mt-1 block">0</span>
+          <span class="text-[10px] text-stone-500 font-medium">pedidos guardados</span>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-stone-400 block font-mono">Total Alimentos</span>
+          <span id="db-stat-total-food" class="text-xl sm:text-2xl font-black text-emerald-700 font-heading mt-1 block">$0</span>
+          <span class="text-[10px] text-stone-500 font-medium">subtotal alimentos</span>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-emerald-700 block font-mono">🌱 Total Donado</span>
+          <span id="db-stat-total-donations" class="text-xl sm:text-2xl font-black text-emerald-800 font-heading mt-1 block">$0</span>
+          <span class="text-[10px] text-emerald-600 font-medium">aportes organizativos</span>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-stone-400 block font-mono">Familias Únicas</span>
+          <span id="db-stat-unique-clients" class="text-xl sm:text-2xl font-black text-indigo-700 font-heading mt-1 block">0</span>
+          <span class="text-[10px] text-stone-500 font-medium">vecin@s en la red</span>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros y Búsqueda para la Base de Datos -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="relative flex-1 max-w-md">
+          <input 
+            type="text" 
+            id="admin-db-search" 
+            oninput="renderAdminDatabaseTable()" 
+            placeholder="Buscar por cliente, tel, email, dirección, ID, productos, Ser Elemental..."
+            class="w-full bg-[#fcfaf8] border border-stone-200 focus:border-indigo-500 focus:bg-white rounded-2xl px-4 py-2.5 pl-10 text-xs sm:text-sm font-medium text-stone-900 placeholder:text-stone-400 outline-none transition-all shadow-2xs"
+          />
+          <span class="absolute left-3.5 top-3 text-stone-400 text-xs">🔍</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <select 
+            id="admin-db-type-filter" 
+            onchange="renderAdminDatabaseTable()"
+            class="bg-white border border-stone-300 text-xs font-bold text-stone-800 rounded-xl px-3 py-2 outline-none cursor-pointer shadow-2xs hover:border-stone-400 transition-colors"
+          >
+            <option value="todos">🛒 Todos los Tipos</option>
+            <option value="lunar">🌕 Compra Lunar</option>
+            <option value="semanal">🌱 Compra Semanal</option>
+          </select>
+
+          <select 
+            id="admin-db-status-filter" 
+            onchange="renderAdminDatabaseTable()"
+            class="bg-white border border-stone-300 text-xs font-bold text-stone-700 rounded-xl px-3 py-2 outline-none cursor-pointer shadow-2xs hover:border-stone-400 transition-colors"
+          >
+            <option value="todos">Todos los Estados</option>
+            <option value="Pendiente">⏳ Pendiente</option>
+            <option value="Pagado">💳 Pagado</option>
+            <option value="Listo para Retirar">🟢 Listo para Retirar</option>
+            <option value="Entregado">✓ Entregado</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabla Completa de la Base de Datos con Todos los Campos -->
+      <div class="bg-white border border-stone-200 rounded-3xl overflow-hidden shadow-xs">
+        <div class="overflow-x-auto max-h-[720px] scrollbar-thin">
+          <table class="w-full text-xs text-left border-collapse min-w-[1280px]">
+            <thead class="sticky top-0 z-10 bg-stone-100 shadow-2xs">
+              <tr class="border-b border-stone-200 text-[10px] font-black uppercase tracking-wider text-stone-600">
+                <th class="py-3 px-3"># ID & Tipo</th>
+                <th class="py-3 px-3">Fecha / Hora</th>
+                <th class="py-3 px-4">Cliente & Contacto</th>
+                <th class="py-3 px-4">Domicilio Completo</th>
+                <th class="py-3 px-3">Punto de Retiro</th>
+                <th class="py-3 px-3">Ser Elemental</th>
+                <th class="py-3 px-4">Alimentos Solicitados</th>
+                <th class="py-3 px-3 text-right">Subtotal</th>
+                <th class="py-3 px-3 text-right">🌱 Aporte</th>
+                <th class="py-3 px-3 text-right">Total Final</th>
+                <th class="py-3 px-3">Pago</th>
+                <th class="py-3 px-3">Estado</th>
+                <th class="py-3 px-4 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-db-tbody" class="divide-y divide-stone-100">
+              <!-- Inyectado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
     <!-- TAB 2: FRUTILLAS & CAJONES (CAMPAÑA BLOCKCHAIN COLABORATIVA)              -->
     <!-- ======================================================================= -->
     <div id="admin-panel-frutillas" class="admin-panel-content hidden space-y-6">
@@ -654,6 +791,194 @@
         </h4>
         <div id="cajones-commits-history-list" class="space-y-3">
           <!-- Inyectado dinámicamente -->
+        </div>
+      </div>
+
+      <!-- REGISTRO COMPLETO: QUIÉNES PIDIERON FRUTILLAS -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-xs space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-100">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm">📋</span>
+              <h4 class="text-base font-black text-stone-900 font-heading">
+                Quiénes Pidieron Frutillas (Familias y Vecinos)
+              </h4>
+            </div>
+            <p class="text-xs text-stone-500 mt-0.5">
+              Listado consolidado de pedidos de frutilla Ecotipa, fraccionamiento asignado y aportes organizativos.
+            </p>
+          </div>
+          <span id="frutilla-orders-total-badge" class="bg-rose-50 text-rose-700 border border-rose-200 font-mono font-bold text-xs px-3 py-1 rounded-full self-start sm:self-auto">0 pedidos</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse min-w-[760px]">
+            <thead>
+              <tr class="bg-stone-50 border-b border-stone-200 text-[10px] font-black uppercase tracking-wider text-stone-500">
+                <th class="py-3 px-3"># ID</th>
+                <th class="py-3 px-3">Fecha</th>
+                <th class="py-3 px-4">Vecino/a</th>
+                <th class="py-3 px-3">Fraccionamiento</th>
+                <th class="py-3 px-3">Cajón Asignado</th>
+                <th class="py-3 px-3">Punto de Retiro</th>
+                <th class="py-3 px-3 font-mono">Total / Aporte</th>
+                <th class="py-3 px-3">Ser Elemental</th>
+                <th class="py-3 px-3">Estado</th>
+                <th class="py-3 px-4 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-frutilla-orders-tbody" class="divide-y divide-stone-100">
+              <!-- Inyectado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- TAB NUEVO: ACEITE DE OLIVA (LOTES BLOCKCHAIN 20L) & QUIÉNES PIDIERON    -->
+    <!-- ======================================================================= -->
+    <div id="admin-panel-oliva" class="admin-panel-content hidden space-y-6">
+      
+      <!-- Banner Explicativo de la Campaña Aceite de Oliva -->
+      <div class="bg-gradient-to-r from-[#f4f7ee] via-white to-[#edf3e4] border border-[#d6e3c1] rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-widest text-[#3e531c] bg-[#eef5e4] px-3 py-1 rounded-full border border-[#c9dcaf] font-mono-code inline-block mb-2">
+            🫒 LOTES COLECTIVOS DE 20 LITROS · VILLA MAZÁN, LA RIOJA
+          </span>
+          <h3 class="text-xl font-black text-stone-900 font-heading">
+            Aceite de Oliva Extra Virgen Lorenzo Cabrera
+          </h3>
+          <p class="text-xs text-stone-600 mt-1 max-w-2xl leading-relaxed">
+            Olivares Centenarios · Variedad Arauco de 1° prensado en frío. Cada 20 litros acumulados se cierra un lote comunitario inmutable (commit) y se despacha directo de finca hacia los nodos barriales.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <a href="oliva.html" target="_blank" class="px-4 py-2.5 rounded-2xl bg-[#577327] hover:bg-[#465c1f] text-white font-black text-xs shadow-md transition-all flex items-center gap-1.5 text-decoration-none">
+            <span>Abrir Landing de Oliva</span>
+            <span>↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Tarjetas de Métricas de Oliva -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-stone-400 block font-mono">Litros Totales</span>
+          <span id="oliva-stat-total-liters" class="text-xl sm:text-2xl font-black text-stone-900 font-heading mt-1 block">0 L</span>
+          <span class="text-[10px] text-stone-500 font-medium">encargados por familias</span>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-stone-400 block font-mono">Lotes Cerrados (20L)</span>
+          <span id="oliva-stat-closed-lots" class="text-xl sm:text-2xl font-black text-[#577327] font-heading mt-1 block">0 lotes</span>
+          <span class="text-[10px] text-stone-500 font-medium">commits despachados</span>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-stone-400 block font-mono">Recaudación Total</span>
+          <span id="oliva-stat-total-rev" class="text-xl sm:text-2xl font-black text-emerald-700 font-heading mt-1 block">$0</span>
+          <span class="text-[10px] text-stone-500 font-medium">aceite de oliva</span>
+        </div>
+        <div class="bg-white border border-stone-200 rounded-2xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-emerald-700 block font-mono">🌱 Aporte Donado</span>
+          <span id="oliva-stat-total-donations" class="text-xl sm:text-2xl font-black text-emerald-800 font-heading mt-1 block">$0</span>
+          <span class="text-[10px] text-emerald-600 font-medium">a la organización</span>
+        </div>
+      </div>
+
+      <!-- ESTADO DEL LOTE ACTUAL DE 20 LITROS EN PROCESO DE LLENADO (MEMPOOL) -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-stone-100">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-black text-amber-700 uppercase tracking-wider font-mono-code">⚡ BLOQUE EN CURSO</span>
+              <span id="current-oliva-lot-id-pill" class="text-[10px] font-bold bg-[#f4f7ee] text-[#3e531c] border border-[#d6e3c1] px-2 py-0.5 rounded-full font-mono">Lote #1 en minado</span>
+            </div>
+            <h4 class="text-lg font-black text-stone-900 mt-1 font-heading">
+              Progreso del Lote Activo de 20 Litros
+            </h4>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <span id="current-oliva-progress-text" class="text-xl font-black text-[#577327] font-mono">0 / 20 Litros</span>
+              <span id="current-oliva-percent-text" class="text-xs text-stone-500 block font-bold">0% completado</span>
+            </div>
+            <button 
+              type="button" 
+              onclick="commitCurrentOlivaBlock()" 
+              class="px-4 py-2 rounded-2xl bg-[#577327] hover:bg-[#465c1f] text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              <span>🔒</span>
+              <span>Sellar Lote (Commit)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Progreso Visual de 20L -->
+        <div class="w-full bg-stone-100 rounded-full h-4 overflow-hidden p-0.5 border border-stone-200 mb-4">
+          <div id="current-oliva-progress-bar" class="bg-gradient-to-r from-[#577327] to-[#8ca15d] h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+        </div>
+
+        <!-- Vecinos que integran el lote en curso -->
+        <div>
+          <span class="text-[11px] font-black uppercase tracking-wider text-stone-500 block mb-2">Vecinos en este lote:</span>
+          <div id="current-oliva-participants-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <!-- Inyectado dinámicamente -->
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORIAL DE LOTES COMPLETADOS (COMMITS BLOCKCHAIN) -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-xs">
+        <h4 class="text-base font-black text-stone-900 mb-4 flex items-center gap-2 font-heading">
+          <span>📦</span>
+          <span>Historial de Lotes Sellados (Commits Blockchain x 20L)</span>
+        </h4>
+        <div id="oliva-commits-history-list" class="space-y-3">
+          <!-- Inyectado dinámicamente -->
+        </div>
+      </div>
+
+      <!-- REGISTRO COMPLETO: QUIÉNES PIDIERON ACEITE DE OLIVA -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-xs space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-100">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm">📋</span>
+              <h4 class="text-base font-black text-stone-900 font-heading">
+                Quiénes Pidieron Aceite de Oliva (Familias y Vecinos)
+              </h4>
+            </div>
+            <p class="text-xs text-stone-500 mt-0.5">
+              Listado consolidado de pedidos de oliva, litros encargados, modalidad y datos de contacto.
+            </p>
+          </div>
+          <span id="oliva-orders-total-badge" class="bg-[#f4f7ee] text-[#3e531c] border border-[#d6e3c1] font-mono font-bold text-xs px-3 py-1 rounded-full self-start sm:self-auto">0 pedidos</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse min-w-[760px]">
+            <thead>
+              <tr class="bg-stone-50 border-b border-stone-200 text-[10px] font-black uppercase tracking-wider text-stone-500">
+                <th class="py-3 px-3"># ID</th>
+                <th class="py-3 px-3">Fecha</th>
+                <th class="py-3 px-4">Vecino/a</th>
+                <th class="py-3 px-3">Litros</th>
+                <th class="py-3 px-3">Modalidad</th>
+                <th class="py-3 px-3">Lote Asignado</th>
+                <th class="py-3 px-3">Punto de Retiro</th>
+                <th class="py-3 px-3 font-mono">Total / Aporte</th>
+                <th class="py-3 px-3">Ser Elemental</th>
+                <th class="py-3 px-3">Estado</th>
+                <th class="py-3 px-4 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-oliva-orders-tbody" class="divide-y divide-stone-100">
+              <!-- Inyectado dinámicamente -->
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -2328,6 +2653,217 @@
     </div>
   </div>
 
+  <!-- ========================================================================= -->
+  <!-- MODAL: EDITAR PEDIDO (SUMAR/RESTAR PRODUCTOS, SER ELEMENTAL, DONACIÓN)    -->
+  <!-- ========================================================================= -->
+  <div id="modal-edit-order" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      
+      <!-- Encabezado Modal -->
+      <div class="p-5 border-b border-stone-200 bg-stone-50/70 flex items-start justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] font-black uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200 font-mono">
+              Modificación de Pedido
+            </span>
+            <span id="edit-order-id-badge" class="font-mono text-xs font-bold text-stone-600 bg-white px-2 py-0.5 rounded-md border border-stone-200">
+              #ORD-000
+            </span>
+          </div>
+          <h3 class="font-black text-xl text-stone-900 font-heading">
+            Editar Pedido y Productos
+          </h3>
+          <p class="text-xs text-stone-500 mt-0.5">
+            Sumá o restá cantidades, agregá alimentos nuevos, modificá el Ser Elemental o la donación voluntaria.
+          </p>
+        </div>
+        <button type="button" onclick="closeEditOrderModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg p-1.5 cursor-pointer">✕</button>
+      </div>
+
+      <!-- Cuerpo del Formulario (Scrollable) -->
+      <form id="edit-order-form" onsubmit="saveEditedOrder(event)" class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs flex-1">
+        
+        <!-- Datos del Cliente y Ser Elemental -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Nombre Completo del Cliente *</label>
+            <input type="text" id="edit-order-client-name" required class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-blue-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs" />
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
+            <input type="tel" id="edit-order-client-phone" required class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-blue-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Email (Opcional)</label>
+            <input type="email" id="edit-order-client-email" placeholder="ejemplo@correo.com" class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-blue-500 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs" />
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Punto de Retiro / Sede</label>
+            <select id="edit-order-node" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none text-xs">
+              <option value="nodo-lomaverde">📍 Nodo Loma Verde</option>
+              <option value="nodo-cooperativa">📍 Chasqui Maschwitz</option>
+              <option value="nodo-central">📍 Central Vicente López</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">✨ Ser Elemental (Tomó el pedido) *</label>
+            <input type="text" id="edit-order-ser-elemental" required placeholder="Ej: Ramiro Stein" class="w-full bg-amber-50/60 border border-amber-300 focus:border-amber-500 rounded-xl px-3 py-2 text-amber-950 font-bold outline-none text-xs" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Método de Pago</label>
+            <select id="edit-order-payment" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none text-xs">
+              <option value="Efectivo">💵 Efectivo al retirar</option>
+              <option value="Transferencia">📱 Transferencia MP / Alias</option>
+              <option value="Mercado Pago">💳 Mercado Pago</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Estado del Pedido</label>
+            <select id="edit-order-status" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none text-xs">
+              <option value="Pendiente">⏳ Pendiente</option>
+              <option value="Pagado">💳 Pagado</option>
+              <option value="Listo para Retirar">🟢 Listo para Retirar</option>
+              <option value="Entregado">✓ Entregado</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">📁 Carpeta / Ciclo Lunar</label>
+            <input type="text" id="edit-order-folder" placeholder="Ej: Luna de Tauro" class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs" />
+          </div>
+        </div>
+
+        <!-- LISTA INTERACTIVA DE PRODUCTOS (SUMAR / RESTAR / AGREGAR) -->
+        <div class="border border-stone-200 rounded-2xl p-4 bg-stone-50/70 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-heading font-black text-stone-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <span>🛒</span>
+              <span>Productos y Alimentos en el Pedido</span>
+            </h4>
+            <button 
+              type="button" 
+              onclick="addEditNewItem()" 
+              class="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] cursor-pointer flex items-center gap-1 shadow-2xs"
+            >
+              <span>+ Agregar Producto</span>
+            </button>
+          </div>
+
+          <!-- Tabla de Ítems en el Pedido -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead>
+                <tr class="text-stone-400 font-mono text-[10px] uppercase border-b border-stone-200 text-left">
+                  <th class="pb-1.5">Producto</th>
+                  <th class="pb-1.5 w-32 text-center">Cantidad</th>
+                  <th class="pb-1.5 w-24 text-right">Precio Unit ($)</th>
+                  <th class="pb-1.5 w-24 text-right">Subtotal ($)</th>
+                  <th class="pb-1.5 w-8"></th>
+                </tr>
+              </thead>
+              <tbody id="edit-order-items-tbody" class="divide-y divide-stone-200/60">
+                <!-- Inyectado dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ESPACIO DE APORTE A LA ORGANIZACIÓN / DONACIÓN -->
+        <div class="p-3.5 bg-gradient-to-br from-emerald-50 via-white to-amber-50/50 border border-emerald-300 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+          <div>
+            <span class="font-bold text-emerald-950 text-xs flex items-center gap-1">
+              <span>🌱</span> Aporte a la Organización Comunitaria (Donación):
+            </span>
+            <p class="text-[11px] text-stone-500 mt-0.5">Monto aportado voluntariamente para logística y cuidado de la red.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-stone-500">$</span>
+            <input 
+              type="number" 
+              id="edit-order-donation" 
+              min="0" 
+              step="50" 
+              oninput="updateEditOrderCalculations()"
+              class="w-28 bg-white border border-stone-300 rounded-xl px-3 py-1.5 font-mono font-black text-xs text-stone-900 outline-none text-right shadow-2xs" 
+            />
+          </div>
+        </div>
+
+        <!-- RESUMEN FINANCIERO TOTAL RECALCULADO -->
+        <div class="p-4 bg-stone-100 rounded-2xl flex items-center justify-between text-xs font-mono">
+          <div>
+            <span class="text-stone-500 block text-[10px] uppercase">Subtotal Alimentos:</span>
+            <strong id="edit-order-subtotal-display" class="text-stone-800 text-sm">$0</strong>
+          </div>
+          <div>
+            <span class="text-emerald-700 block text-[10px] uppercase">🌱 Donación:</span>
+            <strong id="edit-order-donation-display" class="text-emerald-800 text-sm">+$0</strong>
+          </div>
+          <div class="text-right">
+            <span class="text-stone-500 block text-[10px] uppercase font-bold">TOTAL FINAL:</span>
+            <strong id="edit-order-total-display" class="text-emerald-950 text-lg font-black font-heading">$0</strong>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Notas / Observaciones del Cliente</label>
+          <textarea id="edit-order-notes" rows="2" placeholder="Notas sobre la entrega, corte, círculo..." class="w-full bg-[#fcfaf8] border border-stone-300 rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"></textarea>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="pt-3 border-t border-stone-200 flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeEditOrderModal()" class="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold cursor-pointer transition-colors">
+            Cancelar
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-black cursor-pointer shadow-md transition-all flex items-center gap-2 font-heading">
+            <span>💾</span>
+            <span>Guardar Cambios</span>
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- MODAL: FICHA COMPLETA DEL PEDIDO                                            -->
+  <!-- ========================================================================= -->
+  <div id="modal-order-full-profile" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+      <div class="p-5 border-b border-stone-200 bg-stone-50/80 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-base">📄</span>
+          <h3 class="font-heading font-black text-lg text-stone-900">Ficha Integral de Pedido</h3>
+        </div>
+        <button type="button" onclick="closeOrderFullProfile()" class="text-stone-400 hover:text-stone-700 font-bold text-sm cursor-pointer">✕</button>
+      </div>
+
+      <div id="order-full-profile-content" class="p-5 overflow-y-auto space-y-4 text-xs flex-1">
+        <!-- Inyectado dinámicamente -->
+      </div>
+
+      <div class="p-4 border-t border-stone-200 bg-stone-50 flex items-center justify-between">
+        <button type="button" onclick="window.print()" class="px-3 py-2 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold text-xs cursor-pointer flex items-center gap-1.5">
+          <span>🖨️</span>
+          <span>Imprimir Ficha</span>
+        </button>
+        <button type="button" onclick="closeOrderFullProfile()" class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs cursor-pointer">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: NUEVO PEDIDO MOSTRADOR                                             -->
   <!-- ========================================================================= -->
   <div id="modal-new-order" class="hidden fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-sm flex items-center justify-center p-4">
@@ -2832,7 +3368,9 @@
       }
 
       if (tabName === 'pedidos') renderAdminOrdersTable();
+      if (tabName === 'basedatos') renderAdminDatabaseTable();
       if (tabName === 'frutillas') renderAdminFrutillas();
+      if (tabName === 'oliva') renderAdminOliva();
       if (tabName === 'miembros') renderAdminMembersTable();
       if (tabName === 'circulos') renderAdminCirculos();
       if (tabName === 'catalogo') renderAdminProductsTable();
