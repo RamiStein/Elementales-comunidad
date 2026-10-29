@@ -129,6 +129,15 @@
           <span>🍓</span> <span class="hidden md:inline">Frutillas</span>
         </a>
 
+        <!-- Ir a Compra Aceite de Oliva -->
+        <a 
+          href="oliva.html" 
+          class="text-xs font-bold text-[#3e531c] hover:text-[#2d3d14] px-3 py-1.5 rounded-xl bg-[#f4f7ee] hover:bg-[#e7eedb] border border-[#d6e3c1] transition-all flex items-center gap-1 text-decoration-none shadow-2xs"
+          title="Ver compra colectiva de Aceite de Oliva"
+        >
+          <span>🫒</span> <span class="hidden md:inline">Oliva</span>
+        </a>
+
         <!-- Botón Salir / Logout -->
         <button 
           type="button" 
@@ -243,6 +252,19 @@
         <span id="tab-badge-orders-count" class="bg-emerald-600 text-white text-[10px] px-1.5 py-0.2 rounded-full font-mono">0</span>
       </button>
 
+      <!-- PESTAÑA: BASE DE DATOS INTEGRAL -->
+      <button 
+        type="button" 
+        id="admin-tab-btn-basedatos"
+        onclick="switchAdminTab('basedatos')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-500 hover:text-stone-900 hover:bg-stone-100 shrink-0 flex items-center gap-2 font-bold"
+        title="Base de datos completa con todos los datos suministrados por los compradores"
+      >
+        <span>🗄️</span>
+        <span>Base de Datos de Pedidos</span>
+        <span id="tab-badge-basedatos-count" class="bg-indigo-100 text-indigo-800 border border-indigo-200 text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold">0</span>
+      </button>
+
       <button 
         type="button" 
         id="admin-tab-btn-frutillas"
@@ -250,8 +272,21 @@
         class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-500 hover:text-stone-900 hover:bg-stone-100 shrink-0 flex items-center gap-2 font-bold"
       >
         <span>🍓</span>
-        <span>Frutillas & Cajones (Blockchain)</span>
+        <span>Frutillas & Cajones</span>
         <span id="tab-badge-frutilla-count" class="bg-rose-100 text-rose-700 border border-rose-200 text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold">0</span>
+      </button>
+
+      <!-- PESTAÑA: ACEITE DE OLIVA (LOTES BLOCKCHAIN) -->
+      <button 
+        type="button" 
+        id="admin-tab-btn-oliva"
+        onclick="switchAdminTab('oliva')" 
+        class="admin-tab-btn px-4 py-2.5 rounded-2xl transition-all cursor-pointer text-stone-500 hover:text-stone-900 hover:bg-stone-100 shrink-0 flex items-center gap-2 font-bold"
+        title="Lotes colectivos de 20L y commits de Aceite de Oliva Lorenzo Cabrera"
+      >
+        <span>🫒</span>
+        <span>Aceite de Oliva (Lotes)</span>
+        <span id="tab-badge-oliva-liters" class="bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold">0L</span>
       </button>
 
       <button 
@@ -336,6 +371,43 @@
       
       <!-- CONTENEDOR DE RECORDATORIO DE PEDIDOS A PRODUCTORES PARA HOY -->
       <div id="admin-today-reminders-container" class="space-y-3"></div>
+
+      <!-- Tarjetas Superiores de Métricas y Detalle Total Donado -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-white border border-stone-200 rounded-3xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-stone-400 block font-mono">Pedidos Totales</span>
+          <div class="flex items-baseline gap-1.5 mt-1">
+            <span id="kpi-orders-count-top" class="text-xl sm:text-2xl font-black text-stone-900 font-heading">0</span>
+            <span class="text-[11px] font-bold text-stone-500">en sistema</span>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-3xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-stone-400 block font-mono">Total Facturado</span>
+          <div class="flex items-baseline gap-1.5 mt-1">
+            <span id="kpi-orders-rev-top" class="text-xl sm:text-2xl font-black text-emerald-700 font-heading">$0</span>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-emerald-50 via-white to-amber-50/60 border-2 border-emerald-300 rounded-3xl p-4 shadow-2xs relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] uppercase font-black tracking-wider text-emerald-900 block font-mono">Total Donado a la Org</span>
+            <span class="text-sm">🌱</span>
+          </div>
+          <div class="flex items-baseline gap-1.5 mt-1">
+            <span id="kpi-total-donation-amount" class="text-xl sm:text-2xl font-black text-emerald-800 font-heading">$0</span>
+          </div>
+          <span class="text-[10px] text-emerald-700 font-semibold block mt-0.5">Aportes voluntarios recaudados</span>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-3xl p-4 shadow-2xs">
+          <span class="text-[10px] uppercase font-black tracking-wider text-stone-400 block font-mono">Pendientes de Entrega</span>
+          <div class="flex items-baseline gap-1.5 mt-1">
+            <span id="kpi-orders-pending-top" class="text-xl sm:text-2xl font-black text-amber-700 font-heading">0</span>
+            <span class="text-[11px] font-bold text-amber-800">pedidos</span>
+          </div>
+        </div>
+      </div>
 
       <!-- Barra de Filtros y Acciones -->
       <div class="bg-white border border-stone-200 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -465,6 +537,10 @@
           <button type="button" onclick="bulkUnarchiveSelected()" class="px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 cursor-pointer transition-all">
             Mover a Activos
           </button>
+          <button type="button" onclick="bulkDeleteSelectedOrders()" class="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black cursor-pointer transition-all flex items-center gap-1.5 shadow-xs" title="Borrar pedidos seleccionados">
+            <span>🗑️</span>
+            <span>Borrar Seleccionados</span>
+          </button>
           <button type="button" onclick="clearSelectedOrders()" class="text-stone-400 hover:text-white px-2 py-1 cursor-pointer">
             Desmarcar
           </button>
@@ -488,7 +564,7 @@
                 <th class="py-3.5 px-3">Total</th>
                 <th class="py-3.5 px-3">Pago</th>
                 <th class="py-3.5 px-4">Estado</th>
-                <th class="py-3.5 px-4 text-right">Contacto & Archivo</th>
+                <th class="py-3.5 px-4 text-right">Acciones & Contacto</th>
               </tr>
             </thead>
             <tbody id="admin-orders-tbody" class="divide-y divide-stone-100">
