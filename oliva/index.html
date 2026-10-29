@@ -155,18 +155,12 @@
         </div>
       </a>
 
-      <!-- Selector de Círculo y Compartir -->
-      <div class="flex items-center gap-1.5">
-        <div class="relative">
-          <select id="circle-select" onchange="onCircleChange(this.value)" class="text-xs font-bold bg-[#f4f7ee] border border-[#d6e3c1] text-[#3e531c] rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#577327] cursor-pointer max-w-[170px] sm:max-w-[210px] truncate">
-            <!-- Inyectado por JS -->
-          </select>
-        </div>
-
+      <!-- Botón de Compartir -->
+      <div class="flex items-center">
         <button 
           type="button" 
           onclick="shareOlivaWhatsApp()" 
-          class="btn-action bg-[#1db954] hover:bg-[#16a34a] text-white rounded-xl px-2.5 py-1.5 text-xs font-black shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0" 
+          class="btn-action bg-[#1db954] hover:bg-[#16a34a] text-white rounded-xl px-3 py-1.5 text-xs font-black shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0" 
           title="Compartir compra colectiva por WhatsApp"
           aria-label="Compartir en WhatsApp"
         >
@@ -274,29 +268,7 @@
         </p>
       </div>
 
-      <!-- Banner de Escalas de Precios Transparentes -->
-      <div class="bg-gradient-to-r from-[#3e531c] via-[#577327] to-[#8ca15d] text-white rounded-2xl p-4 shadow-md text-left space-y-2">
-        <span class="block text-[11px] sm:text-xs font-black uppercase tracking-wider text-white/90 text-center border-b border-white/20 pb-1.5">
-          Escala de Precios Directo de Productor
-        </span>
-        <div class="grid grid-cols-3 gap-2 text-center pt-0.5">
-          <div class="bg-white/10 rounded-xl p-2 backdrop-blur-xs">
-            <span class="block text-[10px] font-extrabold text-stone-200 uppercase">Pequeña</span>
-            <strong class="block text-sm sm:text-base font-black font-heading mt-0.5">$19.700</strong>
-            <span class="block text-[9px] text-stone-300">Minorista (1 a 5L)</span>
-          </div>
-          <div class="bg-white/20 rounded-xl p-2 backdrop-blur-xs border border-white/30">
-            <span class="block text-[10px] font-extrabold text-amber-200 uppercase">Familiar</span>
-            <strong class="block text-sm sm:text-base font-black font-heading mt-0.5">$18.700</strong>
-            <span class="block text-[9px] text-stone-200">Mayorista (+6L)</span>
-          </div>
-          <div class="bg-white/10 rounded-xl p-2 backdrop-blur-xs">
-            <span class="block text-[10px] font-extrabold text-emerald-200 uppercase">Comunitaria</span>
-            <strong class="block text-sm sm:text-base font-black font-heading mt-0.5">$18.100</strong>
-            <span class="block text-[9px] text-stone-200">Distribuidor (+20L)</span>
-          </div>
-        </div>
-      </div>
+      
 
     </div>
 
@@ -318,8 +290,8 @@
       </div>
 
 
-      <!-- Botones Principales de Modalidad: Pequeña, Familiar, Comunitaria -->
-      <div class="grid grid-cols-3 gap-2.5">
+      <!-- Botones Principales de Modalidad: Pequeña, Familiar, Comunitaria con VALOR POR LITRO -->
+      <div class="grid grid-cols-3 gap-2 sm:gap-2.5">
         
         <!-- Opción 1: Compra Pequeña (Minorista) -->
         <button 
@@ -328,11 +300,14 @@
           id="btn-opt-pequena" 
           class="portion-opt-btn p-3 rounded-2xl border-2 border-stone-200 bg-white hover:border-[#8ca15d] text-center flex flex-col items-center justify-center gap-1 transition-all cursor-pointer"
         >
-          <span class="text-lg">🫒</span>
+          <span class="text-xl">🫒</span>
           <span class="text-xs font-black text-stone-900 leading-tight">Compra Pequeña</span>
           <span class="text-[10px] font-extrabold text-[#577327] bg-[#f4f7ee] px-2 py-0.5 rounded-full border border-[#d6e3c1]">Minorista</span>
-          <span class="text-[11px] text-stone-500 font-bold">1 Litro</span>
-          <span class="text-xs font-black text-stone-900 mt-0.5">$19.700</span>
+          <div class="mt-1">
+            <strong class="text-sm sm:text-base font-black text-stone-900 font-heading block">$19.700</strong>
+            <span class="text-[10px] text-stone-500 font-bold block">por litro</span>
+          </div>
+          <span class="text-[9px] text-stone-400 mt-0.5 font-medium">1 a 5 Litros</span>
         </button>
 
         <!-- Opción 2: Compra Familiar (Mayorista) -->
@@ -342,11 +317,14 @@
           id="btn-opt-familiar" 
           class="portion-opt-btn p-3 rounded-2xl border-2 border-[#577327] bg-[#f4f7ee] ring-2 ring-[#577327]/30 text-center flex flex-col items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
         >
-          <span class="text-lg">🏡</span>
+          <span class="text-xl">🏡</span>
           <span class="text-xs font-black text-stone-900 leading-tight">Compra Familiar</span>
           <span class="text-[10px] font-extrabold text-[#a6634f] bg-[#fcf4f0] px-2 py-0.5 rounded-full border border-[#f0d8ce]">Mayorista</span>
-          <span class="text-[11px] text-stone-500 font-bold">6 Litros</span>
-          <span class="text-xs font-black text-stone-900 mt-0.5">$112.200</span>
+          <div class="mt-1">
+            <strong class="text-sm sm:text-base font-black text-[#577327] font-heading block">$18.700</strong>
+            <span class="text-[10px] text-stone-500 font-bold block">por litro</span>
+          </div>
+          <span class="text-[9px] text-[#577327] font-bold mt-0.5">a partir de 6L</span>
         </button>
 
         <!-- Opción 3: Compra Comunitaria (Distribuidor) -->
@@ -356,11 +334,14 @@
           id="btn-opt-comunitaria" 
           class="portion-opt-btn p-3 rounded-2xl border-2 border-stone-200 bg-white hover:border-[#8ca15d] text-center flex flex-col items-center justify-center gap-1 transition-all cursor-pointer"
         >
-          <span class="text-lg">📦</span>
+          <span class="text-xl">📦</span>
           <span class="text-xs font-black text-stone-900 leading-tight">Compra Comunitaria</span>
           <span class="text-[10px] font-extrabold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Distribuidor</span>
-          <span class="text-[11px] text-stone-500 font-bold">20 Litros</span>
-          <span class="text-xs font-black text-stone-900 mt-0.5">$362.000</span>
+          <div class="mt-1">
+            <strong class="text-sm sm:text-base font-black text-emerald-800 font-heading block">$18.100</strong>
+            <span class="text-[10px] text-stone-500 font-bold block">por litro</span>
+          </div>
+          <span class="text-[9px] text-emerald-700 font-bold mt-0.5">a partir de 20L</span>
         </button>
 
       </div>
@@ -503,11 +484,6 @@
               <p id="checkout-step-subtitle" class="text-xs text-stone-500 mt-0.5 truncate">
                 Elegí dónde retirar tu aceite de oliva.
               </p>
-            </div>
-            <div class="text-right shrink-0">
-              <span id="checkout-header-total" class="font-mono font-black text-sm text-[#577327] bg-[#f4f7ee] px-2.5 py-1 rounded-xl border border-[#d6e3c1]">
-                $112.200
-              </span>
             </div>
           </div>
 
@@ -1263,7 +1239,7 @@
     let selectedCheckoutNode = 'lalucila';
     let selectedElementalBeing = 'Bauti';
     let currentCheckoutStep = 1;
-    let olivaContributionType = '3%';
+    let olivaContributionType = '0'; // Sin aporte por defecto hasta que el usuario elija en el Paso 4
     let olivaCustomContributionAmount = 0;
     let activeCircle = null;
     let lastCompletedOrder = null;
