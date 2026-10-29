@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <base href="/" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>🫒 Aceite de Oliva Extra Virgen Lorenzo Cabrera | Elementales Comunidad</title>
@@ -8,7 +9,7 @@
   <meta name="description" content="Sumate con amigos y vecinos en Elementales para pedir Aceite de Oliva Extra Virgen Agroecológico Lorenzo Cabrera de Villa Mazán, La Rioja. Escalas de compra pequeña (minorista), familiar (mayorista) y comunitaria (distribuidor)." />
   <meta property="og:title" content="🫒 Aceite de Oliva Extra Virgen Lorenzo Cabrera - Elementales .store" />
   <meta property="og:description" content="Compra pequeña (minorista), compra familiar (mayorista) o compra comunitaria (distribuidor) directo de olivares riojanos en Elementales." />
-  <meta property="og:image" content="public/assets/products/aceite_lorenzo_cabrera.jpg" />
+  <meta property="og:image" content="https://elementales.store/public/assets/products/flyer_oliva_whatsapp_safe.jpg" />
 
   <!-- Tailwind CSS CDN con paleta oficial de Elementales -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -153,7 +154,7 @@
       
       <!-- LOGO ELEMENTALES -->
       <a href="index.html" class="flex items-center gap-2.5 text-decoration-none group">
-        <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs group-hover:scale-105 transition-transform" alt="Elementales" />
+        <img src="/public/assets/brand/comunidad_emblem_clean.png" class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs group-hover:scale-105 transition-transform" alt="Elementales" />
         <div class="leading-tight">
           <span class="block font-black text-sm sm:text-base text-stone-900 tracking-tight leading-none font-heading">
             Elementales <span class="text-[#577327]">Comunidad</span>
@@ -250,7 +251,7 @@
       <!-- Imagen Destacada del Aceite -->
       <div class="w-full h-56 sm:h-64 rounded-2xl overflow-hidden bg-stone-50 border border-stone-200 relative mb-4 shadow-inner group">
         <img 
-          src="public/assets/products/aceite_lorenzo_cabrera.jpg" 
+          src="/public/assets/products/aceite_lorenzo_cabrera.jpg" 
           alt="Aceite de Oliva Extra Virgen Lorenzo Cabrera" 
           class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
           onerror="this.src='public/assets/brand/comunidad_full_clean.png';"
@@ -522,7 +523,7 @@
             <!-- Resumen mini del alimento en curso -->
             <div class="p-3 bg-[#fcfaf8] border border-[#e2ebd4] rounded-2xl flex items-center justify-between gap-3">
               <div class="flex items-center gap-2.5 min-w-0">
-                <img src="public/assets/products/aceite_lorenzo_cabrera.jpg" alt="Aceite" class="w-12 h-12 rounded-xl object-cover border border-stone-200 shrink-0 shadow-2xs" />
+                <img src="/public/assets/products/aceite_lorenzo_cabrera.jpg" alt="Aceite" class="w-12 h-12 rounded-xl object-cover border border-stone-200 shrink-0 shadow-2xs" />
                 <div class="min-w-0 truncate">
                   <strong class="text-stone-900 block font-bold text-xs truncate">Aceite de Oliva Extra Virgen (1L)</strong>
                   <span class="text-[11px] text-stone-500 font-medium">Lorenzo Cabrera · <span id="step1-liters-badge" class="font-bold text-[#577327]">6 Litros</span></span>
@@ -1132,9 +1133,9 @@
 
 
           <!-- Scripts: Módulos de datos y lógica de la landing -->
-  <script src="js/products-data.js" charset="UTF-8"></script>
-  <script src="js/circulos.js" charset="UTF-8"></script>
-  <script src="js/db.js" charset="UTF-8"></script>
+  <script src="/js/products-data.js" charset="UTF-8"></script>
+  <script src="/js/circulos.js" charset="UTF-8"></script>
+  <script src="/js/db.js" charset="UTF-8"></script>
 
   <script>
     // =========================================================================
@@ -1310,20 +1311,24 @@
       let savedMunicipality = '';
       let savedProvince = 'Buenos Aires';
 
-      if (typeof ElementalesDB !== 'undefined') {
-        const sess = ElementalesDB.getSession();
-        if (sess) {
-          savedName = sess.userName || '';
-          savedPhone = sess.userPhone || '';
+      try {
+        if (typeof ElementalesDB !== 'undefined') {
+          const sess = ElementalesDB.getSession();
+          if (sess) {
+            savedName = sess.userName || '';
+            savedPhone = sess.userPhone || '';
+          }
         }
+        if (!savedName) savedName = (typeof localStorage !== 'undefined' ? localStorage.getItem('elementales_user_name') : '') || '';
+        if (!savedPhone) savedPhone = (typeof localStorage !== 'undefined' ? localStorage.getItem('elementales_user_phone') : '') || '';
+        savedEmail = (typeof localStorage !== 'undefined' ? localStorage.getItem('elementales_user_email') : '') || '';
+        savedStreet = (typeof localStorage !== 'undefined' ? localStorage.getItem('elementales_user_street') : '') || '';
+        savedCity = (typeof localStorage !== 'undefined' ? localStorage.getItem('elementales_user_city') : '') || '';
+        savedMunicipality = (typeof localStorage !== 'undefined' ? localStorage.getItem('elementales_user_municipality') : '') || '';
+        savedProvince = (typeof localStorage !== 'undefined' ? localStorage.getItem('elementales_user_province') : '') || 'Buenos Aires';
+      } catch (e) {
+        console.warn('Almacenamiento restringido en Safari/iOS:', e);
       }
-      if (!savedName) savedName = localStorage.getItem('elementales_user_name') || '';
-      if (!savedPhone) savedPhone = localStorage.getItem('elementales_user_phone') || '';
-      savedEmail = localStorage.getItem('elementales_user_email') || '';
-      savedStreet = localStorage.getItem('elementales_user_street') || '';
-      savedCity = localStorage.getItem('elementales_user_city') || '';
-      savedMunicipality = localStorage.getItem('elementales_user_municipality') || '';
-      savedProvince = localStorage.getItem('elementales_user_province') || 'Buenos Aires';
 
       const nameInput = document.getElementById('oliva-order-name');
       const phoneInput = document.getElementById('oliva-order-phone');
@@ -1485,7 +1490,11 @@
     }
 
     function saveOlivaOrders(orders) {
-      localStorage.setItem(OLIVA_CONFIG.storageKey, JSON.stringify(orders));
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(OLIVA_CONFIG.storageKey, JSON.stringify(orders));
+        }
+      } catch (e) {}
     }
 
     function calculateBlockchain() {
