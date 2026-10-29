@@ -439,7 +439,7 @@
             Cadena de Lotes y Commits Colectivos
           </h2>
           <p class="text-xs text-stone-600 leading-snug">
-            Cada lote comunitario de 20 litros es un bloque colectivo. Al completarse al 100%, se realiza el <strong>Commit del Lote</strong> y queda confirmado para despacho directo desde La Rioja.
+            Cada lote comunitario de 20 litros es un bloque colectivo. Al completarse al 100%, se realiza el <strong>Commit del Lote</strong> y queda confirmado para despacho directo desde finca en Maipú, Mendoza.
           </p>
         </div>
       </div>
@@ -1464,52 +1464,24 @@
         const raw = localStorage.getItem(OLIVA_CONFIG.storageKey);
         if (raw) {
           const list = JSON.parse(raw);
-          if (Array.isArray(list) && list.length > 0) return list;
+          if (Array.isArray(list)) {
+            // Limpiar automáticamente pedidos de prueba mock antiguos si existieran en localStorage
+            const cleaned = list.filter(ord => 
+              ord.clientName !== 'Mariana Gómez' && 
+              ord.clientName !== 'Carlos Benítez' &&
+              ord.id !== 'OLIV-001' && 
+              ord.id !== 'OLIV-002'
+            );
+            if (cleaned.length !== list.length) {
+              localStorage.setItem(OLIVA_CONFIG.storageKey, JSON.stringify(cleaned));
+            }
+            return cleaned;
+          }
         }
       } catch (e) {}
 
-      const seedOrders = [
-        {
-          id: 'OLIV-001',
-          number: 1,
-          timestamp: Date.now() - 3600000 * 3,
-          dateStr: new Date(Date.now() - 3600000 * 3).toLocaleDateString('es-AR'),
-          timeStr: '10:15',
-          clientName: 'Mariana Gómez',
-          clientPhone: '11 5566-7788',
-          paymentMethod: 'Transferencia',
-          productName: 'Aceite de Oliva Extra Virgen Lorenzo Cabrera',
-          liters: 6,
-          tierName: 'Compra Familiar (Mayorista)',
-          total: 112200,
-          status: 'Confirmado',
-          circuloId: 'lalucila',
-          circuloNombre: 'Nodo Elementales La Lucila',
-          direccionRetiro: 'Anchorena 684, La Lucila'
-        },
-        {
-          id: 'OLIV-002',
-          number: 2,
-          timestamp: Date.now() - 3600000 * 1.5,
-          dateStr: new Date(Date.now() - 3600000 * 1.5).toLocaleDateString('es-AR'),
-          timeStr: '12:40',
-          clientName: 'Carlos Benítez',
-          clientPhone: '11 4433-2211',
-          paymentMethod: 'Efectivo',
-          productName: 'Aceite de Oliva Extra Virgen Lorenzo Cabrera',
-          liters: 2,
-          tierName: 'Compra Pequeña (Minorista)',
-          total: 39400,
-          status: 'Confirmado',
-          circuloId: 'lomaverde',
-          circuloNombre: 'Nodo Loma Verde',
-          direccionRetiro: 'Botafogo 1320'
-        }
-      ];
-      try {
-        localStorage.setItem(OLIVA_CONFIG.storageKey, JSON.stringify(seedOrders));
-      } catch (e) {}
-      return seedOrders;
+      // Si no hay pedidos cargados o el usuario borró todo, el estado es una lista vacía
+      return [];
     }
 
     function saveOlivaOrders(orders) {
@@ -1655,7 +1627,7 @@
                     <strong class="text-xs font-black text-stone-900 font-heading">LOTE #${b.blockNumber} (20 LITROS)</strong>
                   </div>
                   <p class="text-[11px] text-[#3e531c] font-bold mt-0.5">
-                    100% Cerrado · Confirmado para despacho desde Villa Mazán, La Rioja
+                    100% Cerrado · Confirmado para despacho desde Maipú, Mendoza
                   </p>
                 </div>
                 <span class="hash-badge">${b.commitHash}</span>
