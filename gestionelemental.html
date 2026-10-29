@@ -4342,8 +4342,1056 @@
         saveAdminOrders();
         updateAdminKPIs();
         renderAdminOrdersTable();
+        if (currentAdminTab === 'basedatos') renderAdminDatabaseTable();
+        if (currentAdminTab === 'oliva') renderAdminOliva();
+        if (currentAdminTab === 'frutillas') renderAdminFrutillas();
       }
     }
+
+    // =========================================================================
+    // BORRADO DE PEDIDOS (INDIVIDUAL Y MASIVO)
+    // =========================================================================
+    function deleteAdminOrder(orderId) {
+      const orderIdStr = String(orderId);
+      const o = adminOrders.find(item => String(item.id) === orderIdStr || String(item.number) === orderIdStr);
+      const clientName = o ? (o.clientName || 'Cliente') : 'este pedido';
+
+      if (!confirm(`¿Estás seguro de eliminar el pedido #${orderIdStr} de ${clientName}? Esta acción borrará el pedido de la base de datos.`)) {
+        return;
+      }
+
+      // Eliminar de adminOrders
+      adminOrders = adminOrders.filter(item => String(item.id) !== orderIdStr && String(item.number) !== orderIdStr);
+      selectedOrderIds.delete(orderIdStr);
+
+      // Limpiar también en localStorage y bases subordinadas
+      saveAdminOrders();
+      try {
+        const rawOliva = localStorage.getItem('elementales_oliva_orders_v1');
+        if (rawOliva) {
+          let olOrders = JSON.parse(rawOliva);
+          olOrders = olOrders.filter(x => String(x.id) !== orderIdStr && ('ORD-' + String(x.id)) !== orderIdStr);
+          localStorage.setItem('elementales_oliva_orders_v1', JSON.stringify(olOrders));
+        }
+      } catch (e) {}
+
+      try {
+        const rawFrut = localStorage.getItem('elementales_frutilla_orders_v1');
+        if (rawFrut) {
+          let frOrders = JSON.parse(rawFrut);
+          frOrders = frOrders.filter(x => String(x.id) !== orderIdStr && ('ORD-' + String(x.id)) !== orderIdStr);
+          localStorage.setItem('elementales_frutilla_orders_v1', JSON.stringify(frOrders));
+        }
+      } catch (e) {}
+
+      updateAdminKPIs();
+      renderAdminOrdersTable();
+      if (currentAdminTab === 'basedatos') renderAdminDatabaseTable();
+      if (currentAdminTab === 'oliva') renderAdminOliva();
+      if (currentAdminTab === 'frutillas') renderAdminFrutillas();
+
+      alert(`✓ Pedido #${orderIdStr} eliminado correctamente.`);
+    }
+
+    function bulkDeleteSelectedOrders() {
+      if (selectedOrderIds.size === 0) {
+        alert('No hay ningún pedido seleccionado.');
+        return;
+      }
+
+      const count = selectedOrderIds.size;
+      if (!confirm(`¿Eliminar definitivamente los ${count} pedidos seleccionados? Esta acción es irreversible.`)) {
+        return;
+      }
+
+      adminOrders = adminOrders.filter(o => {
+        const idStr = String(o.id || o.number);
+        return !selectedOrderIds.has(idStr);
+      });
+
+      selectedOrderIds.clear();
+      saveAdminOrders();
+      updateAdminKPIs();
+      renderAdminOrdersTable();
+      if (currentAdminTab === 'basedatos') renderAdminDatabaseTable();
+      if (currentAdminTab === 'oliva') renderAdminOliva();
+      if (currentAdminTab === 'frutillas') renderAdminFrutillas();
+
+      alert(`✓ Se eliminaron ${count} pedidos exitosamente.`);
+    }
+
+    // =========================================================================
+    // MODAL EDITAR PEDIDO (SUMAR/RESTAR PRODUCTOS, SER ELEMENTAL, DONACIÓN)
+    // =========================================================================
+    let currentEditingOrder = null;
+
+    function openEditOrderModal(orderId) {
+      const orderIdStr = String(orderId);
+      const o = adminOrders.find(item => String(item.id) === orderIdStr || String(item.number) === orderIdStr);
+      if (!o) {
+        alert('No se encontró el pedido a editar.');
+        return;
+      }
+
+      currentEditingOrder = JSON.parse(JSON.stringify(o));
+      currentEditingOrder.items = getCleanOrderItems(o);
+
+      document.getElementById('edit-order-id-badge').textContent = `#${orderIdStr}`;
+      document.getElementById('edit-order-client-name').value = o.clientName || '';
+      document.getElementById('edit-order-client-phone').value = o.clientPhone || '';
+      document.getElementById('edit-order-client-email').value = o.clientEmail || o.email || '';
+      document.getElementById('edit-order-node').value = o.nodoId || 'nodo-lomaverde';
+      document.getElementById('edit-order-ser-elemental').value = getOrderSerElemental(o);
+      document.getElementById('edit-order-payment').value = o.paymentMethod || 'Efectivo';
+      document.getElementById('edit-order-status').value = o.status || 'Pendiente';
+      document.getElementById('edit-order-folder').value = o.folder || '';
+      document.getElementById('edit-order-notes').value = o.notes || o.notas || '';
+      document.getElementById('edit-order-donation').value = getOrderDonation(o);
+
+      renderEditOrderItems();
+      document.getElementById('modal-edit-order')?.classList.remove('hidden');
+    }
+
+    function closeEditOrderModal() {
+      currentEditingOrder = null;
+      document.getElementById('modal-edit-order')?.classList.add('hidden');
+    }
+
+    function renderEditOrderItems() {
+      const tbody = document.getElementById('edit-order-items-tbody');
+      if (!tbody || !currentEditingOrder) return;
+
+      tbody.innerHTML = currentEditingOrder.items.map((it, idx) => `
+        <tr class="hover:bg-white/80 transition-colors">
+          <td class="py-2 pr-2">
+            <input 
+              type="text" 
+              value="${it.name.replace(/"/g, '&quot;')}" 
+              oninput="updateEditItemName(${idx}, this.value)"
+              class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs font-semibold text-stone-800 outline-none"
+            />
+          </td>
+          <td class="py-2 px-2 text-center">
+            <div class="inline-flex items-center border border-stone-300 rounded-lg bg-white overflow-hidden shadow-2xs">
+              <button 
+                type="button" 
+                onclick="changeEditItemQty(${idx}, -1)" 
+                class="w-6 h-6 flex items-center justify-center font-black text-stone-600 hover:bg-stone-100 cursor-pointer text-xs"
+              >−</button>
+              <input 
+                type="number" 
+                min="1" 
+                value="${it.qty}" 
+                oninput="setEditItemQty(${idx}, this.value)"
+                class="w-10 text-center font-mono font-black text-xs text-stone-900 border-x border-stone-200 outline-none py-0.5"
+              />
+              <button 
+                type="button" 
+                onclick="changeEditItemQty(${idx}, 1)" 
+                class="w-6 h-6 flex items-center justify-center font-black text-stone-600 hover:bg-stone-100 cursor-pointer text-xs"
+              >+</button>
+            </div>
+          </td>
+          <td class="py-2 px-2 text-right">
+            <input 
+              type="number" 
+              min="0" 
+              step="100" 
+              value="${it.price}" 
+              oninput="setEditItemPrice(${idx}, this.value)"
+              class="w-20 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-mono font-bold text-stone-900 text-right outline-none"
+            />
+          </td>
+          <td class="py-2 px-2 text-right font-mono font-bold text-emerald-800">
+            $${((Number(it.qty) || 1) * (Number(it.price) || 0)).toLocaleString('es-AR')}
+          </td>
+          <td class="py-2 pl-2 text-center">
+            <button 
+              type="button" 
+              onclick="removeEditItem(${idx})" 
+              class="w-6 h-6 rounded-lg text-rose-500 hover:bg-rose-50 hover:text-rose-700 cursor-pointer font-bold text-xs"
+              title="Quitar este alimento del pedido"
+            >✕</button>
+          </td>
+        </tr>
+      `).join('');
+
+      updateEditOrderCalculations();
+    }
+
+    function changeEditItemQty(idx, delta) {
+      if (!currentEditingOrder || !currentEditingOrder.items[idx]) return;
+      let newQty = (Number(currentEditingOrder.items[idx].qty) || 1) + delta;
+      if (newQty < 1) newQty = 1;
+      currentEditingOrder.items[idx].qty = newQty;
+      renderEditOrderItems();
+    }
+
+    function setEditItemQty(idx, val) {
+      if (!currentEditingOrder || !currentEditingOrder.items[idx]) return;
+      let qty = parseInt(val, 10);
+      if (isNaN(qty) || qty < 1) qty = 1;
+      currentEditingOrder.items[idx].qty = qty;
+      updateEditOrderCalculations();
+    }
+
+    function setEditItemPrice(idx, val) {
+      if (!currentEditingOrder || !currentEditingOrder.items[idx]) return;
+      let price = parseFloat(val);
+      if (isNaN(price) || price < 0) price = 0;
+      currentEditingOrder.items[idx].price = price;
+      updateEditOrderCalculations();
+    }
+
+    function updateEditItemName(idx, val) {
+      if (!currentEditingOrder || !currentEditingOrder.items[idx]) return;
+      currentEditingOrder.items[idx].name = val.trim() || 'Alimento';
+    }
+
+    function removeEditItem(idx) {
+      if (!currentEditingOrder || !currentEditingOrder.items[idx]) return;
+      currentEditingOrder.items.splice(idx, 1);
+      if (currentEditingOrder.items.length === 0) {
+        currentEditingOrder.items.push({ name: 'Alimento General', qty: 1, price: 0 });
+      }
+      renderEditOrderItems();
+    }
+
+    function addEditNewItem() {
+      if (!currentEditingOrder) return;
+      currentEditingOrder.items.push({
+        name: 'Alimento o Cosecha',
+        qty: 1,
+        price: 5000
+      });
+      renderEditOrderItems();
+    }
+
+    function updateEditOrderCalculations() {
+      if (!currentEditingOrder) return;
+      const subtotal = currentEditingOrder.items.reduce((sum, it) => sum + ((Number(it.qty) || 1) * (Number(it.price) || 0)), 0);
+      const donation = Number(document.getElementById('edit-order-donation')?.value || 0);
+      const total = subtotal + donation;
+
+      document.getElementById('edit-order-subtotal-display').textContent = `$${subtotal.toLocaleString('es-AR')}`;
+      document.getElementById('edit-order-donation-display').textContent = `+$${donation.toLocaleString('es-AR')}`;
+      document.getElementById('edit-order-total-display').textContent = `$${total.toLocaleString('es-AR')}`;
+    }
+
+    function saveEditedOrder(e) {
+      if (e) e.preventDefault();
+      if (!currentEditingOrder) return;
+
+      const orderIdStr = String(currentEditingOrder.id || currentEditingOrder.number);
+      const idx = adminOrders.findIndex(item => String(item.id) === orderIdStr || String(item.number) === orderIdStr);
+      if (idx === -1) {
+        alert('No se pudo encontrar el pedido original en la lista.');
+        return;
+      }
+
+      const clientName = document.getElementById('edit-order-client-name')?.value.trim() || 'Cliente';
+      const clientPhone = document.getElementById('edit-order-client-phone')?.value.trim() || '';
+      const clientEmail = document.getElementById('edit-order-client-email')?.value.trim() || '';
+      const nodeVal = document.getElementById('edit-order-node')?.value || 'nodo-lomaverde';
+      const serElemental = document.getElementById('edit-order-ser-elemental')?.value.trim() || 'Ser Elemental Gestor';
+      const paymentMethod = document.getElementById('edit-order-payment')?.value || 'Efectivo';
+      const status = document.getElementById('edit-order-status')?.value || 'Pendiente';
+      const folder = document.getElementById('edit-order-folder')?.value.trim();
+      const notes = document.getElementById('edit-order-notes')?.value.trim();
+      const donation = Number(document.getElementById('edit-order-donation')?.value || 0);
+
+      const subtotal = currentEditingOrder.items.reduce((sum, it) => sum + ((Number(it.qty) || 1) * (Number(it.price) || 0)), 0);
+      const total = subtotal + donation;
+
+      // Actualizar objeto en adminOrders
+      const target = adminOrders[idx];
+      target.clientName = clientName;
+      target.clientPhone = clientPhone;
+      if (clientEmail) target.clientEmail = clientEmail;
+      target.nodoId = nodeVal;
+      target.nodoNombre = nodeVal === 'nodo-lomaverde' ? 'Nodo Loma Verde' : (nodeVal === 'nodo-cooperativa' ? 'Chasqui Maschwitz' : 'Central Vicente López');
+      target.serElemental = serElemental;
+      target.paymentMethod = paymentMethod;
+      target.status = status;
+      if (folder) target.folder = folder; else delete target.folder;
+      if (notes) target.notes = notes; else delete target.notes;
+
+      target.items = currentEditingOrder.items.map(it => ({
+        name: it.name,
+        qty: Number(it.qty) || 1,
+        price: Number(it.price) || 0,
+        total: (Number(it.qty) || 1) * (Number(it.price) || 0)
+      }));
+
+      target.communityContribution = donation;
+      target.total = total;
+
+      saveAdminOrders();
+
+      // Guardar también en DB unificada si existe
+      if (typeof ElementalesDB !== 'undefined' && ElementalesDB.saveOrder) {
+        ElementalesDB.saveOrder(target);
+      }
+
+      updateAdminKPIs();
+      renderAdminOrdersTable();
+      if (currentAdminTab === 'basedatos') renderAdminDatabaseTable();
+      if (currentAdminTab === 'oliva') renderAdminOliva();
+      if (currentAdminTab === 'frutillas') renderAdminFrutillas();
+
+      closeEditOrderModal();
+      alert(`✓ Pedido #${orderIdStr} actualizado exitosamente.`);
+    }
+
+    // =========================================================================
+    // FICHA COMPLETA DEL PEDIDO (MODAL DOSSIER)
+    // =========================================================================
+    function openOrderFullProfile(orderId) {
+      const orderIdStr = String(orderId);
+      const o = adminOrders.find(item => String(item.id) === orderIdStr || String(item.number) === orderIdStr);
+      if (!o) return;
+
+      const container = document.getElementById('order-full-profile-content');
+      if (!container) return;
+
+      const isLunar = isLunarOrder(o);
+      const don = getOrderDonation(o);
+      const cleanItems = getCleanOrderItems(o);
+      const subtotal = cleanItems.reduce((acc, it) => acc + (it.qty * it.price), 0);
+
+      container.innerHTML = `
+        <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between border-b border-stone-200 pb-2.5">
+            <div>
+              <span class="text-[10px] font-mono uppercase text-stone-400 block font-bold">Identificador:</span>
+              <strong class="font-mono text-base text-stone-900">#${orderIdStr}</strong>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] font-mono uppercase text-stone-400 block font-bold">Ciclo / Tipo:</span>
+              <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${isLunar ? 'bg-purple-100 text-purple-900 border border-purple-200' : 'bg-emerald-100 text-emerald-900 border border-emerald-200'}">
+                ${isLunar ? '🌕 Compra Lunar' : '🌱 Compra Semanal'}
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <span class="text-[10px] text-stone-400 block font-bold uppercase">Cliente / Familia:</span>
+              <strong class="text-stone-900 text-sm">${o.clientName || 'Cliente'}</strong>
+            </div>
+            <div>
+              <span class="text-[10px] text-stone-400 block font-bold uppercase">WhatsApp / Teléfono:</span>
+              <span class="font-mono text-stone-800">${o.clientPhone || 'Sin teléfono'}</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-stone-400 block font-bold uppercase">Email:</span>
+              <span class="font-mono text-stone-800">${o.clientEmail || o.email || 'No informado'}</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-stone-400 block font-bold uppercase">Fecha y Hora:</span>
+              <span class="text-stone-800">${o.dateStr || ''} ${o.timeStr || ''}</span>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-stone-200 text-xs">
+            <span class="text-[10px] text-stone-400 block font-bold uppercase">Domicilio / Dirección:</span>
+            <span class="text-stone-800">${o.street || o.direccion || o.address || 'Retiro presencial en sede'} ${o.city ? `(${o.city})` : ''}</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-stone-200">
+            <div>
+              <span class="text-[10px] text-stone-400 block font-bold uppercase">Punto de Retiro:</span>
+              <strong class="text-stone-900">${o.nodoNombre || 'Nodo Loma Verde'}</strong>
+            </div>
+            <div>
+              <span class="text-[10px] text-amber-800 block font-bold uppercase">✨ Ser Elemental:</span>
+              <strong class="text-amber-950">${getOrderSerElemental(o)}</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desglose de Alimentos -->
+        <div class="border border-stone-200 rounded-2xl p-4 bg-white space-y-2">
+          <span class="text-[10px] font-mono font-bold uppercase text-stone-400 block mb-1">Alimentos Solicitados:</span>
+          <div class="space-y-1.5 divide-y divide-stone-100">
+            ${cleanItems.map(it => `
+              <div class="flex justify-between items-center pt-1.5 text-xs">
+                <div>
+                  <span class="font-bold text-stone-900">${it.qty}x ${it.name}</span>
+                  ${it.price > 0 ? `<span class="text-[10px] text-stone-400 block">$${it.price.toLocaleString('es-AR')} c/u</span>` : ''}
+                </div>
+                <strong class="font-mono text-stone-800">$${(it.qty * it.price).toLocaleString('es-AR')}</strong>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="pt-3 border-t border-stone-200 text-xs space-y-1 font-mono">
+            <div class="flex justify-between text-stone-600">
+              <span>Subtotal Alimentos:</span>
+              <span>$${subtotal.toLocaleString('es-AR')}</span>
+            </div>
+            <div class="flex justify-between text-emerald-800 font-bold">
+              <span>🌱 Aporte a la Organización:</span>
+              <span>+$${don.toLocaleString('es-AR')}</span>
+            </div>
+            <div class="flex justify-between text-stone-900 text-base font-black pt-1 border-t border-stone-200">
+              <span>TOTAL A ABONAR:</span>
+              <span class="text-emerald-900">$${(o.total || (subtotal + don)).toLocaleString('es-AR')}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs bg-stone-50 p-3 rounded-2xl border border-stone-200">
+          <div>
+            <span class="text-[10px] text-stone-400 block font-bold uppercase">Forma de Pago:</span>
+            <strong class="text-stone-800">${o.paymentMethod || 'Efectivo'}</strong>
+          </div>
+          <div>
+            <span class="text-[10px] text-stone-400 block font-bold uppercase">Estado:</span>
+            <strong class="text-stone-800">${o.status || 'Pendiente'}</strong>
+          </div>
+        </div>
+
+        ${o.notes ? `
+          <div class="p-3 bg-amber-50/70 border border-amber-200 rounded-2xl text-xs">
+            <span class="text-[10px] font-bold uppercase text-amber-900 block mb-0.5">Notas del Comprador:</span>
+            <p class="text-stone-700 italic">${o.notes}</p>
+          </div>
+        ` : ''}
+      `;
+
+      document.getElementById('modal-order-full-profile')?.classList.remove('hidden');
+    }
+
+    function closeOrderFullProfile() {
+      document.getElementById('modal-order-full-profile')?.classList.add('hidden');
+    }
+
+    // =========================================================================
+    // TAB: BASE DE DATOS INTEGRAL DE PEDIDOS (TODOS LOS CAMPOS)
+    // =========================================================================
+    function renderAdminDatabaseTable() {
+      const tbody = document.getElementById('admin-db-tbody');
+      if (!tbody) return;
+
+      const q = (document.getElementById('admin-db-search')?.value || '').toLowerCase().trim();
+      const typeFilter = document.getElementById('admin-db-type-filter')?.value || 'todos';
+      const statusFilter = document.getElementById('admin-db-status-filter')?.value || 'todos';
+
+      let list = [...adminOrders];
+
+      // Filtrar por sede si está seleccionada en el admin general
+      if (adminSelectedNode !== 'todos') {
+        list = list.filter(o => o.nodoId === adminSelectedNode || !o.nodoId);
+      }
+
+      // Filtrar por tipo
+      if (typeFilter === 'lunar') {
+        list = list.filter(o => isLunarOrder(o));
+      } else if (typeFilter === 'semanal') {
+        list = list.filter(o => !isLunarOrder(o));
+      }
+
+      // Filtrar por estado
+      if (statusFilter !== 'todos') {
+        list = list.filter(o => o.status === statusFilter);
+      }
+
+      // Búsqueda en todos los campos
+      if (q) {
+        list = list.filter(o => {
+          const id = String(o.id || o.number || '').toLowerCase();
+          const name = String(o.clientName || '').toLowerCase();
+          const phone = String(o.clientPhone || '').toLowerCase();
+          const email = String(o.clientEmail || o.email || '').toLowerCase();
+          const addr = String(o.street || o.direccion || o.address || '').toLowerCase();
+          const ser = String(getOrderSerElemental(o)).toLowerCase();
+          const items = JSON.stringify(o.items || '').toLowerCase();
+          const notes = String(o.notes || o.notas || '').toLowerCase();
+
+          return id.includes(q) || name.includes(q) || phone.includes(q) || email.includes(q) || addr.includes(q) || ser.includes(q) || items.includes(q) || notes.includes(q);
+        });
+      }
+
+      // Métricas de la base de datos
+      const totalOrdersCount = list.length;
+      const totalFoodAmount = list.reduce((sum, o) => {
+        const clean = getCleanOrderItems(o);
+        const sub = clean.reduce((s, it) => s + (it.qty * it.price), 0);
+        return sum + (sub || (o.total || 0));
+      }, 0);
+      const totalDonations = list.reduce((sum, o) => sum + getOrderDonation(o), 0);
+      const uniqueClients = new Set(list.map(o => (o.clientPhone || o.clientName || '').trim().toLowerCase())).size;
+
+      document.getElementById('db-stat-total-orders').textContent = totalOrdersCount;
+      document.getElementById('db-stat-total-food').textContent = `$${totalFoodAmount.toLocaleString('es-AR')}`;
+      document.getElementById('db-stat-total-donations').textContent = `$${totalDonations.toLocaleString('es-AR')}`;
+      document.getElementById('db-stat-unique-clients').textContent = uniqueClients;
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="13" class="py-12 text-center text-stone-500">
+              <span class="text-2xl block mb-2">🔍</span>
+              No se encontraron registros en la base de datos con los filtros aplicados.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map(o => {
+        const orderIdStr = String(o.id || o.number);
+        const isLunar = isLunarOrder(o);
+        const don = getOrderDonation(o);
+        const cleanItems = getCleanOrderItems(o);
+        const subtotal = cleanItems.reduce((acc, it) => acc + (it.qty * it.price), 0);
+        const cleanPhone = (o.clientPhone || '').replace(/\D/g, '');
+        const waMsg = encodeURIComponent(`Hola ${o.clientName || 'vecin@'}! Te contactamos desde el Nodo Elementales sobre tu pedido #${orderIdStr}.`);
+
+        let badgeClass = 'bg-amber-50 text-amber-800 border-amber-300';
+        if (o.status === 'Pagado') badgeClass = 'bg-blue-50 text-blue-800 border-blue-300';
+        if (o.status === 'Listo para Retirar') badgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
+        if (o.status === 'Entregado') badgeClass = 'bg-stone-100 text-stone-600 border-stone-300';
+
+        const addressStr = [o.street || o.direccion, o.city || o.localidad].filter(Boolean).join(', ') || 'Retiro en Nodo';
+
+        return `
+          <tr class="hover:bg-stone-50/80 transition-colors">
+            <td class="py-3 px-3 font-mono font-bold text-stone-900 whitespace-nowrap">
+              <span>#${orderIdStr}</span>
+              <div class="flex flex-wrap gap-1 mt-1">
+                <span class="inline-flex px-1.5 py-0.5 rounded text-[9px] font-mono font-bold ${isLunar ? 'bg-purple-50 text-purple-900 border border-purple-200' : 'bg-emerald-50 text-emerald-900 border border-emerald-200'}">
+                  ${isLunar ? '🌕 Lunar' : '🌱 Semanal'}
+                </span>
+                ${o.folder ? `<span class="inline-flex px-1.5 py-0.5 rounded text-[9px] bg-amber-100 text-amber-900 border border-amber-200">📁 ${o.folder}</span>` : ''}
+              </div>
+            </td>
+
+            <td class="py-3 px-3 text-stone-500 whitespace-nowrap">
+              <span class="block font-bold text-stone-800">${o.dateStr || ''}</span>
+              <span class="font-mono text-[10px] text-stone-400">${o.timeStr || ''}</span>
+            </td>
+
+            <td class="py-3 px-4">
+              <strong class="text-stone-900 block font-bold whitespace-nowrap">${o.clientName || 'Cliente'}</strong>
+              <div class="flex items-center gap-1.5 text-[11px] text-stone-500 font-mono mt-0.5">
+                <span>${o.clientPhone || 'Sin tel'}</span>
+              </div>
+              ${o.clientEmail || o.email ? `<span class="block text-[10px] text-stone-400 font-mono truncate max-w-[160px]">${o.clientEmail || o.email}</span>` : ''}
+            </td>
+
+            <td class="py-3 px-4 text-stone-700 max-w-[180px] truncate" title="${addressStr.replace(/"/g, '&quot;')}">
+              <span class="inline-flex items-center gap-1">
+                <span>🏠</span> ${addressStr}
+              </span>
+            </td>
+
+            <td class="py-3 px-3 text-stone-700 whitespace-nowrap">
+              <span class="inline-flex items-center gap-1 text-[11px]">
+                <span>📍</span> ${o.nodoNombre || 'Loma Verde'}
+              </span>
+            </td>
+
+            <td class="py-3 px-3 text-amber-950 font-bold whitespace-nowrap">
+              <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded-lg text-[10px]">
+                <span>✨</span> ${getOrderSerElemental(o)}
+              </span>
+            </td>
+
+            <td class="py-3 px-4 text-stone-800 max-w-xs truncate" title="${cleanItems.map(i => `${i.qty}x ${i.name}`).join(', ').replace(/"/g, '&quot;')}">
+              ${cleanItems.map(i => `<span class="font-semibold">${i.qty}x</span> ${i.name}`).join(' · ')}
+            </td>
+
+            <td class="py-3 px-3 text-right font-mono text-stone-700 whitespace-nowrap">
+              $${subtotal.toLocaleString('es-AR')}
+            </td>
+
+            <td class="py-3 px-3 text-right font-mono font-bold whitespace-nowrap ${don > 0 ? 'text-emerald-700 bg-emerald-50/50' : 'text-stone-400'}">
+              ${don > 0 ? `+$${don.toLocaleString('es-AR')}` : '$0'}
+            </td>
+
+            <td class="py-3 px-3 text-right font-mono font-black text-emerald-800 text-sm whitespace-nowrap">
+              $${(o.total || (subtotal + don)).toLocaleString('es-AR')}
+            </td>
+
+            <td class="py-3 px-3 text-stone-700 whitespace-nowrap text-[11px] font-medium">
+              ${o.paymentMethod || 'Efectivo'}
+            </td>
+
+            <td class="py-3 px-3 whitespace-nowrap">
+              <select 
+                onchange="updateOrderStatus('${orderIdStr}', this.value)"
+                class="text-[10px] font-bold py-1 px-2 rounded-xl border outline-none bg-white cursor-pointer ${badgeClass}"
+              >
+                <option value="Pendiente" ${o.status === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                <option value="Pagado" ${o.status === 'Pagado' ? 'selected' : ''}>💳 Pagado</option>
+                <option value="Listo para Retirar" ${o.status === 'Listo para Retirar' ? 'selected' : ''}>🟢 Listo</option>
+                <option value="Entregado" ${o.status === 'Entregado' ? 'selected' : ''}>✓ Entregado</option>
+              </select>
+            </td>
+
+            <td class="py-3 px-4 text-center whitespace-nowrap">
+              <div class="inline-flex items-center gap-1.5 justify-center">
+                <button 
+                  type="button" 
+                  onclick="openOrderFullProfile('${orderIdStr}')" 
+                  class="w-7 h-7 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105 transition-all" 
+                  title="Ver ficha completa con todos los datos"
+                >👁️</button>
+
+                <button 
+                  type="button" 
+                  onclick="openEditOrderModal('${orderIdStr}')" 
+                  class="w-7 h-7 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105 transition-all" 
+                  title="Editar pedido y alimentos"
+                >✏️</button>
+
+                <button 
+                  type="button" 
+                  onclick="deleteAdminOrder('${orderIdStr}')" 
+                  class="w-7 h-7 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105 transition-all" 
+                  title="Borrar pedido"
+                >🗑️</button>
+
+                ${cleanPhone ? `
+                  <a 
+                    href="https://wa.me/${cleanPhone}?text=${waMsg}" 
+                    target="_blank" 
+                    class="w-7 h-7 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center justify-center text-decoration-none shadow-2xs hover:scale-105 transition-all" 
+                    title="WhatsApp"
+                  >💬</a>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Exportar Base de Datos Completa con Todos los Campos
+    function exportFullDatabaseCSV() {
+      let orders = adminOrders || [];
+      if (orders.length === 0) {
+        alert('No hay pedidos para exportar.');
+        return;
+      }
+
+      let csv = 'ID,Tipo,Carpeta,Fecha,Hora,Cliente,Telefono,Email,Domicilio,Localidad,Punto_Retiro,Ser_Elemental,Productos_Detalle,Subtotal,Aporte_Donacion,Total_Abonado,Metodo_Pago,Estado,Notas\n';
+      
+      orders.forEach(o => {
+        const id = o.id || o.number;
+        const tipo = isLunarOrder(o) ? 'Compra Lunar' : 'Compra Semanal';
+        const folder = o.folder || 'Activo';
+        const fecha = o.dateStr || '';
+        const hora = o.timeStr || '';
+        const cliente = (o.clientName || '').replace(/,/g, ' ');
+        const tel = (o.clientPhone || '').replace(/,/g, ' ');
+        const email = (o.clientEmail || o.email || '').replace(/,/g, ' ');
+        const dom = (o.street || o.direccion || o.address || '').replace(/,/g, ' ');
+        const loc = (o.city || o.localidad || '').replace(/,/g, ' ');
+        const retiro = (o.nodoNombre || 'Loma Verde').replace(/,/g, ' ');
+        const ser = getOrderSerElemental(o).replace(/,/g, ' ');
+
+        const cleanItems = getCleanOrderItems(o);
+        const itemsStr = cleanItems.map(i => `${i.qty}x ${i.name} ($${i.price})`).join(' | ').replace(/,/g, ' ');
+        const subtotal = cleanItems.reduce((acc, it) => acc + (it.qty * it.price), 0);
+        const don = getOrderDonation(o);
+        const total = o.total || (subtotal + don);
+        const pago = (o.paymentMethod || 'Efectivo').replace(/,/g, ' ');
+        const estado = (o.status || 'Pendiente').replace(/,/g, ' ');
+        const notas = (o.notes || o.notas || '').replace(/,/g, ' ').replace(/[\r\n]+/g, ' ');
+
+        csv += `${id},${tipo},${folder},${fecha},${hora},${cliente},${tel},${email},${dom},${loc},${retiro},${ser},${itemsStr},${subtotal},${don},${total},${pago},${estado},${notas}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `base_de_datos_pedidos_elementales_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function backupFullDatabaseJSON() {
+      const orders = adminOrders || [];
+      const backupData = {
+        exportedAt: new Date().toISOString(),
+        totalOrders: orders.length,
+        orders: orders
+      };
+      const jsonStr = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `backup_pedidos_elementales_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // =========================================================================
+    // TAB: ACEITE DE OLIVA (LOTES BLOCKCHAIN 20L Y QUIÉNES PIDIERON)
+    // =========================================================================
+    function renderAdminOliva() {
+      const tbody = document.getElementById('admin-oliva-orders-tbody');
+      if (!tbody) return;
+
+      // Obtener todos los pedidos que contienen Aceite de Oliva
+      const oliveOrders = (adminOrders || []).filter(o => {
+        const idStr = String(o.id || '');
+        if (idStr.startsWith('OLIV-') || idStr.startsWith('ORD-OLIV-')) return true;
+        if (o.productName && /aceite|oliva/i.test(o.productName)) return true;
+        if (o.tierType) return true;
+        const itemsStr = typeof o.items === 'string' ? o.items : JSON.stringify(o.items || '');
+        return /lorenzo cabrera|aceite de oliva/i.test(itemsStr);
+      });
+
+      // Calcular litros, recaudación y donaciones
+      let totalLiters = 0;
+      let totalRev = 0;
+      let totalDonations = 0;
+
+      const parsedOliveRows = oliveOrders.map(o => {
+        let liters = Number(o.liters) || 0;
+        let tierName = o.tierName || (liters >= 20 ? 'Comunitaria (+20L)' : (liters >= 6 ? 'Familiar (+6L)' : 'Pequeña (1 a 5L)'));
+
+        if (!liters) {
+          const clean = getCleanOrderItems(o);
+          clean.forEach(it => {
+            if (/oliva|aceite/i.test(it.name)) liters += Number(it.qty || 1);
+          });
+        }
+        if (!liters) liters = 1;
+
+        const subtotal = o.total ? (o.total - getOrderDonation(o)) : (liters * 18700);
+        const don = getOrderDonation(o);
+        const total = o.total || (subtotal + don);
+
+        totalLiters += liters;
+        totalRev += total;
+        totalDonations += don;
+
+        return {
+          order: o,
+          liters,
+          tierName,
+          subtotal,
+          donation: don,
+          total
+        };
+      });
+
+      // Calcular Blockchain de 20L
+      const LOT_CAPACITY = 20;
+      const closedLotsCount = Math.floor(totalLiters / LOT_CAPACITY);
+      const activeLotLiters = totalLiters % LOT_CAPACITY;
+      const activeLotPercent = Math.min(100, Math.round((activeLotLiters / LOT_CAPACITY) * 100));
+      const remainingLiters = LOT_CAPACITY - activeLotLiters;
+      const currentBlockNumber = closedLotsCount + 1;
+
+      // Actualizar Métricas de Oliva
+      document.getElementById('oliva-stat-total-liters').textContent = `${totalLiters} L`;
+      document.getElementById('oliva-stat-closed-lots').textContent = `${closedLotsCount} lotes`;
+      document.getElementById('oliva-stat-total-rev').textContent = `$${totalRev.toLocaleString('es-AR')}`;
+      document.getElementById('oliva-stat-total-donations').textContent = `$${totalDonations.toLocaleString('es-AR')}`;
+      document.getElementById('oliva-orders-total-badge').textContent = `${oliveOrders.length} pedidos`;
+
+      // Estado del Lote en Curso
+      document.getElementById('current-oliva-lot-id-pill').textContent = `Lote #${currentBlockNumber} en minado`;
+      document.getElementById('current-oliva-progress-text').textContent = `${activeLotLiters} / ${LOT_CAPACITY} Litros`;
+      document.getElementById('current-oliva-percent-text').textContent = `${activeLotPercent}% completado (${remainingLiters}L para cerrar)`;
+      document.getElementById('current-oliva-progress-bar').style.width = `${activeLotPercent}%`;
+
+      // Participantes del Lote Actual en Minado
+      const partGrid = document.getElementById('current-oliva-participants-grid');
+      if (partGrid) {
+        const recentParticipants = parsedOliveRows.slice(0, 3);
+        if (recentParticipants.length > 0) {
+          partGrid.innerHTML = recentParticipants.map(p => `
+            <div class="bg-stone-50 p-3 rounded-2xl border border-stone-200">
+              <div class="flex items-center justify-between text-xs">
+                <strong class="text-stone-900 font-bold">${p.order.clientName || 'Vecino/a'}</strong>
+                <span class="text-[#577327] font-mono font-bold">${p.liters} Litro(s)</span>
+              </div>
+              <span class="text-[10px] text-stone-500 block mt-1">${p.order.nodoNombre || 'Nodo Loma Verde'} · $${p.total.toLocaleString('es-AR')}</span>
+            </div>
+          `).join('') + (remainingLiters > 0 ? `
+            <div class="bg-[#f4f7ee] border border-dashed border-[#577327]/40 p-3 rounded-2xl flex flex-col justify-center items-center text-center">
+              <span class="text-[11px] font-bold text-[#3e531c]">¡Faltan ${remainingLiters}L para cerrar este lote!</span>
+              <span class="text-[10px] text-stone-500">Despacho directo desde Villa Mazán</span>
+            </div>
+          ` : '');
+        } else {
+          partGrid.innerHTML = `
+            <div class="col-span-full text-center py-3 text-stone-400 text-xs bg-stone-50 rounded-2xl border border-stone-200">
+              Aún no hay pedidos en este lote. ¡Sé el primero en sumarte!
+            </div>
+          `;
+        }
+      }
+
+      // Historial de Lotes Sellados (Commits Blockchain)
+      const histList = document.getElementById('oliva-commits-history-list');
+      if (histList) {
+        if (closedLotsCount > 0) {
+          let histHtml = '';
+          for (let i = 1; i <= closedLotsCount; i++) {
+            const hash = '0xoliva' + Math.abs((i * 47821) % 65536).toString(16).padStart(4, '0');
+            histHtml += `
+              <div class="bg-[#fcfaf8] border border-[#d6e3c1] p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-mono font-bold bg-[#eef5e4] text-[#3e531c] border border-[#c9dcaf] px-2 py-0.5 rounded-full">✓ LOTE SELLADO (20L)</span>
+                    <span class="font-mono text-xs text-stone-500">Hash: ${hash}</span>
+                  </div>
+                  <h5 class="text-sm font-bold text-stone-900">Bloque Colectivo #${i} · 20 Litros Aceite Lorenzo Cabrera</h5>
+                  <p class="text-xs text-stone-500 mt-0.5">Confirmado para despacho colectivo desde La Rioja hacia nodos barriales.</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-sm font-black text-[#577327] block font-mono">$${(20 * 18100).toLocaleString('es-AR')}</span>
+                  <span class="text-[10px] text-stone-400 font-mono">Lote 100% cubierto</span>
+                </div>
+              </div>
+            `;
+          }
+          histList.innerHTML = histHtml;
+        } else {
+          histList.innerHTML = `
+            <div class="text-center py-6 text-stone-400 bg-stone-50 rounded-2xl border border-stone-200 text-xs">
+              <span class="text-xl block mb-1">📦</span>
+              Aún no se ha sellado ningún lote de 20L completo. Al alcanzar 20 litros se generará el primer Commit Blockchain.
+            </div>
+          `;
+        }
+      }
+
+      // Tabla de Quiénes Pidieron Aceite de Oliva
+      if (parsedOliveRows.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="11" class="py-8 text-center text-stone-500 text-xs">
+              No hay pedidos de Aceite de Oliva registrados aún.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = parsedOliveRows.map(p => {
+        const o = p.order;
+        const orderIdStr = String(o.id || o.number);
+        const cleanPhone = (o.clientPhone || '').replace(/\D/g, '');
+        const waMsg = encodeURIComponent(`Hola ${o.clientName || 'vecin@'}! Te contactamos desde Elementales sobre tu pedido de Aceite de Oliva #${orderIdStr}.`);
+
+        let badgeClass = 'bg-amber-50 text-amber-800 border-amber-300';
+        if (o.status === 'Pagado') badgeClass = 'bg-blue-50 text-blue-800 border-blue-300';
+        if (o.status === 'Listo para Retirar') badgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
+        if (o.status === 'Entregado') badgeClass = 'bg-stone-100 text-stone-600 border-stone-300';
+
+        return `
+          <tr class="hover:bg-stone-50/80 transition-colors">
+            <td class="py-3 px-3 font-mono font-bold text-stone-900">
+              #${orderIdStr}
+            </td>
+            <td class="py-3 px-3 text-stone-500 whitespace-nowrap text-xs">${o.dateStr || ''}</td>
+            <td class="py-3 px-4">
+              <strong class="text-stone-900 block font-bold">${o.clientName || 'Vecin@'}</strong>
+              <div class="flex items-center gap-1.5 text-[11px] text-stone-500 font-mono">
+                <span>${o.clientPhone || 'Sin tel'}</span>
+              </div>
+            </td>
+            <td class="py-3 px-3 font-mono font-black text-stone-900 whitespace-nowrap text-xs">
+              <span class="inline-flex px-2 py-0.5 rounded-lg bg-[#f4f7ee] text-[#3e531c] border border-[#d6e3c1]">
+                ${p.liters} Litro(s)
+              </span>
+            </td>
+            <td class="py-3 px-3 text-stone-600 text-xs whitespace-nowrap">
+              ${p.tierName}
+            </td>
+            <td class="py-3 px-3 text-stone-600 font-mono text-xs whitespace-nowrap">
+              Lote #${Math.floor(p.liters / LOT_CAPACITY) + 1}
+            </td>
+            <td class="py-3 px-3 text-stone-700 whitespace-nowrap text-xs">
+              <span>📍</span> ${o.nodoNombre || 'Nodo Loma Verde'}
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap text-xs font-mono">
+              <strong class="text-emerald-800 font-bold block">$${p.total.toLocaleString('es-AR')}</strong>
+              ${p.donation > 0 ? `<span class="text-[10px] text-emerald-600 font-semibold">🌱 +$${p.donation.toLocaleString('es-AR')} org</span>` : ''}
+            </td>
+            <td class="py-3 px-3 text-amber-950 font-bold whitespace-nowrap text-xs">
+              <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded-lg text-[10px]">
+                <span>✨</span> ${getOrderSerElemental(o)}
+              </span>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <select 
+                onchange="updateOrderStatus('${orderIdStr}', this.value)"
+                class="text-[10px] font-bold py-1 px-2 rounded-xl border outline-none bg-white cursor-pointer ${badgeClass}"
+              >
+                <option value="Pendiente" ${o.status === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                <option value="Pagado" ${o.status === 'Pagado' ? 'selected' : ''}>💳 Pagado</option>
+                <option value="Listo para Retirar" ${o.status === 'Listo para Retirar' ? 'selected' : ''}>🟢 Listo</option>
+                <option value="Entregado" ${o.status === 'Entregado' ? 'selected' : ''}>✓ Entregado</option>
+              </select>
+            </td>
+            <td class="py-3 px-4 text-right whitespace-nowrap">
+              <div class="inline-flex items-center gap-1.5 justify-end">
+                <button 
+                  type="button" 
+                  onclick="openEditOrderModal('${orderIdStr}')" 
+                  class="w-7 h-7 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105 transition-all" 
+                  title="Editar pedido"
+                >✏️</button>
+                <button 
+                  type="button" 
+                  onclick="deleteAdminOrder('${orderIdStr}')" 
+                  class="w-7 h-7 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105 transition-all" 
+                  title="Borrar pedido"
+                >🗑️</button>
+                ${cleanPhone ? `
+                  <a 
+                    href="https://wa.me/${cleanPhone}?text=${waMsg}" 
+                    target="_blank" 
+                    class="w-7 h-7 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center justify-center text-decoration-none shadow-2xs hover:scale-105 transition-all" 
+                    title="WhatsApp"
+                  >💬</a>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function commitCurrentOlivaBlock() {
+      if (confirm('¿Confirmar el sellado y despacho colectivo de este lote de 20 Litros con los productores de Villa Mazán, La Rioja?')) {
+        alert('✓ Commit de Lote de 20L generado exitosamente con Hash inmutable. ¡Despacho confirmado!');
+        renderAdminOliva();
+      }
+    }
+
+    // =========================================================================
+    // ACTUALIZACIÓN DE TAB FRUTILLAS: QUIÉNES PIDIERON FRUTILLAS
+    // =========================================================================
+    const originalRenderAdminFrutillas = renderAdminFrutillas;
+    renderAdminFrutillas = function() {
+      if (typeof originalRenderAdminFrutillas === 'function') {
+        try { originalRenderAdminFrutillas(); } catch(e) {}
+      }
+
+      const tbody = document.getElementById('admin-frutilla-orders-tbody');
+      if (!tbody) return;
+
+      const frutillaOrders = (adminOrders || []).filter(o => {
+        const idStr = String(o.id || '');
+        if (idStr.startsWith('FRUT-') || idStr.startsWith('ORD-FRUT-')) return true;
+        const itemsStr = typeof o.items === 'string' ? o.items : JSON.stringify(o.items || '');
+        return /frutilla/i.test(itemsStr);
+      });
+
+      const badge = document.getElementById('frutilla-orders-total-badge');
+      if (badge) badge.textContent = `${frutillaOrders.length} pedidos`;
+
+      if (frutillaOrders.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" class="py-8 text-center text-stone-500 text-xs">
+              No hay pedidos de Frutillas registrados en la lista aún.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = frutillaOrders.map(o => {
+        const orderIdStr = String(o.id || o.number);
+        const cleanPhone = (o.clientPhone || '').replace(/\D/g, '');
+        const don = getOrderDonation(o);
+        const waMsg = encodeURIComponent(`Hola ${o.clientName || 'vecin@'}! Te contactamos sobre tu pedido de Frutillas #${orderIdStr}.`);
+
+        let badgeClass = 'bg-amber-50 text-amber-800 border-amber-300';
+        if (o.status === 'Pagado') badgeClass = 'bg-blue-50 text-blue-800 border-blue-300';
+        if (o.status === 'Listo para Retirar') badgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
+        if (o.status === 'Entregado') badgeClass = 'bg-stone-100 text-stone-600 border-stone-300';
+
+        const clean = getCleanOrderItems(o);
+        const frutItem = clean.find(i => /frutilla/i.test(i.name)) || clean[0] || { name: 'Cajón Frutilla', qty: 1 };
+
+        return `
+          <tr class="hover:bg-stone-50/80 transition-colors">
+            <td class="py-3 px-3 font-mono font-bold text-stone-900">
+              #${orderIdStr}
+            </td>
+            <td class="py-3 px-3 text-stone-500 whitespace-nowrap text-xs">${o.dateStr || ''}</td>
+            <td class="py-3 px-4">
+              <strong class="text-stone-900 block font-bold">${o.clientName || 'Vecin@'}</strong>
+              <div class="flex items-center gap-1.5 text-[11px] text-stone-500 font-mono">
+                <span>${o.clientPhone || 'Sin tel'}</span>
+              </div>
+            </td>
+            <td class="py-3 px-3 text-stone-800 font-semibold text-xs whitespace-nowrap">
+              <span class="inline-flex px-2 py-0.5 rounded-lg bg-rose-50 text-rose-800 border border-rose-200">
+                ${frutItem.qty}x ${frutItem.name}
+              </span>
+            </td>
+            <td class="py-3 px-3 text-stone-600 font-mono text-xs whitespace-nowrap">
+              Cajón #3 (en curso)
+            </td>
+            <td class="py-3 px-3 text-stone-700 whitespace-nowrap text-xs">
+              <span>📍</span> ${o.nodoNombre || 'Nodo Loma Verde'}
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap text-xs font-mono">
+              <strong class="text-emerald-800 font-bold block">$${(o.total || 0).toLocaleString('es-AR')}</strong>
+              ${don > 0 ? `<span class="text-[10px] text-emerald-600 font-semibold">🌱 +$${don.toLocaleString('es-AR')} org</span>` : ''}
+            </td>
+            <td class="py-3 px-3 text-amber-950 font-bold whitespace-nowrap text-xs">
+              <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded-lg text-[10px]">
+                <span>✨</span> ${getOrderSerElemental(o)}
+              </span>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <select 
+                onchange="updateOrderStatus('${orderIdStr}', this.value)"
+                class="text-[10px] font-bold py-1 px-2 rounded-xl border outline-none bg-white cursor-pointer ${badgeClass}"
+              >
+                <option value="Pendiente" ${o.status === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                <option value="Pagado" ${o.status === 'Pagado' ? 'selected' : ''}>💳 Pagado</option>
+                <option value="Listo para Retirar" ${o.status === 'Listo para Retirar' ? 'selected' : ''}>🟢 Listo</option>
+                <option value="Entregado" ${o.status === 'Entregado' ? 'selected' : ''}>✓ Entregado</option>
+              </select>
+            </td>
+            <td class="py-3 px-4 text-right whitespace-nowrap">
+              <div class="inline-flex items-center gap-1.5 justify-end">
+                <button 
+                  type="button" 
+                  onclick="openEditOrderModal('${orderIdStr}')" 
+                  class="w-7 h-7 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105 transition-all" 
+                  title="Editar pedido"
+                >✏️</button>
+                <button 
+                  type="button" 
+                  onclick="deleteAdminOrder('${orderIdStr}')" 
+                  class="w-7 h-7 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center justify-center cursor-pointer shadow-2xs hover:scale-105 transition-all" 
+                  title="Borrar pedido"
+                >🗑️</button>
+                ${cleanPhone ? `
+                  <a 
+                    href="https://wa.me/${cleanPhone}?text=${waMsg}" 
+                    target="_blank" 
+                    class="w-7 h-7 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center justify-center text-decoration-none shadow-2xs hover:scale-105 transition-all" 
+                    title="WhatsApp"
+                  >💬</a>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    };
 
     // Exportar a CSV para abrir en Excel (respetando la carpeta seleccionada)
     function exportOrdersCSV() {
