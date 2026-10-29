@@ -476,8 +476,8 @@
   <!-- ========================================================================= -->
   <!-- MODAL: CHECKOUT & CIERRE DE PEDIDO EN 5 PASOS                             -->
   <!-- ========================================================================= -->
-  <div id="modal-oliva-checkout" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white border border-stone-200 rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
+  <div id="modal-oliva-checkout" class="hidden fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-0 sm:p-4">
+    <div class="bg-white border-0 sm:border sm:border-stone-200 rounded-none sm:rounded-3xl max-w-lg w-full h-full sm:h-auto sm:max-h-[92vh] flex flex-col text-stone-900 shadow-2xl overflow-hidden animate-fade-in">
       
       <!-- ========================================== -->
       <!-- VISTA 1: WIZARD DE CHECKOUT EN 5 PASOS     -->
@@ -1155,6 +1155,62 @@
     // =========================================================================
     // LÓGICA DE LA LANDING DE ACEITE DE OLIVA & BLOCKCHAIN DE LOTES (ELEMENTALES)
     // =========================================================================
+    // =========================================================================
+    // UTILIDADES GLOBALES (FORMATO, AUDIO Y SEGURIDAD)
+    // =========================================================================
+    function formatMoney(amount) {
+      return (Number(amount) || 0).toLocaleString('es-AR');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function playPopSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    function playSuccessSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.1, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + (i + 1) * 0.08);
+          osc.start(now + i * 0.08);
+          osc.stop(now + (i + 1) * 0.08);
+        });
+      } catch (e) {}
+    }
+
     const OLIVA_CONFIG = {
       productId: 'vrde-aceite-lorenzo-1l',
       name: 'Aceite de Oliva Extra Virgen Lorenzo Cabrera (1L)',
@@ -1407,6 +1463,9 @@
       const btnOpen = document.getElementById('btn-open-checkout-text');
       if (btnOpen) btnOpen.textContent = `REALIZAR PEDIDO (${totals.liters}L · $${formatMoney(totals.total)})`;
 
+      const stickyTotal = document.getElementById('mobile-sticky-total');
+      if (stickyTotal) stickyTotal.textContent = `$${formatMoney(totals.total)}`;
+
       updateWizardDynamicTotals();
     }
 
@@ -1634,20 +1693,55 @@
 
     function openOlivaCheckoutModal() {
       const modal = document.getElementById('modal-oliva-checkout');
-      if (!modal) return;
+      if (!modal) {
+        console.error('Modal modal-oliva-checkout no encontrado en el DOM');
+        return;
+      }
 
+      // 1. Mostrar de inmediato la pantalla de checkout para feedback instantáneo
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+
+      // 2. Asegurar vista de formulario
       document.getElementById('oliva-checkout-view-form')?.classList.remove('hidden');
       document.getElementById('oliva-checkout-view-success')?.classList.add('hidden');
 
-      loadUserSession();
-      renderBeingsGrid();
-      goToStep(1);
-      modal.classList.remove('hidden');
+      // 3. Vincular historial para que el botón atrás de celular cierre el modal
+      try {
+        if (window.location.hash !== '#checkout') {
+          history.pushState({ modalOpen: true }, '', '#checkout');
+        }
+      } catch (e) {}
+
+      // 4. Inicializar datos de usuario, seres elementales y arrancar en paso 1
+      try {
+        loadUserSession();
+        renderBeingsGrid();
+        goToStep(1);
+      } catch (err) {
+        console.error('Error inicializando pasos del checkout:', err);
+      }
     }
 
     function closeOlivaCheckoutModal() {
-      document.getElementById('modal-oliva-checkout')?.classList.add('hidden');
+      const modal = document.getElementById('modal-oliva-checkout');
+      if (modal) modal.classList.add('hidden');
+      document.body.style.overflow = '';
+      try {
+        if (window.location.hash === '#checkout') {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+      } catch (e) {}
     }
+
+    // Escuchar botón atrás del navegador / celular
+    window.addEventListener('popstate', (e) => {
+      const modal = document.getElementById('modal-oliva-checkout');
+      if (modal && !modal.classList.contains('hidden')) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
 
     // Paso 1: Selección de Nodo
     function selectCheckoutNode(nodeKey) {
@@ -2247,6 +2341,22 @@ https://elementales.store/oliva`;
       }
     }
   </script>
+
+<!-- BARRA STICKY INFERIOR MÓVIL (REALIZAR PEDIDO DIRECTO) -->
+  <div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#e2ebd4] px-4 py-2.5 z-30 flex items-center justify-between gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+    <div class="leading-tight">
+      <span class="block text-[10px] text-stone-400 font-mono uppercase font-bold">Total a confirmar:</span>
+      <span id="mobile-sticky-total" class="font-heading font-black text-[#2f4015] text-base">$112.200</span>
+    </div>
+    <button 
+      type="button" 
+      onclick="openOlivaCheckoutModal()" 
+      class="btn-action bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-xs py-2.5 px-4 rounded-xl shadow-md flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer font-heading"
+    >
+      <span>🫒 Realizar Pedido</span>
+      <span>→</span>
+    </button>
+  </div>
 
 </body>
 </html>
