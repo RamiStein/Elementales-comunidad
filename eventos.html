@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>🎓 Agenda de Eventos & Talleres | Elementales Comunidad</title>
+  
+  <meta name="description" content="Agenda de talleres, capacitaciones y encuentros barriales en Elementales Comunidad. Huerta regenerativa, cocina consciente, compostaje y oficios en los Nodos La Lucila y Loma Verde." />
+  <meta property="og:title" content="🎓 Agenda de Eventos & Talleres - Elementales Comunidad" />
+  <meta property="og:description" content="Sumate a los talleres y encuentros comunitarios de huerta, fermentos, compostaje y saberes en los Nodos La Lucila y Loma Verde." />
+  <meta property="og:image" content="public/assets/brand/fuego_logo.jpg" />
+
+  <!-- Tailwind CSS CDN con paleta oficial de Elementales -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            oliva: {
+              DEFAULT: '#577327',
+              dark: '#3e531c',
+              light: '#6e7f45',
+              tint: '#f4f7ee',
+            },
+            terracotta: {
+              DEFAULT: '#c0826d',
+              light: '#d99a86',
+              dark: '#a6634f',
+              tint: '#fcf4f0',
+            },
+            spotify: {
+              DEFAULT: '#1db954',
+              hover: '#16a34a',
+            },
+            tierra: {
+              DEFAULT: '#8ca15d',
+              dark: '#4d662b',
+              light: '#edf3e3'
+            },
+            fuego: {
+              DEFAULT: '#d97757',
+              dark: '#b85435',
+              light: '#faeae2',
+              tint: '#fdf6f2'
+            }
+          },
+          fontFamily: {
+            sans: ['Outfit', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Outfit', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --color-oliva: #577327;
+      --color-oliva-dark: #3e531c;
+      --color-terracotta: #c0826d;
+      --color-terracotta-dark: #a6634f;
+      --color-terracotta-tint: #fcf4f0;
+      --c-tierra: #8ca15d;
+      --color-fuego: #d97757;
+      --color-spotify: #1db954;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: #fcfaf8;
+      color: #1c1917;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: var(--font-heading);
+    }
+
+    .font-mono-code {
+      font-family: var(--font-mono);
+    }
+
+    /* Animaciones suaves */
+    @keyframes pulse-subtle {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2.5s ease-in-out infinite;
+    }
+
+    .btn-action {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+
+    /* Tarjeta estilo Bloque Blockchain Elementales */
+    .block-card {
+      position: relative;
+      background: #ffffff;
+      border: 2px solid #eddcd5;
+      border-radius: 1.5rem;
+      transition: all 0.25s ease;
+    }
+    .block-card:hover {
+      border-color: #d97757;
+      box-shadow: 0 10px 25px -5px rgba(217, 119, 87, 0.12);
+    }
+
+    /* Hash tag */
+    .hash-badge {
+      font-family: var(--font-mono);
+      background: #1c1917;
+      color: #f2b5a2;
+      padding: 0.15rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#d97757] selection:text-white pb-20">
+
+  <!-- ========================================================================= -->
+  <!-- 1. CABECERA ELEMENTALES & CONTEXTO DE COMUNIDAD -->
+  <!-- ========================================================================= -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-[#eddcd5] sticky top-0 z-40 shadow-xs">
+    <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
+      
+      <!-- LOGO ELEMENTALES -->
+      <a href="index.html" class="flex items-center gap-2.5 text-decoration-none group">
+        <img 
+          src="public/assets/brand/comunidad_emblem_clean.png" 
+          class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs group-hover:scale-105 transition-transform" 
+          alt="Elementales" 
+          onerror="this.src='public/assets/brand/comunidad_full_clean.png';"
+        />
+        <div class="leading-tight">
+          <span class="block font-black text-sm sm:text-base text-stone-900 tracking-tight leading-none font-heading">
+            Elementales <span class="text-[#d97757]">Saberes</span>
+          </span>
+          <span class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider mt-0.5">
+            Eventos & Talleres · Nodos Barriales
+          </span>
+        </div>
+      </a>
+
+      <!-- Botones de Acción Header -->
+      <div class="flex items-center gap-2">
+        <!-- Botón Proponer Taller -->
+        <button 
+          type="button" 
+          onclick="openProponerModal()" 
+          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#d97757]/40 text-[#b85435] hover:bg-[#faeae2] text-xs font-bold transition-all cursor-pointer font-heading"
+          title="Proponer un taller o charla comunitaria"
+        >
+          <span>➕</span>
+          <span>Proponer Taller</span>
+        </button>
+
+        <!-- Botón Compartir Agenda -->
+        <button 
+          type="button" 
+          onclick="shareAgendaWhatsApp()" 
+          class="btn-action bg-[#1db954] hover:bg-[#16a34a] text-white rounded-xl px-3 py-1.5 text-xs font-black shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0" 
+          title="Compartir cartelera de talleres por WhatsApp"
+        >
+          <svg class="w-3.5 h-3.5 fill-none stroke-current shrink-0" viewBox="0 0 24 24" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span class="text-[11px] font-heading font-black tracking-wide">Compartir</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. CONTENIDO PRINCIPAL: CARTELERA DE EVENTOS & TALLERES -->
+  <!-- ========================================================================= -->
+  <main class="max-w-4xl mx-auto px-4 pt-4 sm:pt-6 w-full space-y-6">
+
+    <!-- HERO BANNER INSPIRADOR -->
+    <div class="bg-gradient-to-br from-[#2f1f18] via-[#5c2a1a] to-[#d97757] text-white rounded-3xl p-5 sm:p-7 shadow-lg border-2 border-[#d97757]/40 relative overflow-hidden">
+      <!-- Decoración de fondo -->
+      <div class="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-white/5 blur-2xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/20 pb-2.5">
+          <span class="inline-flex items-center gap-1.5 text-xs uppercase font-mono font-black tracking-wider text-[#fde4dc]">
+            <span>🔥</span> Saberes Vivos & Oficios Comunitarios
+          </span>
+          <span class="text-[10px] uppercase font-mono font-bold bg-white/20 px-2.5 py-0.5 rounded-full text-white border border-white/25">
+            Temporada de Primavera
+          </span>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-tight font-heading uppercase">
+          Agenda de Talleres & Encuentros
+        </h1>
+        <p class="text-xs sm:text-sm text-[#fcf0ea] max-w-2xl leading-relaxed">
+          Encuentros presenciales en nuestros Nodos Barriales para aprender a cultivar alimentos, cuidar el suelo vivo, fermentar, cocinar conscientemente y tejer red vecinal. Cupos reducidos para nutrir el vínculo humano.
+        </p>
+
+        <!-- Indicadores Rápidos -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2">
+          <div class="bg-black/25 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15 flex items-center gap-2.5">
+            <span class="text-2xl">🌿</span>
+            <div>
+              <span class="block text-[10px] font-mono uppercase text-[#fcdad0]">Nodos Activos</span>
+              <strong class="text-xs font-black text-white font-heading">La Lucila & Loma Verde</strong>
+            </div>
+          </div>
+
+          <div class="bg-black/25 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15 flex items-center gap-2.5">
+            <span class="text-2xl">🎟️</span>
+            <div>
+              <span class="block text-[10px] font-mono uppercase text-[#fcdad0]">Modalidad</span>
+              <strong class="text-xs font-black text-white font-heading">Cupos Reducidos</strong>
+            </div>
+          </div>
+
+          <div class="col-span-2 sm:col-span-1 bg-black/25 backdrop-blur-xs rounded-2xl p-2.5 border border-white/15 flex items-center gap-2.5">
+            <span class="text-2xl">🌱</span>
+            <div>
+              <span class="block text-[10px] font-mono uppercase text-[#fcdad0]">Sostenimiento</span>
+              <strong class="text-xs font-black text-white font-heading">Aporte Consciente / Beca</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN DE MIS INSCRIPCIONES (SI TIENE TICKETS GUARDADOS) -->
+    <div id="mis-inscripciones-section" class="hidden bg-[#f4f7ee] border-2 border-[#577327]/30 rounded-3xl p-4 sm:p-5 shadow-xs space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🎟️</span>
+          <h2 class="font-heading font-black text-stone-900 text-sm sm:text-base">Mis Inscripciones Activas</h2>
+        </div>
+        <span id="mis-inscripciones-count" class="text-[10px] font-mono font-black uppercase px-2 py-0.5 rounded-full bg-[#577327] text-white">
+          1 Taller
+        </span>
+      </div>
+      <div id="mis-inscripciones-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <!-- Renderizado dinámico -->
+      </div>
+    </div>
+
+    <!-- BARRA DE CONTROLES: BÚSQUEDA Y FILTROS -->
+    <div class="bg-white rounded-3xl border-2 border-[#eddcd5] p-4 sm:p-5 shadow-xs space-y-3.5">
+      
+      <!-- Buscador en tiempo real -->
+      <div class="relative">
+        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-sm">🔍</span>
+        <input 
+          type="text" 
+          id="talleres-search-input" 
+          placeholder="Buscar por taller, tema o tallerista (ej. huerta, fermentos, compost...)" 
+          oninput="onSearchQueryChange(this.value)"
+          class="w-full pl-10 pr-4 py-2.5 bg-[#fcfaf8] border border-stone-200 focus:border-[#d97757] focus:bg-white rounded-2xl text-xs sm:text-sm text-stone-900 outline-none transition-all"
+        />
+      </div>
+
+      <!-- Filtros por Elemento / Temática -->
+      <div class="space-y-1.5">
+        <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">Filtrar por elemento:</span>
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" id="elemento-filter-chips">
+          <button 
+            type="button" 
+            onclick="setElementoFilter('todos')" 
+            id="filter-elem-todos" 
+            class="px-3 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer shrink-0 bg-[#d97757] text-white shadow-xs"
+          >
+            Todos
+          </button>
+          <button 
+            type="button" 
+            onclick="setElementoFilter('tierra')" 
+            id="filter-elem-tierra" 
+            class="px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 bg-stone-100 text-stone-700 hover:bg-[#edf3e3] hover:text-[#3e531c]"
+          >
+            🌱 Tierra (Huerta & Suelo)
+          </button>
+          <button 
+            type="button" 
+            onclick="setElementoFilter('fuego')" 
+            id="filter-elem-fuego" 
+            class="px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 bg-stone-100 text-stone-700 hover:bg-[#fdf4f0] hover:text-[#b85435]"
+          >
+            🔥 Fuego (Cocina & Oficios)
+          </button>
+          <button 
+            type="button" 
+            onclick="setElementoFilter('agua')" 
+            id="filter-elem-agua" 
+            class="px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 bg-stone-100 text-stone-700 hover:bg-[#edf5f9] hover:text-[#195977]"
+          >
+            💧 Agua (Salud & Vínculos)
+          </button>
+          <button 
+            type="button" 
+            onclick="setElementoFilter('aire')" 
+            id="filter-elem-aire" 
+            class="px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 bg-stone-100 text-stone-700 hover:bg-[#f2f6f5] hover:text-[#2d5f53]"
+          >
+            💨 Aire (Comunidad & Semillas)
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtros por Nodo -->
+      <div class="flex items-center justify-between pt-2 border-t border-stone-100 flex-wrap gap-2 text-xs">
+        <div class="flex items-center gap-1.5">
+          <span class="text-stone-500 font-bold">📍 Nodo:</span>
+          <select 
+            id="talleres-node-filter" 
+            onchange="onNodeFilterChange(this.value)"
+            class="bg-[#fcfaf8] border border-stone-200 rounded-xl px-2.5 py-1 text-xs font-bold text-stone-800 outline-none cursor-pointer"
+          >
+            <option value="todos">Todos los Nodos Barriales</option>
+            <option value="lalucila">🌿 Nodo La Lucila (Anchorena 684)</option>
+            <option value="lomaverde">🌳 Nodo Loma Verde (Botafogo 1320)</option>
+          </select>
+        </div>
+
+        <span id="talleres-results-count" class="text-[11px] font-mono font-bold text-stone-500">
+          Mostrando 6 talleres
+        </span>
+      </div>
+
+    </div>
+
+    <!-- CARTELERA DE TALLERES (GRID) -->
+    <div id="talleres-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+      <!-- Se inyecta dinámicamente con JavaScript -->
+    </div>
+
+    <!-- BANNER COMUNITARIO: PROPONER UN TALLER -->
+    <div class="bg-gradient-to-r from-amber-50 via-[#fdf6f2] to-emerald-50 rounded-3xl border-2 border-dashed border-[#d97757]/40 p-5 sm:p-6 text-center space-y-3">
+      <div class="w-12 h-12 rounded-2xl bg-white border border-[#d97757]/30 flex items-center justify-center text-2xl mx-auto shadow-2xs">
+        💡
+      </div>
+      <h3 class="font-heading font-black text-stone-900 text-lg sm:text-xl">
+        ¿Querés compartir tu saber con la comunidad?
+      </h3>
+      <p class="text-xs sm:text-sm text-stone-600 max-w-lg mx-auto leading-relaxed">
+        Si facilitás talleres de agroecología, bioconstrucción, cocina, salud natural u oficios y querés articular con nuestros Nodos Barriales en La Lucila o Loma Verde, ¡escribinos!
+      </p>
+      <div>
+        <button 
+          type="button" 
+          onclick="openProponerModal()" 
+          class="btn-action bg-[#d97757] hover:bg-[#b85435] text-white text-xs sm:text-sm font-black px-6 py-2.5 rounded-2xl shadow-xs inline-flex items-center gap-2 cursor-pointer font-heading"
+        >
+          <span>➕</span>
+          <span>Proponer Taller o Encuentro</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 3. MODAL: WIZARD DE INSCRIPCIÓN EN 5 PASOS                               -->
+  <!-- ========================================================================= -->
+  <div id="wizard-modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 hidden animate-fade-in">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col shadow-2xl border-2 border-[#eddcd5] overflow-hidden">
+      
+      <!-- HEADER DEL WIZARD -->
+      <div class="bg-gradient-to-r from-white to-[#fdf4f0] border-b border-[#eddcd5] p-4 flex items-center justify-between shrink-0">
+        <div>
+          <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-[#b85435] block">
+            Reserva de Cupo Comunitario
+          </span>
+          <h3 class="font-heading font-black text-stone-900 text-sm sm:text-base leading-tight">
+            Paso <span id="wizard-step-number" class="text-[#d97757]">1</span> de 5
+          </h3>
+        </div>
+        <button 
+          type="button" 
+          onclick="closeWizardModal()" 
+          class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center font-bold text-sm cursor-pointer transition-colors"
+          title="Cerrar ventana"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- INDICADOR DE PASOS -->
+      <div class="px-4 pt-3 pb-2 bg-stone-50 border-b border-stone-200 shrink-0">
+        <div class="grid grid-cols-5 gap-1.5 text-center" id="wizard-step-indicators">
+          <div id="step-pill-1" class="text-[9px] font-bold uppercase font-mono text-[#d97757] border-b-2 border-[#d97757] pb-0.5">1. Taller</div>
+          <div id="step-pill-2" class="text-[9px] font-bold uppercase font-mono text-stone-400 pb-0.5">2. Ser</div>
+          <div id="step-pill-3" class="text-[9px] font-bold uppercase font-mono text-stone-400 pb-0.5">3. Datos</div>
+          <div id="step-pill-4" class="text-[9px] font-bold uppercase font-mono text-stone-400 pb-0.5">4. Aporte</div>
+          <div id="step-pill-5" class="text-[9px] font-bold uppercase font-mono text-stone-400 pb-0.5">5. Ticket</div>
+        </div>
+      </div>
+
+      <!-- CUERPO DEL WIZARD (SCROLLABLE) -->
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-4 text-xs flex-1" id="wizard-body-content">
+
+        <!-- ======================================================== -->
+        <!-- PASO 1: CONFIRMAR TALLER Y NODO                          -->
+        <!-- ======================================================== -->
+        <div id="step-content-1" class="space-y-4">
+          <!-- Tarjeta Resumen del Taller Seleccionado -->
+          <div class="p-4 bg-[#fdf6f2] border-2 border-[#d97757]/30 rounded-2xl space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <span id="step1-elem-badge" class="text-[10px] font-bold uppercase font-mono px-2 py-0.5 rounded-full bg-white text-[#b85435] border border-[#d97757]/30">
+                🌱 Tierra
+              </span>
+              <span id="step1-cupos-badge" class="text-[10px] font-mono font-black text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full">
+                Cupos Disponibles
+              </span>
+            </div>
+
+            <h4 id="step1-taller-title" class="text-base font-black text-stone-900 font-heading leading-tight">
+              Huertas Regenerativas en Balcones
+            </h4>
+            <p id="step1-taller-instructor" class="text-xs text-[#b85435] font-bold">
+              Dictado por: Cris (Guardián del Suelo Vivo)
+            </p>
+
+            <div class="pt-2 border-t border-[#d97757]/20 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-stone-700">
+              <div class="flex items-center gap-1.5">
+                <span>📅</span>
+                <span id="step1-taller-date" class="font-bold">Sábado 15 de Noviembre - 10:30 hs</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span>⏳</span>
+                <span id="step1-taller-duration">Duración: 2 horas</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selector de Nodo de Asistencia -->
+          <div>
+            <label class="block text-xs font-black text-stone-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <span>📍</span> Nodo del Encuentro:
+            </label>
+            <div class="space-y-2.5" id="step1-node-options">
+              <!-- Opción Nodo La Lucila -->
+              <div 
+                onclick="selectWizardNode('lalucila')" 
+                id="wizard-card-node-lalucila"
+                class="p-3.5 rounded-2xl border-2 border-[#577327] bg-[#f4f7ee] shadow-xs cursor-pointer transition-all flex items-start gap-3"
+              >
+                <input type="radio" name="wizard-node" id="wizard-radio-node-lalucila" checked class="mt-1 text-[#577327]" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between gap-1">
+                    <strong class="text-stone-900 font-heading font-black text-xs sm:text-sm">Nodo Elementales La Lucila</strong>
+                    <span class="text-[9px] font-black uppercase font-mono px-2 py-0.5 rounded-full bg-[#3e531c] text-white">Vicente López</span>
+                  </div>
+                  <p class="text-[11px] text-stone-800 font-bold mt-0.5">🏡 Anchorena 684, La Lucila</p>
+                </div>
+              </div>
+
+              <!-- Opción Nodo Loma Verde -->
+              <div 
+                onclick="selectWizardNode('lomaverde')" 
+                id="wizard-card-node-lomaverde"
+                class="p-3.5 rounded-2xl border-2 border-stone-200 bg-white hover:border-[#8ca15d] shadow-xs cursor-pointer transition-all flex items-start gap-3"
+              >
+                <input type="radio" name="wizard-node" id="wizard-radio-node-lomaverde" class="mt-1 text-[#577327]" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between gap-1">
+                    <strong class="text-stone-900 font-heading font-black text-xs sm:text-sm">Nodo Loma Verde</strong>
+                    <span class="text-[9px] font-black uppercase font-mono px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200">Escobar</span>
+                  </div>
+                  <p class="text-[11px] text-stone-800 font-bold mt-0.5">🏡 Botafogo 1320, Loma Verde</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón Siguiente Paso 1 -->
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-end">
+            <button 
+              type="button" 
+              onclick="goToWizardStep(2)"
+              class="w-full sm:w-auto px-6 py-2.5 rounded-2xl bg-[#1db954] hover:bg-[#16a34a] active:scale-98 text-white font-black text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer font-heading"
+            >
+              <span>Siguiente: Ser Elemental</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- PASO 2: SER ELEMENTAL QUE COORDINA TU INSCRIPCIÓN        -->
+        <!-- ======================================================== -->
+        <div id="step-content-2" class="hidden space-y-4">
+          <div class="p-3.5 bg-amber-50/80 border border-amber-200/90 rounded-2xl flex items-start gap-2.5">
+            <span class="text-xl shrink-0 mt-0.5">✨</span>
+            <div>
+              <strong class="text-stone-900 font-heading font-black text-xs block">Vínculo Humano & Coordinación</strong>
+              <p class="text-[11px] text-stone-600 leading-snug mt-0.5">
+                Elegí qué ser de la red Elemental está coordinando este taller para gestionar tu cupo de forma personalizada:
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-black text-stone-800 uppercase tracking-wider mb-2.5">
+              Elegí al Ser Elemental:
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="wizard-beings-grid">
+              <!-- Inyectado por JS -->
+            </div>
+          </div>
+
+          <!-- Botones Navegación Paso 2 -->
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+            <button 
+              type="button" 
+              onclick="goToWizardStep(1)"
+              class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer text-xs"
+            >
+              ← Volver
+            </button>
+            <button 
+              type="button" 
+              onclick="goToWizardStep(3)"
+              class="px-6 py-2 rounded-xl bg-[#1db954] hover:bg-[#16a34a] active:scale-98 text-white font-black text-xs shadow-md flex items-center gap-1.5 cursor-pointer font-heading"
+            >
+              <span>Siguiente: Tus Datos</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- PASO 3: INFORMACIÓN DE QUIEN RESERVA EL CUPO             -->
+        <!-- ======================================================== -->
+        <div id="step-content-3" class="hidden space-y-3">
+          <form id="wizard-attendee-form" onsubmit="event.preventDefault(); goToWizardStep(4);" class="space-y-3">
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">Nombre Completo / Familia *</label>
+              <input 
+                type="text" 
+                id="wizard-attendee-name" 
+                required 
+                placeholder="ej. Mariana Gómez" 
+                class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#d97757] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
+                <input 
+                  type="tel" 
+                  id="wizard-attendee-phone" 
+                  required 
+                  placeholder="ej. 11 2345 6789" 
+                  class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#d97757] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                />
+              </div>
+
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Correo Electrónico (Email) *</label>
+                <input 
+                  type="email" 
+                  id="wizard-attendee-email" 
+                  required 
+                  placeholder="ej. mariana@correo.com" 
+                  class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#d97757] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Localidad / Barrio de Residencia</label>
+                <input 
+                  type="text" 
+                  id="wizard-attendee-city" 
+                  placeholder="ej. La Lucila / Loma Verde / Olivos" 
+                  class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#d97757] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                />
+              </div>
+
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Cantidad de Personas / Cupos</label>
+                <select id="wizard-attendee-seats" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none text-xs">
+                  <option value="1">1 Persona (Cupo Individual)</option>
+                  <option value="2">2 Personas (Vengo acompañado/a)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">¿Qué te gustaría aprender o compartir? (Opcional)</label>
+              <input 
+                type="text" 
+                id="wizard-attendee-notes" 
+                placeholder="ej. Tengo huerta en maceta / Traigo semillas para trueque" 
+                class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#d97757] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+              />
+            </div>
+
+            <!-- Botones Navegación Paso 3 -->
+            <div class="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+              <button 
+                type="button" 
+                onclick="goToWizardStep(2)"
+                class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer text-xs"
+              >
+                ← Volver
+              </button>
+              <button 
+                type="submit" 
+                class="px-6 py-2 rounded-xl bg-[#1db954] hover:bg-[#16a34a] active:scale-98 text-white font-black text-xs shadow-md flex items-center gap-1.5 cursor-pointer font-heading"
+              >
+                <span>Siguiente: Contribución</span>
+                <span>→</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- PASO 4: CONTRIBUCIÓN & SOSTENIMIENTO COMUNITARIO          -->
+        <!-- ======================================================== -->
+        <div id="step-content-4" class="hidden space-y-4">
+          <div class="p-4 bg-gradient-to-br from-amber-50/90 via-stone-50 to-emerald-50/50 border border-amber-200/90 rounded-2xl text-xs space-y-3 shadow-2xs">
+            <div class="flex items-start gap-2.5">
+              <span class="text-2xl shrink-0 mt-0.5">🌱</span>
+              <div class="flex-1">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <h4 class="font-heading font-black text-stone-900 text-sm">Sostenimiento Comunitario de los Talleres</h4>
+                  <span class="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">Economía Circular</span>
+                </div>
+                <p class="text-[11px] text-stone-600 mt-1 leading-relaxed">
+                  Los talleres se sostienen con aportes conscientes para retribuir el tiempo de los facilitadores, los insumos compartidos y el mantenimiento de los Nodos. Nadie se queda afuera por motivos económicos: elegí la opción que mejor se adapte a tu realidad.
+                </p>
+              </div>
+            </div>
+
+            <!-- Opciones de Contribución -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+              <button 
+                type="button" 
+                id="wizard-btn-contrib-sugerida"
+                onclick="selectWizardContribution('sugerida')" 
+                class="p-2.5 rounded-xl border text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center bg-[#d97757] text-white border-[#d97757] shadow-xs active:scale-98"
+              >
+                <span class="font-black">Sugerida</span>
+                <span id="wizard-contrib-sugerida-amount" class="text-[11px] font-mono font-bold opacity-95 block mt-0.5">$5.000</span>
+              </button>
+
+              <button 
+                type="button" 
+                id="wizard-btn-contrib-voluntaria"
+                onclick="selectWizardContribution('voluntaria')" 
+                class="p-2.5 rounded-xl border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98"
+              >
+                <span class="font-bold">A Voluntad</span>
+                <span class="text-[10px] font-normal text-stone-400 block mt-0.5">Monto libre</span>
+              </button>
+
+              <button 
+                type="button" 
+                id="wizard-btn-contrib-trueque"
+                onclick="selectWizardContribution('trueque')" 
+                class="p-2.5 rounded-xl border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98"
+              >
+                <span class="font-bold">🌾 Trueque</span>
+                <span class="text-[10px] font-normal text-stone-400 block mt-0.5">Semillas/Frascos</span>
+              </button>
+
+              <button 
+                type="button" 
+                id="wizard-btn-contrib-beca"
+                onclick="selectWizardContribution('beca')" 
+                class="p-2.5 rounded-xl border border-stone-200 text-stone-600 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98"
+              >
+                <span class="font-bold">Beca ($0)</span>
+                <span class="text-[10px] font-normal text-stone-400 block mt-0.5">Sin aporte</span>
+              </button>
+            </div>
+
+            <!-- Input personalizado para aporte a voluntad -->
+            <div id="wizard-contrib-custom-container" class="hidden pt-2 border-t border-amber-200/50">
+              <label class="block text-[11px] font-bold text-stone-700 mb-1">Monto de tu aporte voluntario:</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-stone-400 font-bold">$</span>
+                <input 
+                  type="number" 
+                  id="wizard-contrib-custom-input" 
+                  min="0" 
+                  step="500" 
+                  placeholder="ej. 3000" 
+                  oninput="onCustomContributionInput(this.value)"
+                  class="w-full pl-7 pr-3 py-2 bg-white border border-stone-300 focus:border-[#d97757] rounded-xl text-stone-900 font-mono font-bold text-xs outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Resumen de Contribución -->
+          <div class="p-3 bg-stone-50 border border-stone-200 rounded-xl space-y-1 text-xs">
+            <div class="flex justify-between text-stone-600 text-[11px]">
+              <span>Modalidad de aporte seleccionada:</span>
+              <span id="step4-contrib-label" class="font-mono font-bold text-stone-900">Aporte sugerido ($5.000)</span>
+            </div>
+            <div class="flex justify-between text-stone-900 font-bold text-xs pt-1 border-t border-stone-200">
+              <span>Total a coordinar:</span>
+              <span id="step4-total-amount" class="font-mono font-black text-sm text-[#d97757]">$5.000</span>
+            </div>
+          </div>
+
+          <!-- Botones Navegación Paso 4 -->
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+            <button 
+              type="button" 
+              onclick="goToWizardStep(3)"
+              class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer text-xs"
+            >
+              ← Volver
+            </button>
+            <button 
+              type="button" 
+              onclick="confirmRegistration()"
+              class="px-6 py-2 rounded-xl bg-[#1db954] hover:bg-[#16a34a] active:scale-98 text-white font-black text-xs shadow-md flex items-center gap-1.5 cursor-pointer font-heading"
+            >
+              <span>Generar Ticket & Confirmar</span>
+              <span>✨</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- PASO 5: TICKET DE RESERVA & CONFIRMACIÓN VÍA WHATSAPP     -->
+        <!-- ======================================================== -->
+        <div id="step-content-5" class="hidden space-y-4">
+          <!-- Canvas Confetti -->
+          <canvas id="confetti-canvas" class="pointer-events-none fixed inset-0 z-50 w-full h-full hidden"></canvas>
+
+          <!-- Tarjeta de Ticket Estilo Bloque Blockchain -->
+          <div class="bg-white border-2 border-[#577327] rounded-3xl p-5 text-xs space-y-3.5 shadow-md relative overflow-hidden">
+            <!-- Barra superior del Ticket -->
+            <div class="flex items-center justify-between border-b border-[#e2ebd4] pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">🎟️</span>
+                <div>
+                  <span class="block text-[9px] font-mono uppercase text-stone-400 font-bold">Elementales · Saberes</span>
+                  <strong class="text-xs font-black text-stone-900 font-heading">Ticket de Reserva de Cupo</strong>
+                </div>
+              </div>
+              <span id="step5-ticket-id" class="hash-badge">#TLL-8392</span>
+            </div>
+
+            <!-- Detalle del Taller -->
+            <div class="space-y-1.5">
+              <h4 id="step5-taller-title" class="font-heading font-black text-base text-stone-900 leading-tight">
+                Huertas Regenerativas en Balcones & Terrazas
+              </h4>
+              <p id="step5-taller-facilitator" class="text-xs text-[#577327] font-bold">
+                Facilita: Cris (Guardián del Suelo Vivo)
+              </p>
+            </div>
+
+            <!-- Info de Retiro / Asistencia -->
+            <div class="bg-[#fcfaf8] p-3 rounded-2xl border border-stone-200 space-y-2 text-[11px]">
+              <div class="flex items-center gap-2 text-stone-800">
+                <span>📍</span>
+                <span id="step5-node-address" class="font-bold">Nodo La Lucila · Anchorena 684</span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-800">
+                <span>📅</span>
+                <span id="step5-datetime" class="font-bold">Sábado 15 de Noviembre - 10:30 hs</span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-800">
+                <span>✨</span>
+                <span>Coordinación Ser Elemental: <strong id="step5-being-name">Cris</strong></span>
+              </div>
+            </div>
+
+            <!-- Datos del Asistente -->
+            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px]">
+              <div>
+                <span class="text-stone-400 block text-[10px]">Asistente:</span>
+                <strong id="step5-attendee-name" class="text-stone-900">Mariana Gómez</strong>
+                <span id="step5-seats-count" class="text-[10px] text-stone-500 block">(1 cupo)</span>
+              </div>
+              <div class="text-right">
+                <span class="text-stone-400 block text-[10px]">Aporte:</span>
+                <strong id="step5-contrib-display" class="text-[#577327] font-mono font-black">$5.000</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acción Principal: Enviar a WhatsApp de Coordinación -->
+          <div class="space-y-2 pt-1">
+            <button 
+              type="button" 
+              onclick="sendWhatsAppRegistration()" 
+              class="w-full py-3.5 px-4 rounded-2xl bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 font-heading"
+            >
+              <span>📲 Confirmar Reserva por WhatsApp</span>
+              <span>→</span>
+            </button>
+
+            <button 
+              type="button" 
+              onclick="shareTallerWhatsApp()" 
+              class="w-full py-2.5 px-4 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+            >
+              <span>🔗 Compartir este Taller con un Amigo/a</span>
+            </button>
+          </div>
+
+          <div class="pt-2 text-center">
+            <button 
+              type="button" 
+              onclick="closeWizardModal()" 
+              class="text-xs text-stone-400 hover:text-stone-600 font-bold underline cursor-pointer"
+            >
+              Volver a la Agenda de Talleres
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 4. MODAL: PROPONER UN TALLER O ENCUENTRO                                 -->
+  <!-- ========================================================================= -->
+  <div id="proponer-modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 hidden animate-fade-in">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border-2 border-[#eddcd5] overflow-hidden">
+      
+      <div class="bg-gradient-to-r from-white to-[#fdf4f0] border-b border-[#eddcd5] p-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">💡</span>
+          <div>
+            <h3 class="font-heading font-black text-stone-900 text-sm sm:text-base">Proponer Taller o Charla</h3>
+            <span class="text-[10px] text-stone-500">Compartí tu saber en la red de Nodos</span>
+          </div>
+        </div>
+        <button 
+          type="button" 
+          onclick="closeProponerModal()" 
+          class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center font-bold text-sm cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form id="proponer-form" onsubmit="event.preventDefault(); submitPropuestaTaller();" class="p-4 sm:p-5 space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Tu Nombre y Apellido *</label>
+          <input 
+            type="text" 
+            id="proponer-nombre" 
+            required 
+            placeholder="ej. Lucas Benítez" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#d97757] rounded-xl px-3 py-2 text-stone-900 outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
+          <input 
+            type="tel" 
+            id="proponer-telefono" 
+            required 
+            placeholder="ej. 11 9876 5432" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#d97757] rounded-xl px-3 py-2 text-stone-900 outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Título del Taller o Saber que querés compartir *</label>
+          <input 
+            type="text" 
+            id="proponer-titulo" 
+            required 
+            placeholder="ej. Taller de Kokedamas y Plantas Nativas" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#d97757] rounded-xl px-3 py-2 text-stone-900 outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Nodo Preferido</label>
+          <select id="proponer-nodo" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none">
+            <option value="lalucila">🌿 Nodo La Lucila (Anchorena 684)</option>
+            <option value="lomaverde">🌳 Nodo Loma Verde (Botafogo 1320)</option>
+            <option value="ambos">✨ Cualquiera de los Nodos</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Breve descripción de la propuesta</label>
+          <textarea 
+            id="proponer-descripcion" 
+            rows="3" 
+            placeholder="Contanos brevemente de qué trata la actividad, duración aproximada y qué materiales se requieren..." 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#d97757] rounded-xl px-3 py-2 text-stone-900 outline-none"
+          ></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2">
+          <button 
+            type="button" 
+            onclick="closeProponerModal()" 
+            class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="px-5 py-2 rounded-xl bg-[#1db954] hover:bg-[#16a34a] text-white font-black shadow-md flex items-center gap-1.5 cursor-pointer font-heading"
+          >
+            <span>Enviar Propuesta</span>
+            <span>📲</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 5. PIE DE PÁGINA COMUNITARIO                                             -->
+  <!-- ========================================================================= -->
+  <footer class="mt-12 bg-white border-t border-[#eddcd5] py-8 text-center text-xs text-stone-500">
+    <div class="max-w-4xl mx-auto px-4 space-y-4">
+      <div class="flex items-center justify-center gap-2">
+        <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-6 h-6 object-contain" alt="Elementales" onerror="this.src='public/assets/brand/comunidad_full_clean.png';" />
+        <span class="font-heading font-black text-stone-900 text-sm">Elementales Comunidad</span>
+      </div>
+      <p class="max-w-md mx-auto text-[11px] leading-relaxed text-stone-400">
+        Red barrial de compras colectivas, alimentos agroecológicos y soberanía comunitaria. Tejiendo saberes en Vicente López, Escobar y zona norte.
+      </p>
+      
+      <!-- Enlaces Rápidos -->
+      <div class="flex flex-wrap items-center justify-center gap-3 text-xs font-bold text-stone-600 pt-1">
+        <a href="index.html" class="hover:text-[#577327] transition-colors">Portal Principal</a>
+        <span>·</span>
+        <a href="compralunar.html" class="hover:text-[#577327] transition-colors">Compra Lunar</a>
+        <span>·</span>
+        <a href="oliva.html" class="hover:text-[#577327] transition-colors">Aceite de Oliva</a>
+        <span>·</span>
+        <a href="frutilla.html" class="hover:text-[#577327] transition-colors">Frutillas Ecotipa</a>
+        <span>·</span>
+        <a href="gestionelemental.html" class="hover:text-[#577327] transition-colors">Gestión Elemental</a>
+      </div>
+
+      <div class="text-[10px] text-stone-400 pt-2 font-mono">
+        elementales.store · 2026 · Saberes Comunitarios
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- 6. LÓGICA JAVASCRIPT: DATASET, FILTROS, WIZARD Y WHATSAPP                -->
+  <!-- ========================================================================= -->
+  <script>
+    // -------------------------------------------------------------
+    // DATASET DE NODOS BARRIALES
+    // -------------------------------------------------------------
+    const TALLERES_NODES = {
+      lalucila: {
+        id: 'lalucila',
+        name: 'Nodo Elementales La Lucila',
+        shortName: 'La Lucila',
+        address: 'Anchorena 684',
+        fullAddress: 'Anchorena 684, La Lucila, Vicente López',
+        phone: '5491133221100',
+        reference: 'A 2 cuadras de la estación La Lucila'
+      },
+      lomaverde: {
+        id: 'lomaverde',
+        name: 'Nodo Loma Verde',
+        shortName: 'Loma Verde',
+        address: 'Botafogo 1320',
+        fullAddress: 'Botafogo 1320, Loma Verde, Escobar',
+        phone: '5491133445566',
+        reference: 'Cerca del vivero y parque comunitario'
+      }
+    };
+
+    // -------------------------------------------------------------
+    // SERES ELEMENTALES
+    // -------------------------------------------------------------
+    const ELEMENTAL_BEINGS = [
+      { name: 'Bauti', emoji: '🌱' },
+      { name: 'Fran', emoji: '✨' },
+      { name: 'Gonza', emoji: '🍃' },
+      { name: 'Agus', emoji: '☀️' },
+      { name: 'Cris', emoji: '🌿' },
+      { name: 'Ro', emoji: '🌸' },
+      { name: 'Rami', emoji: '🫒' }
+    ];
+
+    // -------------------------------------------------------------
+    // DATASET INICIAL DE TALLERES & EVENTOS
+    // -------------------------------------------------------------
+    const TALLERES_DATA = [
+      {
+        id: 'taller-huerta-regenerativa',
+        titulo: 'Huertas Regenerativas & Suelo Vivo en Balcones',
+        tallerista: 'Cris (Guardián del Suelo Vivo) & Fran',
+        elemento: 'tierra',
+        nodoId: 'lalucila',
+        fecha: 'Sábado 14 de Noviembre',
+        horario: '10:30 a 12:30 hs',
+        duracion: '2 horas',
+        lugarTexto: 'Patio del Nodo La Lucila (Anchorena 684)',
+        cuposTotales: 15,
+        cuposOcupados: 11,
+        contribucionSugerida: 5000,
+        descripcion: 'Aprende a preparar compostaje domiciliario con lombrices californianas, siembra escalonada de primavera-verano y asociación de aromáticas protectoras para balcones o patios.',
+        icono: '🌱',
+        destacado: true
+      },
+      {
+        id: 'taller-fermentos-probioticos',
+        titulo: 'Alquimia de Fermentos: Kéfir, Chucrut y Masa Madre',
+        tallerista: 'Ro (Nutrición & Alquimia) & Agus',
+        elemento: 'fuego',
+        nodoId: 'lomaverde',
+        fecha: 'Domingo 15 de Noviembre',
+        horario: '15:00 a 17:30 hs',
+        duracion: '2h 30m',
+        lugarTexto: 'Cocina Viva Nodo Loma Verde (Botafogo 1320)',
+        cuposTotales: 12,
+        cuposOcupados: 8,
+        contribucionSugerida: 6000,
+        descripcion: 'Técnicas de fermentación láctica casera, activación de nódulos de kéfir, desmitificación del gluten con fermentaciones lentas y regeneración de la microbiota intestinal.',
+        icono: '🫙',
+        destacado: true
+      },
+      {
+        id: 'taller-compost-reciclaje',
+        titulo: 'Composteras Barriales con Pallets & Gestión Circular',
+        tallerista: 'Gonza & Bauti',
+        elemento: 'tierra',
+        nodoId: 'lalucila',
+        fecha: 'Sábado 21 de Noviembre',
+        horario: '10:00 a 13:00 hs',
+        duracion: '3 horas',
+        lugarTexto: 'Espacio Taller Rawson 3450 / Anchorena 684',
+        cuposTotales: 10,
+        cuposOcupados: 6,
+        contribucionSugerida: 4500,
+        descripcion: 'Uso seguro de herramientas manuales y eléctricas. Cada participante colabora en el armado de una compostera modular ventilada y se lleva planos constructivos listos para replicar.',
+        icono: '🔨',
+        destacado: false
+      },
+      {
+        id: 'taller-cocina-consciente',
+        titulo: 'Cocina Consciente & Alimentos Agroecológicos de Estación',
+        tallerista: 'Bauti & Rami',
+        elemento: 'fuego',
+        nodoId: 'lomaverde',
+        fecha: 'Domingo 22 de Noviembre',
+        horario: '11:00 a 13:30 hs',
+        duracion: '2h 30m',
+        lugarTexto: 'Quincho Comunitario Loma Verde (Botafogo 1320)',
+        cuposTotales: 14,
+        cuposOcupados: 9,
+        contribucionSugerida: 5500,
+        descripcion: 'Aprovechamiento integral del alimento sin desperdicio, cocina con harinas agroecológicas integrales, degustación de aceite de oliva Lorenzo Cabrera y conservas naturales.',
+        icono: '🥗',
+        destacado: false
+      },
+      {
+        id: 'taller-herboristeria-familiar',
+        titulo: 'Botiquín Natural Familiar: Tinturas Madre & Ungüentos',
+        tallerista: 'Ro & Fran',
+        elemento: 'agua',
+        nodoId: 'lalucila',
+        fecha: 'Sábado 28 de Noviembre',
+        horario: '16:00 a 18:30 hs',
+        duracion: '2h 30m',
+        lugarTexto: 'Jardín de Plantas Nativas La Lucila (Anchorena 684)',
+        cuposTotales: 12,
+        cuposOcupados: 10,
+        contribucionSugerida: 6000,
+        descripcion: 'Reconocimiento de plantas medicinales, principios activos, elaboración de macerados oleosos, tinturas hidroalcohólicas y bálsamo de caléndula para el hogar.',
+        icono: '🌿',
+        destacado: true
+      },
+      {
+        id: 'taller-siembra-encuentro-rio',
+        titulo: 'Círculo de Semillas, Mateada & Respiración al Atardecer',
+        tallerista: 'Círculo Abierto de Seres Elementales',
+        elemento: 'aire',
+        nodoId: 'lalucila',
+        fecha: 'Domingo 29 de Noviembre',
+        horario: '17:30 a 19:30 hs',
+        duracion: '2 horas',
+        lugarTexto: 'Paseo del Viento a orillas del Río (La Lucila)',
+        cuposTotales: 30,
+        cuposOcupados: 18,
+        contribucionSugerida: 0,
+        descripcion: 'Encuentro libre y comunitario: traé tu mate, semillas criollas para intercambiar y plantines. Práctica guiada de respiración consciente frente al río al atardecer.',
+        icono: '💨',
+        destacado: false
+      }
+    ];
+
+    // -------------------------------------------------------------
+    // ESTADO DE LA APLICACIÓN
+    // -------------------------------------------------------------
+    let currentElementoFilter = 'todos';
+    let currentNodeFilter = 'todos';
+    let currentSearchQuery = '';
+
+    let activeTaller = null;
+    let wizardCurrentStep = 1;
+    let selectedWizardNode = 'lalucila';
+    let selectedWizardBeing = 'Bauti';
+    let selectedWizardContribType = 'sugerida';
+    let customContribAmount = 0;
+    let lastGeneratedTicket = null;
+    let lastWaMessage = '';
+    let lastShareMessage = '';
+
+    // -------------------------------------------------------------
+    // INICIALIZACIÓN
+    // -------------------------------------------------------------
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSavedUserData();
+      renderTalleresGrid();
+      renderMisInscripciones();
+      renderWizardBeings();
+    });
+
+    // -------------------------------------------------------------
+    // GESTIÓN DE SESIÓN Y DATOS GUARDADOS
+    // -------------------------------------------------------------
+    function loadSavedUserData() {
+      const name = localStorage.getItem('elementales_user_name') || '';
+      const phone = localStorage.getItem('elementales_user_phone') || '';
+      const email = localStorage.getItem('elementales_user_email') || '';
+      const city = localStorage.getItem('elementales_user_city') || '';
+
+      if (name && document.getElementById('wizard-attendee-name')) document.getElementById('wizard-attendee-name').value = name;
+      if (phone && document.getElementById('wizard-attendee-phone')) document.getElementById('wizard-attendee-phone').value = phone;
+      if (email && document.getElementById('wizard-attendee-email')) document.getElementById('wizard-attendee-email').value = email;
+      if (city && document.getElementById('wizard-attendee-city')) document.getElementById('wizard-attendee-city').value = city;
+    }
+
+    function saveUserDataLocally(name, phone, email, city) {
+      if (name) localStorage.setItem('elementales_user_name', name);
+      if (phone) localStorage.setItem('elementales_user_phone', phone);
+      if (email) localStorage.setItem('elementales_user_email', email);
+      if (city) localStorage.setItem('elementales_user_city', city);
+    }
+
+    // -------------------------------------------------------------
+    // RENDERIZADO DE LA CARTELERA DE TALLERES
+    // -------------------------------------------------------------
+    function renderTalleresGrid() {
+      const container = document.getElementById('talleres-grid');
+      const countEl = document.getElementById('talleres-results-count');
+      if (!container) return;
+
+      const filtered = TALLERES_DATA.filter(t => {
+        // Filtro Elemento
+        if (currentElementoFilter !== 'todos' && t.elemento !== currentElementoFilter) return false;
+        // Filtro Nodo
+        if (currentNodeFilter !== 'todos' && t.nodoId !== currentNodeFilter) return false;
+        // Filtro Búsqueda
+        if (currentSearchQuery.trim()) {
+          const q = currentSearchQuery.toLowerCase();
+          const matchTitle = t.titulo.toLowerCase().includes(q);
+          const matchInst = t.tallerista.toLowerCase().includes(q);
+          const matchDesc = t.descripcion.toLowerCase().includes(q);
+          if (!matchTitle && !matchInst && !matchDesc) return false;
+        }
+        return true;
+      });
+
+      if (countEl) {
+        countEl.textContent = `Mostrando ${filtered.length} taller${filtered.length === 1 ? '' : 'es'}`;
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center bg-white rounded-3xl border border-stone-200 p-6 space-y-2">
+            <span class="text-3xl">🔍</span>
+            <h4 class="font-heading font-black text-stone-800 text-base">No se encontraron talleres con estos filtros</h4>
+            <p class="text-xs text-stone-500 max-w-sm mx-auto">
+              Probá seleccionando "Todos" en los filtros o cambiá tu término de búsqueda.
+            </p>
+            <button 
+              onclick="resetFilters()" 
+              class="mt-2 px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold rounded-xl cursor-pointer"
+            >
+              Restablecer Filtros
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(t => {
+        const node = TALLERES_NODES[t.nodoId] || TALLERES_NODES.lalucila;
+        const available = Math.max(0, t.cuposTotales - t.cuposOcupados);
+        const percentOcupado = Math.min(100, Math.round((t.cuposOcupados / t.cuposTotales) * 100));
+
+        let elemBadgeClass = 'bg-[#fdf4f0] text-[#b85435] border-[#f2b5a2]';
+        let elemName = '🔥 Fuego';
+        if (t.elemento === 'tierra') {
+          elemBadgeClass = 'bg-[#f4f7ee] text-[#3e531c] border-[#c0d6a2]';
+          elemName = '🌱 Tierra';
+        } else if (t.elemento === 'agua') {
+          elemBadgeClass = 'bg-[#edf5f9] text-[#195977] border-[#b4cfdf]';
+          elemName = '💧 Agua';
+        } else if (t.elemento === 'aire') {
+          elemBadgeClass = 'bg-[#f2f6f5] text-[#2d5f53] border-[#bdd5ce]';
+          elemName = '💨 Aire';
+        }
+
+        const contribStr = t.contribucionSugerida > 0 
+          ? `Contribución sugerida: $${t.contribucionSugerida.toLocaleString('es-AR')}`
+          : 'Círculo Abierto · Aporte voluntario o mate compartido';
+
+        return `
+          <div class="block-card p-5 sm:p-6 flex flex-col justify-between space-y-4">
+            
+            <div class="space-y-3">
+              <!-- Top tags -->
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-[10px] font-mono font-black uppercase px-2.5 py-0.5 rounded-full border ${elemBadgeClass}">
+                  ${elemName}
+                </span>
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200">
+                  📍 ${node.shortName}
+                </span>
+              </div>
+
+              <!-- Header info -->
+              <div>
+                <h3 class="font-heading font-black text-stone-900 text-base sm:text-lg leading-tight hover:text-[#d97757] transition-colors">
+                  ${t.titulo}
+                </h3>
+                <p class="text-xs font-bold text-[#b85435] mt-1">
+                  Facilita: ${t.tallerista}
+                </p>
+              </div>
+
+              <!-- Descripción -->
+              <p class="text-xs text-stone-600 leading-relaxed">
+                ${t.descripcion}
+              </p>
+
+              <!-- Detalles de Horario y Lugar -->
+              <div class="p-3 bg-[#fcfaf8] rounded-2xl border border-stone-200/80 space-y-1.5 text-xs">
+                <div class="flex items-center gap-2 text-stone-800">
+                  <span>📅</span>
+                  <strong class="font-bold">${t.fecha}</strong>
+                  <span class="text-stone-400">·</span>
+                  <span class="text-stone-600 font-mono">${t.horario}</span>
+                </div>
+                <div class="flex items-center gap-2 text-stone-700 text-[11px]">
+                  <span>🏡</span>
+                  <span class="truncate">${t.lugarTexto}</span>
+                </div>
+                <div class="flex items-center gap-2 text-[#577327] text-[11px] font-bold">
+                  <span>🌱</span>
+                  <span>${contribStr}</span>
+                </div>
+              </div>
+
+              <!-- Barra de Cupos -->
+              <div class="space-y-1 pt-1">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-bold text-stone-700">
+                    🎟️ ${available > 0 ? `Quedan ${available} cupos disponibles` : '¡Cupos Completos!'}
+                  </span>
+                  <span class="font-mono text-stone-400 text-[10px]">
+                    ${t.cuposOcupados}/${t.cuposTotales} inscriptos
+                  </span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-stone-100 overflow-hidden border border-stone-200/80">
+                  <div class="h-full bg-gradient-to-r from-emerald-500 to-[#d97757] rounded-full transition-all" style="width: ${percentOcupado}%"></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="pt-3 border-t border-stone-100 flex items-center gap-2">
+              <button 
+                type="button" 
+                onclick="startWizard('${t.id}')"
+                class="btn-action flex-1 bg-[#1db954] hover:bg-[#16a34a] text-white text-xs font-black py-2.5 px-4 rounded-xl shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-heading"
+              >
+                <span>Inscribirme / Reservar</span>
+                <span>→</span>
+              </button>
+
+              <button 
+                type="button" 
+                onclick="shareSpecificTallerWhatsApp('${t.id}')" 
+                class="w-9 h-9 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center cursor-pointer transition-colors shrink-0" 
+                title="Compartir este taller"
+              >
+                <svg class="w-4 h-4 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    // -------------------------------------------------------------
+    // FILTROS
+    // -------------------------------------------------------------
+    function setElementoFilter(elem) {
+      currentElementoFilter = elem;
+      const chips = ['todos', 'tierra', 'fuego', 'agua', 'aire'];
+      chips.forEach(c => {
+        const btn = document.getElementById(`filter-elem-${c}`);
+        if (!btn) return;
+        if (c === elem) {
+          btn.className = 'px-3 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer shrink-0 bg-[#d97757] text-white shadow-xs';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shrink-0 bg-stone-100 text-stone-700 hover:bg-stone-200';
+        }
+      });
+      playPopSound();
+      renderTalleresGrid();
+    }
+
+    function onNodeFilterChange(nodeVal) {
+      currentNodeFilter = nodeVal;
+      playPopSound();
+      renderTalleresGrid();
+    }
+
+    function onSearchQueryChange(query) {
+      currentSearchQuery = query;
+      renderTalleresGrid();
+    }
+
+    function resetFilters() {
+      currentElementoFilter = 'todos';
+      currentNodeFilter = 'todos';
+      currentSearchQuery = '';
+      const input = document.getElementById('talleres-search-input');
+      if (input) input.value = '';
+      const nodeSelect = document.getElementById('talleres-node-filter');
+      if (nodeSelect) nodeSelect.value = 'todos';
+      setElementoFilter('todos');
+    }
+
+    // -------------------------------------------------------------
+    // MIS INSCRIPCIONES (LOCALSTORAGE)
+    // -------------------------------------------------------------
+    function getStoredRegistrations() {
+      try {
+        const raw = localStorage.getItem('elementales_talleres_registrations');
+        if (raw) return JSON.parse(raw);
+      } catch (e) {
+        console.error(e);
+      }
+      return [];
+    }
+
+    function renderMisInscripciones() {
+      const container = document.getElementById('mis-inscripciones-section');
+      const list = document.getElementById('mis-inscripciones-list');
+      const countEl = document.getElementById('mis-inscripciones-count');
+      if (!container || !list) return;
+
+      const regs = getStoredRegistrations();
+      if (regs.length === 0) {
+        container.classList.add('hidden');
+        return;
+      }
+
+      container.classList.remove('hidden');
+      if (countEl) countEl.textContent = `${regs.length} Taller${regs.length === 1 ? '' : 'es'}`;
+
+      list.innerHTML = regs.map(r => `
+        <div class="bg-white rounded-2xl p-3.5 border border-stone-200 flex items-start justify-between gap-3 shadow-2xs">
+          <div class="space-y-1 min-w-0">
+            <span class="hash-badge text-[9px]">${r.ticketId}</span>
+            <h4 class="font-heading font-black text-stone-900 text-xs sm:text-sm leading-tight truncate">${r.tallerTitulo}</h4>
+            <p class="text-[11px] text-stone-600 font-medium">📅 ${r.tallerFecha} · 📍 ${r.nodoNombre}</p>
+          </div>
+          <a 
+            href="${r.waUrl}" 
+            target="_blank" 
+            class="px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[11px] font-bold shrink-0 border border-emerald-200 inline-flex items-center gap-1"
+          >
+            <span>📲 WA</span>
+          </a>
+        </div>
+      `).join('');
+    }
+
+    // -------------------------------------------------------------
+    // MODAL WIZARD: CONTROL DE PASOS
+    // -------------------------------------------------------------
+    function renderWizardBeings() {
+      const grid = document.getElementById('wizard-beings-grid');
+      if (!grid) return;
+      grid.innerHTML = ELEMENTAL_BEINGS.map(b => `
+        <button 
+          type="button" 
+          onclick="selectWizardBeing('${b.name}')" 
+          id="wizard-being-${b.name}"
+          class="p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 active:scale-95 ${
+            selectedWizardBeing === b.name 
+              ? 'bg-[#d97757] text-white border-[#d97757] shadow-xs' 
+              : 'bg-white border-stone-200 text-stone-800 hover:border-[#d97757]'
+          }"
+        >
+          <span class="text-xl">${b.emoji}</span>
+          <span class="text-xs font-heading font-bold">${b.name}</span>
+        </button>
+      `).join('');
+    }
+
+    function selectWizardBeing(beingName) {
+      selectedWizardBeing = beingName;
+      playPopSound();
+      renderWizardBeings();
+    }
+
+    function selectWizardNode(nodeId) {
+      selectedWizardNode = nodeId;
+      playPopSound();
+      const cardLucila = document.getElementById('wizard-card-node-lalucila');
+      const radioLucila = document.getElementById('wizard-radio-node-lalucila');
+      const cardLoma = document.getElementById('wizard-card-node-lomaverde');
+      const radioLoma = document.getElementById('wizard-radio-node-lomaverde');
+
+      if (nodeId === 'lalucila') {
+        cardLucila?.classList.add('border-[#577327]', 'bg-[#f4f7ee]');
+        cardLucila?.classList.remove('border-stone-200', 'bg-white');
+        if (radioLucila) radioLucila.checked = true;
+
+        cardLoma?.classList.add('border-stone-200', 'bg-white');
+        cardLoma?.classList.remove('border-[#577327]', 'bg-[#f4f7ee]');
+        if (radioLoma) radioLoma.checked = false;
+      } else {
+        cardLoma?.classList.add('border-[#577327]', 'bg-[#f4f7ee]');
+        cardLoma?.classList.remove('border-stone-200', 'bg-white');
+        if (radioLoma) radioLoma.checked = true;
+
+        cardLucila?.classList.add('border-stone-200', 'bg-white');
+        cardLucila?.classList.remove('border-[#577327]', 'bg-[#f4f7ee]');
+        if (radioLucila) radioLucila.checked = false;
+      }
+    }
+
+    function startWizard(tallerId) {
+      const t = TALLERES_DATA.find(x => x.id === tallerId);
+      if (!t) return;
+      activeTaller = t;
+      selectedWizardNode = t.nodoId || 'lalucila';
+      selectedWizardContribType = 'sugerida';
+      customContribAmount = 0;
+
+      // Actualizar vista paso 1
+      const titleEl = document.getElementById('step1-taller-title');
+      const instEl = document.getElementById('step1-taller-instructor');
+      const dateEl = document.getElementById('step1-taller-date');
+      const durEl = document.getElementById('step1-taller-duration');
+      const badgeEl = document.getElementById('step1-elem-badge');
+      const sugeridaAmountEl = document.getElementById('wizard-contrib-sugerida-amount');
+
+      if (titleEl) titleEl.textContent = t.titulo;
+      if (instEl) instEl.textContent = `Dictado por: ${t.tallerista}`;
+      if (dateEl) dateEl.textContent = `${t.fecha} · ${t.horario}`;
+      if (durEl) durEl.textContent = `Duración: ${t.duracion}`;
+      if (badgeEl) badgeEl.textContent = `${t.elemento.toUpperCase()}`;
+      if (sugeridaAmountEl) sugeridaAmountEl.textContent = t.contribucionSugerida > 0 ? `$${t.contribucionSugerida.toLocaleString('es-AR')}` : '$0';
+
+      selectWizardNode(selectedWizardNode);
+      selectWizardContribution('sugerida');
+      goToWizardStep(1);
+
+      document.getElementById('wizard-modal-overlay')?.classList.remove('hidden');
+      playPopSound();
+    }
+
+    function closeWizardModal() {
+      document.getElementById('wizard-modal-overlay')?.classList.add('hidden');
+    }
+
+    function goToWizardStep(stepNum) {
+      wizardCurrentStep = stepNum;
+      document.getElementById('wizard-step-number').textContent = stepNum;
+
+      // Cambiar visibilidad de contenidos
+      for (let i = 1; i <= 5; i++) {
+        const content = document.getElementById(`step-content-${i}`);
+        const pill = document.getElementById(`step-pill-${i}`);
+        if (content) {
+          if (i === stepNum) content.classList.remove('hidden');
+          else content.classList.add('hidden');
+        }
+        if (pill) {
+          if (i === stepNum) {
+            pill.className = 'text-[9px] font-bold uppercase font-mono text-[#d97757] border-b-2 border-[#d97757] pb-0.5';
+          } else if (i < stepNum) {
+            pill.className = 'text-[9px] font-bold uppercase font-mono text-emerald-700 pb-0.5';
+          } else {
+            pill.className = 'text-[9px] font-bold uppercase font-mono text-stone-400 pb-0.5';
+          }
+        }
+      }
+      playPopSound();
+    }
+
+    function selectWizardContribution(type) {
+      selectedWizardContribType = type;
+      const types = ['sugerida', 'voluntaria', 'trueque', 'beca'];
+      types.forEach(t => {
+        const btn = document.getElementById(`wizard-btn-contrib-${t}`);
+        if (!btn) return;
+        if (t === type) {
+          btn.className = 'p-2.5 rounded-xl border text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center bg-[#d97757] text-white border-[#d97757] shadow-xs active:scale-98';
+        } else {
+          btn.className = 'p-2.5 rounded-xl border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98';
+        }
+      });
+
+      const customContainer = document.getElementById('wizard-contrib-custom-container');
+      if (customContainer) {
+        if (type === 'voluntaria') customContainer.classList.remove('hidden');
+        else customContainer.classList.add('hidden');
+      }
+
+      updateWizardContribSummary();
+      playPopSound();
+    }
+
+    function onCustomContributionInput(val) {
+      customContribAmount = Math.max(0, parseFloat(val) || 0);
+      updateWizardContribSummary();
+    }
+
+    function updateWizardContribSummary() {
+      const labelEl = document.getElementById('step4-contrib-label');
+      const totalEl = document.getElementById('step4-total-amount');
+      if (!labelEl || !totalEl || !activeTaller) return;
+
+      let amountStr = '$0';
+      if (selectedWizardContribType === 'sugerida') {
+        const amt = activeTaller.contribucionSugerida || 0;
+        labelEl.textContent = `Aporte sugerido ($${amt.toLocaleString('es-AR')})`;
+        totalEl.textContent = `$${amt.toLocaleString('es-AR')}`;
+      } else if (selectedWizardContribType === 'voluntaria') {
+        labelEl.textContent = `Aporte voluntario ($${customContribAmount.toLocaleString('es-AR')})`;
+        totalEl.textContent = `$${customContribAmount.toLocaleString('es-AR')}`;
+      } else if (selectedWizardContribType === 'trueque') {
+        labelEl.textContent = 'Trueque Comunitario (Semillas/Frascos)';
+        totalEl.textContent = 'Trueque / Intercambio';
+      } else if (selectedWizardContribType === 'beca') {
+        labelEl.textContent = 'Beca Comunitaria ($0)';
+        totalEl.textContent = '$0 (Sin aporte)';
+      }
+    }
+
+    // -------------------------------------------------------------
+    // CONFIRMACIÓN DE INSCRIPCIÓN Y GENERACIÓN DE TICKET
+    // -------------------------------------------------------------
+    function confirmRegistration() {
+      if (!activeTaller) return;
+
+      const name = document.getElementById('wizard-attendee-name')?.value || 'Vecino/a';
+      const phone = document.getElementById('wizard-attendee-phone')?.value || '';
+      const email = document.getElementById('wizard-attendee-email')?.value || '';
+      const city = document.getElementById('wizard-attendee-city')?.value || '';
+      const seats = document.getElementById('wizard-attendee-seats')?.value || '1';
+      const notes = document.getElementById('wizard-attendee-notes')?.value || '';
+
+      saveUserDataLocally(name, phone, email, city);
+
+      // Generar código de ticket único
+      const randomCode = Math.floor(1000 + Math.random() * 9000);
+      const ticketId = `#TLL-${randomCode}`;
+      lastGeneratedTicket = ticketId;
+
+      const node = TALLERES_NODES[selectedWizardNode] || TALLERES_NODES.lalucila;
+
+      // Calcular aporte string
+      let contribText = '';
+      if (selectedWizardContribType === 'sugerida') {
+        contribText = `Aporte sugerido: $${(activeTaller.contribucionSugerida || 0).toLocaleString('es-AR')}`;
+      } else if (selectedWizardContribType === 'voluntaria') {
+        contribText = `Aporte voluntario: $${customContribAmount.toLocaleString('es-AR')}`;
+      } else if (selectedWizardContribType === 'trueque') {
+        contribText = 'Trueque comunitario de semillas/plantines/frascos';
+      } else {
+        contribText = 'Beca comunitaria ($0)';
+      }
+
+      // Descontar cupo en memoria
+      activeTaller.cuposOcupados = Math.min(activeTaller.cuposTotales, activeTaller.cuposOcupados + parseInt(seats, 10));
+      renderTalleresGrid();
+
+      // Armar mensaje WhatsApp
+      const waMsg = 
+`🎓 *RESERVA DE CUPO EN TALLER - ELEMENTALES COMUNIDAD*
+━━━━━━━━━━━━━━━━━━━━━
+🎟️ *Ticket de Reserva:* ${ticketId}
+🌱 *Taller:* ${activeTaller.titulo}
+👤 *Facilitador:* ${activeTaller.tallerista}
+📍 *Nodo:* ${node.name} (${node.address})
+📅 *Fecha & Horario:* ${activeTaller.fecha} (${activeTaller.horario})
+✨ *Ser Elemental:* ${selectedWizardBeing}
+━━━━━━━━━━━━━━━━━━━━━
+👤 *Inscripto:* ${name}
+📱 *Teléfono:* ${phone}
+✉️ *Email:* ${email}
+🏡 *Localidad/Barrio:* ${city || 'Zona Norte'}
+👥 *Cupos Reservados:* ${seats} persona(s)
+💰 *Modalidad Aporte:* ${contribText}
+${notes ? `📝 *Expectativas / Notas:* ${notes}\n` : ''}━━━━━━━━━━━━━━━━━━━━━
+¡Nos encontramos para seguir tejiendo saberes comunitarios! ✨🌱
+https://elementales.store/talleres`;
+
+      const coordPhone = node.phone || '5491133221100';
+      const waUrl = `https://wa.me/${coordPhone}?text=${encodeURIComponent(waMsg)}`;
+      lastWaMessage = waUrl;
+
+      const shareMsg = 
+`🎓 *TALLER COMUNITARIO EN ELEMENTALES*
+🌱 *${activeTaller.titulo}*
+Facilita: ${activeTaller.tallerista}
+📍 *Lugar:* ${node.name} (${node.address})
+📅 *Fecha:* ${activeTaller.fecha} (${activeTaller.horario})
+
+¡Me acabo de anotar con cupo reservado! Quedan poquitos lugares. Sumate acá:
+👉 https://elementales.store/talleres`;
+      lastShareMessage = `https://wa.me/?text=${encodeURIComponent(shareMsg)}`;
+
+      // Guardar registro en localStorage
+      const stored = getStoredRegistrations();
+      stored.unshift({
+        ticketId,
+        tallerId: activeTaller.id,
+        tallerTitulo: activeTaller.titulo,
+        tallerFecha: activeTaller.fecha,
+        nodoNombre: node.shortName,
+        waUrl
+      });
+      localStorage.setItem('elementales_talleres_registrations', JSON.stringify(stored));
+      renderMisInscripciones();
+
+      // Actualizar vista del Paso 5
+      document.getElementById('step5-ticket-id').textContent = ticketId;
+      document.getElementById('step5-taller-title').textContent = activeTaller.titulo;
+      document.getElementById('step5-taller-facilitator').textContent = `Facilita: ${activeTaller.tallerista}`;
+      document.getElementById('step5-node-address').textContent = `${node.name} (${node.address})`;
+      document.getElementById('step5-datetime').textContent = `${activeTaller.fecha} · ${activeTaller.horario}`;
+      document.getElementById('step5-being-name').textContent = selectedWizardBeing;
+      document.getElementById('step5-attendee-name').textContent = name;
+      document.getElementById('step5-seats-count').textContent = `(${seats} cupo${seats === '1' ? '' : 's'})`;
+      document.getElementById('step5-contrib-display').textContent = contribText;
+
+      playSuccessSound();
+      triggerConfetti();
+      goToWizardStep(5);
+    }
+
+    function sendWhatsAppRegistration() {
+      if (lastWaMessage) {
+        window.open(lastWaMessage, '_blank');
+      }
+    }
+
+    function shareTallerWhatsApp() {
+      if (lastShareMessage) {
+        window.open(lastShareMessage, '_blank');
+      }
+    }
+
+    function shareAgendaWhatsApp() {
+      const msg = 
+`🎓 *AGENDA DE EVENTOS & TALLERES - ELEMENTALES COMUNIDAD*
+Encuentros presenciales en Nodos La Lucila y Loma Verde:
+🌱 Huertas Regenerativas & Suelo Vivo
+🫙 Alquimia de Fermentos & Kéfir
+🔨 Composteras Barriales con Pallets
+🥗 Cocina Consciente Agroecológica
+🌿 Botiquín Natural & Herboristería
+
+¡Cupos reducidos para cuidar el vínculo! Mirá la agenda e inscribite acá:
+👉 https://elementales.store/talleres`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function shareSpecificTallerWhatsApp(tallerId) {
+      const t = TALLERES_DATA.find(x => x.id === tallerId);
+      if (!t) return;
+      const node = TALLERES_NODES[t.nodoId] || TALLERES_NODES.lalucila;
+      const msg = 
+`🎓 *TALLER EN ELEMENTALES COMUNIDAD*
+🌱 *${t.titulo}*
+Facilita: ${t.tallerista}
+📍 *Lugar:* ${node.name} (${node.address})
+📅 *Fecha:* ${t.fecha} - ${t.horario}
+
+¡Hay cupos limitados! Anotate acá:
+👉 https://elementales.store/talleres`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // -------------------------------------------------------------
+    // MODAL PROPONER TALLER
+    // -------------------------------------------------------------
+    function openProponerModal() {
+      document.getElementById('proponer-modal-overlay')?.classList.remove('hidden');
+      playPopSound();
+    }
+
+    function closeProponerModal() {
+      document.getElementById('proponer-modal-overlay')?.classList.add('hidden');
+    }
+
+    function submitPropuestaTaller() {
+      const nombre = document.getElementById('proponer-nombre')?.value || '';
+      const telefono = document.getElementById('proponer-telefono')?.value || '';
+      const titulo = document.getElementById('proponer-titulo')?.value || '';
+      const nodo = document.getElementById('proponer-nodo')?.value || 'lalucila';
+      const desc = document.getElementById('proponer-descripcion')?.value || '';
+
+      const nodoTexto = nodo === 'lalucila' ? 'Nodo La Lucila' : (nodo === 'lomaverde' ? 'Nodo Loma Verde' : 'Cualquier Nodo');
+
+      const msg = 
+`💡 *PROPUESTA DE TALLER / CHARLA - ELEMENTALES COMUNIDAD*
+━━━━━━━━━━━━━━━━━━━━━
+👤 *Tallerista / Vecino:* ${nombre}
+📱 *WhatsApp:* ${telefono}
+🎓 *Propuesta:* ${titulo}
+📍 *Nodo Preferido:* ${nodoTexto}
+📝 *Descripción:* ${desc || 'Sin detalle adicional'}
+━━━━━━━━━━━━━━━━━━━━━
+¡Hola equipo de Elementales! Me gustaría compartir este taller con la comunidad barrial. ¿Podemos coordinar? ✨`;
+
+      const targetPhone = '5491133221100';
+      window.open(`https://wa.me/${targetPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+      closeProponerModal();
+    }
+
+    // -------------------------------------------------------------
+    // EFECTOS DE SONIDO SINTETIZADOS (WEB AUDIO API)
+    // -------------------------------------------------------------
+    function playPopSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    function playSuccessSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.1, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + (i + 1) * 0.08);
+          osc.start(now + i * 0.08);
+          osc.stop(now + (i + 1) * 0.08);
+        });
+      } catch (e) {}
+    }
+
+    // -------------------------------------------------------------
+    // ANIMACIÓN DE CONFETTI LIGERA EN CANVAS
+    // -------------------------------------------------------------
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      if (!canvas) return;
+      canvas.classList.remove('hidden');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#d97757', '#577327', '#1db954', '#c0826d', '#f2b5a2', '#f4f7ee'];
+      for (let i = 0; i < 65; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          r: Math.random() * 5 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.7) * 14,
+          gravity: 0.25,
+          alpha: 1
+        });
+      }
+
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.alpha -= 0.012;
+          if (p.alpha > 0) {
+            alive = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
+        ctx.globalAlpha = 1;
+        frame++;
+        if (alive && frame < 90) {
+          requestAnimationFrame(animate);
+        } else {
+          canvas.classList.add('hidden');
+        }
+      }
+      animate();
+    }
+  </script>
+</body>
+</html>

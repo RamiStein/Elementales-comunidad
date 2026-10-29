@@ -6,7 +6,32 @@ repos = [
     r"C:\Users\Rami\.gemini\antigravity\scratch\elementales-feria"
 ]
 
+primary = repos[0]
+mirror = repos[1]
+
 print("Starting synchronization across repositories...")
+
+# 0. Sincronizar archivos raíz clave desde Desktop a Scratch
+root_files_to_mirror = [
+    "talleres.html",
+    "eventos.html",
+    "index.html",
+    "compralunar.html",
+    "frutilla.html",
+    "oliva.html",
+    "gestionelemental.html",
+    "miembroelemental.html",
+    "prosumidores.html",
+    "404.html"
+]
+
+if os.path.exists(primary) and os.path.exists(mirror):
+    for rf in root_files_to_mirror:
+        src = os.path.join(primary, rf)
+        dst = os.path.join(mirror, rf)
+        if os.path.exists(src):
+            shutil.copy2(src, dst)
+            print(f"Mirrored {rf} to scratch repo")
 
 for repo in repos:
     # 1. Compra Lunar
@@ -47,5 +72,18 @@ for repo in repos:
         os.makedirs(os.path.dirname(target_oliva), exist_ok=True)
         shutil.copy2(source_oliva, target_oliva)
         print(f"Copied oliva to: {target_oliva}")
+
+    # 5. Talleres & Eventos
+    source_talleres = os.path.join(repo, "talleres.html")
+    if os.path.exists(source_talleres):
+        targets_talleres = [
+            os.path.join(repo, "talleres", "index.html"),
+            os.path.join(repo, "eventos", "index.html"),
+            os.path.join(repo, "eventos.html")
+        ]
+        for t in targets_talleres:
+            os.makedirs(os.path.dirname(t), exist_ok=True)
+            shutil.copy2(source_talleres, t)
+            print(f"Copied talleres to: {t}")
 
 print("Sync completed successfully for all mirrors!")
