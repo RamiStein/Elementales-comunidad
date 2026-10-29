@@ -13,6 +13,8 @@ print("Starting synchronization across repositories...")
 
 # 0. Sincronizar archivos raíz clave desde Desktop a Scratch
 root_files_to_mirror = [
+    "salud.html",
+    "carlos.html",
     "talleres.html",
     "eventos.html",
     "index.html",
@@ -32,6 +34,18 @@ if os.path.exists(primary) and os.path.exists(mirror):
         if os.path.exists(src):
             shutil.copy2(src, dst)
             print(f"Mirrored {rf} to scratch repo")
+
+    # Mirroring assets de talleres
+    src_assets = os.path.join(primary, "public", "assets", "talleres")
+    dst_assets = os.path.join(mirror, "public", "assets", "talleres")
+    if os.path.exists(src_assets):
+        os.makedirs(dst_assets, exist_ok=True)
+        for item in os.listdir(src_assets):
+            s_item = os.path.join(src_assets, item)
+            d_item = os.path.join(dst_assets, item)
+            if os.path.isfile(s_item):
+                shutil.copy2(s_item, d_item)
+        print(f"Mirrored talleres assets to scratch repo")
 
 for repo in repos:
     # 1. Compra Lunar
@@ -85,5 +99,18 @@ for repo in repos:
             os.makedirs(os.path.dirname(t), exist_ok=True)
             shutil.copy2(source_talleres, t)
             print(f"Copied talleres to: {t}")
+
+    # 6. Taller Salud Dr. Carlos (pH 7,5)
+    source_salud = os.path.join(repo, "salud.html")
+    if os.path.exists(source_salud):
+        targets_salud = [
+            os.path.join(repo, "salud", "index.html"),
+            os.path.join(repo, "carlos", "index.html"),
+            os.path.join(repo, "carlos.html")
+        ]
+        for t in targets_salud:
+            os.makedirs(os.path.dirname(t), exist_ok=True)
+            shutil.copy2(source_salud, t)
+            print(f"Copied salud to: {t}")
 
 print("Sync completed successfully for all mirrors!")

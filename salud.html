@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>🩺 ¡SALUD & 7,5! Hábitos, pH y Longevidad con Dr. Carlos | Elementales Comunidad</title>
+  
+  <meta name="description" content="Taller vivencial con el Dr. Carlos, médico naturista: el equilibrio del pH 7,5, desintoxicación sanguínea (ABL) y la revolución de cambiar achaques por disfrute y nuevos hábitos. En Nodos La Lucila y Loma Verde." />
+  <meta property="og:title" content="🩺 Taller de Salud, pH 7,5 y Hábitos con Dr. Carlos - Elementales .store" />
+  <meta property="og:description" content="Encuentro en 2 módulos con compartir de jugos y alimentos vivos. Reconocer hábitos insanos, equilibrar la sangre y ganar longevidad." />
+  <meta property="og:image" content="public/assets/talleres/carlos_salud.jpg" />
+
+  <!-- Tailwind CSS CDN con paleta oficial de Elementales -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            oliva: {
+              DEFAULT: '#577327',
+              dark: '#3e531c',
+              light: '#6e7f45',
+              tint: '#f4f7ee',
+            },
+            terracotta: {
+              DEFAULT: '#c0826d',
+              light: '#d99a86',
+              dark: '#a6634f',
+              tint: '#fcf4f0',
+            },
+            spotify: {
+              DEFAULT: '#1db954',
+              hover: '#16a34a',
+            },
+            tierra: {
+              DEFAULT: '#8ca15d',
+              dark: '#4d662b',
+              light: '#edf3e3'
+            },
+            salud: {
+              DEFAULT: '#577327',
+              accent: '#d97757',
+              ph: '#2a6f97'
+            }
+          },
+          fontFamily: {
+            sans: ['Outfit', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Outfit', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --color-oliva: #577327;
+      --color-oliva-dark: #3e531c;
+      --color-terracotta: #c0826d;
+      --color-terracotta-dark: #a6634f;
+      --color-spotify: #1db954;
+      --color-ph: #2a6f97;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: #fcfaf8;
+      color: #1c1917;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: var(--font-heading);
+    }
+
+    .font-mono-code {
+      font-family: var(--font-mono);
+    }
+
+    /* Animaciones sutiles */
+    @keyframes pulse-subtle {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2.5s ease-in-out infinite;
+    }
+
+    .btn-action {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+
+    /* Tarjeta estilo Bloque */
+    .block-card {
+      position: relative;
+      background: #ffffff;
+      border: 2px solid #e2ebd4;
+      border-radius: 1.5rem;
+      transition: all 0.25s ease;
+    }
+    .block-card:hover {
+      border-color: #577327;
+      box-shadow: 0 10px 25px -5px rgba(87, 115, 39, 0.12);
+    }
+
+    /* Hash tag */
+    .hash-badge {
+      font-family: var(--font-mono);
+      background: #1c1917;
+      color: #a4c468;
+      padding: 0.15rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#577327] selection:text-white pb-24">
+
+  <!-- ========================================================================= -->
+  <!-- 1. CABECERA ELEMENTALES & NAVEGACIÓN -->
+  <!-- ========================================================================= -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-[#e2ebd4] sticky top-0 z-40 shadow-xs">
+    <div class="max-w-2xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
+      
+      <!-- LOGO ELEMENTALES -->
+      <a href="index.html" class="flex items-center gap-2.5 text-decoration-none group">
+        <img 
+          src="public/assets/brand/comunidad_emblem_clean.png" 
+          class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs group-hover:scale-105 transition-transform" 
+          alt="Elementales" 
+          onerror="this.src='public/assets/brand/comunidad_full_clean.png';"
+        />
+        <div class="leading-tight">
+          <span class="block font-black text-sm sm:text-base text-stone-900 tracking-tight leading-none font-heading">
+            Elementales <span class="text-[#577327]">Salud</span>
+          </span>
+          <span class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider mt-0.5">
+            Taller Vivencial · Dr. Carlos
+          </span>
+        </div>
+      </a>
+
+      <!-- Botones de Acción -->
+      <div class="flex items-center gap-2">
+        <a 
+          href="talleres.html" 
+          class="hidden sm:inline-flex items-center gap-1 text-xs font-bold text-stone-600 hover:text-[#577327] py-1.5 px-2 rounded-lg hover:bg-stone-100 transition-colors"
+        >
+          <span>← Volver a Agenda</span>
+        </a>
+
+        <!-- Botón Compartir -->
+        <button 
+          type="button" 
+          onclick="shareTallerWhatsApp()" 
+          class="btn-action bg-[#1db954] hover:bg-[#16a34a] text-white rounded-xl px-3 py-1.5 text-xs font-black shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0" 
+          title="Compartir taller por WhatsApp"
+        >
+          <svg class="w-3.5 h-3.5 fill-none stroke-current shrink-0" viewBox="0 0 24 24" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span class="text-[11px] font-heading font-black tracking-wide">Compartir</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. CONTENIDO PRINCIPAL: FLYER & ENCUENTRO VIVENCIAL -->
+  <!-- ========================================================================= -->
+  <main class="max-w-2xl mx-auto px-4 pt-4 sm:pt-6 w-full space-y-6">
+
+    <!-- BANNER DE FECHAS CLAVE & CUPOS LIMITADOS -->
+    <div class="bg-gradient-to-r from-[#243510] via-[#3e531c] to-[#577327] text-white rounded-3xl p-4 sm:p-5 shadow-md border-2 border-[#577327]/40 relative overflow-hidden animate-fade-in">
+      <div class="flex items-center justify-between gap-2 border-b border-white/20 pb-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 text-xs uppercase font-mono font-black tracking-wider text-[#dceac6]">
+          <span>🩺</span> Taller Vivencial con Dr. Carlos
+        </span>
+        <span class="text-[10px] uppercase font-mono font-bold bg-white/20 px-2.5 py-0.5 rounded-full text-white border border-white/20">
+          Cupo Reducido · 20 Lugares
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <!-- Encuentro Nodo La Lucila -->
+        <div class="bg-black/20 backdrop-blur-xs rounded-2xl p-3 border border-white/15 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-400/25 border border-amber-300/40 flex items-center justify-center text-xl shrink-0">
+            📍
+          </div>
+          <div>
+            <span class="block text-[10px] font-black uppercase tracking-wider text-amber-200 font-mono">Nodo La Lucila</span>
+            <strong class="block text-xs sm:text-sm font-black text-white font-heading leading-tight">Sábado 21 de Noviembre</strong>
+            <span class="block text-[10px] text-stone-200">10:30 a 14:00 hs · Anchorena 684</span>
+          </div>
+        </div>
+
+        <!-- Encuentro Nodo Loma Verde -->
+        <div class="bg-black/20 backdrop-blur-xs rounded-2xl p-3 border border-white/15 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-400/25 border border-emerald-300/40 flex items-center justify-center text-xl shrink-0">
+            🌳
+          </div>
+          <div>
+            <span class="block text-[10px] font-black uppercase tracking-wider text-emerald-200 font-mono">Nodo Loma Verde</span>
+            <strong class="block text-xs sm:text-sm font-black text-white font-heading leading-tight">Domingo 22 de Noviembre</strong>
+            <span class="block text-[10px] text-stone-200">10:30 a 14:00 hs · Botafogo 1320</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLYER PRINCIPAL / TARJETA EMBLEMA DEL TALLER -->
+    <div class="bg-white rounded-3xl border-2 border-[#e2ebd4] shadow-sm p-6 sm:p-8 text-center relative overflow-hidden space-y-4">
+      
+      <!-- Badge de Identidad -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#f4f7ee] text-[#3e531c] border border-[#577327]/30 text-xs font-black uppercase tracking-wider shadow-2xs">
+        <span>🌱</span> MEDICINA NATURISTA & SOBERANÍA CORPORAL
+      </div>
+
+      <!-- Título de Impacto -->
+      <div class="space-y-1">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-stone-900 tracking-tight leading-none font-heading uppercase">
+          ¡SALUD & <span class="text-[#577327]">7,5</span>!
+        </h1>
+        <p class="text-sm sm:text-base font-bold text-stone-600 max-w-lg mx-auto">
+          El equilibrio ácido-básico, la sangre como ABL y la revolución de cambiar achaques por disfrute.
+        </p>
+      </div>
+
+      <!-- Facilitador -->
+      <div class="inline-flex items-center gap-2 p-2 px-4 rounded-2xl bg-stone-50 border border-stone-200 text-xs text-stone-700">
+        <span class="text-lg">👨‍⚕️</span>
+        <span>Facilitado por el <strong class="text-stone-900 font-black">Dr. Carlos</strong> · Médico Naturista</span>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- EL GRAN SECRETO: EL GAUGE DEL pH 7,5                     -->
+      <!-- ======================================================== -->
+      <div class="p-4 sm:p-5 bg-gradient-to-br from-[#f8faf5] via-white to-[#edf5f9] rounded-2xl border-2 border-[#577327]/30 text-left space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl font-mono font-black text-[#577327] bg-[#f4f7ee] w-10 h-10 rounded-xl flex items-center justify-center border border-[#577327]/40 shadow-2xs">
+              7,5
+            </span>
+            <div>
+              <h3 class="font-heading font-black text-stone-900 text-sm sm:text-base leading-tight">
+                El Número Maestro del Equilibrio
+              </h3>
+              <span class="text-[11px] text-stone-500 font-medium">Equilibrio Ácido - Básico de la Sangre</span>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono font-bold uppercase px-2.5 py-0.5 rounded-full bg-[#1c1917] text-[#a4c468]">
+            ABL Sanguíneo
+          </span>
+        </div>
+
+        <p class="text-xs text-stone-600 leading-relaxed">
+          <strong>7,5</strong> es el número exacto que necesita nuestro organismo para que la sangre haga de <strong>ABL (Alumbrado, Barrido y Limpieza)</strong> y se lleve todos los detritus o toxinas producto de cualquier alimentación.
+        </p>
+
+        <!-- Barra visual interactiva del pH -->
+        <div class="space-y-1.5 pt-1">
+          <div class="w-full h-3 rounded-full bg-gradient-to-r from-rose-500 via-emerald-500 to-sky-600 relative p-0.5 shadow-inner">
+            <!-- Marcador 7.5 -->
+            <div class="absolute top-1/2 -translate-y-1/2 left-[53%] -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 border-stone-900 shadow-md flex items-center justify-center">
+              <div class="w-2 h-2 rounded-full bg-emerald-600"></div>
+            </div>
+          </div>
+          <div class="flex justify-between text-[10px] font-mono text-stone-500 pt-0.5">
+            <span class="text-rose-700 font-bold">⚠️ Sangre Ácida<br><span class="text-[9px] text-stone-400">Atrae virus y hongos</span></span>
+            <span class="text-emerald-800 font-black text-center text-xs">✨ 7,5 Óptimo<br><span class="text-[9px] text-[#577327]">ABL & Longevidad</span></span>
+            <span class="text-sky-800 font-bold text-right">⚠️ Sangre Alcalina<br><span class="text-[9px] text-stone-400">Atrae bacterias y parásitos</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FRASES CLAVE DEL MANUSCRITO -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+        <div class="p-3.5 bg-amber-50/80 rounded-2xl border border-amber-200/90 space-y-1">
+          <span class="text-lg">🌿</span>
+          <strong class="text-xs font-black text-stone-900 block font-heading">"Yo no curo a nadie"</strong>
+          <p class="text-[11px] text-stone-600 leading-snug">
+            <em>"Sólo se cura el enfermo en aras de un cambio de vida. La violencia está en seguir viviendo llenos de dolores y achaques en vez de ser longevos."</em>
+          </p>
+        </div>
+
+        <div class="p-3.5 bg-emerald-50/80 rounded-2xl border border-emerald-200/90 space-y-1">
+          <span class="text-lg">💊</span>
+          <strong class="text-xs font-black text-stone-900 block font-heading">"¿Farmacia o Alimento Vivo?"</strong>
+          <p class="text-[11px] text-stone-600 leading-snug">
+            <em>"Creer que la salud está en una pastillita inorgánica por comodidad, antes que prepararnos un simple desayuno vivo con fruta, miel, frutos secos y hortalizas."</em>
+          </p>
+        </div>
+      </div>
+
+      <!-- BOTÓN PRINCIPAL DE INSCRIPCIÓN / RESERVA -->
+      <div class="pt-3">
+        <button 
+          type="button" 
+          onclick="openCheckoutModal()" 
+          class="btn-action w-full py-4 px-6 rounded-2xl bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base shadow-lg flex items-center justify-center gap-2 cursor-pointer font-heading transform active:scale-98"
+        >
+          <span>🎟️ Reservar Mi Lugar para el Taller</span>
+          <span>→</span>
+        </button>
+        <span class="block text-[11px] text-stone-400 mt-2">
+          Contribución consciente sugerida: <strong>$6.000</strong> (Incluye degustación de jugos y frutas vivas) · Opciones de trueque o beca.
+        </span>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 3. ESTRUCTURA DEL ENCUENTRO: 2 MÓDULOS + INTERMEDIO COMPARTIDO -->
+    <!-- ========================================================================= -->
+    <div class="space-y-4">
+      <div class="text-center space-y-1">
+        <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-[#577327] block">
+          Dinámica Vivencial del Taller
+        </span>
+        <h2 class="font-heading font-black text-stone-900 text-xl sm:text-2xl">
+          ¿Cómo será nuestro encuentro?
+        </h2>
+        <p class="text-xs text-stone-500 max-w-md mx-auto">
+          Diseñado en 2 módulos profundos con un intermedio nutritivo para alimentar cuerpo y mente.
+        </p>
+      </div>
+
+      <div class="space-y-3.5">
+        
+        <!-- MÓDULO 1 -->
+        <div class="bg-white rounded-3xl border-2 border-[#eddcd5] p-5 sm:p-6 shadow-xs flex items-start gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-[#fdf2ee] border border-[#f0b5a1] flex items-center justify-center text-2xl shrink-0 shadow-2xs">
+            🔥
+          </div>
+          <div class="space-y-1.5 flex-1">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span class="text-[10px] font-mono font-black uppercase text-[#b85435] bg-[#faeae2] px-2.5 py-0.5 rounded-full">
+                Módulo 1 · 10:30 a 11:45 hs
+              </span>
+              <span class="text-[10px] text-stone-400 font-bold font-mono">Toma de Conciencia</span>
+            </div>
+            <h3 class="font-heading font-black text-stone-900 text-base sm:text-lg leading-tight">
+              Reconocer los Hábitos Insanos & el pH 7,5
+            </h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              La trampa de la química inorgánica y cómo la alimentación acidificante sobrecarga nuestro sistema de depuración. Qué es la leucocitosis digestiva y por qué nos sentimos cansados luego de comer comida pesada.
+            </p>
+            <!-- Ronda Comunitaria -->
+            <div class="p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl mt-2 text-xs text-stone-700 space-y-1">
+              <strong class="text-stone-900 font-bold flex items-center gap-1.5">
+                <span>🗣️</span> Ronda Abierta & Participativa:
+              </strong>
+              <p class="text-[11px] text-stone-600">
+                Un momento de intimidad y verdad donde cada participante puede compartir los hábitos que hoy le generan dolor, cansancio o insatisfacción, y qué anhela transformar.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- INTERMEDIO NUTRITIVO (COMPARTIR DE JUGOS Y ALIMENTOS VIVOS) -->
+        <div class="bg-gradient-to-r from-[#f4f7ee] via-white to-[#edf5f9] rounded-3xl border-2 border-[#577327] p-5 sm:p-6 shadow-xs flex items-start gap-4 relative overflow-hidden">
+          <div class="w-12 h-12 rounded-2xl bg-[#577327] text-white flex items-center justify-center text-2xl shrink-0 shadow-sm">
+            🧃
+          </div>
+          <div class="space-y-1.5 flex-1">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span class="text-[10px] font-mono font-black uppercase text-white bg-[#577327] px-2.5 py-0.5 rounded-full">
+                Intermedio Vivo · 11:45 a 12:30 hs
+              </span>
+              <span class="text-[10px] text-[#3e531c] font-black font-mono">¡Incluido en el taller!</span>
+            </div>
+            <h3 class="font-heading font-black text-stone-900 text-base sm:text-lg leading-tight">
+              Compartir de Jugos Prensados & Frutas Vivas
+            </h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Pausa para distendernos, conocernos y nutrir el cuerpo. Degustaremos jugos naturales prensados en frío, frutas agroecológicas de estación y bocados conscientes de la red de Elementales para alcalinizar la sangre.
+            </p>
+          </div>
+        </div>
+
+        <!-- MÓDULO 2 -->
+        <div class="bg-white rounded-3xl border-2 border-[#eddcd5] p-5 sm:p-6 shadow-xs flex items-start gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-[#f4f7ee] border border-[#c0d6a2] flex items-center justify-center text-2xl shrink-0 shadow-2xs">
+            🌱
+          </div>
+          <div class="space-y-1.5 flex-1">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span class="text-[10px] font-mono font-black uppercase text-[#3e531c] bg-[#edf3e3] px-2.5 py-0.5 rounded-full">
+                Módulo 2 · 12:30 a 14:00 hs
+              </span>
+              <span class="text-[10px] text-stone-400 font-bold font-mono">¡Con la panza llena!</span>
+            </div>
+            <h3 class="font-heading font-black text-stone-900 text-base sm:text-lg leading-tight">
+              La Revolución de los Nuevos Hábitos & Longevidad
+            </h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Con el cuerpo ya alcalinizado y el corazón abierto, el Dr. Carlos comparte el mapa práctico de cuidados y nuevos hábitos para llevar al hogar:
+            </p>
+            <ul class="text-[11px] text-stone-700 space-y-1 list-disc pl-4 pt-1">
+              <li>El protocolo depurativo de 90 días (exclusión temporal de carnes y quesos duros).</li>
+              <li>El desayuno vital: fruta, crema de leche o coco, miel pura, hortalizas, almendras, dátil y nuez.</li>
+              <li>La integración del arroz yamaní integral de Oshawa y la cocina macrobiótica.</li>
+              <li>Cómo sostener este cambio con disfrute en un país ganadero, sin rigidez ni culpa.</li>
+              <li>Ronda final de preguntas personalizadas y cierre comunitario.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 4. MANUSCRITOS ORIGINALES DEL DR. CARLOS (VISOR FOTOGRÁFICO) -->
+    <!-- ========================================================================= -->
+    <div class="bg-white rounded-3xl border-2 border-[#e2ebd4] p-5 sm:p-6 shadow-xs space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📜</span>
+          <div>
+            <h3 class="font-heading font-black text-stone-900 text-sm sm:text-base leading-tight">
+              Manifiesto Escrito del Dr. Carlos
+            </h3>
+            <span class="text-[10px] text-stone-500">Documento original de puño y letra</span>
+          </div>
+        </div>
+        <span class="text-[10px] font-mono text-stone-400 uppercase font-bold">2 Páginas</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <!-- Manuscrito 1: 7,5 pH -->
+        <div class="rounded-2xl border border-stone-200 overflow-hidden bg-stone-50 group cursor-pointer" onclick="openPhotoModal('public/assets/talleres/carlos_ph75.jpg', 'Manuscrito: 7,5 y el Equilibrio Ácido-Básico')">
+          <div class="h-48 overflow-hidden relative">
+            <img 
+              src="public/assets/talleres/carlos_ph75.jpg" 
+              alt="Manuscrito 7,5 Dr Carlos" 
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
+            />
+            <span class="absolute bottom-2 right-2 text-[10px] font-mono font-bold bg-black/75 text-white px-2 py-0.5 rounded-lg backdrop-blur-xs">
+              🔍 Ver Página 1 (7,5)
+            </span>
+          </div>
+          <div class="p-2.5 text-center text-xs font-bold text-stone-700">
+            7,5 · El Equilibrio Ácido-Básico & ABL
+          </div>
+        </div>
+
+        <!-- Manuscrito 2: ¡SALUD! -->
+        <div class="rounded-2xl border border-stone-200 overflow-hidden bg-stone-50 group cursor-pointer" onclick="openPhotoModal('public/assets/talleres/carlos_salud.jpg', 'Manuscrito: ¡SALUD! y la Transformación de Hábitos')">
+          <div class="h-48 overflow-hidden relative">
+            <img 
+              src="public/assets/talleres/carlos_salud.jpg" 
+              alt="Manuscrito ¡SALUD! Dr Carlos" 
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
+            />
+            <span class="absolute bottom-2 right-2 text-[10px] font-mono font-bold bg-black/75 text-white px-2 py-0.5 rounded-lg backdrop-blur-xs">
+              🔍 Ver Página 2 (¡SALUD!)
+            </span>
+          </div>
+          <div class="p-2.5 text-center text-xs font-bold text-stone-700">
+            ¡SALUD! · Hábitos vs. Química Inorgánica
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 5. UBICACIÓN DE LOS NODOS & LOGÍSTICA BARRIAL -->
+    <!-- ========================================================================= -->
+    <div class="bg-white rounded-3xl border-2 border-[#e2ebd4] p-5 sm:p-6 shadow-xs space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">📍</span>
+        <h3 class="font-heading font-black text-stone-900 text-sm sm:text-base">
+          Puntos de Encuentro
+        </h3>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <!-- Nodo La Lucila -->
+        <div class="p-4 rounded-2xl bg-[#f4f7ee] border border-[#577327]/30 space-y-1">
+          <div class="flex items-center justify-between">
+            <strong class="text-stone-900 font-heading font-black">Nodo Elementales La Lucila</strong>
+            <span class="text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded-full bg-[#3e531c] text-white">Sáb 21 Nov</span>
+          </div>
+          <p class="text-stone-800 font-bold">🏡 Anchorena 684, La Lucila</p>
+          <p class="text-stone-500 text-[11px]">Vicente López · A 2 cuadras de estación La Lucila (Tren Mitre).</p>
+        </div>
+
+        <!-- Nodo Loma Verde -->
+        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1">
+          <div class="flex items-center justify-between">
+            <strong class="text-stone-900 font-heading font-black">Nodo Loma Verde</strong>
+            <span class="text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded-full bg-stone-700 text-white">Dom 22 Nov</span>
+          </div>
+          <p class="text-stone-800 font-bold">🏡 Botafogo 1320, Loma Verde</p>
+          <p class="text-stone-500 text-[11px]">Escobar · Espacio arbolado, quincho y cocina viva.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 6. BARRA FLOTANTE DE ACCIÓN INFERIOR (CTA MOBILE & DESKTOP) -->
+  <!-- ========================================================================= -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#e2ebd4] p-3 z-30 shadow-lg">
+    <div class="max-w-2xl mx-auto flex items-center justify-between gap-3">
+      <div class="min-w-0">
+        <span class="text-[10px] font-mono uppercase text-stone-400 font-bold block">Taller con Dr. Carlos</span>
+        <strong class="text-xs sm:text-sm font-black text-stone-900 font-heading truncate block">¡SALUD & 7,5! Hábitos Vivos</strong>
+        <span class="text-[10px] text-[#577327] font-bold">Sugerido: $6.000 · Con degustación</span>
+      </div>
+
+      <button 
+        type="button" 
+        onclick="openCheckoutModal()" 
+        class="btn-action bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-xs sm:text-sm py-2.5 px-5 rounded-2xl shadow-md shrink-0 flex items-center gap-1.5 cursor-pointer font-heading"
+      >
+        <span>Reservar Cupo</span>
+        <span>→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 7. MODAL: WIZARD DE CHECKOUT EN 5 PASOS                                  -->
+  <!-- ========================================================================= -->
+  <div id="checkout-modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 hidden animate-fade-in">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col shadow-2xl border-2 border-[#e2ebd4] overflow-hidden">
+      
+      <!-- HEADER DEL WIZARD -->
+      <div class="bg-gradient-to-r from-white to-[#f4f7ee] border-b border-[#e2ebd4] p-4 flex items-center justify-between shrink-0">
+        <div>
+          <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-[#3e531c] block">
+            Reserva de Cupo · Taller Dr. Carlos
+          </span>
+          <h3 class="font-heading font-black text-stone-900 text-sm sm:text-base leading-tight">
+            Inscripción Comunitaria · Paso <span id="checkout-step-number" class="text-[#577327]">1</span> de 5
+          </h3>
+        </div>
+        <button 
+          type="button" 
+          onclick="closeCheckoutModal()" 
+          class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center font-bold text-sm cursor-pointer transition-colors"
+          title="Cerrar ventana"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- INDICADOR DE PASOS -->
+      <div class="px-4 pt-3 pb-2 bg-stone-50 border-b border-stone-200 shrink-0">
+        <div class="grid grid-cols-5 gap-1.5 text-center">
+          <div id="step-pill-1" class="text-[9px] font-bold uppercase font-mono text-[#577327] border-b-2 border-[#577327] pb-0.5">1. Nodo</div>
+          <div id="step-pill-2" class="text-[9px] font-bold uppercase font-mono text-stone-400 pb-0.5">2. Ser</div>
+          <div id="step-pill-3" class="text-[9px] font-bold uppercase font-mono text-stone-400 pb-0.5">3. Datos</div>
+          <div id="step-pill-4" class="text-[9px] font-bold uppercase font-mono text-stone-400 pb-0.5">4. Aporte</div>
+          <div id="step-pill-5" class="text-[9px] font-bold uppercase font-mono text-stone-400 pb-0.5">5. Ticket</div>
+        </div>
+      </div>
+
+      <!-- CUERPO DEL WIZARD (SCROLLABLE) -->
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-4 text-xs flex-1">
+
+        <!-- ======================================================== -->
+        <!-- PASO 1: SELECCIONAR NODO & FECHA                         -->
+        <!-- ======================================================== -->
+        <div id="step-content-1" class="space-y-4">
+          
+          <div class="p-3 bg-[#fcfaf8] border border-[#e2ebd4] rounded-2xl flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="text-2xl shrink-0">🩺</span>
+              <div class="min-w-0 truncate">
+                <strong class="text-stone-900 block font-bold text-xs truncate">Taller ¡SALUD & 7,5!</strong>
+                <span class="text-[11px] text-[#577327] font-medium">Dr. Carlos · 2 Módulos + Compartir Vivo</span>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="font-mono font-black text-sm text-[#577327]">$6.000</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-black text-stone-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <span>📍</span> Elegí en qué Nodo vas a participar:
+            </label>
+
+            <div class="space-y-2.5">
+              <!-- Opción Nodo La Lucila -->
+              <div 
+                onclick="selectCheckoutNode('lalucila')" 
+                id="card-node-lalucila"
+                class="p-4 rounded-2xl border-2 border-[#577327] bg-[#f4f7ee] shadow-xs cursor-pointer transition-all flex items-start gap-3 active:scale-98"
+              >
+                <input type="radio" name="checkout-node" id="radio-node-lalucila" checked class="mt-1 text-[#577327]" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between gap-2">
+                    <strong class="text-stone-900 font-heading font-black text-xs sm:text-sm">Nodo Elementales La Lucila</strong>
+                    <span class="text-[9px] font-black uppercase font-mono px-2 py-0.5 rounded-full bg-[#3e531c] text-white">Vicente López</span>
+                  </div>
+                  <p class="text-xs text-stone-800 font-bold mt-1">🏡 Anchorena 684, La Lucila</p>
+                  <p class="text-[11px] text-stone-500 mt-0.5">
+                    📅 Fecha: <strong class="text-[#3e531c]">Sábado 21 de Noviembre (10:30 hs)</strong>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Opción Nodo Loma Verde -->
+              <div 
+                onclick="selectCheckoutNode('lomaverde')" 
+                id="card-node-lomaverde"
+                class="p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-[#8ca15d] shadow-xs cursor-pointer transition-all flex items-start gap-3 active:scale-98"
+              >
+                <input type="radio" name="checkout-node" id="radio-node-lomaverde" class="mt-1 text-[#577327]" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between gap-2">
+                    <strong class="text-stone-900 font-heading font-black text-xs sm:text-sm">Nodo Loma Verde</strong>
+                    <span class="text-[9px] font-black uppercase font-mono px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200">Escobar</span>
+                  </div>
+                  <p class="text-xs text-stone-800 font-bold mt-1">🏡 Botafogo 1320, Loma Verde</p>
+                  <p class="text-[11px] text-stone-500 mt-0.5">
+                    📅 Fecha: <strong class="text-[#3e531c]">Domingo 22 de Noviembre (10:30 hs)</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón Siguiente Paso 1 -->
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-end">
+            <button 
+              type="button" 
+              onclick="goToStep(2)"
+              class="w-full sm:w-auto px-6 py-2.5 rounded-2xl bg-[#1db954] hover:bg-[#16a34a] active:scale-98 text-white font-black text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer font-heading"
+            >
+              <span>Siguiente: Ser Elemental</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- PASO 2: SER ELEMENTAL QUE COORDINA                       -->
+        <!-- ======================================================== -->
+        <div id="step-content-2" class="hidden space-y-4">
+          <div class="p-3.5 bg-amber-50/80 border border-amber-200/90 rounded-2xl flex items-start gap-2.5">
+            <span class="text-xl shrink-0 mt-0.5">✨</span>
+            <div>
+              <strong class="text-stone-900 font-heading font-black text-xs block">Vínculo Comunitario</strong>
+              <p class="text-[11px] text-stone-600 leading-snug mt-0.5">
+                Elegí qué Ser Elemental te contactó o con quién coordinás tu lugar en este taller:
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-black text-stone-800 uppercase tracking-wider mb-2.5">
+              Elegí al Ser Elemental:
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="beings-grid">
+              <!-- Inyectado por JS -->
+            </div>
+          </div>
+
+          <!-- Botones Navegación Paso 2 -->
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+            <button 
+              type="button" 
+              onclick="goToStep(1)"
+              class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer text-xs"
+            >
+              ← Volver al Nodo
+            </button>
+            <button 
+              type="button" 
+              onclick="goToStep(3)"
+              class="px-6 py-2 rounded-xl bg-[#1db954] hover:bg-[#16a34a] active:scale-98 text-white font-black text-xs shadow-md flex items-center gap-1.5 cursor-pointer font-heading"
+            >
+              <span>Siguiente: Tus Datos</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- PASO 3: INFORMACIÓN DEL ASISTENTE                        -->
+        <!-- ======================================================== -->
+        <div id="step-content-3" class="hidden space-y-3">
+          <form id="attendee-form" onsubmit="event.preventDefault(); goToStep(4);" class="space-y-3">
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">Nombre Completo / Familia *</label>
+              <input 
+                type="text" 
+                id="attendee-name" 
+                required 
+                placeholder="ej. Mariana Gómez" 
+                class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Teléfono / WhatsApp *</label>
+                <input 
+                  type="tel" 
+                  id="attendee-phone" 
+                  required 
+                  placeholder="ej. 11 2345 6789" 
+                  class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                />
+              </div>
+
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Correo Electrónico (Email) *</label>
+                <input 
+                  type="email" 
+                  id="attendee-email" 
+                  required 
+                  placeholder="ej. mariana@correo.com" 
+                  class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Localidad / Barrio</label>
+                <input 
+                  type="text" 
+                  id="attendee-city" 
+                  placeholder="ej. La Lucila / Loma Verde / Vicente López" 
+                  class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+                />
+              </div>
+
+              <div>
+                <label class="block font-bold text-stone-700 mb-1">Lugares a Reservar</label>
+                <select id="attendee-seats" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none text-xs">
+                  <option value="1">1 Persona (Cupo individual)</option>
+                  <option value="2">2 Personas (Vengo con acompañante)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-stone-700 mb-1">¿Qué hábito insano te gustaría transformar? (Opcional)</label>
+              <input 
+                type="text" 
+                id="attendee-habit" 
+                placeholder="ej. Dejar el azúcar / Dolores articulares / Cansancio posprandial" 
+                class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#577327] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none text-xs"
+              />
+            </div>
+
+            <!-- Botones Navegación Paso 3 -->
+            <div class="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+              <button 
+                type="button" 
+                onclick="goToStep(2)"
+                class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer text-xs"
+              >
+                ← Volver
+              </button>
+              <button 
+                type="submit" 
+                class="px-6 py-2 rounded-xl bg-[#1db954] hover:bg-[#16a34a] active:scale-98 text-white font-black text-xs shadow-md flex items-center gap-1.5 cursor-pointer font-heading"
+              >
+                <span>Siguiente: Contribución</span>
+                <span>→</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- PASO 4: CONTRIBUCIÓN COMUNITARIA                         -->
+        <!-- ======================================================== -->
+        <div id="step-content-4" class="hidden space-y-4">
+          <div class="p-4 bg-gradient-to-br from-amber-50/90 via-stone-50 to-emerald-50/50 border border-amber-200/90 rounded-2xl text-xs space-y-3 shadow-2xs">
+            <div class="flex items-start gap-2.5">
+              <span class="text-2xl shrink-0 mt-0.5">🌱</span>
+              <div class="flex-1">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <h4 class="font-heading font-black text-stone-900 text-sm">Aporte & Sostenimiento Comunitario</h4>
+                  <span class="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">Economía Consciente</span>
+                </div>
+                <p class="text-[11px] text-stone-600 mt-1 leading-relaxed">
+                  Tu contribución retribuye la generosidad y tiempo del Dr. Carlos, cubre los insumos del intermedio (jugos prensados en frío y frutas vivas agroecológicas) y sostiene la sede comunitaria del nodo. Nadie se queda afuera por motivos económicos.
+                </p>
+              </div>
+            </div>
+
+            <!-- Opciones de Aporte -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+              <button 
+                type="button" 
+                id="btn-contrib-sugerida"
+                onclick="selectContribution('sugerida')" 
+                class="p-2.5 rounded-xl border text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center bg-[#577327] text-white border-[#577327] shadow-xs active:scale-98"
+              >
+                <span class="font-black">Sugerida</span>
+                <span id="contrib-sugerida-amount" class="text-[11px] font-mono font-bold opacity-95 block mt-0.5">$6.000</span>
+              </button>
+
+              <button 
+                type="button" 
+                id="btn-contrib-voluntaria"
+                onclick="selectContribution('voluntaria')" 
+                class="p-2.5 rounded-xl border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98"
+              >
+                <span class="font-bold">A Voluntad</span>
+                <span class="text-[10px] font-normal text-stone-400 block mt-0.5">Monto libre</span>
+              </button>
+
+              <button 
+                type="button" 
+                id="btn-contrib-trueque"
+                onclick="selectContribution('trueque')" 
+                class="p-2.5 rounded-xl border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98"
+              >
+                <span class="font-bold">🌾 Trueque</span>
+                <span class="text-[10px] font-normal text-stone-400 block mt-0.5">Alimentos/Frascos</span>
+              </button>
+
+              <button 
+                type="button" 
+                id="btn-contrib-beca"
+                onclick="selectContribution('beca')" 
+                class="p-2.5 rounded-xl border border-stone-200 text-stone-600 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98"
+              >
+                <span class="font-bold">Beca ($0)</span>
+                <span class="text-[10px] font-normal text-stone-400 block mt-0.5">Sin aporte</span>
+              </button>
+            </div>
+
+            <!-- Input personalizado para aporte a voluntad -->
+            <div id="contrib-custom-container" class="hidden pt-2 border-t border-amber-200/50">
+              <label class="block text-[11px] font-bold text-stone-700 mb-1">Monto de tu aporte voluntario:</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-stone-400 font-bold">$</span>
+                <input 
+                  type="number" 
+                  id="contrib-custom-input" 
+                  min="0" 
+                  step="500" 
+                  placeholder="ej. 4000" 
+                  oninput="onCustomContributionInput(this.value)"
+                  class="w-full pl-7 pr-3 py-2 bg-white border border-stone-300 focus:border-[#577327] rounded-xl text-stone-900 font-mono font-bold text-xs outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Resumen de Contribución -->
+          <div class="p-3 bg-stone-50 border border-stone-200 rounded-xl space-y-1 text-xs">
+            <div class="flex justify-between text-stone-600 text-[11px]">
+              <span>Modalidad de aporte elegida:</span>
+              <span id="step4-contrib-label" class="font-mono font-bold text-stone-900">Aporte sugerido ($6.000)</span>
+            </div>
+            <div class="flex justify-between text-stone-900 font-bold text-xs pt-1 border-t border-stone-200">
+              <span>Total a coordinar:</span>
+              <span id="step4-total-amount" class="font-mono font-black text-sm text-[#577327]">$6.000</span>
+            </div>
+          </div>
+
+          <!-- Botones Navegación Paso 4 -->
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+            <button 
+              type="button" 
+              onclick="goToStep(3)"
+              class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer text-xs"
+            >
+              ← Volver
+            </button>
+            <button 
+              type="button" 
+              onclick="confirmCheckout()"
+              class="px-6 py-2 rounded-xl bg-[#1db954] hover:bg-[#16a34a] active:scale-98 text-white font-black text-xs shadow-md flex items-center gap-1.5 cursor-pointer font-heading"
+            >
+              <span>Generar Ticket & Confirmar</span>
+              <span>✨</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- PASO 5: TICKET DE RESERVA & WHATSAPP                     -->
+        <!-- ======================================================== -->
+        <div id="step-content-5" class="hidden space-y-4">
+          <canvas id="confetti-canvas" class="pointer-events-none fixed inset-0 z-50 w-full h-full hidden"></canvas>
+
+          <div class="bg-white border-2 border-[#577327] rounded-3xl p-5 text-xs space-y-3.5 shadow-md relative overflow-hidden">
+            <div class="flex items-center justify-between border-b border-[#e2ebd4] pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">🩺</span>
+                <div>
+                  <span class="block text-[9px] font-mono uppercase text-stone-400 font-bold">Elementales · Salud</span>
+                  <strong class="text-xs font-black text-stone-900 font-heading">Pase al Taller con Dr. Carlos</strong>
+                </div>
+              </div>
+              <span id="step5-ticket-id" class="hash-badge">#SALUD-7500</span>
+            </div>
+
+            <div class="space-y-1">
+              <h4 class="font-heading font-black text-base text-stone-900 leading-tight">
+                ¡SALUD & 7,5! Equilibrio, Sangre ABL & Hábitos
+              </h4>
+              <p class="text-xs text-[#577327] font-bold">
+                Facilita: Dr. Carlos (Médico Naturista)
+              </p>
+            </div>
+
+            <div class="bg-[#fcfaf8] p-3 rounded-2xl border border-stone-200 space-y-1.5 text-[11px]">
+              <div class="flex items-center gap-2 text-stone-800">
+                <span>📍</span>
+                <span id="step5-node-address" class="font-bold">Nodo La Lucila · Anchorena 684</span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-800">
+                <span>📅</span>
+                <span id="step5-datetime" class="font-bold">Sábado 21 de Noviembre (10:30 a 14:00 hs)</span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-800">
+                <span>✨</span>
+                <span>Coordinador Ser Elemental: <strong id="step5-being-name">Bauti</strong></span>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-stone-100 flex items-center justify-between text-[11px]">
+              <div>
+                <span class="text-stone-400 block text-[10px]">Inscripto:</span>
+                <strong id="step5-attendee-name" class="text-stone-900">Mariana Gómez</strong>
+                <span id="step5-seats-count" class="text-[10px] text-stone-500 block">(1 cupo)</span>
+              </div>
+              <div class="text-right">
+                <span class="text-stone-400 block text-[10px]">Aporte:</span>
+                <strong id="step5-contrib-display" class="text-[#577327] font-mono font-black">$6.000</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="space-y-2 pt-1">
+            <button 
+              type="button" 
+              onclick="sendWhatsAppRegistration()" 
+              class="w-full py-3.5 px-4 rounded-2xl bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 font-heading"
+            >
+              <span>📲 Confirmar Reserva por WhatsApp</span>
+              <span>→</span>
+            </button>
+
+            <button 
+              type="button" 
+              onclick="shareTallerWhatsApp()" 
+              class="w-full py-2.5 px-4 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+            >
+              <span>🔗 Compartir este Taller con un Amigo/a</span>
+            </button>
+          </div>
+
+          <div class="pt-2 text-center">
+            <button 
+              type="button" 
+              onclick="closeCheckoutModal()" 
+              class="text-xs text-stone-400 hover:text-stone-600 font-bold underline cursor-pointer"
+            >
+              Volver a la página del taller
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 8. MODAL VISOR DE FOTO / MANUSCRITO COMPLETO -->
+  <!-- ========================================================================= -->
+  <div id="photo-modal-overlay" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-5 hidden animate-fade-in" onclick="closePhotoModal()">
+    <div class="relative max-w-xl w-full max-h-[92vh] flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+      <button 
+        type="button" 
+        onclick="closePhotoModal()" 
+        class="absolute -top-10 right-0 text-white font-bold text-lg bg-white/20 hover:bg-white/30 rounded-full w-9 h-9 flex items-center justify-center cursor-pointer transition-colors"
+      >
+        ✕
+      </button>
+      <img id="photo-modal-img" src="" alt="Manuscrito Dr. Carlos" class="max-h-[82vh] w-auto rounded-2xl shadow-2xl border-2 border-white/20 object-contain" />
+      <span id="photo-modal-caption" class="text-white text-xs font-mono font-bold mt-2.5 text-center"></span>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 9. PIE DE PÁGINA -->
+  <!-- ========================================================================= -->
+  <footer class="mt-12 bg-white border-t border-[#e2ebd4] py-8 text-center text-xs text-stone-500">
+    <div class="max-w-xl mx-auto px-4 space-y-4">
+      <div class="flex items-center justify-center gap-2">
+        <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-6 h-6 object-contain" alt="Elementales" />
+        <span class="font-heading font-black text-stone-900 text-sm">Elementales Comunidad</span>
+      </div>
+      <p class="text-[11px] text-stone-400 max-w-sm mx-auto leading-relaxed">
+        Soberanía alimentaria, nutrición consciente y red de saberes barriales. Nodos en La Lucila y Loma Verde.
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-3 text-xs font-bold text-stone-600 pt-1">
+        <a href="index.html" class="hover:text-[#577327] transition-colors">Portal Principal</a>
+        <span>·</span>
+        <a href="talleres.html" class="hover:text-[#577327] transition-colors">Agenda de Talleres</a>
+        <span>·</span>
+        <a href="oliva.html" class="hover:text-[#577327] transition-colors">Aceite de Oliva</a>
+        <span>·</span>
+        <a href="compralunar.html" class="hover:text-[#577327] transition-colors">Compra Lunar</a>
+      </div>
+
+      <div class="text-[10px] text-stone-400 pt-2 font-mono">
+        elementales.store/salud · 2026 · Dr. Carlos
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- 10. JAVASCRIPT: LÓGICA DE WIZARD, PERSISTENCIA Y WHATSAPP -->
+  <!-- ========================================================================= -->
+  <script>
+    // -------------------------------------------------------------
+    // CONFIGURACIÓN DE NODOS & SERES
+    // -------------------------------------------------------------
+    const SALUD_NODES = {
+      lalucila: {
+        id: 'lalucila',
+        name: 'Nodo Elementales La Lucila',
+        shortName: 'La Lucila',
+        address: 'Anchorena 684',
+        fullAddress: 'Anchorena 684, La Lucila, Vicente López',
+        dateStr: 'Sábado 21 de Noviembre (10:30 a 14:00 hs)',
+        phone: '5491133221100'
+      },
+      lomaverde: {
+        id: 'lomaverde',
+        name: 'Nodo Loma Verde',
+        shortName: 'Loma Verde',
+        address: 'Botafogo 1320',
+        fullAddress: 'Botafogo 1320, Loma Verde, Escobar',
+        dateStr: 'Domingo 22 de Noviembre (10:30 a 14:00 hs)',
+        phone: '5491133445566'
+      }
+    };
+
+    const ELEMENTAL_BEINGS = [
+      { name: 'Bauti', emoji: '🌱' },
+      { name: 'Fran', emoji: '✨' },
+      { name: 'Gonza', emoji: '🍃' },
+      { name: 'Agus', emoji: '☀️' },
+      { name: 'Cris', emoji: '🌿' },
+      { name: 'Ro', emoji: '🌸' },
+      { name: 'Rami', emoji: '🫒' }
+    ];
+
+    // ESTADO
+    let selectedNodeId = 'lalucila';
+    let selectedBeingName = 'Bauti';
+    let currentStep = 1;
+    let selectedContribType = 'sugerida';
+    let customContribVal = 0;
+    let currentWaUrl = '';
+    let currentShareUrl = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserData();
+      renderBeingsGrid();
+    });
+
+    function loadUserData() {
+      const name = localStorage.getItem('elementales_user_name') || '';
+      const phone = localStorage.getItem('elementales_user_phone') || '';
+      const email = localStorage.getItem('elementales_user_email') || '';
+      const city = localStorage.getItem('elementales_user_city') || '';
+
+      if (name && document.getElementById('attendee-name')) document.getElementById('attendee-name').value = name;
+      if (phone && document.getElementById('attendee-phone')) document.getElementById('attendee-phone').value = phone;
+      if (email && document.getElementById('attendee-email')) document.getElementById('attendee-email').value = email;
+      if (city && document.getElementById('attendee-city')) document.getElementById('attendee-city').value = city;
+    }
+
+    function renderBeingsGrid() {
+      const grid = document.getElementById('beings-grid');
+      if (!grid) return;
+      grid.innerHTML = ELEMENTAL_BEINGS.map(b => `
+        <button 
+          type="button" 
+          onclick="selectBeing('${b.name}')" 
+          id="being-btn-${b.name}"
+          class="p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 active:scale-95 ${
+            selectedBeingName === b.name 
+              ? 'bg-[#577327] text-white border-[#577327] shadow-xs' 
+              : 'bg-white border-stone-200 text-stone-800 hover:border-[#577327]'
+          }"
+        >
+          <span class="text-xl">${b.emoji}</span>
+          <span class="text-xs font-heading font-bold">${b.name}</span>
+        </button>
+      `).join('');
+    }
+
+    function selectBeing(bName) {
+      selectedBeingName = bName;
+      playPopSound();
+      renderBeingsGrid();
+    }
+
+    function selectCheckoutNode(nodeId) {
+      selectedNodeId = nodeId;
+      playPopSound();
+
+      const cardLucila = document.getElementById('card-node-lalucila');
+      const radioLucila = document.getElementById('radio-node-lalucila');
+      const cardLoma = document.getElementById('card-node-lomaverde');
+      const radioLoma = document.getElementById('radio-node-lomaverde');
+
+      if (nodeId === 'lalucila') {
+        cardLucila?.classList.add('border-[#577327]', 'bg-[#f4f7ee]');
+        cardLucila?.classList.remove('border-stone-200', 'bg-white');
+        if (radioLucila) radioLucila.checked = true;
+
+        cardLoma?.classList.add('border-stone-200', 'bg-white');
+        cardLoma?.classList.remove('border-[#577327]', 'bg-[#f4f7ee]');
+        if (radioLoma) radioLoma.checked = false;
+      } else {
+        cardLoma?.classList.add('border-[#577327]', 'bg-[#f4f7ee]');
+        cardLoma?.classList.remove('border-stone-200', 'bg-white');
+        if (radioLoma) radioLoma.checked = true;
+
+        cardLucila?.classList.add('border-stone-200', 'bg-white');
+        cardLucila?.classList.remove('border-[#577327]', 'bg-[#f4f7ee]');
+        if (radioLucila) radioLucila.checked = false;
+      }
+    }
+
+    function openCheckoutModal() {
+      selectCheckoutNode(selectedNodeId);
+      selectContribution('sugerida');
+      goToStep(1);
+      document.getElementById('checkout-modal-overlay')?.classList.remove('hidden');
+      playPopSound();
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkout-modal-overlay')?.classList.add('hidden');
+    }
+
+    function goToStep(sNum) {
+      currentStep = sNum;
+      document.getElementById('checkout-step-number').textContent = sNum;
+
+      for (let i = 1; i <= 5; i++) {
+        const c = document.getElementById(`step-content-${i}`);
+        const p = document.getElementById(`step-pill-${i}`);
+        if (c) {
+          if (i === sNum) c.classList.remove('hidden');
+          else c.classList.add('hidden');
+        }
+        if (p) {
+          if (i === sNum) {
+            p.className = 'text-[9px] font-bold uppercase font-mono text-[#577327] border-b-2 border-[#577327] pb-0.5';
+          } else if (i < sNum) {
+            p.className = 'text-[9px] font-bold uppercase font-mono text-emerald-800 pb-0.5';
+          } else {
+            p.className = 'text-[9px] font-bold uppercase font-mono text-stone-400 pb-0.5';
+          }
+        }
+      }
+      playPopSound();
+    }
+
+    function selectContribution(type) {
+      selectedContribType = type;
+      const types = ['sugerida', 'voluntaria', 'trueque', 'beca'];
+      types.forEach(t => {
+        const btn = document.getElementById(`btn-contrib-${t}`);
+        if (!btn) return;
+        if (t === type) {
+          btn.className = 'p-2.5 rounded-xl border text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center bg-[#577327] text-white border-[#577327] shadow-xs active:scale-98';
+        } else {
+          btn.className = 'p-2.5 rounded-xl border border-stone-200 text-stone-700 bg-white hover:bg-stone-50 text-center transition-all cursor-pointer font-bold text-xs flex flex-col items-center justify-center active:scale-98';
+        }
+      });
+
+      const customContainer = document.getElementById('contrib-custom-container');
+      if (customContainer) {
+        if (type === 'voluntaria') customContainer.classList.remove('hidden');
+        else customContainer.classList.add('hidden');
+      }
+
+      updateContribSummary();
+      playPopSound();
+    }
+
+    function onCustomContributionInput(val) {
+      customContribVal = Math.max(0, parseFloat(val) || 0);
+      updateContribSummary();
+    }
+
+    function updateContribSummary() {
+      const labelEl = document.getElementById('step4-contrib-label');
+      const totalEl = document.getElementById('step4-total-amount');
+      if (!labelEl || !totalEl) return;
+
+      if (selectedContribType === 'sugerida') {
+        labelEl.textContent = 'Aporte sugerido ($6.000)';
+        totalEl.textContent = '$6.000';
+      } else if (selectedContribType === 'voluntaria') {
+        labelEl.textContent = `Aporte voluntario ($${customContribVal.toLocaleString('es-AR')})`;
+        totalEl.textContent = `$${customContribVal.toLocaleString('es-AR')}`;
+      } else if (selectedContribType === 'trueque') {
+        labelEl.textContent = 'Trueque Comunitario (Alimentos/Frascos)';
+        totalEl.textContent = 'Trueque / Intercambio';
+      } else if (selectedContribType === 'beca') {
+        labelEl.textContent = 'Beca Comunitaria ($0)';
+        totalEl.textContent = '$0 (Sin aporte)';
+      }
+    }
+
+    function confirmCheckout() {
+      const name = document.getElementById('attendee-name')?.value || 'Vecino/a';
+      const phone = document.getElementById('attendee-phone')?.value || '';
+      const email = document.getElementById('attendee-email')?.value || '';
+      const city = document.getElementById('attendee-city')?.value || '';
+      const seats = document.getElementById('attendee-seats')?.value || '1';
+      const habit = document.getElementById('attendee-habit')?.value || '';
+
+      // Persistir
+      if (name) localStorage.setItem('elementales_user_name', name);
+      if (phone) localStorage.setItem('elementales_user_phone', phone);
+      if (email) localStorage.setItem('elementales_user_email', email);
+      if (city) localStorage.setItem('elementales_user_city', city);
+
+      const randomCode = Math.floor(7000 + Math.random() * 2000);
+      const ticketId = `#SALUD-${randomCode}`;
+
+      const node = SALUD_NODES[selectedNodeId] || SALUD_NODES.lalucila;
+
+      let contribText = '';
+      if (selectedContribType === 'sugerida') contribText = 'Aporte sugerido: $6.000';
+      else if (selectedContribType === 'voluntaria') contribText = `Aporte voluntario: $${customContribVal.toLocaleString('es-AR')}`;
+      else if (selectedContribType === 'trueque') contribText = 'Trueque Comunitario';
+      else contribText = 'Beca Comunitaria ($0)';
+
+      const waMsg = 
+`🩺 *RESERVA DE CUPO - TALLER DR. CARLOS | ELEMENTALES*
+━━━━━━━━━━━━━━━━━━━━━
+🎟️ *Ticket de Reserva:* ${ticketId}
+🌱 *Taller:* ¡SALUD & 7,5! Equilibrio, Sangre ABL & Hábitos
+👨‍⚕️ *Facilita:* Dr. Carlos (Médico Naturista)
+📍 *Nodo:* ${node.name} (${node.address})
+📅 *Fecha:* ${node.dateStr}
+✨ *Ser Elemental Coordinador:* ${selectedBeingName}
+━━━━━━━━━━━━━━━━━━━━━
+👤 *Inscripto:* ${name}
+📱 *Teléfono:* ${phone}
+✉️ *Email:* ${email}
+🏡 *Barrio/Localidad:* ${city || 'Zona Norte'}
+👥 *Cupos Reservados:* ${seats} persona(s)
+💰 *Modalidad Aporte:* ${contribText}
+${habit ? `🌱 *Hábito a transformar:* ${habit}\n` : ''}━━━━━━━━━━━━━━━━━━━━━
+¡Confirmación enviada! Nos vemos para aprender y compartir los jugos vivos. ✨
+https://elementales.store/salud`;
+
+      const coordPhone = node.phone || '5491133221100';
+      currentWaUrl = `https://wa.me/${coordPhone}?text=${encodeURIComponent(waMsg)}`;
+
+      const shareMsg = 
+`🩺 *TALLER VIVENCIAL CON DR. CARLOS | ELEMENTALES .STORE*
+🌱 *¡SALUD & 7,5! Hábitos Vivos, Sangre ABL & Longevidad*
+👨‍⚕️ Encuentro en 2 módulos con compartir de jugos y alimentos vivos.
+
+📍 *Fechas & Nodos:*
+• Sáb 21 Nov (10:30 hs) · Nodo La Lucila (Anchorena 684)
+• Dom 22 Nov (10:30 hs) · Nodo Loma Verde (Botafogo 1320)
+
+¡Cupos reducidos para cuidar el vínculo! Sumate acá:
+👉 https://elementales.store/salud`;
+      currentShareUrl = `https://wa.me/?text=${encodeURIComponent(shareMsg)}`;
+
+      // Actualizar vista paso 5
+      document.getElementById('step5-ticket-id').textContent = ticketId;
+      document.getElementById('step5-node-address').textContent = `${node.name} (${node.address})`;
+      document.getElementById('step5-datetime').textContent = node.dateStr;
+      document.getElementById('step5-being-name').textContent = selectedBeingName;
+      document.getElementById('step5-attendee-name').textContent = name;
+      document.getElementById('step5-seats-count').textContent = `(${seats} cupo${seats === '1' ? '' : 's'})`;
+      document.getElementById('step5-contrib-display').textContent = contribText;
+
+      playSuccessSound();
+      triggerConfetti();
+      goToStep(5);
+    }
+
+    function sendWhatsAppRegistration() {
+      if (currentWaUrl) window.open(currentWaUrl, '_blank');
+    }
+
+    function shareTallerWhatsApp() {
+      if (currentShareUrl) {
+        window.open(currentShareUrl, '_blank');
+      } else {
+        const shareMsg = 
+`🩺 *TALLER VIVENCIAL CON DR. CARLOS | ELEMENTALES .STORE*
+🌱 *¡SALUD & 7,5! Hábitos Vivos, Sangre ABL & Longevidad*
+👨‍⚕️ Encuentro en 2 módulos con degustación de jugos y frutas vivas.
+
+📍 *Nodos La Lucila y Loma Verde*
+Mirá el manifiesto y reservá tu lugar acá:
+👉 https://elementales.store/salud`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareMsg)}`, '_blank');
+      }
+    }
+
+    // MODAL DE FOTO
+    function openPhotoModal(src, caption) {
+      const modal = document.getElementById('photo-modal-overlay');
+      const img = document.getElementById('photo-modal-img');
+      const cap = document.getElementById('photo-modal-caption');
+      if (modal && img) {
+        img.src = src;
+        if (cap) cap.textContent = caption || '';
+        modal.classList.remove('hidden');
+        playPopSound();
+      }
+    }
+
+    function closePhotoModal() {
+      document.getElementById('photo-modal-overlay')?.classList.add('hidden');
+    }
+
+    // AUDIO SINTETIZADO
+    function playPopSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    function playSuccessSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.1, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + (i + 1) * 0.08);
+          osc.start(now + i * 0.08);
+          osc.stop(now + (i + 1) * 0.08);
+        });
+      } catch (e) {}
+    }
+
+    // CONFETTI
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      if (!canvas) return;
+      canvas.classList.remove('hidden');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#577327', '#1db954', '#c0826d', '#d97757', '#a4c468', '#f4f7ee'];
+      for (let i = 0; i < 60; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          r: Math.random() * 5 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.7) * 14,
+          gravity: 0.25,
+          alpha: 1
+        });
+      }
+
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.alpha -= 0.012;
+          if (p.alpha > 0) {
+            alive = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
+        ctx.globalAlpha = 1;
+        frame++;
+        if (alive && frame < 90) requestAnimationFrame(animate);
+        else canvas.classList.add('hidden');
+      }
+      animate();
+    }
+  </script>
+</body>
+</html>

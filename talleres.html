@@ -1024,6 +1024,24 @@
     // -------------------------------------------------------------
     const TALLERES_DATA = [
       {
+        id: 'taller-carlos-salud-ph',
+        titulo: '¡SALUD & 7,5! Hábitos Vivos, Sangre ABL & Longevidad',
+        tallerista: 'Dr. Carlos (Médico Naturista)',
+        elemento: 'agua',
+        nodoId: 'lalucila',
+        fecha: 'Sábado 21 y Domingo 22 de Noviembre',
+        horario: '10:30 a 14:00 hs',
+        duracion: '3h 30m (2 Módulos + Jugos Vivos)',
+        lugarTexto: 'Nodos La Lucila y Loma Verde',
+        cuposTotales: 20,
+        cuposOcupados: 7,
+        contribucionSugerida: 6000,
+        descripcion: 'Taller vivencial sobre el equilibrio ácido-básico (pH 7,5), la sangre como sistema de ABL y la transformación de hábitos insanos en disfrute. Incluye compartir de jugos prensados y alimentos vivos.',
+        icono: '🩺',
+        destacado: true,
+        landingUrl: 'salud.html'
+      },
+      {
         id: 'taller-huerta-regenerativa',
         titulo: 'Huertas Regenerativas & Suelo Vivo en Balcones',
         tallerista: 'Cris (Guardián del Suelo Vivo) & Fran',
@@ -1310,13 +1328,22 @@
             </div>
 
             <!-- Botones de Acción -->
-            <div class="pt-3 border-t border-stone-100 flex items-center gap-2">
+            <div class="pt-3 border-t border-stone-100 flex items-center gap-2 flex-wrap">
+              ${t.landingUrl ? `
+                <a 
+                  href="${t.landingUrl}" 
+                  class="btn-action bg-[#f4f7ee] hover:bg-[#e2ebd4] text-[#3e531c] border border-[#577327]/30 text-xs font-black py-2.5 px-3 rounded-xl shadow-2xs flex items-center justify-center gap-1 text-decoration-none"
+                  title="Ver página especial y flyer"
+                >
+                  <span>📜 Ver Programa</span>
+                </a>
+              ` : ''}
               <button 
                 type="button" 
                 onclick="startWizard('${t.id}')"
                 class="btn-action flex-1 bg-[#1db954] hover:bg-[#16a34a] text-white text-xs font-black py-2.5 px-4 rounded-xl shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-heading"
               >
-                <span>Inscribirme / Reservar</span>
+                <span>Inscribirme</span>
                 <span>→</span>
               </button>
 
