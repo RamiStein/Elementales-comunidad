@@ -888,6 +888,15 @@
           <!-- ======================================================== -->
           <div id="step-content-5" class="hidden space-y-4">
             
+            <!-- Aviso de visualización previa del detalle antes de enviar -->
+            <div class="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-3 flex items-center gap-2.5 text-xs text-emerald-950">
+              <span class="text-xl shrink-0">📋</span>
+              <div>
+                <strong class="block text-emerald-900 font-bold leading-tight">Detalle Completo de tu Pedido</strong>
+                <span class="text-[11px] text-emerald-800 leading-tight">Revisá los datos antes de enviar. Al confirmar, el pedido se guarda en el sistema y se abre WhatsApp automáticamente para enviar el comprobante al nodo asociado.</span>
+              </div>
+            </div>
+
             <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 text-xs space-y-3">
               
               <!-- Fechas Clave del Lote -->
@@ -952,17 +961,20 @@
 
             </div>
 
-            <!-- Botón Principal: ENVIAR PEDIDO -->
+            <!-- Botón Principal: ENVIAR PEDIDO AL SISTEMA Y A WHATSAPP -->
             <button 
               type="button" 
               onclick="handleConfirmOlivaOrder()" 
               id="btn-final-send-order"
-              class="w-full py-4 rounded-2xl bg-[#1db954] hover:bg-[#16a34a] active:scale-98 text-white font-black text-base shadow-lg hover:shadow-xl flex items-center justify-center gap-2 cursor-pointer font-heading transition-all"
+              class="w-full py-4 px-4 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] active:scale-98 text-white font-black text-sm sm:text-base shadow-lg hover:shadow-xl flex items-center justify-center gap-2 cursor-pointer font-heading transition-all"
             >
-              <span>📝</span>
-              <span id="btn-final-send-text">ENVIAR PEDIDO ($115.566)</span>
-              <span>→</span>
+              <span class="text-xl">💬</span>
+              <span id="btn-final-send-text">ENVIAR PEDIDO A WHATSAPP ($115.566)</span>
+              <span class="text-lg">→</span>
             </button>
+            <p class="text-[11px] text-stone-500 text-center font-medium mt-1">
+              🔒 Se registra en el sistema y se abre WhatsApp automáticamente con el pedido listo para el nodo
+            </p>
 
             <!-- Botón Volver Paso 5 -->
             <div class="text-center pt-1">
@@ -1065,12 +1077,12 @@
           </div>
 
           <!-- Notificación de comprobante y confirmación -->
-          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-start gap-2.5 text-xs text-emerald-950">
-            <span class="text-base shrink-0">📋</span>
+          <div class="bg-emerald-50 border border-emerald-300 rounded-2xl p-3.5 flex items-start gap-3 text-xs text-emerald-950 shadow-2xs">
+            <span class="text-2xl shrink-0">✅</span>
             <div class="flex-1">
-              <p class="font-bold">Comprobante y Pedido Registrado</p>
-              <p class="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
-                Tu orden <strong id="oliva-success-email-notice" class="font-mono"></strong> quedó agendada en el sistema. Para confirmar el retiro con el coordinador del nodo, completá el envío por WhatsApp con los botones de abajo.
+              <p class="font-black text-emerald-900 text-sm">¡Pedido Guardado en el Sistema y Enviado a WhatsApp!</p>
+              <p class="text-[11px] text-emerald-800 mt-1 leading-relaxed">
+                Tu orden <strong id="oliva-success-email-notice" class="font-mono bg-white px-1.5 py-0.5 rounded border border-emerald-200"></strong> ya está guardada. Si la aplicación de WhatsApp no se abrió automáticamente en tu teléfono, presioná el botón verde a continuación:
               </p>
             </div>
           </div>
@@ -1083,15 +1095,15 @@
               </p>
             </div>
 
-            <!-- Botón 1: Enviar al Coordinador del Nodo -->
+            <!-- Botón 1: Abrir / Reenviar al Coordinador del Nodo -->
             <button 
               type="button" 
               id="oliva-success-btn-whatsapp"
               onclick="sendWhatsAppTicketOliva()"
-              class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] active:scale-98 text-white font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 font-heading"
+              class="w-full py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] active:scale-98 text-white font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 font-heading"
             >
-              <span class="text-lg">💬</span>
-              <span>Enviar Pedido al Coordinador del Nodo</span>
+              <span class="text-xl">💬</span>
+              <span>Abrir / Reenviar al WhatsApp del Nodo</span>
               <span class="text-sm font-normal">→</span>
             </button>
 
@@ -1940,7 +1952,7 @@
       if (s5CalcTotal) s5CalcTotal.textContent = `$${totalToPay.toLocaleString('es-AR')}`;
 
       const btnSendText = document.getElementById('btn-final-send-text');
-      if (btnSendText) btnSendText.textContent = `ENVIAR PEDIDO ($${totalToPay.toLocaleString('es-AR')})`;
+      if (btnSendText) btnSendText.textContent = `ENVIAR PEDIDO A WHATSAPP ($${totalToPay.toLocaleString('es-AR')})`;
     }
 
     // Navegación entre los 5 pasos
@@ -2289,12 +2301,35 @@ https://elementales.store/oliva`;
       document.getElementById('oliva-checkout-view-form')?.classList.add('hidden');
       document.getElementById('oliva-checkout-view-success')?.classList.remove('hidden');
 
-      // Abrir WhatsApp automáticamente con el mensaje ya estructurado para el coordinador
+      // Despacho automático a Google Sheets si está disponible
+      try {
+        if (typeof ElementalesSheets !== 'undefined' && ElementalesSheets.sendOrder) {
+          ElementalesSheets.sendOrder(newOrder);
+        }
+      } catch (errSheets) {
+        console.warn('Error al despachar a Google Sheets:', errSheets);
+      }
+
+      // Enviar automáticamente a WhatsApp (sí o sí)
       try {
         if (currentOrderWaUrl) {
-          window.open(currentOrderWaUrl, '_blank');
+          const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
+          if (isMobile) {
+            // En smartphones, la navegación directa abre la App de WhatsApp de inmediato
+            setTimeout(() => {
+              window.location.href = currentOrderWaUrl;
+            }, 300);
+          } else {
+            // En computadoras de escritorio, abrir en nueva pestaña
+            const win = window.open(currentOrderWaUrl, '_blank');
+            if (!win || win.closed || typeof win.closed === 'undefined') {
+              window.location.href = currentOrderWaUrl;
+            }
+          }
         }
-      } catch (eWa) {}
+      } catch (eWa) {
+        console.warn('Error al abrir WhatsApp automáticamente:', eWa);
+      }
     }
 
     function sendWhatsAppTicketOliva() {
