@@ -21,10 +21,12 @@ root_files_to_mirror = [
     "compralunar.html",
     "frutilla.html",
     "oliva.html",
+    "aceite.html",
     "gestionelemental.html",
     "miembroelemental.html",
     "prosumidores.html",
-    "404.html"
+    "404.html",
+    "google_sheets_webhook.js"
 ]
 
 if os.path.exists(primary) and os.path.exists(mirror):
@@ -34,6 +36,18 @@ if os.path.exists(primary) and os.path.exists(mirror):
         if os.path.exists(src):
             shutil.copy2(src, dst)
             print(f"Mirrored {rf} to scratch repo")
+
+    # Mirroring scripts en js/
+    src_js = os.path.join(primary, "js")
+    dst_js = os.path.join(mirror, "js")
+    if os.path.exists(src_js):
+        os.makedirs(dst_js, exist_ok=True)
+        for item in os.listdir(src_js):
+            s_item = os.path.join(src_js, item)
+            d_item = os.path.join(dst_js, item)
+            if os.path.isfile(s_item):
+                shutil.copy2(s_item, d_item)
+        print("Mirrored js files to scratch repo")
 
     # Mirroring assets de talleres
     src_assets = os.path.join(primary, "public", "assets", "talleres")
@@ -82,10 +96,12 @@ for repo in repos:
     # 4. Aceite de Oliva
     source_oliva = os.path.join(repo, "oliva.html")
     target_oliva = os.path.join(repo, "oliva", "index.html")
+    target_aceite = os.path.join(repo, "aceite.html")
     if os.path.exists(source_oliva):
         os.makedirs(os.path.dirname(target_oliva), exist_ok=True)
         shutil.copy2(source_oliva, target_oliva)
-        print(f"Copied oliva to: {target_oliva}")
+        shutil.copy2(source_oliva, target_aceite)
+        print(f"Copied oliva to: {target_oliva} and {target_aceite}")
 
     # 5. Talleres & Eventos
     source_talleres = os.path.join(repo, "talleres.html")

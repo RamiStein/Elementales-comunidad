@@ -1136,6 +1136,7 @@
   <script src="/js/products-data.js" charset="UTF-8"></script>
   <script src="/js/circulos.js" charset="UTF-8"></script>
   <script src="/js/db.js" charset="UTF-8"></script>
+  <script src="/js/sheets-sync.js" charset="UTF-8"></script>
 
   <script>
     // =========================================================================
@@ -2141,6 +2142,15 @@
         });
       }
 
+      // Despachar automáticamente a la planilla de Google Sheets
+      try {
+        if (typeof ElementalesSheets !== 'undefined' && ElementalesSheets.sendOrder) {
+          ElementalesSheets.sendOrder(newOrder);
+        }
+      } catch (errSheets) {
+        console.warn('Error despachando pedido a Google Sheets:', errSheets);
+      }
+
       lastCompletedOrder = newOrder;
 
       // Actualizar pantalla de éxito
@@ -2278,6 +2288,13 @@ https://elementales.store/oliva`;
       // Transición a la vista de éxito
       document.getElementById('oliva-checkout-view-form')?.classList.add('hidden');
       document.getElementById('oliva-checkout-view-success')?.classList.remove('hidden');
+
+      // Abrir WhatsApp automáticamente con el mensaje ya estructurado para el coordinador
+      try {
+        if (currentOrderWaUrl) {
+          window.open(currentOrderWaUrl, '_blank');
+        }
+      } catch (eWa) {}
     }
 
     function sendWhatsAppTicketOliva() {

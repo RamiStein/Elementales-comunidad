@@ -506,6 +506,27 @@
             <span>Imprimir</span>
           </button>
 
+          <!-- Sincronizar Google Sheets -->
+          <button 
+            type="button" 
+            onclick="syncGoogleSheetsOrders()" 
+            class="px-3.5 py-2 rounded-xl bg-[#2e4a1f] hover:bg-[#233817] text-white text-xs font-black shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-98"
+            title="Traer y actualizar pedidos automáticamente desde la planilla de Google Sheets"
+          >
+            <span>🔄</span>
+            <span>Sincronizar Sheets</span>
+          </button>
+
+          <!-- Configurar Google Sheets -->
+          <button 
+            type="button" 
+            onclick="openConnectSheetsModal()" 
+            class="px-3 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold border border-stone-200 flex items-center gap-1 cursor-pointer transition-all"
+            title="Configurar enlace de planilla de Google Sheets"
+          >
+            <span>⚙️ Sheets</span>
+          </button>
+
           <!-- Pegar Pedido de WhatsApp -->
           <button 
             type="button" 
@@ -876,6 +897,15 @@
         </div>
 
         <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            onclick="syncGoogleSheetsOrders()" 
+            class="px-3.5 py-2.5 rounded-2xl bg-[#2e4a1f] hover:bg-[#233817] text-white font-black text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-98"
+            title="Traer pedidos de oliva registrados en la planilla de Google Sheets"
+          >
+            <span>🔄</span>
+            <span>Sincronizar Sheets</span>
+          </button>
           <button 
             type="button" 
             onclick="openImportWhatsAppModal('oliva')" 
@@ -3060,6 +3090,95 @@
   </div>
 
   <!-- ========================================================================= -->
+  <!-- MODAL: CONECTAR PLANILLA DE GOOGLE SHEETS                                 -->
+  <!-- ========================================================================= -->
+  <div id="modal-connect-sheets" class="hidden fixed inset-0 z-50 bg-stone-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-xl w-full p-6 text-stone-900 shadow-2xl space-y-4 max-h-[92vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-stone-100 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-base font-bold shrink-0">📊</span>
+          <div>
+            <h3 class="font-black text-base sm:text-lg text-stone-900 font-heading">Conectar Planilla de Google Sheets</h3>
+            <p class="text-[11px] text-stone-500">Recibí automáticamente todos los pedidos de la web en un Excel en tu Google Drive.</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeConnectSheetsModal()" class="text-stone-400 hover:text-stone-700 font-bold text-lg cursor-pointer p-1">✕</button>
+      </div>
+
+      <div class="overflow-y-auto space-y-4 pr-1 text-xs flex-1">
+        <!-- URL de la aplicación web de Google Apps Script -->
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">
+            URL de la Aplicación Web (Google Apps Script Webhook):
+          </label>
+          <input 
+            type="url" 
+            id="sheets-webhook-url-input" 
+            placeholder="https://script.google.com/macros/s/.../exec" 
+            class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-emerald-600 focus:bg-white rounded-xl p-2.5 text-stone-900 font-mono text-xs outline-none transition-all"
+          />
+          <div class="flex items-center justify-between mt-1.5">
+            <span id="sheets-connection-badge" class="inline-block text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600">
+              Estado: No configurado
+            </span>
+            <span class="text-[10px] text-stone-400">Guarda en tu navegador</span>
+          </div>
+        </div>
+
+        <!-- Instrucciones paso a paso en 4 pasos simples -->
+        <div class="bg-[#f4f7ee] border border-[#d6e3c1] rounded-2xl p-4 space-y-2.5">
+          <span class="text-[11px] font-black uppercase tracking-wider text-[#3e531c] font-mono block">
+            Cómo configurarlo en 2 minutos (Paso a Paso):
+          </span>
+          <ol class="space-y-2 list-decimal list-inside text-stone-700 text-xs leading-relaxed">
+            <li>
+              <strong>Creá una planilla:</strong> Abrí <a href="https://sheets.new" target="_blank" class="text-emerald-700 font-bold underline">sheets.new</a> en una pestaña (creará un Google Sheets nuevo).
+            </li>
+            <li>
+              <strong>Pegá el código:</strong> En la planilla hacé clic en <em>Extensiones &gt; Apps Script</em>, borrá todo y pegá el código que tenés abajo.
+            </li>
+            <li>
+              <strong>Publicá:</strong> Hacé clic en <em>Implementar &gt; Nueva implementación</em>, elegí tipo <em>Aplicación web</em>, seleccioná <em>Quién tiene acceso: Cualquier usuario</em>, e implementá.
+            </li>
+            <li>
+              <strong>Copiá y pegá la URL:</strong> Copiá la URL que termina en <code>/exec</code> y pegala en el casillero de arriba.
+            </li>
+          </ol>
+        </div>
+
+        <!-- Código para copiar -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="font-bold text-stone-700 text-xs">Código para Apps Script:</span>
+            <button 
+              type="button" 
+              onclick="copyAppsScriptCode()" 
+              id="btn-copy-script" 
+              class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-[11px] cursor-pointer flex items-center gap-1 transition-all"
+            >
+              <span>📋</span>
+              <span id="copy-script-text">Copiar Código Completo</span>
+            </button>
+          </div>
+          <pre id="sheets-code-preview" class="p-3 bg-stone-900 text-emerald-300 rounded-xl text-[10px] font-mono overflow-x-auto max-h-36 leading-tight select-all"></pre>
+        </div>
+      </div>
+
+      <div class="pt-3 flex items-center justify-between border-t border-stone-100 shrink-0">
+        <button type="button" onclick="testGoogleSheetsConnection()" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs border border-stone-300 cursor-pointer transition-all">
+          Probar Conexión
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeConnectSheetsModal()" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold cursor-pointer transition-all">Cancelar</button>
+          <button type="button" onclick="saveGoogleSheetsConfig()" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black cursor-pointer shadow-md transition-all active:scale-98">
+            Guardar Configuración
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
   <!-- MODAL: REGISTRAR NUEVO MIEMBRO                                            -->
   <!-- ========================================================================= -->
   <div id="modal-new-member" class="hidden fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-sm flex items-center justify-center p-4">
@@ -3383,6 +3502,7 @@
   <!-- SCRIPT CENTRAL DEL PANEL DE GESTIÓN -->
   <script src="js/vrde-sync.js"></script>
   <script src="js/db.js"></script>
+  <script src="js/sheets-sync.js"></script>
   <script>
     // =========================================================================
     // 1. GESTIÓN DE ACCESO Y AUTENTICACIÓN
@@ -7127,6 +7247,205 @@
     // =========================================================================
     // IMPORTADOR INTELIGENTE DE PEDIDOS RECIBIDOS POR WHATSAPP
     // =========================================================================
+
+    // =========================================================================
+    // CONEXIÓN Y SINCRONIZACIÓN CON GOOGLE SHEETS
+    // =========================================================================
+    const GOOGLE_APPS_SCRIPT_TEMPLATE = '/**\n * =========================================================================\n * ELEMENTALES COMUNIDAD - CÓDIGO DE GOOGLE APPS SCRIPT PARA GOOGLE SHEETS\n * =========================================================================\n * \n * INSTRUCCIONES DE CONFIGURACIÓN (Toma solo 2 minutos):\n * 1. Abrí tu navegador y andá a https://sheets.new (crea una planilla nueva).\n * 2. Ponéle de nombre a la planilla: "Pedidos Elementales Comunidad".\n * 3. En el menú superior de la planilla, hacé clic en: Extensiones > Apps Script.\n * 4. Borrá todo el código que aparezca en el editor (el \'function myFunction()\').\n * 5. Pegá TODO este archivo completo en el editor de Apps Script.\n * 6. Hacé clic en el botón azul "Implementar" (arriba a la derecha) > "Nueva implementación".\n * 7. En el engranaje "Seleccionar tipo", elegí: "Aplicación web".\n * 8. Completá los campos:\n *    - Descripción: "Webhook Pedidos Elementales"\n *    - Ejecutar como: "Yo (tu cuenta de Google)"\n *    - Quién tiene acceso: "Cualquier usuario" (o "Anyone")  <--- ¡MUY IMPORTANTE!\n * 9. Hacé clic en "Implementar". Google te va a pedir autorizar permisos con tu cuenta.\n * 10. Copiá la "URL de la aplicación web" (termina en /exec) y pegála en tu panel de gestión\n *     (botón "⚙️ Conectar Google Sheets").\n * \n * ¡Listo! Cada vez que alguien pida en la web, se agregará un renglón automáticamente en tu Excel.\n */\n\nvar SHEET_NAME = "Pedidos_Elementales";\n\n// -----------------------------------------------------------------------------\n// 1. LECTURA DE PEDIDOS (GET): El Panel de Gestión consulta este endpoint\n// -----------------------------------------------------------------------------\nfunction doGet(e) {\n  try {\n    var ss = SpreadsheetApp.getActiveSpreadsheet();\n    var sheet = ss.getSheetByName(SHEET_NAME) || ss.getActiveSheet();\n    var rows = sheet.getDataRange().getValues();\n    \n    if (rows.length <= 1) {\n      return ContentService.createTextOutput(JSON.stringify([]))\n        .setMimeType(ContentService.MimeType.JSON);\n    }\n    \n    var headers = rows[0];\n    var orders = [];\n    \n    for (var i = 1; i < rows.length; i++) {\n      var row = rows[i];\n      if (!row[0] && !row[2]) continue; // Saltear filas vacías\n      \n      var obj = {};\n      for (var j = 0; j < headers.length; j++) {\n        var key = String(headers[j]).trim();\n        obj[key] = row[j];\n      }\n      orders.push(obj);\n    }\n    \n    return ContentService.createTextOutput(JSON.stringify(orders))\n      .setMimeType(ContentService.MimeType.JSON);\n  } catch (err) {\n    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))\n      .setMimeType(ContentService.MimeType.JSON);\n  }\n}\n\n// -----------------------------------------------------------------------------\n// 2. REGISTRO DE PEDIDOS (POST): oliva.html y frutilla.html envían aquí la compra\n// -----------------------------------------------------------------------------\nfunction doPost(e) {\n  try {\n    var ss = SpreadsheetApp.getActiveSpreadsheet();\n    var sheet = ss.getSheetByName(SHEET_NAME);\n    \n    if (!sheet) {\n      sheet = ss.insertSheet(SHEET_NAME);\n    }\n    \n    // Crear encabezados si la hoja es nueva o está vacía\n    if (sheet.getLastRow() === 0) {\n      sheet.appendRow([\n        "Fecha",\n        "Hora",\n        "Ticket_ID",\n        "Tipo",\n        "Cliente",\n        "Telefono",\n        "Email",\n        "Producto",\n        "Litros_Kg",\n        "Escala",\n        "Total",\n        "Aporte_Org",\n        "Forma_Pago",\n        "Nodo_Retiro",\n        "Ser_Elemental",\n        "Domicilio",\n        "Notas",\n        "Estado",\n        "Timestamp"\n      ]);\n      // Estilo institucional verde oliva de Elementales\n      sheet.getRange(1, 1, 1, 19)\n        .setBackground("#3e531c")\n        .setFontColor("#ffffff")\n        .setFontWeight("bold");\n      sheet.setFrozenRows(1);\n    }\n    \n    var data = {};\n    if (e.postData && e.postData.contents) {\n      data = JSON.parse(e.postData.contents);\n    } else if (e.parameter) {\n      data = e.parameter;\n    }\n    \n    var addr = "";\n    if (data.clientAddress) {\n      addr = typeof data.clientAddress === "object" ? (data.clientAddress.full || data.clientAddress.street || "") : String(data.clientAddress);\n    }\n    \n    var qty = Number(data.liters || data.kg || 1);\n    var scale = data.tierName || (qty >= 20 ? "Comunitaria (+20L)" : (qty >= 6 ? "Familiar (+6L)" : "Pequeña (1 a 5L)"));\n    \n    sheet.appendRow([\n      data.dateStr || Utilities.formatDate(new Date(), "America/Argentina/Buenos_Aires", "dd/MM/yyyy"),\n      data.timeStr || Utilities.formatDate(new Date(), "America/Argentina/Buenos_Aires", "HH:mm"),\n      data.id || ("ORD-" + new Date().getTime().toString(36).toUpperCase()),\n      data.type || "lunar",\n      data.clientName || "Vecin@",\n      data.clientPhone || "",\n      data.clientEmail || "",\n      data.productName || "Aceite de Oliva Extra Virgen Lorenzo Cabrera",\n      qty,\n      scale,\n      data.total || 0,\n      data.communityContribution || data.donation || 0,\n      data.paymentMethod || "Transferencia",\n      data.nodoNombre || "Nodo La Lucila",\n      data.serElemental || "Bauti",\n      addr,\n      data.notes || "",\n      data.status || "Confirmado",\n      data.timestamp || new Date().getTime()\n    ]);\n    \n    return ContentService.createTextOutput(JSON.stringify({ status: "success", id: data.id }))\n      .setMimeType(ContentService.MimeType.JSON);\n  } catch (err) {\n    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))\n      .setMimeType(ContentService.MimeType.JSON);\n  }\n}\n';
+
+    function openConnectSheetsModal() {
+      const modal = document.getElementById('modal-connect-sheets');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+
+      const input = document.getElementById('sheets-webhook-url-input');
+      const badge = document.getElementById('sheets-connection-badge');
+      const preview = document.getElementById('sheets-code-preview');
+
+      if (preview) {
+        preview.textContent = GOOGLE_APPS_SCRIPT_TEMPLATE;
+      }
+
+      const currentUrl = (typeof ElementalesSheets !== 'undefined') ? ElementalesSheets.getUrl() : (localStorage.getItem('elementales_google_sheets_url') || '');
+      if (input) {
+        input.value = (currentUrl && !currentUrl.includes('placeholder')) ? currentUrl : '';
+      }
+
+      if (badge) {
+        if (typeof ElementalesSheets !== 'undefined' && ElementalesSheets.isConfigured()) {
+          badge.textContent = '✓ Conectado a Google Sheets';
+          badge.className = 'inline-block text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300';
+        } else {
+          badge.textContent = 'Estado: Pendiente de configuración';
+          badge.className = 'inline-block text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-300';
+        }
+      }
+    }
+
+    function closeConnectSheetsModal() {
+      const modal = document.getElementById('modal-connect-sheets');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function copyAppsScriptCode() {
+      const btn = document.getElementById('btn-copy-script');
+      const textSpan = document.getElementById('copy-script-text');
+      
+      navigator.clipboard.writeText(GOOGLE_APPS_SCRIPT_TEMPLATE).then(() => {
+        if (textSpan) textSpan.textContent = '✓ ¡Copiado!';
+        if (btn) btn.className = 'px-3 py-1 rounded-lg bg-emerald-600 text-white font-bold text-[11px] cursor-pointer flex items-center gap-1 transition-all';
+        setTimeout(() => {
+          if (textSpan) textSpan.textContent = 'Copiar Código Completo';
+          if (btn) btn.className = 'px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-[11px] cursor-pointer flex items-center gap-1 transition-all';
+        }, 3000);
+      }).catch(() => {
+        alert('Seleccioná el texto del código de abajo y copialo con Ctrl+C.');
+      });
+    }
+
+    function saveGoogleSheetsConfig() {
+      const input = document.getElementById('sheets-webhook-url-input');
+      const val = (input ? input.value : '').trim();
+
+      if (val && !val.startsWith('https://script.google.com/macros/s/')) {
+        alert('La URL debe comenzar con https://script.google.com/macros/s/... y terminar en /exec');
+        return;
+      }
+
+      if (typeof ElementalesSheets !== 'undefined') {
+        ElementalesSheets.setUrl(val);
+      } else {
+        localStorage.setItem('elementales_google_sheets_url', val);
+      }
+
+      closeConnectSheetsModal();
+      if (val) {
+        alert('✓ URL de Google Sheets guardada correctamente. Ahora podés sincronizar los pedidos.');
+        syncGoogleSheetsOrders();
+      } else {
+        alert('Configuración de Google Sheets limpiada.');
+      }
+    }
+
+    async function testGoogleSheetsConnection() {
+      const input = document.getElementById('sheets-webhook-url-input');
+      const val = (input ? input.value : '').trim();
+
+      if (!val || !val.startsWith('https://script.google.com/macros/s/')) {
+        alert('Por favor ingresá una URL válida de Google Apps Script antes de probar.');
+        return;
+      }
+
+      try {
+        const res = await fetch(val, { method: 'GET', headers: { 'Accept': 'application/json' } });
+        if (res.ok) {
+          alert('✓ ¡Conexión exitosa! Google Sheets respondió correctamente.');
+        } else {
+          alert('⚠️ Google Sheets respondió con estado: ' + res.status + '. Verificá que la implementación esté configurada con acceso para "Cualquier usuario" (Anyone).');
+        }
+      } catch (err) {
+        alert('⚠️ No se pudo conectar: ' + err.message + '\nRecordá que en Google Apps Script debés elegir "Quién tiene acceso: Cualquier usuario" (Anyone).');
+      }
+    }
+
+    async function syncGoogleSheetsOrders() {
+      if (typeof ElementalesSheets === 'undefined') {
+        alert('El módulo de sincronización con Google Sheets no está disponible.');
+        return;
+      }
+
+      if (!ElementalesSheets.isConfigured()) {
+        openConnectSheetsModal();
+        return;
+      }
+
+      const syncBtns = document.querySelectorAll('[onclick="syncGoogleSheetsOrders()"]');
+      syncBtns.forEach(b => {
+        b.disabled = true;
+        b.dataset.prevHtml = b.innerHTML;
+        b.innerHTML = '<span>⏳ Sincronizando...</span>';
+      });
+
+      try {
+        const res = await ElementalesSheets.fetchOrders();
+        if (!res.success) {
+          alert('⚠️ Error consultando Google Sheets: ' + res.error + '\nVerificá que la aplicación web esté publicada con acceso para "Cualquier usuario" (Anyone).');
+          return;
+        }
+
+        const rows = res.orders || [];
+        if (rows.length === 0) {
+          alert('ℹ️ La planilla de Google Sheets está conectada, pero aún no tiene ningún pedido registrado.');
+          return;
+        }
+
+        let addedCount = 0;
+        let updatedCount = 0;
+
+        rows.forEach(r => {
+          const order = ElementalesSheets.normalizeSheetRow(r);
+          if (!order || !order.id) return;
+
+          const existingIdx = adminOrders.findIndex(o => String(o.id) === String(order.id));
+          if (existingIdx >= 0) {
+            adminOrders[existingIdx] = { ...adminOrders[existingIdx], ...order };
+            updatedCount++;
+          } else {
+            adminOrders.unshift(order);
+            addedCount++;
+          }
+
+          // Si es pedido de aceite de oliva, sincronizar con la base subordinada
+          if (order.id.startsWith('OLIV-') || (order.productName && /oliva|aceite/i.test(order.productName))) {
+            try {
+              let olOrders = [];
+              const raw = localStorage.getItem('elementales_oliva_orders_v1');
+              if (raw) olOrders = JSON.parse(raw);
+              const idxOl = olOrders.findIndex(x => String(x.id) === String(order.id));
+              if (idxOl >= 0) {
+                olOrders[idxOl] = { ...olOrders[idxOl], ...order };
+              } else {
+                olOrders.unshift(order);
+              }
+              localStorage.setItem('elementales_oliva_orders_v1', JSON.stringify(olOrders));
+            } catch (e) {}
+          }
+
+          // Si es pedido de frutilla, sincronizar con la base subordinada
+          if (order.id.startsWith('FRUT-') || (order.productName && /frutilla/i.test(order.productName))) {
+            try {
+              let frOrders = [];
+              const raw = localStorage.getItem('elementales_frutilla_orders_v1');
+              if (raw) frOrders = JSON.parse(raw);
+              const idxFr = frOrders.findIndex(x => String(x.id) === String(order.id));
+              if (idxFr >= 0) {
+                frOrders[idxFr] = { ...frOrders[idxFr], ...order };
+              } else {
+                frOrders.unshift(order);
+              }
+              localStorage.setItem('elementales_frutilla_orders_v1', JSON.stringify(frOrders));
+            } catch (e) {}
+          }
+        });
+
+        saveAdminOrders();
+        updateAdminKPIs();
+        renderAdminOrdersTable();
+        if (typeof renderAdminOliva === 'function') renderAdminOliva();
+        if (typeof renderAdminFrutillas === 'function') renderAdminFrutillas();
+        if (typeof renderAdminDatabaseTable === 'function') renderAdminDatabaseTable();
+
+        alert('✓ Sincronización exitosa con Google Sheets:\n• ' + addedCount + ' pedidos nuevos agregados\n• ' + updatedCount + ' pedidos actualizados');
+      } catch (err) {
+        alert('Error al sincronizar con Google Sheets: ' + err.message);
+      } finally {
+        syncBtns.forEach(b => {
+          b.disabled = false;
+          if (b.dataset.prevHtml) b.innerHTML = b.dataset.prevHtml;
+        });
+      }
+    }
+
     function openImportWhatsAppModal(defaultType) {
       const modal = document.getElementById('modal-import-whatsapp');
       if (!modal) return;
