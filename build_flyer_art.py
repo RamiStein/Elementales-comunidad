@@ -14,9 +14,7 @@ def get_font(size, weight=700):
     return font
 
 def create_gradient_text(text, font, color_start, color_end, horizontal=True):
-    """
-    Renders text with a smooth color gradient and returns an RGBA image.
-    """
+    """Renders text with a smooth color gradient and returns an RGBA image."""
     bbox = font.getbbox(text)
     w = max(1, bbox[2] - bbox[0])
     h = max(1, bbox[3] - bbox[1])
@@ -54,23 +52,16 @@ def create_rounded_rect_mask(size, radius):
     return mask.resize(size, Image.Resampling.LANCZOS)
 
 def build_whatsapp_safe_vertical():
-    """
-    Genera el flyer vertical de 1080x1350 con Safe Zone calibrada para WhatsApp.
-    WhatsApp recorta los ~130px superiores e inferiores en la burbuja del chat.
-    Al ubicar todo el contenido entre y=135 e y=1215, NADA se corta en WhatsApp.
-    """
     logo_path = os.path.join(ROOT_DIR, "public", "assets", "logo_icon.png")
     photo_path = os.path.join(ROOT_DIR, "public", "assets", "products", "aceite_lorenzo_mesa.jpg")
     
     output_path = os.path.join(ROOT_DIR, "public", "assets", "products", "flyer_oliva_noviembre.jpg")
-    output_path_v2 = os.path.join(ROOT_DIR, "public", "assets", "products", "flyer_oliva_noviembre_actualizado.jpg")
-    output_path_v3 = os.path.join(ROOT_DIR, "public", "assets", "products", "flyer_oliva_noviembre_v3.jpg")
     output_path_safe = os.path.join(ROOT_DIR, "public", "assets", "products", "flyer_oliva_whatsapp_safe.jpg")
+    output_path_ultimo = os.path.join(ROOT_DIR, "public", "assets", "products", "flyer_oliva_ultimo_dia.jpg")
     
     artifact_path = r"C:\Users\Rami\.gemini\antigravity\brain\6aae8b24-5824-4a75-9321-ac52a81a3a00\flyer_oliva_noviembre.jpg"
-    artifact_path_v2 = r"C:\Users\Rami\.gemini\antigravity\brain\6aae8b24-5824-4a75-9321-ac52a81a3a00\flyer_oliva_noviembre_actualizado.jpg"
-    artifact_path_v3 = r"C:\Users\Rami\.gemini\antigravity\brain\6aae8b24-5824-4a75-9321-ac52a81a3a00\flyer_oliva_noviembre_v3.jpg"
     artifact_path_safe = r"C:\Users\Rami\.gemini\antigravity\brain\6aae8b24-5824-4a75-9321-ac52a81a3a00\flyer_oliva_whatsapp_safe.jpg"
+    artifact_path_ultimo = r"C:\Users\Rami\.gemini\antigravity\brain\6aae8b24-5824-4a75-9321-ac52a81a3a00\flyer_oliva_ultimo_dia.jpg"
 
     W, H = 1080, 1350
     canvas = Image.new("RGBA", (W, H), (250, 248, 243, 255))
@@ -86,12 +77,11 @@ def build_whatsapp_safe_vertical():
 
     draw = ImageDraw.Draw(canvas)
 
-    # ----------------------------------------------------
-    # CARGA DE TIPOGRAFÍAS CON PESOS BLACK Y BOLD
-    # ----------------------------------------------------
-    font_hero_l1      = get_font(68, weight=900)
-    font_hero_l2      = get_font(90, weight=900)
-    font_hero_sub     = get_font(19, weight=800)
+    # Tipografías
+    font_urgent_pill  = get_font(18, weight=900)
+    font_hero_l1      = get_font(64, weight=900)
+    font_hero_l2      = get_font(84, weight=900)
+    font_hero_sub     = get_font(18, weight=800)
     font_photo_badge  = get_font(12, weight=850)
     
     font_tier_vol     = get_font(21, weight=850)
@@ -100,8 +90,8 @@ def build_whatsapp_safe_vertical():
     font_tier_unit    = get_font(18, weight=800)
     font_badge_rec    = get_font(14, weight=900)
     
-    font_date_eyebrow = get_font(19, weight=850)
-    font_date_main    = get_font(32, weight=900)
+    font_date_eyebrow = get_font(20, weight=900)
+    font_date_main    = get_font(34, weight=900)
     font_date_col_h   = get_font(22, weight=900)
     font_date_day     = get_font(23, weight=900)
     font_date_time    = get_font(20, weight=850)
@@ -112,32 +102,47 @@ def build_whatsapp_safe_vertical():
     font_footer_sub   = get_font(12, weight=750)
 
     # ----------------------------------------------------
-    # 1. TITULAR HERO PRINCIPAL (DENTRO DE LA ZONA SEGURA DE WHATSAPP)
-    # Comienza en y = 135 (para que el recorte superior de WhatsApp no lo toque)
+    # 0. BADGE / CINTA DE URGENCIA: ¡HOY ÚLTIMO DÍA!
+    # Ubicado a y = 120 (dentro de la safe area de WhatsApp)
+    # ----------------------------------------------------
+    pill_text = "⏳ ¡HOY ÚLTIMO DÍA PARA SUMARTE! · CIERRA 23:59 HS"
+    p_bbox = font_urgent_pill.getbbox(pill_text)
+    pw = p_bbox[2] - p_bbox[0]
+    pill_pad_x = 28
+    pill_w = pw + pill_pad_x * 2
+    pill_h = 40
+    pill_x = (W - pill_w) // 2
+    pill_y = 118
+
+    # Botón/Pill de urgencia terracota intenso con sombra suave
+    draw.rounded_rectangle([pill_x, pill_y, pill_x + pill_w, pill_y + pill_h], radius=20, fill=(185, 48, 22, 255))
+    draw.text((pill_x + pill_pad_x, pill_y + 9), pill_text, font=font_urgent_pill, fill=(255, 255, 255, 255))
+
+    # ----------------------------------------------------
+    # 1. TITULAR HERO PRINCIPAL
     # ----------------------------------------------------
     title_l1 = "ACEITE DE OLIVA"
     l1_bbox = font_hero_l1.getbbox(title_l1)
     l1_w = l1_bbox[2] - l1_bbox[0]
     grad_l1, ox1, oy1 = create_gradient_text(title_l1, font_hero_l1, (16, 28, 10), (38, 58, 22), horizontal=True)
-    canvas.alpha_composite(grad_l1, ((W - l1_w) // 2 - ox1, 136 - oy1))
+    canvas.alpha_composite(grad_l1, ((W - l1_w) // 2 - ox1, 172 - oy1))
 
     title_l2 = "EXTRA VIRGEN"
     l2_bbox = font_hero_l2.getbbox(title_l2)
     l2_w = l2_bbox[2] - l2_bbox[0]
     grad_l2, ox2, oy2 = create_gradient_text(title_l2, font_hero_l2, (18, 32, 12), (180, 138, 38), horizontal=True)
-    canvas.alpha_composite(grad_l2, ((W - l2_w) // 2 - ox2, 204 - oy2))
+    canvas.alpha_composite(grad_l2, ((W - l2_w) // 2 - ox2, 236 - oy2))
 
     sub_product = "LORENZO CABRERA  ·  PRIMERA PRENSADA EN FRÍO  ·  MAIPÚ, MZA"
     sp_bbox = font_hero_sub.getbbox(sub_product)
     sp_w = sp_bbox[2] - sp_bbox[0]
-    draw.text(((W - sp_w) // 2, 302), sub_product, font=font_hero_sub, fill=(68, 84, 52, 255))
+    draw.text(((W - sp_w) // 2, 326), sub_product, font=font_hero_sub, fill=(68, 84, 52, 255))
 
     # ----------------------------------------------------
     # 2. IMAGEN HERO DE PRODUCTO
-    # y = 336 a 526 (alto 190px)
     # ----------------------------------------------------
-    img_y = 336
-    img_w, img_h = 960, 192
+    img_y = 356
+    img_w, img_h = 960, 175
     img_x = (W - img_w) // 2
 
     photo = Image.open(photo_path).convert("RGBA")
@@ -158,7 +163,6 @@ def build_whatsapp_safe_vertical():
     mask_rounded = create_rounded_rect_mask((img_w, img_h), corner_r)
     photo_cropped.putalpha(mask_rounded)
 
-    # Ambient soft shadow
     shadow_pad = 8
     shadow = Image.new("RGBA", (img_w + shadow_pad * 2, img_h + shadow_pad * 2), (0, 0, 0, 0))
     draw_sh = ImageDraw.Draw(shadow)
@@ -183,11 +187,10 @@ def build_whatsapp_safe_vertical():
 
     # ----------------------------------------------------
     # 3. VALORES POR LITRO (3 TARJETAS)
-    # y = 544 a 754 (alto 210px)
     # ----------------------------------------------------
-    tiers_y = 544
+    tiers_y = 548
     card_w = 304
-    card_h = 210
+    card_h = 208
     gap = (img_w - (card_w * 3)) // 2
     cards_x = [img_x, img_x + card_w + gap, img_x + (card_w + gap) * 2]
 
@@ -271,26 +274,24 @@ def build_whatsapp_safe_vertical():
             draw.text((cx + (card_w - uw) // 2, cy + 162), tier["unit"], font=font_tier_unit, fill=(90, 102, 82, 255))
 
     # ----------------------------------------------------
-    # 4. BLOQUE DE FECHAS: CIERRE Y ENTREGAS (MÁXIMA LEGIBILIDAD)
-    # y = 770 a 1120 (alto 350px)
+    # 4. BLOQUE DE FECHAS: CIERRE DEFINITIVO (HOY LUNES 2 DE NOVIEMBRE) Y ENTREGAS
     # ----------------------------------------------------
-    info_y = 770
+    info_y = 772
     info_h = 352
     draw.rounded_rectangle([img_x, info_y, img_x + img_w, info_y + info_h], radius=22,
                            fill=(245, 241, 232, 255), outline=(210, 200, 184, 255), width=2)
 
-    # Cierre de compra
-    cierre_eyebrow = "CIERRE DE COMPRA"
+    # Cierre de compra destacado
+    cierre_eyebrow = "🚨 CIERRE DEFINITIVO DE COMPRA"
     ce_bb = font_date_eyebrow.getbbox(cierre_eyebrow)
     ce_w = ce_bb[2] - ce_bb[0]
-    draw.text(((W - ce_w) // 2, info_y + 18), cierre_eyebrow, font=font_date_eyebrow, fill=(168, 54, 18, 255))
+    draw.text(((W - ce_w) // 2, info_y + 16), cierre_eyebrow, font=font_date_eyebrow, fill=(185, 48, 22, 255))
 
-    cierre_date = "Domingo 1 de Noviembre  ·  23:59 hs"
+    cierre_date = "¡Hoy Lunes 2 de Noviembre · 23:59 hs!"
     cd_bb = font_date_main.getbbox(cierre_date)
     cd_w = cd_bb[2] - cd_bb[0]
-    draw.text(((W - cd_w) // 2, info_y + 48), cierre_date, font=font_date_main, fill=(16, 26, 12, 255))
+    draw.text(((W - cd_w) // 2, info_y + 46), cierre_date, font=font_date_main, fill=(20, 32, 14, 255))
 
-    # Hairline divider
     draw.line([(img_x + 36, info_y + 104), (img_x + img_w - 36, info_y + 104)], fill=(214, 204, 188, 255), width=2)
 
     # Entregas en dos columnas
@@ -338,15 +339,14 @@ def build_whatsapp_safe_vertical():
     draw.text((ll_cx - (b8[2]-b8[0])//2, info_y + 252), ll_t4, font=font_date_loc, fill=(80, 94, 72, 255))
 
     # ----------------------------------------------------
-    # 5. FOOTER CON ISOLOGO Y ENLACE (DENTRO DE LA ZONA SEGURA DE WHATSAPP)
-    # y = 1136 a 1215
+    # 5. FOOTER CON ISOLOGO Y ENLACE
     # ----------------------------------------------------
     web_text = "Hacé tu pedido online en  elementales.store/oliva"
     wb = font_web_link.getbbox(web_text)
     wb_w = wb[2] - wb[0]
-    draw.text(((W - wb_w) // 2, 1136), web_text, font=font_web_link, fill=(24, 46, 14, 255))
+    draw.text(((W - wb_w) // 2, 1138), web_text, font=font_web_link, fill=(24, 46, 14, 255))
 
-    draw.line([(220, 1172), (W - 220, 1172)], fill=(222, 214, 202, 255), width=1)
+    draw.line([(220, 1174), (W - 220, 1174)], fill=(222, 214, 202, 255), width=1)
 
     footer_logo_h = 38
     logo_img = Image.open(logo_path).convert("RGBA")
@@ -360,7 +360,7 @@ def build_whatsapp_safe_vertical():
     
     total_foot_w = footer_logo_w + 12 + ft_w
     foot_start_x = (W - total_foot_w) // 2
-    foot_y = 1184
+    foot_y = 1186
 
     canvas.alpha_composite(footer_logo_resized, (foot_start_x, foot_y))
 
@@ -368,28 +368,24 @@ def build_whatsapp_safe_vertical():
     draw.text((foot_text_x, foot_y - 1), foot_title_text, font=font_footer_title, fill=(28, 46, 18, 255))
     draw.text((foot_text_x, foot_y + 22), foot_sub_text, font=font_footer_sub, fill=(102, 120, 84, 255))
 
-    # Guardar versión vertical con Safe Area de WhatsApp
+    # Guardar versiones
     final_img = canvas.convert("RGB")
     final_img.save(output_path, "JPEG", quality=95, optimize=True)
-    final_img.save(output_path_v2, "JPEG", quality=95, optimize=True)
-    final_img.save(output_path_v3, "JPEG", quality=95, optimize=True)
     final_img.save(output_path_safe, "JPEG", quality=95, optimize=True)
+    final_img.save(output_path_ultimo, "JPEG", quality=95, optimize=True)
     
     final_img.save(artifact_path, "JPEG", quality=95, optimize=True)
-    final_img.save(artifact_path_v2, "JPEG", quality=95, optimize=True)
-    final_img.save(artifact_path_v3, "JPEG", quality=95, optimize=True)
     final_img.save(artifact_path_safe, "JPEG", quality=95, optimize=True)
-    print("Vertical WhatsApp-Safe flyer generated successfully!")
+    final_img.save(artifact_path_ultimo, "JPEG", quality=95, optimize=True)
+    print("Vertical WhatsApp-Safe Último Día flyer generated successfully!")
 
 def build_whatsapp_square():
-    """
-    Genera además una versión CUADRADA 1:1 (1080x1080) perfecta para WhatsApp.
-    WhatsApp JAMÁS recorta imágenes 1:1 en la burbuja del chat.
-    """
     logo_path = os.path.join(ROOT_DIR, "public", "assets", "logo_icon.png")
     photo_path = os.path.join(ROOT_DIR, "public", "assets", "products", "aceite_lorenzo_mesa.jpg")
     output_path_sq = os.path.join(ROOT_DIR, "public", "assets", "products", "flyer_oliva_whatsapp_cuadrado.jpg")
+    output_path_sq_ult = os.path.join(ROOT_DIR, "public", "assets", "products", "flyer_oliva_ultimo_dia_cuadrado.jpg")
     artifact_path_sq = r"C:\Users\Rami\.gemini\antigravity\brain\6aae8b24-5824-4a75-9321-ac52a81a3a00\flyer_oliva_whatsapp_cuadrado.jpg"
+    artifact_path_sq_ult = r"C:\Users\Rami\.gemini\antigravity\brain\6aae8b24-5824-4a75-9321-ac52a81a3a00\flyer_oliva_ultimo_dia_cuadrado.jpg"
 
     W, H = 1080, 1080
     canvas = Image.new("RGBA", (W, H), (250, 248, 243, 255))
@@ -404,19 +400,20 @@ def build_whatsapp_square():
 
     draw = ImageDraw.Draw(canvas)
 
-    font_hero_l1 = get_font(58, weight=900)
-    font_hero_l2 = get_font(76, weight=900)
-    font_hero_sub = get_font(17, weight=800)
+    font_urgent_pill = get_font(16, weight=900)
+    font_hero_l1 = get_font(54, weight=900)
+    font_hero_l2 = get_font(72, weight=900)
+    font_hero_sub = get_font(16, weight=800)
     font_photo_badge = get_font(11, weight=850)
     
-    font_tier_vol = get_font(19, weight=850)
-    font_tier_name = get_font(16, weight=750)
-    font_tier_price = get_font(50, weight=900)
-    font_tier_unit = get_font(16, weight=800)
-    font_badge_rec = get_font(13, weight=900)
+    font_tier_vol = get_font(18, weight=850)
+    font_tier_name = get_font(15, weight=750)
+    font_tier_price = get_font(48, weight=900)
+    font_tier_unit = get_font(15, weight=800)
+    font_badge_rec = get_font(12, weight=900)
     
-    font_date_eyebrow = get_font(17, weight=850)
-    font_date_main = get_font(27, weight=900)
+    font_date_eyebrow = get_font(18, weight=900)
+    font_date_main = get_font(28, weight=900)
     font_date_col_h = get_font(19, weight=900)
     font_date_day = get_font(20, weight=900)
     font_date_time = get_font(18, weight=850)
@@ -426,24 +423,35 @@ def build_whatsapp_square():
     font_footer_title = get_font(18, weight=850)
     font_footer_sub = get_font(11, weight=750)
 
+    # 0. Urgency pill
+    pill_text = "⏳ ¡HOY ÚLTIMO DÍA PARA SUMARTE! · CIERRA 23:59 HS"
+    p_bbox = font_urgent_pill.getbbox(pill_text)
+    pw = p_bbox[2] - p_bbox[0]
+    pill_w = pw + 48
+    pill_h = 36
+    pill_x = (W - pill_w) // 2
+    pill_y = 26
+    draw.rounded_rectangle([pill_x, pill_y, pill_x + pill_w, pill_y + pill_h], radius=18, fill=(185, 48, 22, 255))
+    draw.text((pill_x + 24, pill_y + 8), pill_text, font=font_urgent_pill, fill=(255, 255, 255, 255))
+
     # 1. Titular
     title_l1 = "ACEITE DE OLIVA"
     l1_bbox = font_hero_l1.getbbox(title_l1)
     grad_l1, ox1, oy1 = create_gradient_text(title_l1, font_hero_l1, (16, 28, 10), (38, 58, 22), horizontal=True)
-    canvas.alpha_composite(grad_l1, ((W - (l1_bbox[2]-l1_bbox[0])) // 2 - ox1, 38 - oy1))
+    canvas.alpha_composite(grad_l1, ((W - (l1_bbox[2]-l1_bbox[0])) // 2 - ox1, 72 - oy1))
 
     title_l2 = "EXTRA VIRGEN"
     l2_bbox = font_hero_l2.getbbox(title_l2)
     grad_l2, ox2, oy2 = create_gradient_text(title_l2, font_hero_l2, (18, 32, 12), (180, 138, 38), horizontal=True)
-    canvas.alpha_composite(grad_l2, ((W - (l2_bbox[2]-l2_bbox[0])) // 2 - ox2, 98 - oy2))
+    canvas.alpha_composite(grad_l2, ((W - (l2_bbox[2]-l2_bbox[0])) // 2 - ox2, 128 - oy2))
 
     sub_p = "LORENZO CABRERA  ·  PRIMERA PRENSADA EN FRÍO  ·  MAIPÚ, MZA"
     sp_bb = font_hero_sub.getbbox(sub_p)
-    draw.text(((W - (sp_bb[2]-sp_bb[0])) // 2, 184), sub_p, font=font_hero_sub, fill=(68, 84, 52, 255))
+    draw.text(((W - (sp_bb[2]-sp_bb[0])) // 2, 206), sub_p, font=font_hero_sub, fill=(68, 84, 52, 255))
 
-    # 2. Foto compacta (1080x155)
-    img_y = 212
-    img_w, img_h = 960, 155
+    # 2. Foto compacta
+    img_y = 234
+    img_w, img_h = 960, 145
     img_x = (W - img_w) // 2
 
     photo = Image.open(photo_path).convert("RGBA")
@@ -459,10 +467,10 @@ def build_whatsapp_square():
     canvas.alpha_composite(p_cr, (img_x, img_y))
     draw.rounded_rectangle([img_x, img_y, img_x + img_w, img_y + img_h], radius=corner_r, outline=(210, 200, 184, 255), width=2)
 
-    # 3. Precios (y = 380 a 565, alto 185px)
-    tiers_y = 382
+    # 3. Precios
+    tiers_y = 394
     card_w = 304
-    card_h = 182
+    card_h = 176
     gap = (img_w - (card_w * 3)) // 2
     cards_x = [img_x, img_x + card_w + gap, img_x + (card_w + gap) * 2]
 
@@ -484,65 +492,65 @@ def build_whatsapp_square():
             draw.text((bx + 11, cy - 6), tier["badge"], font=font_badge_rec, fill=(255, 255, 255, 255))
 
             v_bb = font_tier_vol.getbbox(tier["vol"])
-            draw.text((cx + (card_w - (v_bb[2]-v_bb[0])) // 2, cy + 18), tier["vol"], font=font_tier_vol, fill=(22, 44, 12, 255))
+            draw.text((cx + (card_w - (v_bb[2]-v_bb[0])) // 2, cy + 16), tier["vol"], font=font_tier_vol, fill=(22, 44, 12, 255))
             n_bb = font_tier_name.getbbox(tier["name"])
-            draw.text((cx + (card_w - (n_bb[2]-n_bb[0])) // 2, cy + 42), tier["name"], font=font_tier_name, fill=(58, 86, 38, 255))
+            draw.text((cx + (card_w - (n_bb[2]-n_bb[0])) // 2, cy + 40), tier["name"], font=font_tier_name, fill=(58, 86, 38, 255))
             p_bb = font_tier_price.getbbox(tier["price"])
             grad_p, opx, opy = create_gradient_text(tier["price"], font_tier_price, (18, 40, 10), (68, 98, 32), horizontal=True)
-            canvas.alpha_composite(grad_p, (cx + (card_w - (p_bb[2]-p_bb[0])) // 2 - opx, cy + 72 - opy))
+            canvas.alpha_composite(grad_p, (cx + (card_w - (p_bb[2]-p_bb[0])) // 2 - opx, cy + 68 - opy))
             u_bb = font_tier_unit.getbbox(tier["unit"])
-            draw.text((cx + (card_w - (u_bb[2]-u_bb[0])) // 2, cy + 140), tier["unit"], font=font_tier_unit, fill=(34, 60, 20, 255))
+            draw.text((cx + (card_w - (u_bb[2]-u_bb[0])) // 2, cy + 134), tier["unit"], font=font_tier_unit, fill=(34, 60, 20, 255))
         else:
             draw.rounded_rectangle([cx, cy, cx + card_w, cy + card_h], radius=16, fill=(255, 255, 255, 255), outline=(214, 206, 190, 255), width=2)
             v_bb = font_tier_vol.getbbox(tier["vol"])
-            draw.text((cx + (card_w - (v_bb[2]-v_bb[0])) // 2, cy + 18), tier["vol"], font=font_tier_vol, fill=(58, 70, 48, 255))
+            draw.text((cx + (card_w - (v_bb[2]-v_bb[0])) // 2, cy + 16), tier["vol"], font=font_tier_vol, fill=(58, 70, 48, 255))
             n_bb = font_tier_name.getbbox(tier["name"])
-            draw.text((cx + (card_w - (n_bb[2]-n_bb[0])) // 2, cy + 42), tier["name"], font=font_tier_name, fill=(108, 120, 100, 255))
+            draw.text((cx + (card_w - (n_bb[2]-n_bb[0])) // 2, cy + 40), tier["name"], font=font_tier_name, fill=(108, 120, 100, 255))
             p_bb = font_tier_price.getbbox(tier["price"])
-            draw.text((cx + (card_w - (p_bb[2]-p_bb[0])) // 2, cy + 72), tier["price"], font=font_tier_price, fill=(16, 26, 10, 255))
+            draw.text((cx + (card_w - (p_bb[2]-p_bb[0])) // 2, cy + 68), tier["price"], font=font_tier_price, fill=(16, 26, 10, 255))
             u_bb = font_tier_unit.getbbox(tier["unit"])
-            draw.text((cx + (card_w - (u_bb[2]-u_bb[0])) // 2, cy + 140), tier["unit"], font=font_tier_unit, fill=(90, 102, 82, 255))
+            draw.text((cx + (card_w - (u_bb[2]-u_bb[0])) // 2, cy + 134), tier["unit"], font=font_tier_unit, fill=(90, 102, 82, 255))
 
-    # 4. Fechas (y = 580 a 890, alto 310px)
-    info_y = 580
-    info_h = 310
+    # 4. Fechas (ÚLTIMO DÍA HOY)
+    info_y = 584
+    info_h = 308
     draw.rounded_rectangle([img_x, info_y, img_x + img_w, info_y + info_h], radius=20, fill=(245, 241, 232, 255), outline=(210, 200, 184, 255), width=2)
 
-    ce_bb = font_date_eyebrow.getbbox("CIERRE DE COMPRA")
-    draw.text(((W - (ce_bb[2]-ce_bb[0])) // 2, info_y + 16), "CIERRE DE COMPRA", font=font_date_eyebrow, fill=(168, 54, 18, 255))
-    cd_bb = font_date_main.getbbox("Domingo 1 de Noviembre  ·  23:59 hs")
-    draw.text(((W - (cd_bb[2]-cd_bb[0])) // 2, info_y + 42), "Domingo 1 de Noviembre  ·  23:59 hs", font=font_date_main, fill=(16, 26, 12, 255))
-    draw.line([(img_x + 30, info_y + 92), (img_x + img_w - 30, info_y + 92)], fill=(214, 204, 188, 255), width=2)
+    ce_bb = font_date_eyebrow.getbbox("🚨 CIERRE DEFINITIVO DE COMPRA")
+    draw.text(((W - (ce_bb[2]-ce_bb[0])) // 2, info_y + 14), "🚨 CIERRE DEFINITIVO DE COMPRA", font=font_date_eyebrow, fill=(185, 48, 22, 255))
+    cd_bb = font_date_main.getbbox("¡Hoy Lunes 2 de Noviembre · 23:59 hs!")
+    draw.text(((W - (cd_bb[2]-cd_bb[0])) // 2, info_y + 42), "¡Hoy Lunes 2 de Noviembre · 23:59 hs!", font=font_date_main, fill=(16, 26, 12, 255))
+    draw.line([(img_x + 30, info_y + 90), (img_x + img_w - 30, info_y + 90)], fill=(214, 204, 188, 255), width=2)
 
     col_w = img_w // 2
     # Loma verde
     lv_cx = img_x + col_w // 2
     b1 = font_date_col_h.getbbox("ENTREGA NODO LOMA VERDE")
-    draw.text((lv_cx - (b1[2]-b1[0])//2, info_y + 110), "ENTREGA NODO LOMA VERDE", font=font_date_col_h, fill=(46, 78, 24, 255))
+    draw.text((lv_cx - (b1[2]-b1[0])//2, info_y + 106), "ENTREGA NODO LOMA VERDE", font=font_date_col_h, fill=(46, 78, 24, 255))
     b2 = font_date_day.getbbox("Viernes 6 de Noviembre")
-    draw.text((lv_cx - (b2[2]-b2[0])//2, info_y + 148), "Viernes 6 de Noviembre", font=font_date_day, fill=(16, 26, 12, 255))
+    draw.text((lv_cx - (b2[2]-b2[0])//2, info_y + 144), "Viernes 6 de Noviembre", font=font_date_day, fill=(16, 26, 12, 255))
     b3 = font_date_time.getbbox("Horario: 9 a 13 hs")
-    draw.text((lv_cx - (b3[2]-b3[0])//2, info_y + 184), "Horario: 9 a 13 hs", font=font_date_time, fill=(30, 52, 18, 255))
+    draw.text((lv_cx - (b3[2]-b3[0])//2, info_y + 180), "Horario: 9 a 13 hs", font=font_date_time, fill=(30, 52, 18, 255))
     b4 = font_date_loc.getbbox("Botafogo 1320, Loma Verde")
-    draw.text((lv_cx - (b4[2]-b4[0])//2, info_y + 224), "Botafogo 1320, Loma Verde", font=font_date_loc, fill=(80, 94, 72, 255))
+    draw.text((lv_cx - (b4[2]-b4[0])//2, info_y + 220), "Botafogo 1320, Loma Verde", font=font_date_loc, fill=(80, 94, 72, 255))
 
-    draw.line([(W // 2, info_y + 106), (W // 2, info_y + 286)], fill=(214, 204, 188, 255), width=2)
+    draw.line([(W // 2, info_y + 104), (W // 2, info_y + 282)], fill=(214, 204, 188, 255), width=2)
 
     # La Lucila
     ll_cx = img_x + col_w + col_w // 2
     b5 = font_date_col_h.getbbox("ENTREGA NODO LA LUCILA")
-    draw.text((ll_cx - (b5[2]-b5[0])//2, info_y + 110), "ENTREGA NODO LA LUCILA", font=font_date_col_h, fill=(46, 78, 24, 255))
+    draw.text((ll_cx - (b5[2]-b5[0])//2, info_y + 106), "ENTREGA NODO LA LUCILA", font=font_date_col_h, fill=(46, 78, 24, 255))
     b6 = font_date_day.getbbox("Sábado 7 de Noviembre")
-    draw.text((ll_cx - (b6[2]-b6[0])//2, info_y + 148), "Sábado 7 de Noviembre", font=font_date_day, fill=(16, 26, 12, 255))
+    draw.text((ll_cx - (b6[2]-b6[0])//2, info_y + 144), "Sábado 7 de Noviembre", font=font_date_day, fill=(16, 26, 12, 255))
     b7 = font_date_time.getbbox("Horario: 10 a 14 hs")
-    draw.text((ll_cx - (b7[2]-b7[0])//2, info_y + 184), "Horario: 10 a 14 hs", font=font_date_time, fill=(30, 52, 18, 255))
+    draw.text((ll_cx - (b7[2]-b7[0])//2, info_y + 180), "Horario: 10 a 14 hs", font=font_date_time, fill=(30, 52, 18, 255))
     b8 = font_date_loc.getbbox("Anchorena 684, La Lucila")
-    draw.text((ll_cx - (b8[2]-b8[0])//2, info_y + 224), "Anchorena 684, La Lucila", font=font_date_loc, fill=(80, 94, 72, 255))
+    draw.text((ll_cx - (b8[2]-b8[0])//2, info_y + 220), "Anchorena 684, La Lucila", font=font_date_loc, fill=(80, 94, 72, 255))
 
-    # 5. Footer (y = 910 a 1050)
+    # 5. Footer
     wb = font_web_link.getbbox("Hacé tu pedido online en  elementales.store/oliva")
-    draw.text(((W - (wb[2]-wb[0])) // 2, 912), "Hacé tu pedido online en  elementales.store/oliva", font=font_web_link, fill=(24, 46, 14, 255))
-    draw.line([(220, 952), (W - 220, 952)], fill=(222, 214, 202, 255), width=1)
+    draw.text(((W - (wb[2]-wb[0])) // 2, 908), "Hacé tu pedido online en  elementales.store/oliva", font=font_web_link, fill=(24, 46, 14, 255))
+    draw.line([(220, 948), (W - 220, 948)], fill=(222, 214, 202, 255), width=1)
 
     logo_h = 36
     l_img = Image.open(logo_path).convert("RGBA")
@@ -552,15 +560,17 @@ def build_whatsapp_square():
     ft_bb = font_footer_title.getbbox("ELEMENTALES COMUNIDAD")
     tot_w = logo_w + 10 + (ft_bb[2] - ft_bb[0])
     s_x = (W - tot_w) // 2
-    f_y = 964
+    f_y = 960
     canvas.alpha_composite(l_res, (s_x, f_y))
     draw.text((s_x + logo_w + 10, f_y - 2), "ELEMENTALES COMUNIDAD", font=font_footer_title, fill=(28, 46, 18, 255))
     draw.text((s_x + logo_w + 10, f_y + 20), "COMPRAS COLECTIVAS  ·  RED BARRIAL DE PRODUCTORES", font=font_footer_sub, fill=(102, 120, 84, 255))
 
     final_sq = canvas.convert("RGB")
     final_sq.save(output_path_sq, "JPEG", quality=95, optimize=True)
+    final_sq.save(output_path_sq_ult, "JPEG", quality=95, optimize=True)
     final_sq.save(artifact_path_sq, "JPEG", quality=95, optimize=True)
-    print("Square 1:1 WhatsApp flyer generated successfully!")
+    final_sq.save(artifact_path_sq_ult, "JPEG", quality=95, optimize=True)
+    print("Square 1:1 Último Día flyer generated successfully!")
 
 if __name__ == "__main__":
     build_whatsapp_safe_vertical()
