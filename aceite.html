@@ -2142,39 +2142,11 @@
       orders.push(newOrder);
       saveOlivaOrders(orders);
 
+      // Guardar el pedido una sola vez con su ID unificado (OLIV-xxx)
       if (typeof ElementalesDB !== 'undefined' && ElementalesDB.saveOrder) {
-        ElementalesDB.saveOrder({
-          id: 'ORD-' + orderId,
-          number: orderNumber,
-          timestamp: newOrder.timestamp,
-          dateStr: newOrder.dateStr,
-          timeStr: newOrder.timeStr,
-          clientName: newOrder.clientName,
-          clientPhone: newOrder.clientPhone,
-          paymentMethod: newOrder.paymentMethod,
-          items: [{
-            id: OLIVA_CONFIG.productId,
-            name: `Aceite de Oliva Lorenzo Cabrera (${totals.liters}L · ${totals.tier.name})`,
-            price: totals.tier.unitPrice,
-            qty: totals.liters,
-            unit: 'Litro(s)',
-            total: totalAmount,
-            emoji: '🫒'
-          }],
-          total: totalAmount,
-          circuloId: node.id,
-          circuloNombre: node.name,
-          serElemental: selectedElementalBeing
-        });
-      }
-
-      // Sincronizar en tiempo real con Firebase Cloud Firestore
-      try {
-        if (typeof ElementalesFirebase !== 'undefined' && ElementalesFirebase.saveOrder) {
-          ElementalesFirebase.saveOrder(newOrder);
-        }
-      } catch (errFirebase) {
-        console.warn('Error despachando pedido a Firebase Firestore:', errFirebase);
+        ElementalesDB.saveOrder(newOrder);
+      } else if (typeof ElementalesFirebase !== 'undefined' && ElementalesFirebase.saveOrder) {
+        ElementalesFirebase.saveOrder(newOrder);
       }
 
       lastCompletedOrder = newOrder;
