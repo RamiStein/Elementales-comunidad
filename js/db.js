@@ -187,7 +187,34 @@ const ElementalesDB = {
 
     // Sincronizar en servidor si hay API disponible
     this.syncToServer('orders', order);
+
+    // Sincronizar en tiempo real con Firebase Firestore
+    try {
+      if (typeof ElementalesFirebase !== 'undefined' && ElementalesFirebase.saveOrder) {
+        ElementalesFirebase.saveOrder(order);
+      }
+    } catch (eFirebase) {
+      console.warn('Error sincronizando con Firebase:', eFirebase);
+    }
+
     return order;
+  },
+
+  deleteOrder(orderId) {
+    if (!orderId) return;
+    const cleanId = String(orderId);
+    let orders = this.getAllOrders();
+    orders = orders.filter(o => String(o.id) !== cleanId && String(o.number) !== cleanId);
+    try {
+      localStorage.setItem(this.KEYS.ORDERS, JSON.stringify(orders));
+      localStorage.setItem('elementales_orders', JSON.stringify(orders));
+    } catch (e) {}
+
+    try {
+      if (typeof ElementalesFirebase !== 'undefined' && ElementalesFirebase.deleteOrder) {
+        ElementalesFirebase.deleteOrder(cleanId);
+      }
+    } catch (eFirebase) {}
   },
 
   getOrdersForUser(sessionIdOrName) {

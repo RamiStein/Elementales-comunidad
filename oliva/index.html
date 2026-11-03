@@ -1145,7 +1145,12 @@
 
 
           <!-- Scripts: Módulos de datos y lógica de la landing -->
-  <script src="/js/products-data.js" charset="UTF-8"></script>
+    <!-- Firebase Cloud Firestore SDK (Compat v10) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js" onerror="this.onerror=null;this.src='/js/firebase-config.js'"></script>
+  <script src="js/firebase-sync.js" onerror="this.onerror=null;this.src='/js/firebase-sync.js'"></script>
+<script src="/js/products-data.js" charset="UTF-8"></script>
   <script src="/js/circulos.js" charset="UTF-8"></script>
   <script src="/js/db.js" charset="UTF-8"></script>
   <script src="/js/sheets-sync.js" charset="UTF-8"></script>
@@ -2090,6 +2095,16 @@
         notes: notes,
         productName: 'Aceite de Oliva Extra Virgen Lorenzo Cabrera (1L)',
         liters: totals.liters,
+        type: 'lunar',
+        items: [{
+          id: OLIVA_CONFIG.productId,
+          name: `Aceite de Oliva Lorenzo Cabrera (${totals.liters}L · ${totals.tier.name})`,
+          price: totals.tier.unitPrice,
+          qty: totals.liters,
+          unit: 'Litro(s)',
+          total: totalAmount,
+          emoji: '🫒'
+        }],
         tierKey: totals.tier.key,
         tierName: totals.tier.name,
         tierType: totals.tier.type,
@@ -2161,6 +2176,15 @@
         }
       } catch (errSheets) {
         console.warn('Error despachando pedido a Google Sheets:', errSheets);
+      }
+
+      // Sincronizar en tiempo real con Firebase Cloud Firestore
+      try {
+        if (typeof ElementalesFirebase !== 'undefined' && ElementalesFirebase.saveOrder) {
+          ElementalesFirebase.saveOrder(newOrder);
+        }
+      } catch (errFirebase) {
+        console.warn('Error despachando pedido a Firebase Firestore:', errFirebase);
       }
 
       lastCompletedOrder = newOrder;

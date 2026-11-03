@@ -521,7 +521,12 @@
   </div>
 
   <!-- Scripts: Módulos de datos y lógica de la landing -->
-  <script src="js/products-data.js" charset="UTF-8"></script>
+    <!-- Firebase Cloud Firestore SDK (Compat v10) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js" onerror="this.onerror=null;this.src='/js/firebase-config.js'"></script>
+  <script src="js/firebase-sync.js" onerror="this.onerror=null;this.src='/js/firebase-sync.js'"></script>
+<script src="js/products-data.js" charset="UTF-8"></script>
   <script src="js/circulos.js" charset="UTF-8"></script>
   <script src="js/db.js" charset="UTF-8"></script>
 
@@ -1050,6 +1055,13 @@
           totalAmount: totals.total
         });
       }
+
+      // Sincronizar en tiempo real con Firebase Cloud Firestore
+      try {
+        if (typeof ElementalesFirebase !== 'undefined' && ElementalesFirebase.saveOrder) {
+          ElementalesFirebase.saveOrder(newOrder);
+        }
+      } catch (eF) {}
 
       lastCompletedOrder = newOrder;
 

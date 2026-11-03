@@ -1227,7 +1227,12 @@
   </div>
 
   <!-- SCRIPT CENTRAL DE LA COMPRA LUNAR (ROUTER & SPA) -->
-  <script src="js/vrde-sync.js"></script>
+    <!-- Firebase Cloud Firestore SDK (Compat v10) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js" onerror="this.onerror=null;this.src='/js/firebase-config.js'"></script>
+  <script src="js/firebase-sync.js" onerror="this.onerror=null;this.src='/js/firebase-sync.js'"></script>
+<script src="js/vrde-sync.js"></script>
   <script src="js/db.js"></script>
   <script>
     // =========================================================================
@@ -3283,6 +3288,13 @@ https://elementales.store/compralunar`;
 
       // Despachar confirmación por correo electrónico en segundo plano
       sendLunarConfirmationEmail(newOrder);
+
+      // Sincronizar en tiempo real con Firebase Cloud Firestore
+      try {
+        if (typeof ElementalesFirebase !== 'undefined' && ElementalesFirebase.saveOrder) {
+          ElementalesFirebase.saveOrder(newOrder);
+        }
+      } catch (eF) {}
 
       // Generar mensaje para WhatsApp con formato limpio (incluyendo aporte organizativo si corresponde)
       const itemsText = orderItems.map(i => `• ${i.qty}x ${i.name} -> $${i.total.toLocaleString('es-AR')}`).join('\n');
