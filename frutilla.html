@@ -1091,7 +1091,7 @@
       msg += `¡Muchas gracias por sumarte a las compras colectivas de Elementales! ✨🌱\n`;
       msg += `https://elementales.store/frutilla`;
 
-      const coordPhone = activeCircle && activeCircle.telefono ? cleanPhone(activeCircle.telefono) : '';
+      const coordPhone = activeCircle && activeCircle.telefono ? cleanPhone(activeCircle.telefono) : '5491127452476';
       let url = coordPhone ? `https://wa.me/${coordPhone}?text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
       window.open(url, '_blank');
     }
