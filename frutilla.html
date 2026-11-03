@@ -740,30 +740,7 @@
         }
       } catch (e) {}
 
-      // Semilla inicial con nombres reales para demostrar el llenado colaborativo del primer cajón
-      const seedOrders = [
-        {
-          id: 'FRUT-001',
-          number: 1,
-          timestamp: Date.now() - 3600000 * 2,
-          dateStr: new Date(Date.now() - 3600000 * 2).toLocaleDateString('es-AR'),
-          timeStr: '11:20',
-          clientName: 'Mariana Gómez',
-          clientPhone: '11 5566-7788',
-          paymentMethod: 'Transferencia',
-          productName: 'Frutillas Agroecológicas Finca Ecotipa',
-          kg: 2.5,
-          total: 22000,
-          status: 'Confirmado',
-          circuloId: 'cooperativa',
-          circuloNombre: 'Círculo Cooperativa Loma Verde',
-          direccionRetiro: 'Rawson 3450, Loma Verde'
-        }
-      ];
-      try {
-        localStorage.setItem(FRUTILLA_CONFIG.storageKey, JSON.stringify(seedOrders));
-      } catch (e) {}
-      return seedOrders;
+      return [];
     }
 
     function saveFrutillaOrders(orders) {
