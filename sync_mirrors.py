@@ -26,7 +26,6 @@ root_files_to_mirror = [
     "miembroelemental.html",
     "prosumidores.html",
     "404.html",
-    "google_sheets_webhook.js"
 ]
 
 if os.path.exists(primary) and os.path.exists(mirror):

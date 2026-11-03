@@ -1153,7 +1153,6 @@
 <script src="/js/products-data.js" charset="UTF-8"></script>
   <script src="/js/circulos.js" charset="UTF-8"></script>
   <script src="/js/db.js" charset="UTF-8"></script>
-  <script src="/js/sheets-sync.js" charset="UTF-8"></script>
 
   <script>
     // =========================================================================
@@ -2167,15 +2166,6 @@
           circuloNombre: node.name,
           serElemental: selectedElementalBeing
         });
-      }
-
-      // Despachar automáticamente a la planilla de Google Sheets
-      try {
-        if (typeof ElementalesSheets !== 'undefined' && ElementalesSheets.sendOrder) {
-          ElementalesSheets.sendOrder(newOrder);
-        }
-      } catch (errSheets) {
-        console.warn('Error despachando pedido a Google Sheets:', errSheets);
       }
 
       // Sincronizar en tiempo real con Firebase Cloud Firestore
