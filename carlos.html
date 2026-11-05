@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🩺 Inscripción: ¡SALUD & 7,5! Taller de Hábitos Saludables con Dr. Carlos | Elementales Comunidad</title>
+  <title>🩺 Taller y Conversatorio: Hábitos Saludables y Longevidad | Carlos Nacht Fernandez Blanco</title>
   
-  <meta name="description" content="Inscripción al taller vivencial con el Dr. Carlos (Médico Naturista): Cambiar achaques por disfrute, equilibrio del pH 7,5, sangre depurativa ABL, alimentos vivos (jugos detox, té alcalino, frutos secos) y degustación de ensaladas vivas al cierre. Sábado 7 de Noviembre, 11 a 14 hs en Nodo La Lucila." />
-  <meta property="og:title" content="🩺 Inscripción: ¡SALUD & 7,5! - Taller con Dr. Carlos" />
-  <meta property="og:description" content="Sábado 7 de Noviembre (11 a 14 hs) en Nodo La Lucila. Hábitos saludables, pH 7,5, alimentos vivos y degustación de ensaladas al cierre." />
-  <meta property="og:image" content="public/assets/talleres/banner_rescate_carlos_horizontal.jpg" />
+  <meta name="description" content="Taller vivencial y conversatorio con Carlos Nacht Fernandez Blanco (Médico Naturista). Alimentos vivos, degustación intermedia de jugos verdes detox y ensaladas vivas al cierre. Sábado 7 de Noviembre, 11 a 14 hs en Nodo La Lucila. Entrada Libre." />
+  <meta property="og:title" content="🥕 Taller y Conversatorio: Hábitos Saludables y Longevidad - Carlos Nacht Fernandez Blanco" />
+  <meta property="og:description" content="Sábado 7 de Noviembre (11 a 14 hs) en Nodo La Lucila. Hábitos saludables, longevidad, alimentos vivos, degustación de jugos verdes detox y ensaladas al cierre. Entrada Libre." />
+  <meta property="og:image" content="public/assets/talleres/flyer_oficial_carlos.jpg" />
 
   <!-- Google Fonts: Inter, Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -149,20 +149,26 @@
     /* BANNER PRINCIPAL EN CABECERA */
     .header-image-container {
       width: 100%;
-      background-color: #fcfaf5;
+      background: radial-gradient(circle at center, #231e1a 0%, #110e0c 100%);
       border-bottom: 4px solid var(--color-verde-principal);
       position: relative;
       cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
     }
 
     .header-image-container img {
       width: 100%;
+      max-width: 640px;
       height: auto;
       display: block;
-      transition: opacity 0.2s;
+      transition: transform 0.3s ease, opacity 0.2s;
     }
 
     .header-image-container:hover img {
+      transform: scale(1.015);
       opacity: 0.98;
     }
 
@@ -743,9 +749,9 @@
   <!-- CONTENEDOR PRINCIPAL ESTILO APP -->
   <main class="app-container">
 
-    <!-- IMAGEN BANNER DE CABECERA (AFICHE HORIZONTAL IMPRENTA RESCATE) -->
-    <div class="header-image-container" onclick="abrirImagen('public/assets/talleres/banner_rescate_carlos_horizontal.jpg', 'Afiche Tipográfico Oficial · Dr. Carlos (11 a 14 hs)')">
-      <img src="public/assets/talleres/banner_rescate_carlos_horizontal.jpg" alt="¡Salud & 7,5! Dr. Carlos - Elementales Comunidad">
+    <!-- IMAGEN BANNER DE CABECERA (FLYER OFICIAL ZANAHORIA) -->
+    <div class="header-image-container" onclick="abrirImagen('public/assets/talleres/flyer_oficial_carlos.jpg', 'Flyer Oficial: Taller y Conversatorio · Hábitos Saludables y Longevidad · Carlos Nacht Fernandez Blanco')">
+      <img src="public/assets/talleres/flyer_oficial_carlos.jpg" alt="Taller y Conversatorio: Hábitos Saludables y Longevidad - Carlos Nacht Fernandez Blanco">
       <div class="header-image-badge">
         <span>🔍</span> Tocar para ampliar
       </div>
@@ -756,33 +762,34 @@
       <!-- SUBTITLE & INSTRUCTOR PROFILE -->
       <section class="subtitle-section">
         <div class="instructor-profile">
-          <img src="public/assets/brand/comunidad_emblem_clean.png" alt="Dr. Carlos" class="instructor-avatar">
+          <img src="public/assets/brand/comunidad_emblem_clean.png" alt="Carlos Nacht Fernandez Blanco" class="instructor-avatar">
           <div class="instructor-info">
-            <div class="facilitador">Facilitado por Dr. Carlos</div>
+            <div class="facilitador">Facilitado por Carlos Nacht Fernandez Blanco</div>
             <div class="centro">Médico Naturista · Nodo Elementales La Lucila</div>
           </div>
         </div>
 
         <p class="event-intro-text">
-          Invitamos a la comunidad a este encuentro vivencial de salud consciente, nutrición viva y longevidad, sintonizando con el equilibrio del pH 7,5 y la sangre como servicio de ABL (Alumbrado, Barrido y Limpieza).
+          Invitamos a la comunidad a este encuentro vivencial y conversatorio de salud consciente, nutrición viva y longevidad, sintonizando con el equilibrio del pH 7,5 y la regeneración celular a través de hábitos puros.
         </p>
 
         <div class="event-datetime">
+          <div class="datetime-badge" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-weight:700;">🎟️ Entrada Libre</div>
           <div class="datetime-badge">📅 Sábado 7 de Noviembre</div>
           <div class="datetime-badge">⏰ 11:00 am a 14:00 hs</div>
           <div class="datetime-badge">📍 Anchorena 684, La Lucila</div>
         </div>
       </section>
 
-      <!-- GALERÍA DE INSPIRACIÓN & MANUSCRITOS -->
+      <!-- GALERÍA DE INSPIRACIÓN & SABERES -->
       <section class="gallery-section">
-        <div class="gallery-title">Inspiración del Encuentro & Manuscritos</div>
+        <div class="gallery-title">Inspiración del Encuentro & Saberes</div>
         <div class="gallery-grid">
           
-          <!-- Item 1: Afiche Tipográfico de Madera -->
-          <div class="gallery-item" onclick="abrirImagen('public/assets/talleres/flyer_rescate_carlos.jpg', 'Afiche Tipográfico en Tipos de Madera · Imprenta Rescate')">
-            <img src="public/assets/talleres/flyer_rescate_carlos.jpg" alt="Afiche Imprenta Rescate">
-            <div class="gallery-item-caption">Afiche de Madera</div>
+          <!-- Item 1: Flyer Oficial -->
+          <div class="gallery-item" onclick="abrirImagen('public/assets/talleres/flyer_oficial_carlos.jpg', 'Flyer Oficial: Taller y Conversatorio · Hábitos Saludables y Longevidad')">
+            <img src="public/assets/talleres/flyer_oficial_carlos.jpg" alt="Flyer Oficial">
+            <div class="gallery-item-caption">Flyer Oficial</div>
           </div>
 
           <!-- Item 2: Manuscrito pH 7,5 -->
@@ -797,16 +804,16 @@
             <div class="gallery-item-caption">Hábitos y Longevidad</div>
           </div>
 
-          <!-- Item 4: Banner Horizontal -->
-          <div class="gallery-item" onclick="abrirImagen('public/assets/talleres/banner_rescate_carlos_horizontal.jpg', 'Banner Tipográfico Horizontal · Edición Sábado 7 Nov')">
-            <img src="public/assets/talleres/banner_rescate_carlos_horizontal.jpg" alt="Banner Horizontal">
-            <div class="gallery-item-caption">Banner Oficial</div>
+          <!-- Item 4: Banner Tipográfico -->
+          <div class="gallery-item" onclick="abrirImagen('public/assets/talleres/banner_rescate_carlos_horizontal.jpg', 'Banner Tipográfico Imprenta Rescate · Edición Sábado 7 Nov')">
+            <img src="public/assets/talleres/banner_rescate_carlos_horizontal.jpg" alt="Banner Rescate">
+            <div class="gallery-item-caption">Afiche Tipográfico</div>
           </div>
 
-          <!-- Item 5: Intermedio Alimentos Vivos -->
-          <div class="gallery-item" onclick="abrirImagen('public/assets/products/aceite_lorenzo_cabrera.jpg', 'Degustación Intermedia de Alimentos Vivos: Jugos Detox, Té Alcalino y Frutos Secos')">
-            <img src="public/assets/products/aceite_lorenzo_cabrera.jpg" alt="Alimentos Vivos">
-            <div class="gallery-item-caption">Intermedio Vivo</div>
+          <!-- Item 5: Intermedio Jugos Verdes Detox (reemplaza aceite de oliva) -->
+          <div class="gallery-item" onclick="abrirImagen('public/assets/talleres/jugos_verdes_detox.jpg', 'Degustación Intermedia de Alimentos Vivos: Jugos Verdes Detox Prensados en Frío')">
+            <img src="public/assets/talleres/jugos_verdes_detox.jpg" alt="Jugos Verdes Detox">
+            <div class="gallery-item-caption">Jugos Verdes Detox</div>
           </div>
 
           <!-- Item 6: Ensaladas Vivas al Cierre -->
@@ -1074,16 +1081,17 @@
         : `$${aporte.toLocaleString('es-AR')}`;
 
       const waMsg = 
-`🩺 *INSCRIPCIÓN: ¡SALUD & 7,5! CON DR. CARLOS*
+`🥕 *TALLER Y CONVERSATORIO: HÁBITOS SALUDABLES & LONGEVIDAD*
 🎫 *Ticket:* ${ticketCode}
 ━━━━━━━━━━━━━━━━━━━━━
-🌿 *Actividad:* Taller de Hábitos Saludables & Longevidad
-👨‍⚕️ *Facilitador:* Dr. Carlos (Médico Naturista)
+🌿 *Actividad:* Hábitos Saludables y Longevidad · Alimentos Vivos
+👨‍⚕️ *Facilita:* Carlos Nacht Fernandez Blanco, Médico Naturista
+🎟️ *Acceso:* Entrada Libre (Aporte Consciente Comunitario)
 🗓️ *Fecha:* Sábado 7 de Noviembre · 11:00 am a 14:00 hs
 📍 *Sede:* Nodo Elementales La Lucila (Anchorena 684)
 
 🥗 *Degustación Incluida:*
-• Intermedio: Alimentos Vivos (Jugos detox, té alcalino y frutos secos)
+• Intermedio: Jugos Verdes Detox prensados en frío, té alcalino y frutos secos
 • Cierre: Degustación de ensaladas vivas agroecológicas
 
 👤 *Nombre:* ${nombre}
@@ -1107,13 +1115,14 @@ https://elementales.store/salud`;
 
     function compartirWhatsApp() {
       const shareMsg = 
-`🩺 *TALLER VIVENCIAL CON DR. CARLOS | ELEMENTALES .STORE*
-🌱 *¡SALUD & 7,5! Taller de Hábitos Saludables & Longevidad*
-👨‍⚕️ Encuentro en 2 módulos con alimentos vivos y degustación de ensaladas al cierre.
+`🥕 *TALLER Y CONVERSATORIO CON CARLOS NACHT FERNANDEZ BLANCO*
+🌱 *Hábitos Saludables y Longevidad · Alimentos Vivos*
+👨‍⚕️ Médico Naturista en Nodo Elementales La Lucila
+🎟️ Entrada Libre · Intermedio con Jugos Verdes Detox y ensaladas al cierre.
 
-📍 *Nodo Elementales La Lucila (Anchorena 684)*
+📍 *Anchorena 684, La Lucila*
 🗓️ *Sábado 7 de Noviembre · 11:00 am a 14:00 hs*
-Mirá la propuesta y sumate al taller acá:
+Mirá el flyer oficial y sumate acá:
 👉 https://elementales.store/salud`;
       window.open(`https://wa.me/?text=${encodeURIComponent(shareMsg)}`, '_blank');
     }
