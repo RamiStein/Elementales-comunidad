@@ -138,15 +138,18 @@
           <span>🫒</span> <span class="hidden md:inline">Oliva</span>
         </a>
 
-        <!-- Botón Salir / Logout -->
+        <!-- Usuario activo y Botón Salir / Logout -->
+        <div id="admin-user-badge-container" class="hidden items-center gap-1.5">
+          <span id="admin-user-badge" class="text-[11px] font-bold text-stone-700 bg-stone-100 px-2.5 py-1 rounded-xl border border-stone-200">👤 admin</span>
+        </div>
         <button 
           type="button" 
           id="btn-admin-logout"
           onclick="handleAdminLogout()" 
-          class="text-xs font-bold text-stone-500 hover:text-rose-600 px-2.5 py-1.5 rounded-xl hover:bg-rose-50 transition-colors cursor-pointer"
+          class="hidden text-xs font-bold text-stone-500 hover:text-rose-600 px-2.5 py-1.5 rounded-xl hover:bg-rose-50 transition-colors cursor-pointer"
           title="Cerrar sesión de administrador"
         >
-          Salir
+          Cerrar Sesión
         </button>
 
       </div>
@@ -166,61 +169,71 @@
           <span class="text-3xl">🔐</span>
         </div>
         <span class="text-[10px] font-black uppercase tracking-widest text-[#a6634f] bg-[#fcf4f0] px-3 py-1 rounded-full border border-[#eddcd5] inline-block mb-2 font-mono-code">
-          USO EXCLUSIVO · GUARDIÁN DEL NODO
+          USO EXCLUSIVO · ADMINISTRACIÓN DEL NODO
         </span>
         <h2 class="text-2xl sm:text-3xl font-black text-stone-900 font-heading tracking-tight">
           Ingreso a <span class="text-[#a6634f]">Gestión</span>
         </h2>
         <p class="text-xs sm:text-sm text-stone-600 mt-1.5 leading-relaxed">
-          Ingresá tu clave o PIN de administrador para abrir el panel de control de pedidos, miembros y círculos.
+          Ingresá tu usuario y contraseña de administrador para abrir el panel de control.
         </p>
       </div>
 
-      <!-- Formulario de Acceso por PIN -->
-      <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+      <!-- Formulario de Acceso por Usuario y Contraseña -->
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4" autocomplete="on">
         <div>
-          <label for="admin-pin-input" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1.5 flex items-center justify-between">
-            <span>🔑 PIN o Clave de Gestor</span>
-            <span class="text-[10px] font-mono text-stone-400">PIN sugerido: 1321</span>
+          <label for="admin-user-input" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1.5">
+            👤 Usuario
           </label>
           <input 
             type="text" 
-            id="admin-pin-input" 
-            value="1321"
-            placeholder="Escribí el PIN o ingresá directo..."
-            class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3.5 text-base sm:text-lg font-bold text-stone-900 focus:outline-none transition-all placeholder:text-stone-400 placeholder:font-normal text-center tracking-widest"
-            autocomplete="off"
+            id="admin-user-input" 
+            name="username"
+            placeholder="ej. ramiro o admin"
+            class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3 text-sm font-semibold text-stone-900 focus:outline-none transition-all placeholder:text-stone-400 placeholder:font-normal"
+            autocomplete="username"
             autofocus
+            required
           />
         </div>
 
-        <!-- Botones de atajo de PIN para facilitarle al usuario entrar -->
-        <div class="flex items-center justify-center gap-2 pt-1 text-[11px] text-stone-500">
-          <span>Accesos rápidos:</span>
-          <button type="button" onclick="quickFillPin('1321')" class="px-2 py-0.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-mono font-bold cursor-pointer border border-stone-200 transition-colors">1321</button>
-          <button type="button" onclick="quickFillPin('admin')" class="px-2 py-0.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-mono font-bold cursor-pointer border border-stone-200 transition-colors">admin</button>
-          <button type="button" onclick="quickFillPin('2026')" class="px-2 py-0.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-mono font-bold cursor-pointer border border-stone-200 transition-colors">2026</button>
+        <div>
+          <label for="admin-pass-input" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1.5 flex items-center justify-between">
+            <span>🔑 Contraseña</span>
+            <button type="button" onclick="togglePasswordVisibility()" class="text-[11px] font-bold text-stone-500 hover:text-stone-800 transition-colors cursor-pointer select-none" id="toggle-pass-btn">
+              👁️ Mostrar
+            </button>
+          </label>
+          <div class="relative">
+            <input 
+              type="password" 
+              id="admin-pass-input" 
+              name="password"
+              placeholder="••••••••"
+              class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3 text-sm font-semibold text-stone-900 focus:outline-none transition-all placeholder:text-stone-400 placeholder:font-normal"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs pt-1">
+          <label class="flex items-center gap-2 cursor-pointer text-stone-600 select-none">
+            <input type="checkbox" id="admin-remember-me" class="rounded border-stone-300 text-[#a6634f] focus:ring-[#a6634f]" />
+            <span>Recordar sesión en este equipo</span>
+          </label>
         </div>
 
         <button 
           type="submit" 
           id="btn-admin-submit"
-          class="w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-3.5 rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+          class="w-full bg-[#1db954] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base py-3.5 rounded-2xl shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 mt-2"
         >
-          <span>Abrir Panel de Gestión</span>
+          <span>Ingresar al Panel de Gestión</span>
           <span>→</span>
         </button>
 
-        <button 
-          type="button" 
-          onclick="bypassAdminLogin()"
-          class="w-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs py-2.5 rounded-xl border border-stone-200 flex items-center justify-center gap-2 cursor-pointer transition-colors"
-        >
-          <span>⚡</span>
-          <span>Acceso Directo de Administrador (Sin PIN)</span>
-        </button>
-
-        <div id="admin-feedback" class="hidden text-xs text-center font-bold"></div>
+        <div id="admin-feedback" class="hidden text-xs text-center font-bold p-3 rounded-xl"></div>
       </form>
 
       <!-- Pie del Card -->
@@ -3416,9 +3429,14 @@
   <script src="js/db.js"></script>
   <script>
     // =========================================================================
-    // 1. GESTIÓN DE ACCESO Y AUTENTICACIÓN
+    // 1. GESTIÓN DE ACCESO Y AUTENTICACIÓN (USUARIO Y CONTRASEÑA)
     // =========================================================================
-    const VALID_PINS = ['1321', 'admin', 'gestor', '1234', '2026', 'nodo', '3450', 'elementales', 'ramiro', 'rami', 'lomaverde', 'lucila', 'cooperativa', '0000', '1111', ''];
+    const AUTHORIZED_ACCOUNTS = {
+      'ramiro': ['elementales2026', '1321', 'elementales'],
+      'admin': ['elementales2026', '1321', 'elementales'],
+      'gestor': ['elementales2026', '1321'],
+      'elementales': ['elementales2026', '1321']
+    };
 
     function escapeHtml(str) {
       if (typeof str !== 'string') return String(str || '');
@@ -3432,27 +3450,11 @@
     }
 
     function isGestorAuthenticated() {
-      // Auto-autenticación instantánea si la URL incluye ?auth=true, ?admin=true, #admin o #auth
-      if (window.location.search.includes('auth=true') || 
-          window.location.search.includes('admin=true') || 
-          window.location.search.includes('direct=true') || 
-          window.location.hash === '#admin' || 
-          window.location.hash === '#auth') {
-        sessionStorage.setItem('elementales_authenticated', 'true');
-        sessionStorage.setItem('elementales_gestor_auth', 'true');
-        localStorage.setItem('elementales_user_role', 'gestor');
-        return true;
-      }
-      return sessionStorage.getItem('elementales_gestor_auth') === 'true' || 
-             localStorage.getItem('elementales_user_role') === 'gestor' ||
-             localStorage.getItem('elementales_user_role') === 'admin';
-    }
-
-    function bypassAdminLogin() {
-      sessionStorage.setItem('elementales_authenticated', 'true');
-      sessionStorage.setItem('elementales_gestor_auth', 'true');
-      localStorage.setItem('elementales_user_role', 'gestor');
-      checkAuthState();
+      // Verificación estricta de sesión activa o credencial persistente
+      const sessionAuth = sessionStorage.getItem('elementales_admin_auth') === 'true' || 
+                          sessionStorage.getItem('elementales_gestor_auth') === 'true';
+      const persistentAuth = localStorage.getItem('elementales_admin_persistent_auth') === 'true';
+      return sessionAuth || persistentAuth;
     }
 
     function checkAuthState() {
@@ -3460,63 +3462,133 @@
       const gate = document.getElementById('pin-gate-container');
       const dash = document.getElementById('admin-dashboard-container');
       const logoutBtn = document.getElementById('btn-admin-logout');
+      const userBadgeCont = document.getElementById('admin-user-badge-container');
+      const userBadge = document.getElementById('admin-user-badge');
 
       if (isAuth) {
         if (gate) gate.classList.add('hidden');
         if (dash) dash.classList.remove('hidden');
         if (logoutBtn) logoutBtn.classList.remove('hidden');
+        const currentUser = sessionStorage.getItem('elementales_admin_user') || localStorage.getItem('elementales_admin_user') || 'admin';
+        if (userBadge) userBadge.textContent = `👤 ${currentUser}`;
+        if (userBadgeCont) userBadgeCont.classList.remove('hidden');
         initAdminData();
       } else {
         if (gate) gate.classList.remove('hidden');
         if (dash) dash.classList.add('hidden');
         if (logoutBtn) logoutBtn.classList.add('hidden');
+        if (userBadgeCont) userBadgeCont.classList.add('hidden');
+        setTimeout(() => {
+          const userInput = document.getElementById('admin-user-input');
+          if (userInput && !userInput.value) userInput.focus();
+        }, 120);
       }
     }
 
-    function quickFillPin(code) {
-      const pinInput = document.getElementById('admin-pin-input');
-      if (pinInput) {
-        pinInput.value = code;
-        handleAdminLogin(new Event('submit'));
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('admin-pass-input');
+      const toggleBtn = document.getElementById('toggle-pass-btn');
+      if (!passInput || !toggleBtn) return;
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        toggleBtn.textContent = '🙈 Ocultar';
+      } else {
+        passInput.type = 'password';
+        toggleBtn.textContent = '👁️ Mostrar';
       }
     }
 
     function handleAdminLogin(e) {
       if (e && e.preventDefault) e.preventDefault();
-      const pinInput = document.getElementById('admin-pin-input');
-      const pin = (pinInput ? pinInput.value : '').trim().toLowerCase();
+      const userInput = document.getElementById('admin-user-input');
+      const passInput = document.getElementById('admin-pass-input');
+      const rememberCheckbox = document.getElementById('admin-remember-me');
       const feedback = document.getElementById('admin-feedback');
+      const submitBtn = document.getElementById('btn-admin-submit');
 
-      // Acepta cualquier PIN autorizado, PIN vacío o cualquier intento razonable
-      const isAuthorized = VALID_PINS.includes(pin) || pin === '' || pin.length >= 3;
+      const username = (userInput ? userInput.value : '').trim().toLowerCase();
+      const password = (passInput ? passInput.value : '').trim();
 
-      if (isAuthorized) {
+      if (!username || !password) {
         if (feedback) {
-          feedback.textContent = '✓ Credencial autorizada. Abriendo panel de control...';
-          feedback.className = 'text-xs text-center font-bold text-emerald-700 block animate-pulse mt-2';
+          feedback.textContent = 'Por favor completá tu usuario y contraseña.';
+          feedback.className = 'text-xs text-center font-bold text-rose-700 bg-rose-50 border border-rose-200 block p-3 rounded-xl mt-3';
+          feedback.classList.remove('hidden');
+        }
+        if (!username && userInput) userInput.focus();
+        else if (passInput) passInput.focus();
+        return;
+      }
+
+      // Validar contra cuentas autorizadas o credencial personalizada guardada
+      const customUser = (localStorage.getItem('elementales_custom_admin_user') || '').toLowerCase();
+      const customPass = localStorage.getItem('elementales_custom_admin_pass');
+
+      let isValid = false;
+      if (AUTHORIZED_ACCOUNTS[username] && AUTHORIZED_ACCOUNTS[username].includes(password)) {
+        isValid = true;
+      } else if (customUser && customPass && username === customUser && password === customPass) {
+        isValid = true;
+      }
+
+      if (isValid) {
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span>Ingresando...</span>';
+        }
+        if (feedback) {
+          feedback.textContent = `✓ ¡Bienvenido/a ${username}! Abriendo panel de gestión...`;
+          feedback.className = 'text-xs text-center font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 block p-3 rounded-xl mt-3 animate-pulse';
           feedback.classList.remove('hidden');
         }
 
+        const rememberMe = rememberCheckbox ? rememberCheckbox.checked : false;
         sessionStorage.setItem('elementales_authenticated', 'true');
+        sessionStorage.setItem('elementales_admin_auth', 'true');
         sessionStorage.setItem('elementales_gestor_auth', 'true');
+        sessionStorage.setItem('elementales_admin_user', username);
         localStorage.setItem('elementales_user_role', 'gestor');
 
+        if (rememberMe) {
+          localStorage.setItem('elementales_admin_persistent_auth', 'true');
+          localStorage.setItem('elementales_admin_user', username);
+        } else {
+          localStorage.removeItem('elementales_admin_persistent_auth');
+        }
+
         setTimeout(() => {
+          if (submitBtn) submitBtn.disabled = false;
           checkAuthState();
-        }, 150);
+        }, 250);
       } else {
         if (feedback) {
-          feedback.textContent = '✕ PIN no reconocido. Podés usar 1321, admin o el botón de acceso directo.';
-          feedback.className = 'text-xs text-center font-bold text-rose-600 block mt-2';
+          feedback.textContent = '✕ Usuario o contraseña incorrectos. Por favor verificá los datos ingresados.';
+          feedback.className = 'text-xs text-center font-bold text-rose-700 bg-rose-50 border border-rose-200 block p-3 rounded-xl mt-3';
           feedback.classList.remove('hidden');
         }
-        if (pinInput) pinInput.select();
+        if (passInput) {
+          passInput.value = '';
+          passInput.focus();
+        }
       }
     }
 
     function handleAdminLogout() {
+      sessionStorage.removeItem('elementales_admin_auth');
       sessionStorage.removeItem('elementales_gestor_auth');
+      sessionStorage.removeItem('elementales_admin_user');
+      localStorage.removeItem('elementales_admin_persistent_auth');
+      localStorage.removeItem('elementales_admin_user');
       localStorage.setItem('elementales_user_role', 'visitante');
+      
+      const passInput = document.getElementById('admin-pass-input');
+      if (passInput) passInput.value = '';
+      const feedback = document.getElementById('admin-feedback');
+      if (feedback) {
+        feedback.textContent = '';
+        feedback.classList.add('hidden');
+      }
+
       checkAuthState();
     }
 

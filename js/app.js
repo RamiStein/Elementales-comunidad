@@ -706,7 +706,7 @@ function selectTierraModalidad(mode, updateUrl = true) {
 
   if (normalizedMode === 'lunar') {
     const nodeSlug = (AppState.activeNodeId || 'nodo-lomaverde').replace(/^nodo-/, '');
-    window.location.href = /compralunar/nodos/;
+    window.location.href = '/compralunar/nodos/';
     return;
   }
 
@@ -3267,8 +3267,7 @@ function handleAccessWordLogin(e) {
   // 1. Claves de Administrador / Gestor
   if (cleanWord === 'admin' || cleanWord === '1234' || cleanWord === '2026' || cleanWord === 'gestor' || cleanWord === 'nodo' || cleanWord === '1321') {
     role = 'gestor';
-    sessionStorage.setItem('elementales_gestor_auth', 'true');
-    welcomeMsg = 'Acceso concedido como Administrador del Nodo.';
+    welcomeMsg = 'Redirigiendo al acceso de administración...';
   } 
   // 2. Buscar si es un usuario registrado en DB
   else if (typeof ElementalesDB !== 'undefined' && ElementalesDB.findUserByCode) {
@@ -3308,10 +3307,6 @@ function handleAccessWordLogin(e) {
   updateRoleUI();
 
   if (role === 'gestor') {
-    sessionStorage.setItem('elementales_authenticated', 'true');
-    sessionStorage.setItem('elementales_gestor_auth', 'true');
-    sessionStorage.setItem('elementales_node_associated', 'true');
-    localStorage.setItem('elementales_user_role', 'gestor');
     setTimeout(() => {
       window.location.href = 'gestionelemental.html';
     }, 250);
@@ -6772,10 +6767,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (window.location.hash === '#admin' || urlParams.get('view') === 'admin') {
-    AppState.userRole = 'gestor';
-    sessionStorage.setItem('elementales_authenticated', 'true');
-    sessionStorage.setItem('elementales_gestor_auth', 'true');
-    localStorage.setItem('elementales_user_role', 'gestor');
     window.location.href = 'gestionelemental.html';
     return;
   } else if (isLandingRequested || !isAuth) {
