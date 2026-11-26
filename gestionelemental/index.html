@@ -328,6 +328,10 @@
               <span class="text-stone-500">Pendientes de entrega:</span>
               <span id="hub-kpi-semanal-pending" class="font-mono text-amber-700 font-black">0</span>
             </div>
+            <div class="flex items-center justify-between text-xs font-bold text-stone-700 pt-1 border-t border-stone-200/60">
+              <span class="text-stone-500">Base productos semanal:</span>
+              <span id="hub-kpi-semanal-prods" class="font-mono text-emerald-800 font-black">0 prods</span>
+            </div>
           </div>
 
           <!-- Módulos y herramientas rápidas -->
@@ -400,6 +404,10 @@
               <span class="text-stone-500">Pedidos mensuales / lunares:</span>
               <span id="hub-kpi-mensual-count" class="font-mono text-amber-900 font-black">0 pedidos</span>
             </div>
+            <div class="flex items-center justify-between text-xs font-bold text-stone-700 pt-1 border-t border-stone-200/60">
+              <span class="text-stone-500">Base productos mensual:</span>
+              <span id="hub-kpi-mensual-prods" class="font-mono text-purple-900 font-black">0 prods</span>
+            </div>
           </div>
 
           <!-- Módulos y herramientas rápidas -->
@@ -471,6 +479,10 @@
             <div class="flex items-center justify-between text-xs font-bold text-stone-700">
               <span class="text-stone-500">Sede activa de entrega:</span>
               <span id="hub-kpi-nodo-active-name" class="font-mono text-indigo-700 font-black">Loma Verde</span>
+            </div>
+            <div class="flex items-center justify-between text-xs font-bold text-stone-700 pt-1 border-t border-stone-200/60">
+              <span class="text-stone-500">Stock físico en sede:</span>
+              <span id="hub-kpi-nodo-prods" class="font-mono text-blue-900 font-black">0 un.</span>
             </div>
           </div>
 
@@ -832,9 +844,10 @@
             onchange="renderAdminOrdersTable()"
             class="bg-white border border-stone-300 text-xs font-bold text-stone-800 rounded-xl px-3 py-2 outline-none cursor-pointer shadow-2xs hover:border-stone-400 transition-colors"
           >
-            <option value="todos">🛒 Todos los Tipos</option>
-            <option value="semanal">🌱 Compra Semanal</option>
-            <option value="lunar">🌕 Compra Lunar</option>
+            <option value="todos">🛒 Todas las Tiendas</option>
+            <option value="semanal">🥦 Tienda Semanal</option>
+            <option value="lunar">🌕 Tienda Mensual (Lunar)</option>
+            <option value="nodo">🏪 Tienda Nodo (Sede)</option>
           </select>
 
           <!-- Filtro por Estado -->
@@ -992,21 +1005,24 @@
     <!-- ======================================================================= -->
     <div id="admin-panel-basedatos" class="admin-panel-content hidden space-y-4">
       
-      <!-- Encabezado y Herramientas -->
-      <div class="bg-white border border-stone-200 rounded-3xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-[10px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200 font-mono">
-              Registros Históricos Unificados
-            </span>
-            <span class="text-xs text-stone-400 font-mono">Todos los datos del comprador</span>
+      <!-- Selector Rápido de Tienda para la Base de Datos de Pedidos -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-black uppercase tracking-wider text-stone-500 font-mono">Filtrar Base de Datos:</span>
+          <div class="flex flex-wrap items-center gap-1.5 p-1 bg-stone-100 rounded-2xl border border-stone-200">
+            <button type="button" onclick="setDatabaseStoreFilter('todos')" id="pill-db-store-todos" class="px-3 py-1.5 rounded-xl font-black text-xs bg-white text-indigo-950 shadow-2xs cursor-pointer border border-indigo-200">
+              🌐 Base Integral (Todas)
+            </button>
+            <button type="button" onclick="setDatabaseStoreFilter('semanal')" id="pill-db-store-semanal" class="px-3 py-1.5 rounded-xl font-bold text-xs text-stone-600 hover:text-stone-900 cursor-pointer transition-colors">
+              🥦 Tienda Semanal
+            </button>
+            <button type="button" onclick="setDatabaseStoreFilter('mensual')" id="pill-db-store-mensual" class="px-3 py-1.5 rounded-xl font-bold text-xs text-stone-600 hover:text-stone-900 cursor-pointer transition-colors">
+              🌕 Tienda Mensual
+            </button>
+            <button type="button" onclick="setDatabaseStoreFilter('nodo')" id="pill-db-store-nodo" class="px-3 py-1.5 rounded-xl font-bold text-xs text-stone-600 hover:text-stone-900 cursor-pointer transition-colors">
+              🏪 Tienda Nodo
+            </button>
           </div>
-          <h3 class="text-xl font-black text-stone-900 font-heading">
-            Base de Datos Integral de Pedidos
-          </h3>
-          <p class="text-xs text-stone-600 mt-0.5 leading-relaxed">
-            Visualizá todos los datos ingresados por las personas: domicilio, teléfono, email, alimentos solicitados, aporte donado y el Ser Elemental que tomó el pedido.
-          </p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -1014,22 +1030,38 @@
             type="button" 
             onclick="exportFullDatabaseCSV()" 
             class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black shadow-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-98"
-            title="Exportar base de datos completa con todos los campos en formato Excel / CSV"
+            title="Exportar base de datos completa o de la tienda seleccionada en formato Excel / CSV"
           >
             <span>📥</span>
-            <span>Exportar CSV Completo</span>
+            <span>Exportar CSV</span>
           </button>
 
           <button 
             type="button" 
             onclick="backupFullDatabaseJSON()" 
             class="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold border border-stone-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-98"
-            title="Descargar copia de seguridad en JSON de toda la base de datos"
+            title="Descargar copia de seguridad en JSON"
           >
             <span>💾</span>
             <span>Backup JSON</span>
           </button>
         </div>
+      </div>
+
+      <!-- Encabezado y Herramientas -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-5 shadow-xs">
+        <div class="flex items-center gap-2 mb-1">
+          <span id="db-banner-tag" class="text-[10px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200 font-mono">
+            Registros Históricos Unificados
+          </span>
+          <span class="text-xs text-stone-400 font-mono">Todos los datos del comprador y canal</span>
+        </div>
+        <h3 id="db-banner-title" class="text-xl font-black text-stone-900 font-heading">
+          Base de Datos de Pedidos
+        </h3>
+        <p class="text-xs text-stone-600 mt-0.5 leading-relaxed">
+          Visualizá todos los datos ingresados por las personas: domicilio, teléfono, email, alimentos solicitados, aporte donado y la tienda donde se originó el pedido.
+        </p>
       </div>
 
       <!-- Métricas Resumen de la Base de Datos -->
@@ -1075,9 +1107,10 @@
             onchange="renderAdminDatabaseTable()"
             class="bg-white border border-stone-300 text-xs font-bold text-stone-800 rounded-xl px-3 py-2 outline-none cursor-pointer shadow-2xs hover:border-stone-400 transition-colors"
           >
-            <option value="todos">🛒 Todos los Tipos</option>
-            <option value="lunar">🌕 Compra Lunar</option>
-            <option value="semanal">🌱 Compra Semanal</option>
+            <option value="todos">🛒 Todas las Tiendas</option>
+            <option value="semanal">🥦 Tienda Semanal</option>
+            <option value="lunar">🌕 Tienda Mensual (Lunar)</option>
+            <option value="nodo">🏪 Tienda Nodo (Sede)</option>
           </select>
 
           <select 
@@ -1495,49 +1528,58 @@
     <!-- ======================================================================= -->
         <div id="admin-panel-catalogo" class="admin-panel-content hidden space-y-5">
       
-      <!-- Banner Principal del Catálogo Maestro -->
-      <div class="bg-gradient-to-r from-emerald-50/90 via-white to-amber-50/60 border border-emerald-200/90 rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
+      <!-- Selector Rápido de Tienda para la Base de Datos de Productos -->
+      <div class="bg-white border border-stone-200 rounded-3xl p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-black uppercase tracking-wider text-stone-500 font-mono">Tienda Activa:</span>
+          <div class="flex flex-wrap items-center gap-1.5 p-1 bg-stone-100 rounded-2xl border border-stone-200">
+            <button type="button" onclick="setCatalogStoreFilter('todos')" id="pill-catalog-store-todos" class="px-3 py-1.5 rounded-xl font-black text-xs bg-white text-stone-900 shadow-2xs cursor-pointer border border-stone-200">
+              🌐 Base de Datos Unificada
+            </button>
+            <button type="button" onclick="setCatalogStoreFilter('semanal')" id="pill-catalog-store-semanal" class="px-3 py-1.5 rounded-xl font-bold text-xs text-stone-600 hover:text-stone-900 cursor-pointer transition-colors">
+              🥦 Tienda Semanal
+            </button>
+            <button type="button" onclick="setCatalogStoreFilter('mensual')" id="pill-catalog-store-mensual" class="px-3 py-1.5 rounded-xl font-bold text-xs text-stone-600 hover:text-stone-900 cursor-pointer transition-colors">
+              🌕 Tienda Mensual
+            </button>
+            <button type="button" onclick="setCatalogStoreFilter('nodo')" id="pill-catalog-store-nodo" class="px-3 py-1.5 rounded-xl font-bold text-xs text-stone-600 hover:text-stone-900 cursor-pointer transition-colors">
+              🏪 Tienda Nodo (Stock Sede)
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            onclick="openNewProductModal()" 
+            class="px-4 py-2.5 rounded-2xl bg-[#059669] hover:bg-[#047857] active:scale-98 text-white font-black text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer font-heading"
+          >
+            <span>➕</span>
+            <span>Nuevo Producto</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Banner Informativo del Catálogo -->
+      <div class="bg-gradient-to-r from-emerald-50/90 via-white to-amber-50/60 border border-emerald-200/90 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="flex items-start gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-[#059669] text-white flex items-center justify-center text-3xl shrink-0 shadow-md">
+          <div id="cat-banner-icon" class="w-12 h-12 rounded-2xl bg-[#059669] text-white flex items-center justify-center text-2xl shrink-0 shadow-md">
             🌾
           </div>
           <div>
             <div class="flex flex-wrap items-center gap-2 mb-1">
-              <span class="text-[10px] font-black uppercase tracking-wider text-emerald-900 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
-                Tienda Web Pública & Red Federada
+              <span id="cat-banner-tag" class="text-[10px] font-black uppercase tracking-wider text-emerald-900 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300 font-mono">
+                Base de Datos Unificada
               </span>
-              <span id="cat-badge-providers" class="font-mono text-[11px] font-bold text-stone-600 bg-white px-2 py-0.5 rounded-md border border-stone-200">
-                🌐 VRDE Club · 🌕 Compra Lunar · 🍓 Productores Locales
-              </span>
+              <span class="text-xs text-stone-500 font-medium">Cada producto puede estar en una o múltiples tiendas</span>
             </div>
-            <h3 class="text-xl sm:text-2xl font-black text-stone-900 font-heading">
-              Catálogo Maestro & Precios de Venta en la Web
+            <h3 id="cat-banner-title" class="text-xl sm:text-2xl font-black text-stone-900 font-heading">
+              Catálogo Maestro & Asignación de Tiendas
             </h3>
-            <p class="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl leading-relaxed">
-              Control unificado de todos los alimentos publicados en la tienda comunitaria (<a href="/compralunar" target="_blank" class="text-emerald-700 underline font-bold">elementales.store/compralunar</a>). Sacá o poné productos de la web con un clic y ajustá los precios <strong>Minorista</strong>, <strong>Mayorista</strong> y <strong>Distribuidor</strong>.
+            <p id="cat-banner-desc" class="text-xs text-stone-600 mt-0.5 max-w-2xl leading-relaxed">
+              Definí para cada alimento si entra en la <strong>Compra Semanal</strong> (feria y canastas), <strong>Compra Mensual</strong> (campañas lunares y lotes) o si tiene stock en el <strong>Nodo</strong>.
             </p>
           </div>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
-          <button 
-            type="button" 
-            onclick="syncCatalogWithVrde()" 
-            class="px-4 py-2.5 rounded-2xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 font-bold text-xs shadow-2xs transition-all flex items-center gap-2 cursor-pointer"
-            title="Sincronizar y actualizar productos federados desde VRDE Club"
-          >
-            <span class="text-base">🔄</span>
-            <span>Sincronizar VRDE Club</span>
-          </button>
-
-          <button 
-            type="button" 
-            onclick="openNewProductModal()" 
-            class="px-4 py-2.5 rounded-2xl bg-[#059669] hover:bg-[#047857] active:scale-98 text-white font-black text-xs shadow-md transition-all flex items-center gap-2 cursor-pointer font-heading"
-          >
-            <span class="text-base">➕</span>
-            <span>Publicar Nuevo Producto</span>
-          </button>
         </div>
       </div>
 
@@ -1649,6 +1691,8 @@
                 <th class="py-3.5 px-3">Precio Minorista</th>
                 <th class="py-3.5 px-3">Precio Mayorista</th>
                 <th class="py-3.5 px-3">Precio Distribuidor</th>
+                <th class="py-3.5 px-3 text-center">Tiendas Asignadas</th>
+                <th class="py-3.5 px-3 text-center">Stock Nodo</th>
                 <th class="py-3.5 px-3 text-center">Publicado en Web</th>
                 <th class="py-3.5 px-4 text-right">Acciones</th>
               </tr>
@@ -2870,6 +2914,35 @@
           </div>
         </div>
 
+        <!-- Asignación a Tiendas & Stock Nodo -->
+        <div class="p-4 bg-stone-50 border border-stone-200 rounded-2xl space-y-2.5">
+          <label class="block font-black text-xs text-stone-700 uppercase tracking-wider flex items-center justify-between">
+            <span>🏪 Asignación de Tiendas (Base Unificada)</span>
+            <span class="text-[10px] text-stone-500 font-normal">Define dónde estará disponible</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-white border border-stone-200 px-3 py-2 rounded-xl hover:border-emerald-400 transition-colors">
+              <input type="checkbox" id="edit-prod-store-semanal" class="w-4 h-4 text-emerald-600 rounded border-stone-300 focus:ring-emerald-500 cursor-pointer" />
+              <span class="font-bold text-xs text-stone-800">🥦 Semanal</span>
+            </label>
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-white border border-stone-200 px-3 py-2 rounded-xl hover:border-purple-400 transition-colors">
+              <input type="checkbox" id="edit-prod-store-mensual" class="w-4 h-4 text-purple-600 rounded border-stone-300 focus:ring-purple-500 cursor-pointer" />
+              <span class="font-bold text-xs text-stone-800">🌕 Mensual</span>
+            </label>
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-white border border-stone-200 px-3 py-2 rounded-xl hover:border-blue-400 transition-colors">
+              <input type="checkbox" id="edit-prod-store-nodo" class="w-4 h-4 text-blue-600 rounded border-stone-300 focus:ring-blue-500 cursor-pointer" />
+              <span class="font-bold text-xs text-stone-800">🏪 Nodo (Sede)</span>
+            </label>
+          </div>
+          <div class="flex items-center justify-between pt-1 border-t border-stone-200/60 text-xs">
+            <span class="text-stone-600 font-medium">Stock físico disponible en mostrador del Nodo:</span>
+            <div class="flex items-center gap-1.5">
+              <input type="number" id="edit-prod-stock-nodo" min="0" value="0" class="w-20 bg-white border border-stone-300 rounded-lg px-2 py-1 text-center font-mono font-bold text-stone-900 outline-none" />
+              <span class="text-stone-500 font-mono">unidades</span>
+            </div>
+          </div>
+        </div>
+
         <div>
           <label class="block font-bold text-stone-700 mb-1">Subtítulo / Origen / Notas</label>
           <input 
@@ -3049,6 +3122,35 @@
               <input type="checkbox" id="new-prod-enabled" checked class="w-4 h-4 text-emerald-600 rounded border-stone-300 focus:ring-emerald-500 cursor-pointer" />
               <span class="font-bold text-xs text-stone-800">Publicar de inmediato</span>
             </label>
+          </div>
+        </div>
+
+        <!-- Asignación a Tiendas & Stock Nodo -->
+        <div class="p-4 bg-stone-50 border border-stone-200 rounded-2xl space-y-2.5">
+          <label class="block font-black text-xs text-stone-700 uppercase tracking-wider flex items-center justify-between">
+            <span>🏪 Asignación de Tiendas (Base Unificada)</span>
+            <span class="text-[10px] text-stone-500 font-normal">Define dónde estará disponible</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-white border border-stone-200 px-3 py-2 rounded-xl hover:border-emerald-400 transition-colors">
+              <input type="checkbox" id="new-prod-store-semanal" checked class="w-4 h-4 text-emerald-600 rounded border-stone-300 focus:ring-emerald-500 cursor-pointer" />
+              <span class="font-bold text-xs text-stone-800">🥦 Semanal</span>
+            </label>
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-white border border-stone-200 px-3 py-2 rounded-xl hover:border-purple-400 transition-colors">
+              <input type="checkbox" id="new-prod-store-mensual" class="w-4 h-4 text-purple-600 rounded border-stone-300 focus:ring-purple-500 cursor-pointer" />
+              <span class="font-bold text-xs text-stone-800">🌕 Mensual</span>
+            </label>
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-white border border-stone-200 px-3 py-2 rounded-xl hover:border-blue-400 transition-colors">
+              <input type="checkbox" id="new-prod-store-nodo" checked class="w-4 h-4 text-blue-600 rounded border-stone-300 focus:ring-blue-500 cursor-pointer" />
+              <span class="font-bold text-xs text-stone-800">🏪 Nodo (Sede)</span>
+            </label>
+          </div>
+          <div class="flex items-center justify-between pt-1 border-t border-stone-200/60 text-xs">
+            <span class="text-stone-600 font-medium">Stock inicial físico en mostrador del Nodo:</span>
+            <div class="flex items-center gap-1.5">
+              <input type="number" id="new-prod-stock-nodo" min="0" value="10" class="w-20 bg-white border border-stone-300 rounded-lg px-2 py-1 text-center font-mono font-bold text-stone-900 outline-none" />
+              <span class="text-stone-500 font-mono">unidades</span>
+            </div>
           </div>
         </div>
 
@@ -3303,6 +3405,15 @@
       </div>
 
       <form onsubmit="handleCreateManualOrder(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Tienda de Origen (Base de Datos)</label>
+          <select id="manual-order-store" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-900 font-bold outline-none cursor-pointer">
+            <option value="nodo" selected>🏪 Tienda Nodo (Venta en Mostrador / Retiro Inmediato)</option>
+            <option value="semanal">🥦 Tienda Semanal (Feria y Canastas de Huerta)</option>
+            <option value="mensual">🌕 Tienda Mensual (Compra Lunar / Campañas Colectivas)</option>
+          </select>
+        </div>
+
         <div>
           <label class="block font-bold text-stone-700 mb-1">Nombre del Cliente / Vecino</label>
           <input type="text" id="manual-order-name" required placeholder="Ej. Juan Pérez" class="w-full bg-[#fcfaf8] border border-stone-300 focus:border-[#a6634f] focus:bg-white rounded-xl px-3 py-2 text-stone-900 outline-none" />
@@ -3881,6 +3992,8 @@
 
       if (panelName === 'semanal') {
         try { history.replaceState(null, '', '#semanal'); } catch (e) {}
+        setCatalogStoreFilter('semanal');
+        setDatabaseStoreFilter('semanal');
         if (badge) {
           badge.textContent = '🥦 COMPRA SEMANAL';
           badge.className = 'text-[10px] font-black uppercase tracking-wider text-emerald-800 font-mono-code bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200';
@@ -3903,6 +4016,8 @@
       } 
       else if (panelName === 'mensual') {
         try { history.replaceState(null, '', '#mensual'); } catch (e) {}
+        setCatalogStoreFilter('mensual');
+        setDatabaseStoreFilter('mensual');
         if (badge) {
           badge.textContent = '🌕 COMPRA MENSUAL';
           badge.className = 'text-[10px] font-black uppercase tracking-wider text-amber-900 font-mono-code bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200';
@@ -3925,6 +4040,8 @@
       } 
       else if (panelName === 'nodo') {
         try { history.replaceState(null, '', '#nodo'); } catch (e) {}
+        setCatalogStoreFilter('nodo');
+        setDatabaseStoreFilter('nodo');
         if (badge) {
           badge.textContent = '🏪 COMPRA EN NODO';
           badge.className = 'text-[10px] font-black uppercase tracking-wider text-stone-800 font-mono-code bg-stone-100 px-2.5 py-0.5 rounded-full border border-stone-300';
@@ -4061,6 +4178,20 @@
       if (elNodoReady) elNodoReady.textContent = `${readyOrders} listos para entrega`;
       if (elNodoCounter) elNodoCounter.textContent = `${counterOrders} en mostrador`;
       if (elNodoActive) elNodoActive.textContent = activeNodeName;
+
+      // Métricas de Productos por Tienda desde la Base de Datos Unificada
+      const prods = adminProducts || [];
+      const countProdsSemanal = prods.filter(p => getProductStores(p).includes('semanal')).length;
+      const countProdsMensual = prods.filter(p => getProductStores(p).includes('mensual')).length;
+      const countProdsNodo = prods.filter(p => getProductStores(p).includes('nodo')).length;
+      const totalNodoStock = prods.reduce((sum, p) => sum + (getProductStores(p).includes('nodo') ? (Number(p.stockNodo) || 0) : 0), 0);
+
+      const elSemProds = document.getElementById('hub-kpi-semanal-prods');
+      if (elSemProds) elSemProds.textContent = `${countProdsSemanal} productos`;
+      const elMenProds = document.getElementById('hub-kpi-mensual-prods');
+      if (elMenProds) elMenProds.textContent = `${countProdsMensual} productos`;
+      const elNodoProds = document.getElementById('hub-kpi-nodo-prods');
+      if (elNodoProds) elNodoProds.textContent = `${totalNodoStock} un. (${countProdsNodo} prods)`;
     }
 
     function checkAuthState() {
@@ -4251,6 +4382,162 @@
       if (tabName === 'vrde') renderAdminVrdeSync();
       if (tabName === 'recordatorios') renderAdminReminders();
       if (tabName === 'nodos') renderAdminNodosTable();
+    }
+
+    // =========================================================================
+    // GESTIÓN DE BASES DE DATOS POR TIENDA (SEMANAL, MENSUAL, NODO Y UNIFICADA)
+    // =========================================================================
+    let currentCatalogStoreFilter = 'todos'; // 'todos' | 'semanal' | 'mensual' | 'nodo'
+    let currentDatabaseStoreFilter = 'todos'; // 'todos' | 'semanal' | 'mensual' | 'nodo'
+
+    // Helper: Retorna a qué tiendas pertenece un producto
+    function getProductStores(p) {
+      if (!p) return ['semanal'];
+      if (Array.isArray(p.stores) && p.stores.length > 0) return p.stores;
+      
+      const stores = [];
+      if (p.inSemanal) stores.push('semanal');
+      if (p.inMensual) stores.push('mensual');
+      if (p.inNodo) stores.push('nodo');
+      if (stores.length > 0) {
+        p.stores = stores;
+        return stores;
+      }
+
+      // Clasificación inicial por defecto inteligente si no tiene tiendas asignadas
+      const id = String(p.id || '').toLowerCase();
+      const name = String(p.name || '').toLowerCase();
+      const prov = String(p.provider || '').toLowerCase();
+
+      if (id.includes('frutilla') || id.includes('lorenzo-5l') || id.includes('harina-integral') || id.includes('arroz-yamani')) {
+        stores.push('mensual');
+        if (id.includes('lorenzo-5l')) stores.push('semanal');
+      } else if (id.includes('bolson') || id.includes('huevos') || id.includes('verdura') || id.includes('huerta')) {
+        stores.push('semanal');
+        stores.push('nodo');
+      } else if (id.includes('lorenzo-1l') || id.includes('lorenzo-2l') || id.includes('yerba') || id.includes('miel')) {
+        stores.push('semanal');
+        stores.push('mensual');
+        stores.push('nodo');
+      } else {
+        stores.push('semanal');
+        stores.push('nodo');
+      }
+
+      p.stores = stores;
+      if (p.stockNodo === undefined) p.stockNodo = stores.includes('nodo') ? 10 : 0;
+      return stores;
+    }
+
+    // Helper: Determina a qué tienda pertenece un pedido
+    function getOrderStore(o) {
+      if (!o) return 'semanal';
+      if (o.storeType === 'semanal' || o.storeType === 'mensual' || o.storeType === 'nodo') {
+        return o.storeType;
+      }
+      if (o.type === 'mostrador' || o.channel === 'nodo' || String(o.id || '').startsWith('ORD-MOST-')) {
+        o.storeType = 'nodo';
+        return 'nodo';
+      }
+      if (isLunarOrder(o)) {
+        o.storeType = 'mensual';
+        return 'mensual';
+      }
+      o.storeType = 'semanal';
+      return 'semanal';
+    }
+
+    // Asignar o quitar un producto de una tienda con un clic
+    function toggleProductStore(productId, storeName) {
+      const p = adminProducts.find(item => item.id === productId);
+      if (!p) return;
+      
+      let stores = getProductStores(p);
+      if (stores.includes(storeName)) {
+        // Si tiene solo 1 tienda, alertar para no dejarlo huérfano
+        if (stores.length === 1) {
+          alert('El producto debe pertenecer al menos a una tienda (Semanal, Mensual o Nodo).');
+          return;
+        }
+        stores = stores.filter(s => s !== storeName);
+      } else {
+        stores.push(storeName);
+        if (storeName === 'nodo' && (!p.stockNodo || p.stockNodo <= 0)) {
+          p.stockNodo = 10; // Stock inicial por defecto en sede
+        }
+      }
+
+      p.stores = stores;
+      p.inSemanal = stores.includes('semanal');
+      p.inMensual = stores.includes('mensual');
+      p.inNodo = stores.includes('nodo');
+
+      saveAdminMasterCatalog();
+      renderAdminProductsTable();
+      updateHubKPIs();
+    }
+
+    // Ajustar stock físico disponible en nodo
+    function adjustProductStock(productId, delta) {
+      const p = adminProducts.find(item => item.id === productId);
+      if (!p) return;
+      p.stockNodo = Math.max(0, (Number(p.stockNodo) || 0) + delta);
+      saveAdminMasterCatalog();
+      renderAdminProductsTable();
+      updateHubKPIs();
+    }
+
+    // Reasignar la tienda de un pedido
+    function setOrderStore(orderId, newStore) {
+      const o = adminOrders.find(item => item.id === orderId);
+      if (!o) return;
+      o.storeType = newStore;
+      saveAdminOrders();
+      renderAdminOrdersTable();
+      renderAdminDatabaseTable();
+      updateAdminKPIs();
+      updateHubKPIs();
+    }
+
+    // Cambiar filtro de tienda en el catálogo
+    function setCatalogStoreFilter(storeName) {
+      currentCatalogStoreFilter = storeName;
+      ['todos', 'semanal', 'mensual', 'nodo'].forEach(s => {
+        const pill = document.getElementById(`pill-catalog-store-${s}`);
+        if (pill) {
+          if (s === storeName) {
+            pill.className = 'px-3 py-1.5 rounded-xl font-black text-xs bg-white text-stone-900 shadow-2xs cursor-pointer border border-stone-200';
+          } else {
+            pill.className = 'px-3 py-1.5 rounded-xl font-bold text-xs text-stone-600 hover:text-stone-900 cursor-pointer transition-colors';
+          }
+        }
+      });
+      const selectFilter = document.getElementById('admin-products-store-filter');
+      if (selectFilter) selectFilter.value = storeName;
+      renderAdminProductsTable();
+    }
+
+    // Cambiar filtro de tienda en la base de datos de pedidos
+    function setDatabaseStoreFilter(storeName) {
+      currentDatabaseStoreFilter = storeName;
+      ['todos', 'semanal', 'mensual', 'nodo'].forEach(s => {
+        const pill = document.getElementById(`pill-db-store-${s}`);
+        if (pill) {
+          if (s === storeName) {
+            pill.className = 'px-3 py-1.5 rounded-xl font-black text-xs bg-white text-indigo-950 shadow-2xs cursor-pointer border border-indigo-200';
+          } else {
+            pill.className = 'px-3 py-1.5 rounded-xl font-bold text-xs text-stone-600 hover:text-stone-900 cursor-pointer transition-colors';
+          }
+        }
+      });
+      const dbTypeFilter = document.getElementById('admin-db-type-filter');
+      if (dbTypeFilter) {
+        if (storeName === 'semanal') dbTypeFilter.value = 'semanal';
+        else if (storeName === 'mensual') dbTypeFilter.value = 'lunar';
+        else if (storeName === 'nodo') dbTypeFilter.value = 'nodo';
+        else dbTypeFilter.value = 'todos';
+      }
+      renderAdminDatabaseTable();
     }
 
     // =========================================================================
@@ -4993,11 +5280,13 @@
         list = list.filter(o => o.nodoId === adminSelectedNode || !o.nodoId);
       }
 
-      // Filtrar por Tipo de Compra (Semanal vs Lunar)
-      if (typeFilter === 'lunar') {
-        list = list.filter(o => isLunarOrder(o));
+      // Filtrar por Tienda / Tipo de Compra (Semanal vs Mensual vs Nodo)
+      if (typeFilter === 'lunar' || typeFilter === 'mensual') {
+        list = list.filter(o => getOrderStore(o) === 'mensual');
       } else if (typeFilter === 'semanal') {
-        list = list.filter(o => !isLunarOrder(o));
+        list = list.filter(o => getOrderStore(o) === 'semanal');
+      } else if (typeFilter === 'nodo') {
+        list = list.filter(o => getOrderStore(o) === 'nodo');
       }
 
       // Filtrar por Estado
@@ -5073,10 +5362,12 @@
         if (isReady) badgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
         if (isDone) badgeClass = 'bg-stone-100 text-stone-600 border-stone-300';
 
-        const isLunar = isLunarOrder(o);
-        const typeBadge = isLunar
-          ? `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-purple-50 text-purple-800 border border-purple-200 px-1.5 py-0.5 rounded-md font-mono mt-1">🌕 Lunar</span>`
-          : `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded-md font-mono mt-1">🌱 Semanal</span>`;
+        const orderStore = getOrderStore(o);
+        const typeBadge = orderStore === 'mensual'
+          ? `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-purple-50 text-purple-800 border border-purple-200 px-1.5 py-0.5 rounded-md font-mono mt-1" title="Compra Mensual / Lunar">🌕 Mensual</span>`
+          : (orderStore === 'nodo'
+            ? `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-blue-50 text-blue-800 border border-blue-200 px-1.5 py-0.5 rounded-md font-mono mt-1" title="Compra en Nodo (Mostrador)">🏪 Nodo</span>`
+            : `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 rounded-md font-mono mt-1" title="Compra Semanal">🥦 Semanal</span>`);
 
         const folderBadge = o.folder 
           ? `<span class="inline-flex items-center gap-1 text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.5 rounded-md mt-1" title="Archivado en: ${o.folder}">📁 ${o.folder}</span>`
@@ -5700,11 +5991,13 @@
         list = list.filter(o => o.nodoId === adminSelectedNode || !o.nodoId);
       }
 
-      // Filtrar por tipo
-      if (typeFilter === 'lunar') {
-        list = list.filter(o => isLunarOrder(o));
+      // Filtrar por Tienda / Tipo (Semanal, Mensual, Nodo)
+      if (typeFilter === 'lunar' || typeFilter === 'mensual') {
+        list = list.filter(o => getOrderStore(o) === 'mensual');
       } else if (typeFilter === 'semanal') {
-        list = list.filter(o => !isLunarOrder(o));
+        list = list.filter(o => getOrderStore(o) === 'semanal');
+      } else if (typeFilter === 'nodo') {
+        list = list.filter(o => getOrderStore(o) === 'nodo');
       }
 
       // Filtrar por estado
@@ -5776,8 +6069,8 @@
             <td class="py-3 px-3 font-mono font-bold text-stone-900 whitespace-nowrap">
               <span>#${orderIdStr}</span>
               <div class="flex flex-wrap gap-1 mt-1">
-                <span class="inline-flex px-1.5 py-0.5 rounded text-[9px] font-mono font-bold ${isLunar ? 'bg-purple-50 text-purple-900 border border-purple-200' : 'bg-emerald-50 text-emerald-900 border border-emerald-200'}">
-                  ${isLunar ? '🌕 Lunar' : '🌱 Semanal'}
+                <span class="inline-flex px-1.5 py-0.5 rounded text-[9px] font-mono font-bold ${getOrderStore(o) === 'mensual' ? 'bg-purple-50 text-purple-900 border border-purple-200' : (getOrderStore(o) === 'nodo' ? 'bg-blue-50 text-blue-900 border border-blue-200' : 'bg-emerald-50 text-emerald-900 border border-emerald-200')}">
+                  ${getOrderStore(o) === 'mensual' ? '🌕 Mensual' : (getOrderStore(o) === 'nodo' ? '🏪 Nodo' : '🥦 Semanal')}
                 </span>
                 ${o.folder ? `<span class="inline-flex px-1.5 py-0.5 rounded text-[9px] bg-amber-100 text-amber-900 border border-amber-200">📁 ${o.folder}</span>` : ''}
               </div>
@@ -7498,6 +7791,14 @@
         list = list.filter(p => p.enabled === false);
       }
 
+      // Filtro por Tienda Asignada (Base de datos unificada)
+      if (typeof currentCatalogStoreFilter !== 'undefined' && currentCatalogStoreFilter !== 'todos') {
+        list = list.filter(p => {
+          const s = getProductStores(p);
+          return s.includes(currentCatalogStoreFilter);
+        });
+      }
+
       // Filtro por búsqueda
       if (q) {
         list = list.filter(p => 
@@ -7512,7 +7813,7 @@
       if (list.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="7" class="py-12 text-center text-stone-400 bg-stone-50/50">
+            <td colspan="9" class="py-12 text-center text-stone-400 bg-stone-50/50">
               <span class="text-3xl block mb-2">🔍</span>
               <p class="font-bold text-stone-700">No se encontraron productos con los filtros aplicados.</p>
               <p class="text-xs text-stone-500 mt-1">Probá cambiando la búsqueda o restableciendo los filtros.</p>
@@ -7590,6 +7891,58 @@
               <span class="text-[10px] text-blue-600 font-bold">+12 / +20 un.</span>
             </td>
 
+            <!-- Tiendas Asignadas (Semanal, Mensual, Nodo) -->
+            <td class="py-3 px-3 text-center">
+              <div class="inline-flex items-center gap-1 bg-stone-100/90 p-1 rounded-xl border border-stone-200">
+                <button 
+                  type="button" 
+                  onclick="toggleProductStore('${p.id}', 'semanal')" 
+                  class="px-2 py-0.5 rounded-lg text-[10px] font-black transition-all cursor-pointer ${getProductStores(p).includes('semanal') ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-transparent text-stone-400 hover:text-stone-700'}"
+                  title="${getProductStores(p).includes('semanal') ? 'Asignado a Compra Semanal (Clic para quitar)' : 'Clic para asignar a Compra Semanal'}"
+                >
+                  🥦 Sem
+                </button>
+                <button 
+                  type="button" 
+                  onclick="toggleProductStore('${p.id}', 'mensual')" 
+                  class="px-2 py-0.5 rounded-lg text-[10px] font-black transition-all cursor-pointer ${getProductStores(p).includes('mensual') ? 'bg-purple-600 text-white shadow-2xs' : 'bg-transparent text-stone-400 hover:text-stone-700'}"
+                  title="${getProductStores(p).includes('mensual') ? 'Asignado a Compra Mensual (Clic para quitar)' : 'Clic para asignar a Compra Mensual'}"
+                >
+                  🌕 Men
+                </button>
+                <button 
+                  type="button" 
+                  onclick="toggleProductStore('${p.id}', 'nodo')" 
+                  class="px-2 py-0.5 rounded-lg text-[10px] font-black transition-all cursor-pointer ${getProductStores(p).includes('nodo') ? 'bg-blue-600 text-white shadow-2xs' : 'bg-transparent text-stone-400 hover:text-stone-700'}"
+                  title="${getProductStores(p).includes('nodo') ? 'Asignado a Tienda Nodo (Clic para quitar)' : 'Clic para asignar a Tienda Nodo'}"
+                >
+                  🏪 Nodo
+                </button>
+              </div>
+            </td>
+
+            <!-- Stock Nodo (Sede física) -->
+            <td class="py-3 px-3 text-center">
+              <div class="inline-flex items-center gap-1.5 bg-stone-50 border border-stone-200 px-2 py-1 rounded-xl">
+                <button 
+                  type="button" 
+                  onclick="adjustProductStock('${p.id}', -1)" 
+                  class="w-5 h-5 rounded-md bg-stone-200 hover:bg-stone-300 text-stone-700 font-black text-xs flex items-center justify-center cursor-pointer transition-all active:scale-95"
+                  title="Disminuir stock en sede"
+                >-</button>
+                <span class="font-mono font-black text-xs min-w-[20px] text-center ${(p.stockNodo !== undefined ? p.stockNodo : (getProductStores(p).includes('nodo') ? 10 : 0)) > 0 ? 'text-stone-900' : 'text-red-500'}">
+                  ${p.stockNodo !== undefined ? p.stockNodo : (getProductStores(p).includes('nodo') ? 10 : 0)}
+                </span>
+                <button 
+                  type="button" 
+                  onclick="adjustProductStock('${p.id}', 1)" 
+                  class="w-5 h-5 rounded-md bg-stone-200 hover:bg-stone-300 text-stone-700 font-black text-xs flex items-center justify-center cursor-pointer transition-all active:scale-95"
+                  title="Aumentar stock en sede"
+                >+</button>
+              </div>
+              <span class="block text-[9px] text-stone-400 mt-0.5">unidades</span>
+            </td>
+
             <!-- Publicado en Web (Toggle Sacar / Poner) -->
             <td class="py-3 px-3 text-center">
               <button 
@@ -7664,6 +8017,17 @@
       document.getElementById('edit-prod-subtitle').value = p.subtitle || '';
       document.getElementById('edit-prod-enabled').checked = p.enabled !== false;
 
+      // Cargar tiendas y stock en sede
+      const prodStores = getProductStores(p);
+      const chkSem = document.getElementById('edit-prod-store-semanal');
+      const chkMen = document.getElementById('edit-prod-store-mensual');
+      const chkNodo = document.getElementById('edit-prod-store-nodo');
+      const stockInp = document.getElementById('edit-prod-stock-nodo');
+      if (chkSem) chkSem.checked = prodStores.includes('semanal');
+      if (chkMen) chkMen.checked = prodStores.includes('mensual');
+      if (chkNodo) chkNodo.checked = prodStores.includes('nodo');
+      if (stockInp) stockInp.value = p.stockNodo !== undefined ? p.stockNodo : (prodStores.includes('nodo') ? 10 : 0);
+
       const iconEl = document.getElementById('modal-edit-icon');
       if (iconEl) iconEl.textContent = p.emoji || '🌾';
       const titleEl = document.getElementById('modal-edit-prod-title');
@@ -7708,7 +8072,21 @@
       p.price = minorista;
       p.memberPrice = mayorista;
 
+      // Guardar asignación de tiendas y stock nodo
+      const updatedStores = [];
+      if (document.getElementById('edit-prod-store-semanal')?.checked) updatedStores.push('semanal');
+      if (document.getElementById('edit-prod-store-mensual')?.checked) updatedStores.push('mensual');
+      if (document.getElementById('edit-prod-store-nodo')?.checked) updatedStores.push('nodo');
+      if (updatedStores.length === 0) updatedStores.push('semanal'); // Mínimo 1 tienda
+
+      p.stores = updatedStores;
+      p.inSemanal = updatedStores.includes('semanal');
+      p.inMensual = updatedStores.includes('mensual');
+      p.inNodo = updatedStores.includes('nodo');
+      p.stockNodo = parseInt(document.getElementById('edit-prod-stock-nodo')?.value || 0, 10);
+
       saveAdminMasterCatalog();
+      updateHubKPIs();
       closeEditProductModal();
       renderAdminProductsTable();
 
@@ -7717,7 +8095,17 @@
 
     function openNewProductModal() {
       const modal = document.getElementById('modal-new-master-product');
-      if (modal) modal.classList.remove('hidden');
+      if (modal) {
+        const semChk = document.getElementById('new-prod-store-semanal');
+        const menChk = document.getElementById('new-prod-store-mensual');
+        const nodoChk = document.getElementById('new-prod-store-nodo');
+        const stockInp = document.getElementById('new-prod-stock-nodo');
+        if (semChk) semChk.checked = true;
+        if (menChk) menChk.checked = false;
+        if (nodoChk) nodoChk.checked = true;
+        if (stockInp) stockInp.value = 10;
+        modal.classList.remove('hidden');
+      }
     }
 
     function closeNewProductModal() {
@@ -7769,6 +8157,19 @@
         memberPrice: mayorista,
         enabled: enabled
       };
+
+      // Asignar tiendas y stock nodo
+      const newStores = [];
+      if (document.getElementById('new-prod-store-semanal')?.checked) newStores.push('semanal');
+      if (document.getElementById('new-prod-store-mensual')?.checked) newStores.push('mensual');
+      if (document.getElementById('new-prod-store-nodo')?.checked) newStores.push('nodo');
+      if (newStores.length === 0) newStores.push('semanal');
+
+      newProd.stores = newStores;
+      newProd.inSemanal = newStores.includes('semanal');
+      newProd.inMensual = newStores.includes('mensual');
+      newProd.inNodo = newStores.includes('nodo');
+      newProd.stockNodo = parseInt(document.getElementById('new-prod-stock-nodo')?.value || 0, 10);
 
       adminProducts.unshift(newProd);
       saveAdminMasterCatalog();
@@ -8128,6 +8529,7 @@
       const total = parseFloat(document.getElementById('manual-order-total')?.value || 0);
       const payment = document.getElementById('manual-order-payment')?.value || 'Efectivo';
 
+      const manualStoreType = document.getElementById('manual-order-store')?.value || 'nodo';
       const newOrder = {
         id: 'ORD-' + (adminOrders.length + 1045),
         number: adminOrders.length + 1045,
@@ -8139,6 +8541,7 @@
         total: total,
         paymentMethod: payment,
         status: 'Listo para Retirar',
+        storeType: manualStoreType,
         nodoId: adminSelectedNode === 'todos' ? 'nodo-lomaverde' : adminSelectedNode,
         nodoNombre: adminSelectedNode === 'todos' ? 'Loma Verde' : (adminSelectedNode === 'nodo-cooperativa' ? 'Chasqui Maschwitz' : 'Nodo Loma Verde')
       };
