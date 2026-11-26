@@ -53,7 +53,7 @@
   <link rel="stylesheet" href="css/styles.css" />
   <script>window.confetti = function() {};</script>
 </head>
-<body class="bg-[#fcfaf8] text-stone-800 min-h-screen selection:bg-[#c0826d] selection:text-white pb-16">
+<body class="bg-[#fcfaf8] text-stone-800 min-h-screen selection:bg-[#c0826d] selection:text-white pb-8">
 
   <!-- ========================================================================= -->
   <!-- BARRA DE NAVEGACIÓN FIJA ESTILO GOOGLE SUITE (PORTAL BARRIAL LA LUCILA) -->
@@ -62,7 +62,7 @@
     <div class="max-w-5xl mx-auto px-3.5 sm:px-6 py-2.5 flex items-center justify-between gap-3">
       
       <!-- LOGO ELEMENTALES (LLEVA AL PORTAL DE ACCESO / LOGIN) -->
-      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="goToLanding()" title="Ir al Portal de Acceso y Login de Elementales">
+      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="handleHeaderLogoClick()" title="Volver al Inicio · Elementales Comunidad">
         <img src="public/assets/brand/comunidad_emblem_clean.png" class="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-xs hover:scale-105 transition-transform" alt="Elementales" />
         <div class="flex flex-col">
           <span class="font-black text-sm sm:text-base text-stone-900 tracking-tight leading-none">
@@ -72,7 +72,7 @@
             Red de Nodos Barriales
           </span>
           <span id="header-node-indicator" class="hidden"></span>
-          <span id="header-circulo-indicator" class="hidden text-[9px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md mt-0.5 inline-flex items-center gap-1 cursor-pointer border border-emerald-300 shadow-2xs hover:bg-emerald-200 transition-colors" onclick="openCirculoShareModal()" title="Ver y personalizar enlace del Círculo">
+          <span id="header-circulo-indicator" class="hidden text-[9px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md mt-0.5 inline-flex items-center gap-1 cursor-pointer border border-emerald-300 shadow-2xs hover:bg-emerald-200 transition-colors" onclick="event.stopPropagation(); openCirculoShareModal()" title="Ver y personalizar enlace del Círculo">
             <span>👥</span> Círculo: <span id="header-circulo-name"></span>
             <span class="text-[8px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-mono ml-0.5">🔗 <span id="header-circulo-slug-preview">/circulo</span></span>
           </span>
@@ -5871,55 +5871,6 @@
       </form>
     </div>
   </div>
-
-  <!-- ========================================================================= -->
-  <!-- BARRA DE NAVEGACIÓN INFERIOR ESTILO SPOTIFY (LOS 5 ELEMENTOS + NODO) -->
-  <!-- ========================================================================= -->
-  <nav id="spotify-bottom-nav" class="spotify-bottom-nav">
-    
-    <!-- 1. INICIO / NODO -->
-    <button onclick="navigateTo('barrio')" id="spotify-nav-barrio" class="spotify-nav-item active">
-      <div class="spotify-nav-icon">🏠</div>
-      <span>Inicio</span>
-      <div class="spotify-nav-dot"></div>
-    </button>
-
-    <!-- 2. TIERRA (TIENDA & HUERTA) -->
-    <button onclick="navigateTo('tierra')" id="spotify-nav-tierra" class="spotify-nav-item">
-      <div class="spotify-nav-icon">🌱</div>
-      <span>Tierra</span>
-      <div class="spotify-nav-dot"></div>
-    </button>
-
-    <!-- 3. AGUA (COMUNIDAD & OFICIOS) -->
-    <button onclick="navigateTo('agua')" id="spotify-nav-agua" class="spotify-nav-item">
-      <div class="spotify-nav-icon">💧</div>
-      <span>Agua</span>
-      <div class="spotify-nav-dot"></div>
-    </button>
-
-    <!-- 4. FUEGO (TALLERES & SABERES) -->
-    <button onclick="navigateTo('fuego')" id="spotify-nav-fuego" class="spotify-nav-item">
-      <div class="spotify-nav-icon">🔥</div>
-      <span>Fuego</span>
-      <div class="spotify-nav-dot"></div>
-    </button>
-
-    <!-- 5. AIRE (RED SOCIAL & PODCASTS) -->
-    <button onclick="navigateTo('aire')" id="spotify-nav-aire" class="spotify-nav-item">
-      <div class="spotify-nav-icon">💨</div>
-      <span>Aire</span>
-      <div class="spotify-nav-dot"></div>
-    </button>
-
-    <!-- 6. ÉTER (MI PORTAL & GESTIÓN) -->
-    <button onclick="navigateTo('eter')" id="spotify-nav-eter" class="spotify-nav-item">
-      <div class="spotify-nav-icon">✨</div>
-      <span>Éter</span>
-      <div class="spotify-nav-dot"></div>
-    </button>
-
-  </nav>
 
   <!-- ========================================================================= -->
   <!-- MODAL: FRACCIONAMIENTO COLECTIVO DE CAJÓN (CAJÓN COMPARTIDO) -->

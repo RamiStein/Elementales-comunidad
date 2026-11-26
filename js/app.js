@@ -2828,6 +2828,23 @@ function openAdminPinModal() {
   });
 }
 
+// =========================================================================
+// RETORNO AL INICIO DESDE EL LOGO SUPERIOR
+// =========================================================================
+function handleHeaderLogoClick() {
+  sounds.playPop();
+  const isAuth = sessionStorage.getItem('elementales_authenticated') === 'true';
+  if (isAuth) {
+    if (typeof CirculosManager !== 'undefined') {
+      CirculosManager.setActiveCircleId(null);
+    }
+    navigateTo('barrio', true);
+  } else {
+    goToLanding();
+  }
+}
+window.handleHeaderLogoClick = handleHeaderLogoClick;
+
 function goToLanding() {
   sounds.playPop();
   sessionStorage.removeItem('elementales_authenticated');
