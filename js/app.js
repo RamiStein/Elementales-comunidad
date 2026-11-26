@@ -3075,7 +3075,7 @@ function confirmNodeAssociation() {
   currentCirculosFilter = selectedId;
 
   if (typeof ElementalesDB !== 'undefined' && ElementalesDB.setUserNode) {
-    ElementalesDB.setUserNode(selectedId);
+    ElementalesDB.setUserNode(selectedId, AppState.userCode || localStorage.getItem('elementales_access_code') || sessionStorage.getItem('elementales_access_word'));
   }
 
   const feats = nodeObj ? (nodeObj.features || {}) : {};
@@ -3278,9 +3278,17 @@ function handleAccessWordLogin(e) {
       sessionStorage.setItem('elementales_access_word', existingUser.code);
       localStorage.setItem('elementales_user_name', existingUser.name || word);
       localStorage.setItem('elementales_access_code', existingUser.code);
-      if (existingUser.node) {
-        localStorage.setItem('elementales_active_node', existingUser.node);
-        localStorage.setItem('elementales_preferred_node', existingUser.node);
+      
+      // Obtener el nodo asociado previamente en su cuenta (o fallback y persistirlo)
+      const userNode = (existingUser.node || '').trim() || localStorage.getItem('elementales_preferred_node') || localStorage.getItem('elementales_active_node') || 'nodo-lomaverde';
+      existingUser.node = userNode;
+      AppState.activeNodeId = userNode;
+      localStorage.setItem('elementales_active_node', userNode);
+      localStorage.setItem('elementales_preferred_node', userNode);
+      sessionStorage.setItem('elementales_node_associated', 'true');
+
+      if (typeof ElementalesDB.setUserNode === 'function') {
+        ElementalesDB.setUserNode(userNode, existingUser.code);
       }
     }
   }
@@ -3288,10 +3296,14 @@ function handleAccessWordLogin(e) {
   sessionStorage.setItem('elementales_authenticated', 'true');
   localStorage.setItem('elementales_access_code', word);
 
-  const hasNode = Boolean(
-    (existingUser && existingUser.node) ||
-    localStorage.getItem('elementales_preferred_node')
-  );
+  // Si no es un usuario registrado en DB pero ingresó un código válido (ej. socio libre)
+  if (!existingUser && role !== 'gestor') {
+    const fallbackNode = localStorage.getItem('elementales_preferred_node') || localStorage.getItem('elementales_active_node') || 'nodo-lomaverde';
+    AppState.activeNodeId = fallbackNode;
+    localStorage.setItem('elementales_active_node', fallbackNode);
+    localStorage.setItem('elementales_preferred_node', fallbackNode);
+    sessionStorage.setItem('elementales_node_associated', 'true');
+  }
 
   if (feedback) {
     feedback.textContent = welcomeMsg;
@@ -3305,17 +3317,14 @@ function handleAccessWordLogin(e) {
 
   updateGoogleUserMenuUI();
   updateRoleUI();
+  updateNodeUI();
 
   if (role === 'gestor') {
     setTimeout(() => {
       window.location.href = 'gestionelemental.html';
     }, 250);
-  } else if (!hasNode) {
-    sessionStorage.removeItem('elementales_node_associated');
-    setTimeout(() => {
-      goToNodeAssociation('socio');
-    }, 250);
   } else {
+    // USUARIO EXISTENTE O IDENTIFICADO: Ingresa DIRECTAMENTE a la red sin volver a pedir asociar nodo
     sessionStorage.setItem('elementales_node_associated', 'true');
     setTimeout(() => {
       navigateTo('barrio', true);
@@ -3370,11 +3379,13 @@ function handleLandingRegister(e) {
   const codeInput = document.getElementById('landing-register-code');
   const nameInput = document.getElementById('landing-register-name');
   const phoneInput = document.getElementById('landing-register-phone');
+  const nodeInput = document.getElementById('landing-register-node');
   const feedback = document.getElementById('register-feedback-msg');
 
   const code = (codeInput ? codeInput.value : '').trim();
   const name = (nameInput ? nameInput.value : '').trim();
   const phone = (phoneInput ? phoneInput.value : '').trim();
+  const selectedNode = (nodeInput ? nodeInput.value : '').trim() || 'nodo-lomaverde';
 
   if (!code || code.length < 3) {
     if (feedback) {
@@ -3387,10 +3398,12 @@ function handleLandingRegister(e) {
 
   let res = { success: true };
   if (typeof ElementalesDB !== 'undefined' && ElementalesDB.registerUser) {
-    res = ElementalesDB.registerUser({ code, name, phone, node: '' });
+    res = ElementalesDB.registerUser({ code, name, phone, node: selectedNode });
   } else {
     localStorage.setItem('elementales_access_code', code);
     localStorage.setItem('elementales_user_name', name || code);
+    localStorage.setItem('elementales_active_node', selectedNode);
+    localStorage.setItem('elementales_preferred_node', selectedNode);
   }
 
   if (!res.success) {
@@ -3403,15 +3416,21 @@ function handleLandingRegister(e) {
   }
 
   sessionStorage.setItem('elementales_authenticated', 'true');
-  sessionStorage.removeItem('elementales_node_associated');
+  sessionStorage.setItem('elementales_node_associated', 'true');
   sessionStorage.setItem('elementales_access_word', code);
   localStorage.setItem('elementales_access_code', code);
+  localStorage.setItem('elementales_active_node', selectedNode);
+  localStorage.setItem('elementales_preferred_node', selectedNode);
 
   AppState.userRole = 'socio';
   AppState.userName = name || code;
+  AppState.activeNodeId = selectedNode;
+
+  const nodeObj = (typeof NODOS_COMUNIDAD !== 'undefined' ? NODOS_COMUNIDAD.find(n => n.id === selectedNode) : null);
+  const nodeName = nodeObj ? (nodeObj.shortName || nodeObj.name) : 'tu nodo';
 
   if (feedback) {
-    feedback.textContent = `¡Bienvenido/a ${name || code}! Tu código quedó registrado. Elegí tu nodo de retiro...`;
+    feedback.textContent = `¡Bienvenido/a ${name || code}! Tu código quedó creado y asociado al ${nodeName}. Entrando a la red...`;
     feedback.className = 'text-xs text-emerald-600 font-bold block mt-2 animate-fade-in';
     feedback.classList.remove('hidden');
   }
@@ -3425,11 +3444,12 @@ function handleLandingRegister(e) {
 
   updateGoogleUserMenuUI();
   updateRoleUI();
+  updateNodeUI();
 
-  // Lleva al paso siguiente: asociar la cuenta al nodo de su preferencia (donde retira los pedidos)
+  // Al crear el usuario ya eligió su nodo de preferencia; entra directamente a la red
   setTimeout(() => {
-    goToNodeAssociation('socio');
-  }, 600);
+    navigateTo('barrio', true);
+  }, 700);
 }
 
 window.showElementalDetail = showElementalDetail;

@@ -89,7 +89,7 @@ const ElementalesDB = {
     this.saveSession(sess);
   },
 
-  setUserNode(nodeId) {
+  setUserNode(nodeId, userCode) {
     if (!nodeId) return;
     const clean = nodeId.trim();
     const sess = this.getSession();
@@ -97,6 +97,28 @@ const ElementalesDB = {
     localStorage.setItem('elementales_active_node', clean);
     localStorage.setItem('elementales_preferred_node', clean);
     this.saveSession(sess);
+
+    // Persistir el nodo también en el registro permanente del usuario en la base de datos
+    const targetCode = userCode || sess.userCode || localStorage.getItem('elementales_access_code') || sessionStorage.getItem('elementales_access_word');
+    if (targetCode) {
+      const cleanTarget = String(targetCode).trim().toLowerCase().replace(/^@/, '');
+      const users = this.getAllUsers();
+      const u = users.find(x => {
+        const c = String(x.code || x.userCode || '').trim().toLowerCase().replace(/^@/, '');
+        return c === cleanTarget;
+      });
+      if (u) {
+        u.node = clean;
+        try {
+          localStorage.setItem(this.KEYS.USERS, JSON.stringify(users));
+        } catch (e) {}
+        this.syncToServer('users', u);
+      }
+    }
+  },
+
+  updateUserNode(code, nodeId) {
+    return this.setUserNode(nodeId, code);
   },
 
   loginAsSocio(socioData) {
@@ -280,7 +302,7 @@ const ElementalesDB = {
       code: cleanCode,
       name: (userData.name || '').trim() || cleanCode,
       phone: (userData.phone || '').trim(),
-      node: (userData.node || '').trim(),
+      node: (userData.node || '').trim() || 'nodo-lomaverde',
       role: 'socio',
       createdAt: new Date().toISOString()
     };

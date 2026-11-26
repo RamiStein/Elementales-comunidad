@@ -499,6 +499,32 @@
                 />
               </div>
 
+              <!-- 4. Nodo de Retiro de Preferencia -->
+              <div>
+                <label for="landing-register-node" class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1 flex items-center justify-between">
+                  <span class="flex items-center gap-1.5">
+                    <span>📍</span> Nodo de Retiro de Preferencia
+                  </span>
+                  <span class="text-[10px] font-medium text-stone-400">punto de entrega</span>
+                </label>
+                <div class="relative">
+                  <select 
+                    id="landing-register-node" 
+                    required 
+                    class="w-full bg-[#fcfaf8] border-2 border-stone-200 focus:border-[#a6634f] focus:bg-white rounded-2xl px-4 py-3 text-sm font-bold text-stone-900 focus:outline-none transition-all cursor-pointer appearance-none pr-10"
+                  >
+                    <option value="nodo-lomaverde" selected>🌱 Nodo Loma Verde (Escobar)</option>
+                    <option value="nodo-lucila">🌿 Nodo La Lucila (Vicente López)</option>
+                    <option value="nodo-maschwitz">🌻 Nodo Ingeniero Maschwitz</option>
+                    <option value="nodo-cooperativa">🚛 Central Chasqui (Cooperativa)</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-stone-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </div>
+                </div>
+                <p class="text-[10px] text-stone-400 mt-1">Tu cuenta quedará asociada a este nodo para tus pedidos y entregas.</p>
+              </div>
+
               <!-- Botón Crear Código y Sumarme -->
               <button 
                 type="submit" 

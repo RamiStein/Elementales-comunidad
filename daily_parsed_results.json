@@ -1,0 +1,1586 @@
+[
+  {
+    "month": 3,
+    "day": 23,
+    "name": "23-03",
+    "gid": "0",
+    "ingreso": 226000.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 226000.0
+  },
+  {
+    "month": 3,
+    "day": 24,
+    "name": "24-03",
+    "gid": "490844131",
+    "ingreso": 221940.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 221940.0
+  },
+  {
+    "month": 3,
+    "day": 25,
+    "name": "25/03",
+    "gid": "382109758",
+    "ingreso": 37140.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 37140.0
+  },
+  {
+    "month": 3,
+    "day": 27,
+    "name": "27/03",
+    "gid": "1574031396",
+    "ingreso": 4000.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 4000.0
+  },
+  {
+    "month": 3,
+    "day": 28,
+    "name": "28/03",
+    "gid": "761817703",
+    "ingreso": 64500.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 64500.0
+  },
+  {
+    "month": 3,
+    "day": 30,
+    "name": "30/03",
+    "gid": "1316431175",
+    "ingreso": 33800.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 33800.0
+  },
+  {
+    "month": 3,
+    "day": 31,
+    "name": "31/03",
+    "gid": "1057851731",
+    "ingreso": 248738.0,
+    "egreso": 124000.0,
+    "ganancia_diaria": 124738.0
+  },
+  {
+    "month": 4,
+    "day": 1,
+    "name": "1/04",
+    "gid": "68038916",
+    "ingreso": 84200.0,
+    "egreso": 568291.0,
+    "ganancia_diaria": -484091.0
+  },
+  {
+    "month": 4,
+    "day": 6,
+    "name": "06/04",
+    "gid": "300627843",
+    "ingreso": 3450.0,
+    "egreso": 14000.0,
+    "ganancia_diaria": -10550.0
+  },
+  {
+    "month": 4,
+    "day": 7,
+    "name": "07/04",
+    "gid": "185964000",
+    "ingreso": 123915.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 123915.0
+  },
+  {
+    "month": 4,
+    "day": 9,
+    "name": "09/04",
+    "gid": "1607532596",
+    "ingreso": 168026.0,
+    "egreso": 110000.0,
+    "ganancia_diaria": 58026.0
+  },
+  {
+    "month": 4,
+    "day": 10,
+    "name": "10/04",
+    "gid": "918680060",
+    "ingreso": 0.0,
+    "egreso": 391200.0,
+    "ganancia_diaria": -391200.0
+  },
+  {
+    "month": 4,
+    "day": 11,
+    "name": "11/04",
+    "gid": "1377518917",
+    "ingreso": 80300.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 80300.0
+  },
+  {
+    "month": 4,
+    "day": 13,
+    "name": "13/04",
+    "gid": "1747097164",
+    "ingreso": 43597.0,
+    "egreso": 34000.0,
+    "ganancia_diaria": 9597.0
+  },
+  {
+    "month": 4,
+    "day": 14,
+    "name": "14/04",
+    "gid": "1573660074",
+    "ingreso": 83704.0,
+    "egreso": 57000.0,
+    "ganancia_diaria": 26704.0
+  },
+  {
+    "month": 4,
+    "day": 15,
+    "name": "15/04",
+    "gid": "1933897009",
+    "ingreso": 32000.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 32000.0
+  },
+  {
+    "month": 4,
+    "day": 16,
+    "name": "16/04",
+    "gid": "934260950",
+    "ingreso": 32000.0,
+    "egreso": 87200.0,
+    "ganancia_diaria": -55200.0
+  },
+  {
+    "month": 4,
+    "day": 17,
+    "name": "17/04",
+    "gid": "894658144",
+    "ingreso": 52500.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 52500.0
+  },
+  {
+    "month": 4,
+    "day": 18,
+    "name": "18/04",
+    "gid": "1654624848",
+    "ingreso": 92918.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 92918.0
+  },
+  {
+    "month": 4,
+    "day": 20,
+    "name": "20/04",
+    "gid": "1146376721",
+    "ingreso": 22500.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 22500.0
+  },
+  {
+    "month": 4,
+    "day": 21,
+    "name": "21/04",
+    "gid": "1198556785",
+    "ingreso": 484239.0,
+    "egreso": 56000.0,
+    "ganancia_diaria": 428239.0
+  },
+  {
+    "month": 4,
+    "day": 22,
+    "name": "22/04",
+    "gid": "1971949404",
+    "ingreso": 106650.0,
+    "egreso": 173500.0,
+    "ganancia_diaria": -66850.0
+  },
+  {
+    "month": 4,
+    "day": 24,
+    "name": "24/04",
+    "gid": "1350263646",
+    "ingreso": 32200.0,
+    "egreso": 358950.0,
+    "ganancia_diaria": -326750.0
+  },
+  {
+    "month": 4,
+    "day": 25,
+    "name": "25/04",
+    "gid": "1638153264",
+    "ingreso": 69860.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 69860.0
+  },
+  {
+    "month": 4,
+    "day": 27,
+    "name": "27/04",
+    "gid": "412667036",
+    "ingreso": 12000.0,
+    "egreso": 70000.0,
+    "ganancia_diaria": -58000.0
+  },
+  {
+    "month": 4,
+    "day": 28,
+    "name": "28/04",
+    "gid": "712904030",
+    "ingreso": 589079.0,
+    "egreso": 94043.0,
+    "ganancia_diaria": 495036.0
+  },
+  {
+    "month": 4,
+    "day": 29,
+    "name": "29/04",
+    "gid": "467243012",
+    "ingreso": 104240.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 104240.0
+  },
+  {
+    "month": 4,
+    "day": 30,
+    "name": "30/04",
+    "gid": "586365666",
+    "ingreso": 19000.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 19000.0
+  },
+  {
+    "month": 5,
+    "day": 4,
+    "name": "04/05",
+    "gid": "2124848059",
+    "ingreso": 147896.0,
+    "egreso": 198090.0,
+    "ganancia_diaria": -50194.0
+  },
+  {
+    "month": 5,
+    "day": 5,
+    "name": "5/05",
+    "gid": "1753056169",
+    "ingreso": 268009.0,
+    "egreso": 380000.0,
+    "ganancia_diaria": -111991.0
+  },
+  {
+    "month": 5,
+    "day": 6,
+    "name": "06/05",
+    "gid": "849611855",
+    "ingreso": 90432.0,
+    "egreso": 130042.0,
+    "ganancia_diaria": -39610.0
+  },
+  {
+    "month": 5,
+    "day": 7,
+    "name": "07/05",
+    "gid": "740954865",
+    "ingreso": 178562.0,
+    "egreso": 76000.0,
+    "ganancia_diaria": 102562.0
+  },
+  {
+    "month": 5,
+    "day": 8,
+    "name": "08/05",
+    "gid": "1126016969",
+    "ingreso": 126720.0,
+    "egreso": 377010.0,
+    "ganancia_diaria": -250290.0
+  },
+  {
+    "month": 5,
+    "day": 9,
+    "name": "9/05",
+    "gid": "1081624147",
+    "ingreso": 137700.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 137700.0
+  },
+  {
+    "month": 5,
+    "day": 11,
+    "name": "11/05",
+    "gid": "73425338",
+    "ingreso": 21050.0,
+    "egreso": 5000.0,
+    "ganancia_diaria": 16050.0
+  },
+  {
+    "month": 5,
+    "day": 12,
+    "name": "12/05",
+    "gid": "461430790",
+    "ingreso": 244023.0,
+    "egreso": 80000.0,
+    "ganancia_diaria": 164023.0
+  },
+  {
+    "month": 5,
+    "day": 13,
+    "name": "13/05",
+    "gid": "465715448",
+    "ingreso": 175482.0,
+    "egreso": 388300.0,
+    "ganancia_diaria": -212818.0
+  },
+  {
+    "month": 5,
+    "day": 14,
+    "name": "14/05",
+    "gid": "1021011613",
+    "ingreso": 87800.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 87800.0
+  },
+  {
+    "month": 5,
+    "day": 15,
+    "name": "15/05",
+    "gid": "922914833",
+    "ingreso": 250524.0,
+    "egreso": 524140.0,
+    "ganancia_diaria": -273616.0
+  },
+  {
+    "month": 5,
+    "day": 16,
+    "name": "16/05",
+    "gid": "1685117570",
+    "ingreso": 98204.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 98204.0
+  },
+  {
+    "month": 5,
+    "day": 18,
+    "name": "18/05",
+    "gid": "1693564395",
+    "ingreso": 136500.0,
+    "egreso": 100000.0,
+    "ganancia_diaria": 36500.0
+  },
+  {
+    "month": 5,
+    "day": 19,
+    "name": "19/05",
+    "gid": "1952496872",
+    "ingreso": 95941.0,
+    "egreso": 161000.0,
+    "ganancia_diaria": -65059.0
+  },
+  {
+    "month": 5,
+    "day": 20,
+    "name": "20/05",
+    "gid": "403604578",
+    "ingreso": 202400.0,
+    "egreso": 9850.0,
+    "ganancia_diaria": 192550.0
+  },
+  {
+    "month": 5,
+    "day": 21,
+    "name": "21/05",
+    "gid": "1451785204",
+    "ingreso": 80110.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 80110.0
+  },
+  {
+    "month": 5,
+    "day": 22,
+    "name": "22/05",
+    "gid": "890317328",
+    "ingreso": 68900.0,
+    "egreso": 359850.0,
+    "ganancia_diaria": -290950.0
+  },
+  {
+    "month": 5,
+    "day": 23,
+    "name": "23/05",
+    "gid": "1196308131",
+    "ingreso": 62420.0,
+    "egreso": 14200.0,
+    "ganancia_diaria": 48220.0
+  },
+  {
+    "month": 5,
+    "day": 26,
+    "name": "26/5",
+    "gid": "938704380",
+    "ingreso": 155000.0,
+    "egreso": 600188.0,
+    "ganancia_diaria": -445188.0
+  },
+  {
+    "month": 5,
+    "day": 27,
+    "name": "27/05",
+    "gid": "849718937",
+    "ingreso": 159736.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 159736.0
+  },
+  {
+    "month": 5,
+    "day": 28,
+    "name": "28/05",
+    "gid": "336789927",
+    "ingreso": 0.0,
+    "egreso": 136000.0,
+    "ganancia_diaria": -136000.0
+  },
+  {
+    "month": 5,
+    "day": 29,
+    "name": "29/05",
+    "gid": "1352532760",
+    "ingreso": 25000.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 25000.0
+  },
+  {
+    "month": 5,
+    "day": 30,
+    "name": "30/05",
+    "gid": "2074919179",
+    "ingreso": 88004.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 88004.0
+  },
+  {
+    "month": 6,
+    "day": 1,
+    "name": "01/06",
+    "gid": "401772707",
+    "ingreso": 391330.0,
+    "egreso": 225000.0,
+    "ganancia_diaria": 166330.0
+  },
+  {
+    "month": 6,
+    "day": 2,
+    "name": "2/06",
+    "gid": "1431101690",
+    "ingreso": 114290.0,
+    "egreso": 89900.0,
+    "ganancia_diaria": 24390.0
+  },
+  {
+    "month": 6,
+    "day": 3,
+    "name": "03/06",
+    "gid": "1369791333",
+    "ingreso": 144160.0,
+    "egreso": 65826.0,
+    "ganancia_diaria": 78334.0
+  },
+  {
+    "month": 6,
+    "day": 4,
+    "name": "04/06",
+    "gid": "207241514",
+    "ingreso": 46100.0,
+    "egreso": 154822.0,
+    "ganancia_diaria": -108722.0
+  },
+  {
+    "month": 6,
+    "day": 5,
+    "name": "05/06",
+    "gid": "384165955",
+    "ingreso": 86700.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 86700.0
+  },
+  {
+    "month": 6,
+    "day": 6,
+    "name": "06/06",
+    "gid": "1059381312",
+    "ingreso": 19800.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 19800.0
+  },
+  {
+    "month": 6,
+    "day": 8,
+    "name": "08/06",
+    "gid": "1489017936",
+    "ingreso": 149235.0,
+    "egreso": 148500.0,
+    "ganancia_diaria": 735.0
+  },
+  {
+    "month": 6,
+    "day": 9,
+    "name": "9/06",
+    "gid": "361130162",
+    "ingreso": 279964.0,
+    "egreso": 61000.0,
+    "ganancia_diaria": 218964.0
+  },
+  {
+    "month": 6,
+    "day": 10,
+    "name": "10/06",
+    "gid": "1527838115",
+    "ingreso": 96500.0,
+    "egreso": 72500.0,
+    "ganancia_diaria": 24000.0
+  },
+  {
+    "month": 6,
+    "day": 11,
+    "name": "11/06",
+    "gid": "503883021",
+    "ingreso": 45490.0,
+    "egreso": 60000.0,
+    "ganancia_diaria": -14510.0
+  },
+  {
+    "month": 6,
+    "day": 12,
+    "name": "12/06",
+    "gid": "964336859",
+    "ingreso": 56020.0,
+    "egreso": 110000.0,
+    "ganancia_diaria": -53980.0
+  },
+  {
+    "month": 6,
+    "day": 13,
+    "name": "13/06",
+    "gid": "1011748071",
+    "ingreso": 132540.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 132540.0
+  },
+  {
+    "month": 6,
+    "day": 16,
+    "name": "16/06",
+    "gid": "666188317",
+    "ingreso": 266700.0,
+    "egreso": 866460.0,
+    "ganancia_diaria": -599760.0
+  },
+  {
+    "month": 6,
+    "day": 17,
+    "name": "17/06",
+    "gid": "1105095282",
+    "ingreso": 34200.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 34200.0
+  },
+  {
+    "month": 6,
+    "day": 18,
+    "name": "18/06",
+    "gid": "1981784281",
+    "ingreso": 30500.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 30500.0
+  },
+  {
+    "month": 6,
+    "day": 19,
+    "name": "19/06",
+    "gid": "1052271173",
+    "ingreso": 185079.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 185079.0
+  },
+  {
+    "month": 6,
+    "day": 23,
+    "name": "23/06",
+    "gid": "401254968",
+    "ingreso": 235150.0,
+    "egreso": 80000.0,
+    "ganancia_diaria": 155150.0
+  },
+  {
+    "month": 6,
+    "day": 24,
+    "name": "24/06",
+    "gid": "2065233173",
+    "ingreso": 367748.0,
+    "egreso": 608732.0,
+    "ganancia_diaria": -240984.0
+  },
+  {
+    "month": 6,
+    "day": 25,
+    "name": "25/06",
+    "gid": "176847068",
+    "ingreso": 9000.0,
+    "egreso": 70000.0,
+    "ganancia_diaria": -61000.0
+  },
+  {
+    "month": 6,
+    "day": 26,
+    "name": "26/06",
+    "gid": "1360437125",
+    "ingreso": 90570.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 90570.0
+  },
+  {
+    "month": 6,
+    "day": 27,
+    "name": "27/06",
+    "gid": "1416246061",
+    "ingreso": 172110.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 172110.0
+  },
+  {
+    "month": 6,
+    "day": 29,
+    "name": "29/06",
+    "gid": "1938069037",
+    "ingreso": 48000.0,
+    "egreso": 445750.0,
+    "ganancia_diaria": -397750.0
+  },
+  {
+    "month": 7,
+    "day": 1,
+    "name": "01/07",
+    "gid": "1967912012",
+    "ingreso": 126800.0,
+    "egreso": 146000.0,
+    "ganancia_diaria": -19200.0
+  },
+  {
+    "month": 7,
+    "day": 2,
+    "name": "02/07",
+    "gid": "110625174",
+    "ingreso": 167210.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 167210.0
+  },
+  {
+    "month": 7,
+    "day": 3,
+    "name": "03/07",
+    "gid": "1972674172",
+    "ingreso": 88470.0,
+    "egreso": 44580.0,
+    "ganancia_diaria": 43890.0
+  },
+  {
+    "month": 7,
+    "day": 6,
+    "name": "06/07",
+    "gid": "897265125",
+    "ingreso": 106180.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 106180.0
+  },
+  {
+    "month": 7,
+    "day": 7,
+    "name": "07/07",
+    "gid": "1705327177",
+    "ingreso": 129656.0,
+    "egreso": 64000.0,
+    "ganancia_diaria": 65656.0
+  },
+  {
+    "month": 7,
+    "day": 8,
+    "name": "08/07",
+    "gid": "635532202",
+    "ingreso": 252980.0,
+    "egreso": 175321.0,
+    "ganancia_diaria": 77659.0
+  },
+  {
+    "month": 7,
+    "day": 10,
+    "name": "10/07",
+    "gid": "1432213088",
+    "ingreso": 33330.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 33330.0
+  },
+  {
+    "month": 7,
+    "day": 11,
+    "name": "11/07",
+    "gid": "625047482",
+    "ingreso": 104440.0,
+    "egreso": 409567.0,
+    "ganancia_diaria": -305127.0
+  },
+  {
+    "month": 7,
+    "day": 13,
+    "name": "13/07",
+    "gid": "604375501",
+    "ingreso": 14000.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 14000.0
+  },
+  {
+    "month": 7,
+    "day": 14,
+    "name": "14/07",
+    "gid": "1627724510",
+    "ingreso": 317784.0,
+    "egreso": 60000.0,
+    "ganancia_diaria": 257784.0
+  },
+  {
+    "month": 7,
+    "day": 15,
+    "name": "15/07",
+    "gid": "1010802158",
+    "ingreso": 297356.0,
+    "egreso": 309000.0,
+    "ganancia_diaria": -11644.0
+  },
+  {
+    "month": 7,
+    "day": 16,
+    "name": "16/07",
+    "gid": "838424683",
+    "ingreso": 0.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 0.0
+  },
+  {
+    "month": 7,
+    "day": 17,
+    "name": "17/07",
+    "gid": "2111883927",
+    "ingreso": 74235.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 74235.0
+  },
+  {
+    "month": 7,
+    "day": 18,
+    "name": "18/07",
+    "gid": "484874728",
+    "ingreso": 29550.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 29550.0
+  },
+  {
+    "month": 7,
+    "day": 20,
+    "name": "20/07",
+    "gid": "1523129902",
+    "ingreso": 67900.0,
+    "egreso": 453985.0,
+    "ganancia_diaria": -386085.0
+  },
+  {
+    "month": 7,
+    "day": 22,
+    "name": "22/07",
+    "gid": "569864853",
+    "ingreso": 50495.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 50495.0
+  },
+  {
+    "month": 7,
+    "day": 24,
+    "name": "24/07",
+    "gid": "792161677",
+    "ingreso": 392592.0,
+    "egreso": 352571.0,
+    "ganancia_diaria": 40021.0
+  },
+  {
+    "month": 7,
+    "day": 25,
+    "name": "25/07",
+    "gid": "266430597",
+    "ingreso": 276990.0,
+    "egreso": 11500.0,
+    "ganancia_diaria": 265490.0
+  },
+  {
+    "month": 7,
+    "day": 27,
+    "name": "27/7",
+    "gid": "351141065",
+    "ingreso": 22305.0,
+    "egreso": 210304.0,
+    "ganancia_diaria": -187999.0
+  },
+  {
+    "month": 7,
+    "day": 28,
+    "name": "28/7",
+    "gid": "1764484178",
+    "ingreso": 298837.0,
+    "egreso": 65000.0,
+    "ganancia_diaria": 233837.0
+  },
+  {
+    "month": 7,
+    "day": 30,
+    "name": "30/7",
+    "gid": "1161800456",
+    "ingreso": 129240.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 129240.0
+  },
+  {
+    "month": 8,
+    "day": 3,
+    "name": "03/08",
+    "gid": "1246757645",
+    "ingreso": 259410.0,
+    "egreso": 838310.0,
+    "ganancia_diaria": -578900.0
+  },
+  {
+    "month": 8,
+    "day": 4,
+    "name": "04/08",
+    "gid": "43918506",
+    "ingreso": 347115.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 347115.0
+  },
+  {
+    "month": 8,
+    "day": 5,
+    "name": "05/08",
+    "gid": "1359542991",
+    "ingreso": 104170.0,
+    "egreso": 50059.0,
+    "ganancia_diaria": 54111.0
+  },
+  {
+    "month": 8,
+    "day": 6,
+    "name": "06/08",
+    "gid": "1524745110",
+    "ingreso": 150165.0,
+    "egreso": 75500.0,
+    "ganancia_diaria": 74665.0
+  },
+  {
+    "month": 8,
+    "day": 7,
+    "name": "07/08",
+    "gid": "1768133251",
+    "ingreso": 33960.0,
+    "egreso": 430320.0,
+    "ganancia_diaria": -396360.0
+  },
+  {
+    "month": 8,
+    "day": 8,
+    "name": "08/08",
+    "gid": "841245014",
+    "ingreso": 71650.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 71650.0
+  },
+  {
+    "month": 8,
+    "day": 10,
+    "name": "10/08",
+    "gid": "1420883732",
+    "ingreso": 219335.0,
+    "egreso": 130000.0,
+    "ganancia_diaria": 89335.0
+  },
+  {
+    "month": 8,
+    "day": 11,
+    "name": "11/08",
+    "gid": "615433009",
+    "ingreso": 316609.0,
+    "egreso": 306000.0,
+    "ganancia_diaria": 10609.0
+  },
+  {
+    "month": 8,
+    "day": 12,
+    "name": "12/08",
+    "gid": "224129988",
+    "ingreso": 40390.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 40390.0
+  },
+  {
+    "month": 8,
+    "day": 13,
+    "name": "13/08",
+    "gid": "1348646753",
+    "ingreso": 90145.0,
+    "egreso": 70000.0,
+    "ganancia_diaria": 20145.0
+  },
+  {
+    "month": 8,
+    "day": 14,
+    "name": "14/08",
+    "gid": "136156124",
+    "ingreso": 212650.0,
+    "egreso": 423300.0,
+    "ganancia_diaria": -210650.0
+  },
+  {
+    "month": 8,
+    "day": 15,
+    "name": "15/08",
+    "gid": "1760748932",
+    "ingreso": 136795.0,
+    "egreso": 16275.0,
+    "ganancia_diaria": 120520.0
+  },
+  {
+    "month": 8,
+    "day": 18,
+    "name": "18/08",
+    "gid": "1177714627",
+    "ingreso": 314080.0,
+    "egreso": 176000.0,
+    "ganancia_diaria": 138080.0
+  },
+  {
+    "month": 8,
+    "day": 19,
+    "name": "19/08",
+    "gid": "2084289420",
+    "ingreso": 133558.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 133558.0
+  },
+  {
+    "month": 8,
+    "day": 20,
+    "name": "20/08",
+    "gid": "1953432600",
+    "ingreso": 314925.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 314925.0
+  },
+  {
+    "month": 8,
+    "day": 21,
+    "name": "21/08",
+    "gid": "541286796",
+    "ingreso": 101574.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 101574.0
+  },
+  {
+    "month": 8,
+    "day": 22,
+    "name": "22/08",
+    "gid": "161002338",
+    "ingreso": 96700.0,
+    "egreso": 82500.0,
+    "ganancia_diaria": 14200.0
+  },
+  {
+    "month": 8,
+    "day": 24,
+    "name": "24/08",
+    "gid": "1161129342",
+    "ingreso": 96200.0,
+    "egreso": 465600.0,
+    "ganancia_diaria": -369400.0
+  },
+  {
+    "month": 8,
+    "day": 25,
+    "name": "25/08",
+    "gid": "1370726949",
+    "ingreso": 252468.0,
+    "egreso": 41900.0,
+    "ganancia_diaria": 210568.0
+  },
+  {
+    "month": 8,
+    "day": 26,
+    "name": "26/08",
+    "gid": "1347895370",
+    "ingreso": 192015.0,
+    "egreso": 315127.0,
+    "ganancia_diaria": -123112.0
+  },
+  {
+    "month": 8,
+    "day": 27,
+    "name": "27/08",
+    "gid": "1968230628",
+    "ingreso": 73658.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 73658.0
+  },
+  {
+    "month": 8,
+    "day": 28,
+    "name": "28/08",
+    "gid": "897898558",
+    "ingreso": 132804.0,
+    "egreso": 204100.0,
+    "ganancia_diaria": -71296.0
+  },
+  {
+    "month": 8,
+    "day": 29,
+    "name": "29/08",
+    "gid": "292100716",
+    "ingreso": 636938.0,
+    "egreso": 70000.0,
+    "ganancia_diaria": 566938.0
+  },
+  {
+    "month": 8,
+    "day": 31,
+    "name": "31/08",
+    "gid": "142434879",
+    "ingreso": 113400.0,
+    "egreso": 262000.0,
+    "ganancia_diaria": -148600.0
+  },
+  {
+    "month": 9,
+    "day": 1,
+    "name": "01/09",
+    "gid": "1598188638",
+    "ingreso": 246366.0,
+    "egreso": 627016.0,
+    "ganancia_diaria": -380650.0
+  },
+  {
+    "month": 9,
+    "day": 2,
+    "name": "02/09",
+    "gid": "999056491",
+    "ingreso": 77870.0,
+    "egreso": 60111.0,
+    "ganancia_diaria": 17759.0
+  },
+  {
+    "month": 9,
+    "day": 3,
+    "name": "03/09",
+    "gid": "814053562",
+    "ingreso": 32900.0,
+    "egreso": 30000.0,
+    "ganancia_diaria": 2900.0
+  },
+  {
+    "month": 9,
+    "day": 4,
+    "name": "04/09",
+    "gid": "1716744881",
+    "ingreso": 158780.0,
+    "egreso": 120000.0,
+    "ganancia_diaria": 38780.0
+  },
+  {
+    "month": 9,
+    "day": 5,
+    "name": "05/09",
+    "gid": "322499736",
+    "ingreso": 59880.0,
+    "egreso": 81270.0,
+    "ganancia_diaria": -21390.0
+  },
+  {
+    "month": 9,
+    "day": 7,
+    "name": "07/09",
+    "gid": "376685558",
+    "ingreso": 71600.0,
+    "egreso": 337360.0,
+    "ganancia_diaria": -265760.0
+  },
+  {
+    "month": 9,
+    "day": 8,
+    "name": "08/09",
+    "gid": "665229912",
+    "ingreso": 564339.0,
+    "egreso": 574000.0,
+    "ganancia_diaria": -9661.0
+  },
+  {
+    "month": 9,
+    "day": 9,
+    "name": "09/09",
+    "gid": "681188152",
+    "ingreso": 181695.0,
+    "egreso": 30600.0,
+    "ganancia_diaria": 151095.0
+  },
+  {
+    "month": 9,
+    "day": 10,
+    "name": "10/09",
+    "gid": "193402068",
+    "ingreso": 352616.0,
+    "egreso": 280011.0,
+    "ganancia_diaria": 72605.0
+  },
+  {
+    "month": 9,
+    "day": 11,
+    "name": "11/09",
+    "gid": "647519829",
+    "ingreso": 38900.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 38900.0
+  },
+  {
+    "month": 9,
+    "day": 12,
+    "name": "12/09",
+    "gid": "14821279",
+    "ingreso": 190972.0,
+    "egreso": 3000.0,
+    "ganancia_diaria": 187972.0
+  },
+  {
+    "month": 9,
+    "day": 14,
+    "name": "14/09",
+    "gid": "669047963",
+    "ingreso": 84480.0,
+    "egreso": 300000.0,
+    "ganancia_diaria": -215520.0
+  },
+  {
+    "month": 9,
+    "day": 15,
+    "name": "15/09",
+    "gid": "679720577",
+    "ingreso": 511334.0,
+    "egreso": 260670.0,
+    "ganancia_diaria": 250664.0
+  },
+  {
+    "month": 9,
+    "day": 16,
+    "name": "16/09",
+    "gid": "1505757058",
+    "ingreso": 317780.0,
+    "egreso": 378060.0,
+    "ganancia_diaria": -60280.0
+  },
+  {
+    "month": 9,
+    "day": 17,
+    "name": "17/09",
+    "gid": "1907865297",
+    "ingreso": 124700.0,
+    "egreso": 200000.0,
+    "ganancia_diaria": -75300.0
+  },
+  {
+    "month": 9,
+    "day": 18,
+    "name": "18/09",
+    "gid": "208214904",
+    "ingreso": 275740.0,
+    "egreso": 424321.0,
+    "ganancia_diaria": -148581.0
+  },
+  {
+    "month": 9,
+    "day": 19,
+    "name": "19/09",
+    "gid": "1341986544",
+    "ingreso": 1262760.0,
+    "egreso": 1473750.0,
+    "ganancia_diaria": -210990.0
+  },
+  {
+    "month": 9,
+    "day": 21,
+    "name": "21/09",
+    "gid": "2085242902",
+    "ingreso": 296100.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 296100.0
+  },
+  {
+    "month": 9,
+    "day": 22,
+    "name": "22/09",
+    "gid": "1588802003",
+    "ingreso": 453118.0,
+    "egreso": 721070.0,
+    "ganancia_diaria": -267952.0
+  },
+  {
+    "month": 9,
+    "day": 23,
+    "name": "23/09",
+    "gid": "1388853468",
+    "ingreso": 141000.0,
+    "egreso": 134000.0,
+    "ganancia_diaria": 7000.0
+  },
+  {
+    "month": 9,
+    "day": 24,
+    "name": "24/09",
+    "gid": "649805621",
+    "ingreso": 214732.0,
+    "egreso": 382270.0,
+    "ganancia_diaria": -167538.0
+  },
+  {
+    "month": 9,
+    "day": 25,
+    "name": "25/09",
+    "gid": "1930880000",
+    "ingreso": 187210.0,
+    "egreso": 110000.0,
+    "ganancia_diaria": 77210.0
+  },
+  {
+    "month": 9,
+    "day": 26,
+    "name": "26/09",
+    "gid": "1329280388",
+    "ingreso": 123280.0,
+    "egreso": 39000.0,
+    "ganancia_diaria": 84280.0
+  },
+  {
+    "month": 9,
+    "day": 28,
+    "name": "28/09",
+    "gid": "1022419369",
+    "ingreso": 123000.0,
+    "egreso": 61818.0,
+    "ganancia_diaria": 61182.0
+  },
+  {
+    "month": 9,
+    "day": 29,
+    "name": "29/09",
+    "gid": "228709270",
+    "ingreso": 309755.0,
+    "egreso": 642554.0,
+    "ganancia_diaria": -332799.0
+  },
+  {
+    "month": 9,
+    "day": 30,
+    "name": "30/09",
+    "gid": "789050811",
+    "ingreso": 497137.0,
+    "egreso": 109000.0,
+    "ganancia_diaria": 388137.0
+  },
+  {
+    "month": 10,
+    "day": 1,
+    "name": "1/10",
+    "gid": "1554181692",
+    "ingreso": 181050.0,
+    "egreso": 32000.0,
+    "ganancia_diaria": 149050.0
+  },
+  {
+    "month": 10,
+    "day": 2,
+    "name": "02/10",
+    "gid": "687899041",
+    "ingreso": 161900.0,
+    "egreso": 366091.0,
+    "ganancia_diaria": -204191.0
+  },
+  {
+    "month": 10,
+    "day": 3,
+    "name": "03/10",
+    "gid": "1678711118",
+    "ingreso": 62800.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 62800.0
+  },
+  {
+    "month": 10,
+    "day": 6,
+    "name": "06/10",
+    "gid": "933229801",
+    "ingreso": 148300.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 148300.0
+  },
+  {
+    "month": 10,
+    "day": 7,
+    "name": "07/10",
+    "gid": "948948419",
+    "ingreso": 5800.0,
+    "egreso": 325600.0,
+    "ganancia_diaria": -319800.0
+  },
+  {
+    "month": 10,
+    "day": 8,
+    "name": "08/10",
+    "gid": "1587509505",
+    "ingreso": 17550.0,
+    "egreso": 18000.0,
+    "ganancia_diaria": -450.0
+  },
+  {
+    "month": 10,
+    "day": 13,
+    "name": "13/10",
+    "gid": "906330184",
+    "ingreso": 594355.0,
+    "egreso": 660400.0,
+    "ganancia_diaria": -66045.0
+  },
+  {
+    "month": 10,
+    "day": 14,
+    "name": "14/10",
+    "gid": "1126257387",
+    "ingreso": 401048.0,
+    "egreso": 57454.0,
+    "ganancia_diaria": 343594.0
+  },
+  {
+    "month": 10,
+    "day": 15,
+    "name": "15/10",
+    "gid": "177277065",
+    "ingreso": 152800.0,
+    "egreso": 5000.0,
+    "ganancia_diaria": 147800.0
+  },
+  {
+    "month": 10,
+    "day": 16,
+    "name": "16/10",
+    "gid": "1088190754",
+    "ingreso": 240610.0,
+    "egreso": 304237.0,
+    "ganancia_diaria": -63627.0
+  },
+  {
+    "month": 10,
+    "day": 17,
+    "name": "17/10",
+    "gid": "1003092020",
+    "ingreso": 65100.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 65100.0
+  },
+  {
+    "month": 10,
+    "day": 19,
+    "name": "19/10",
+    "gid": "648236984",
+    "ingreso": 181550.0,
+    "egreso": 405000.0,
+    "ganancia_diaria": -223450.0
+  },
+  {
+    "month": 10,
+    "day": 20,
+    "name": "20/10",
+    "gid": "1542265620",
+    "ingreso": 378530.0,
+    "egreso": 492410.0,
+    "ganancia_diaria": -113880.0
+  },
+  {
+    "month": 10,
+    "day": 21,
+    "name": "21/10",
+    "gid": "1413281638",
+    "ingreso": 168000.0,
+    "egreso": 242500.0,
+    "ganancia_diaria": -74500.0
+  },
+  {
+    "month": 10,
+    "day": 22,
+    "name": "22/10",
+    "gid": "2017611192",
+    "ingreso": 32678.0,
+    "egreso": 77100.0,
+    "ganancia_diaria": -44422.0
+  },
+  {
+    "month": 10,
+    "day": 23,
+    "name": "23/10",
+    "gid": "681725101",
+    "ingreso": 115850.0,
+    "egreso": 160818.0,
+    "ganancia_diaria": -44968.0
+  },
+  {
+    "month": 10,
+    "day": 24,
+    "name": "24/10",
+    "gid": "662647675",
+    "ingreso": 322870.0,
+    "egreso": 6000.0,
+    "ganancia_diaria": 316870.0
+  },
+  {
+    "month": 10,
+    "day": 26,
+    "name": "26/10",
+    "gid": "254127641",
+    "ingreso": 57450.0,
+    "egreso": 490000.0,
+    "ganancia_diaria": -432550.0
+  },
+  {
+    "month": 10,
+    "day": 27,
+    "name": "27/10",
+    "gid": "1674118847",
+    "ingreso": 445670.0,
+    "egreso": 369522.0,
+    "ganancia_diaria": 76148.0
+  },
+  {
+    "month": 10,
+    "day": 28,
+    "name": "28/10",
+    "gid": "1116488100",
+    "ingreso": 326232.0,
+    "egreso": 190000.0,
+    "ganancia_diaria": 136232.0
+  },
+  {
+    "month": 10,
+    "day": 29,
+    "name": "29/10",
+    "gid": "1555399508",
+    "ingreso": 88700.0,
+    "egreso": 96000.0,
+    "ganancia_diaria": -7300.0
+  },
+  {
+    "month": 10,
+    "day": 30,
+    "name": "30/10",
+    "gid": "2144412110",
+    "ingreso": 297100.0,
+    "egreso": 290000.0,
+    "ganancia_diaria": 7100.0
+  },
+  {
+    "month": 10,
+    "day": 31,
+    "name": "31/10",
+    "gid": "1376217442",
+    "ingreso": 262914.0,
+    "egreso": 53500.0,
+    "ganancia_diaria": 209414.0
+  },
+  {
+    "month": 11,
+    "day": 2,
+    "name": "02/11",
+    "gid": "1388817086",
+    "ingreso": 48450.0,
+    "egreso": 605045.0,
+    "ganancia_diaria": -556595.0
+  },
+  {
+    "month": 11,
+    "day": 3,
+    "name": "03/11",
+    "gid": "1680151047",
+    "ingreso": 187653.0,
+    "egreso": 242010.0,
+    "ganancia_diaria": -54357.0
+  },
+  {
+    "month": 11,
+    "day": 4,
+    "name": "04/11",
+    "gid": "1103350965",
+    "ingreso": 470489.0,
+    "egreso": 159125.0,
+    "ganancia_diaria": 311364.0
+  },
+  {
+    "month": 11,
+    "day": 5,
+    "name": "05/11",
+    "gid": "1549595012",
+    "ingreso": 37080.0,
+    "egreso": 232035.0,
+    "ganancia_diaria": -194955.0
+  },
+  {
+    "month": 11,
+    "day": 6,
+    "name": "06/11",
+    "gid": "381516763",
+    "ingreso": 172975.0,
+    "egreso": 150500.0,
+    "ganancia_diaria": 22475.0
+  },
+  {
+    "month": 11,
+    "day": 7,
+    "name": "07/11",
+    "gid": "1735147098",
+    "ingreso": 93100.0,
+    "egreso": 149700.0,
+    "ganancia_diaria": -56600.0
+  },
+  {
+    "month": 11,
+    "day": 9,
+    "name": "09/11",
+    "gid": "210033574",
+    "ingreso": 190990.0,
+    "egreso": 0.0,
+    "ganancia_diaria": 190990.0
+  },
+  {
+    "month": 11,
+    "day": 10,
+    "name": "10/11",
+    "gid": "1181280050",
+    "ingreso": 465692.0,
+    "egreso": 360360.0,
+    "ganancia_diaria": 105332.0
+  },
+  {
+    "month": 11,
+    "day": 11,
+    "name": "11/11",
+    "gid": "1413041322",
+    "ingreso": 285615.0,
+    "egreso": 260086.0,
+    "ganancia_diaria": 25529.0
+  }
+]
