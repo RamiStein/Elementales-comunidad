@@ -6654,6 +6654,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const circuloParam = urlParams.get('c') || urlParams.get('circulo') || pathCirculo || (window.location.hash.includes('c=') ? window.location.hash.split('c=')[1] : null) || (window.location.hash.includes('circulo=') ? window.location.hash.split('circulo=')[1] : null);
+
+  // Protección: si el parámetro es una página del sistema, redirigir inmediatamente a ella
+  if (circuloParam) {
+    const cleanC = String(circuloParam).toLowerCase().trim();
+    if (cleanC === 'talleres' || cleanC === 'eventos') {
+      window.location.replace('talleres.html');
+      return;
+    }
+    if (cleanC === 'oliva' || cleanC === 'aceite') {
+      window.location.replace('oliva.html');
+      return;
+    }
+    if (cleanC === 'salud' || cleanC === 'carlos') {
+      window.location.replace('salud.html');
+      return;
+    }
+    if (cleanC === 'frutilla') {
+      window.location.replace('frutilla.html');
+      return;
+    }
+    if (cleanC === 'gestionelemental') {
+      window.location.replace('gestionelemental.html');
+      return;
+    }
+    if (cleanC === 'miembroelemental') {
+      window.location.replace('miembroelemental.html');
+      return;
+    }
+    if (cleanC === 'prosumidores') {
+      window.location.replace('prosumidores.html');
+      return;
+    }
+  }
   const isCirculosPilot = urlParams.has('circulos') || urlParams.get('seccion') === 'circulos' || window.location.hash === '#circulos';
   const nodoParam = urlParams.get('nodo') || pathNodo;
   const cajonParam = urlParams.get('cajon') || pathCajon;
@@ -6762,8 +6795,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const hasExplicitDeepLink = Boolean(circuloParam || cajonParam || shareParam || isCirculosPilot || pathNodo || window.location.hash === '#admin' || window.location.hash === '#barrio' || urlParams.get('nodo'));
   const isLandingRequested = window.location.hash === '#landing' || 
                              window.location.hash === '#login' || 
-                             urlParams.get('view') === 'landing' ||
-                             !hasExplicitDeepLink;
+                             urlParams.get('view') === 'landing';
 
   if (window.location.hash === '#gestionelemental' || urlParams.get('view') === 'gestionelemental') {
     window.location.href = 'gestionelemental.html';
@@ -6789,7 +6821,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.location.hash === '#admin' || urlParams.get('view') === 'admin') {
     window.location.href = 'gestionelemental.html';
     return;
-  } else if (isLandingRequested || !isAuth) {
+  } else if (!isAuth || isLandingRequested) {
     if (typeof CirculosManager !== 'undefined') {
       CirculosManager.setActiveCircleId(null);
     }
@@ -6799,6 +6831,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof CirculosManager !== 'undefined' && !circuloParam) {
       CirculosManager.setActiveCircleId(null);
     }
+    updateRoleUI();
+    updateNodeUI();
     navigateTo('barrio', false);
     renderCirculoStoreBanner();
   }
